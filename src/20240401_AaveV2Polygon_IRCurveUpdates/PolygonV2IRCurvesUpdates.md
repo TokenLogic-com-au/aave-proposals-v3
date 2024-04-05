@@ -45,8 +45,8 @@ The following parameters are to be updated as follows in the Polygon V2 Market:
 
 ## References
 
-- Implementation: [AaveV2Polygon](https://github.com/bgd-labs/aave-proposals-v3/blob/main/src/20240410_AaveV2Polygon_IRCurveUpdates/AaveV2Polygon_MultipleIRCurvesUpdates_20240410.sol)
-- Tests: [AaveV2Polygon](https://github.com/bgd-labs/aave-proposals-v3/blob/main/src/20240410_AaveV2Polygon_IRCurveUpdates/AaveV2Polygon_MultipleIRCurvesUpdates_20240410.t.sol)
+- Implementation: [AaveV2Polygon](https://github.com/bgd-labs/aave-proposals-v3/blob/main/src/20240401_AaveV2Polygon_IRCurveUpdates/AaveV2Polygon_MultipleIRCurvesUpdates_20240401.sol)
+- Tests: [AaveV2Polygon](https://github.com/bgd-labs/aave-proposals-v3/blob/main/src/20240401_AaveV2Polygon_IRCurveUpdates/AaveV2Polygon_MultipleIRCurvesUpdates_20240401.t.sol)
 - [Snapshot]()
 - [Discussion](https://governance.aave.com/t/arfc-polygon-v2-borrow-rate-adjustments/17252)
 

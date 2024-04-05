@@ -5,18 +5,18 @@ import {AaveV2Polygon} from 'aave-address-book/AaveV2Polygon.sol';
 
 import 'forge-std/Test.sol';
 import {ProtocolV2TestBase, ReserveConfig} from 'aave-helpers/ProtocolV2TestBase.sol';
-import {AaveV2Polygon_MultipleIRCurvesUpdates_20240410} from './AaveV2Polygon_MultipleIRCurvesUpdates_20240410.sol';
+import {AaveV2Polygon_MultipleIRCurvesUpdates_20240401} from './AaveV2Polygon_MultipleIRCurvesUpdates_20240401.sol';
 
 /**
- * @dev Test for AaveV2Polygon_MultipleIRCurvesUpdates_20240410
- * command: make test-contract filter=AaveV2Polygon_MultipleIRCurvesUpdates_20240410
+ * @dev Test for AaveV2Polygon_MultipleIRCurvesUpdates_20240401
+ * command: make test-contract filter=AaveV2Polygon_MultipleIRCurvesUpdates_20240401
  */
-contract AaveV2Polygon_MultipleIRCurvesUpdates_20240410_Test is ProtocolV2TestBase {
-  AaveV2Polygon_MultipleIRCurvesUpdates_20240410 internal proposal;
+contract AaveV2Polygon_MultipleIRCurvesUpdates_20240401_Test is ProtocolV2TestBase {
+  AaveV2Polygon_MultipleIRCurvesUpdates_20240401 internal proposal;
 
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('polygon'), 55472471);
-    proposal = new AaveV2Polygon_MultipleIRCurvesUpdates_20240410();
+    proposal = new AaveV2Polygon_MultipleIRCurvesUpdates_20240401();
   }
 
   /**
@@ -24,7 +24,7 @@ contract AaveV2Polygon_MultipleIRCurvesUpdates_20240410_Test is ProtocolV2TestBa
    */
   function test_defaultProposalExecution() public {
     defaultTest(
-      'AaveV2Polygon_MultipleIRCurvesUpdates_20240410',
+      'AaveV2Polygon_MultipleIRCurvesUpdates_20240401',
       AaveV2Polygon.POOL,
       address(proposal)
     );
