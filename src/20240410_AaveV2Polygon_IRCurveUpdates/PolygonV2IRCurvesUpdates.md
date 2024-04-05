@@ -1,87 +1,59 @@
 ---
-title: "Stablecoin IR Curves Updates"
-author: "Chaos Labs"
-discussions: "https://governance.aave.com/t/arfc-chaos-labs-stablecoin-ir-curves-updates/15838"
+title: "Polygon v2 Borrow Rate Adjustments"
+author: "@karpatkey_TokenLogic & @ChaosLabs"
+discussions: "https://governance.aave.com/t/arfc-polygon-v2-borrow-rate-adjustments/17252"
 ---
 
-## Simple Summary
+# Summary
 
-A proposal to increase stablecoin Interest Rate parameters across all Aave deployments.
+This publication proposes gradually revising the Borrow Rate on Polygon v2 to provide further encouragement for users to migrate to Aave v3.
 
-## Motivation
+# Motivation
 
-Following the implementation of [AIP-375](https://app.aave.com/governance/proposal/375/) to increase stablecoin borrow rates across Aave V2 and V3 deployments, we continue to observe volatility in borrow rates across Aave deployments. As we [highlighted](https://governance.aave.com/t/arfc-increase-optimal-borrow-rates-for-ethereum-stablecoin-markets/15096/3) in the recent proposal, we recommend a more aggressive increase of the Slope1 parameter to stabilize borrows under the UOptimal point.
+Over the last [8 months](https://governance-v2.aave.com/governance/proposal/284/) the Reserve Factor (RF) on Polygon v2 has gradually increased from as low as 21.00% to 99.99%. As a result, deposit yield converged to zero and the capital efficiency of Aave v2 has been reduced on Polygon.
+With the RF now approaching the maximum across all reserves, this publication seek to gradually increase the cost of capital via periodic borrow rate adjustments, every two weeks in a predictable fashion.
+Based upon recent borrow rates behaviour, the market has demonstrated the ability to withstand periods of elevated borrowing rates.
 
-**Adjust Slope1 of stablecoins to 6%**
+## Non Frozen Assets
 
-The [analysis](https://governance.aave.com/t/arfc-chaos-labs-stablecoin-ir-curves-updates/15838) indicates a necessity for further refinement of stablecoin interest rates, to achieve a more predictable and stable borrowing rate with an equilibrium utilization under the UOptimal point.
-Therefore, we propose increasing Slope1 to 6% for stablecoins across all Aave deployments, in this iteration. Following this increase, we will continue monitoring the usage and equilibrium rate and make additional recommendations as necessary.
+For non-frozen assets, this proposal recommends increasing the Slope1 parameter by 75bps every two weeks, or 1.5% per month, to encourage further migration of users from v2 to v3. The outcome of this [vote](https://snapshot.org/#/aave.eth/proposal/0xe2dd228640c3cad93f5418c40c4b5743b3c6c85aa0aae9eee53cbdbca2ed5c2d) has been taken into consideration when drafting the current IR parameters included in this proposal.
+The Slope2 parameter is to be revised to 750.00% to discourage utilisation exceeding the Uoptimal value. Note, several reserves are experiencing utilisation marginally exceeding Uoptimal.
+As utilisation of each reserve decreases over time, the Uoptimal will be periodically lowered to discourage new debt positions emerging. Any proposed changes to the Uoptimal parameter will be presented via a separate ARFC.
+Upon implementation, this change will not trigger liquidation of any users funds and will gradually increase the cost for users who remain on v2. Please note, there is a Migration Tool that was developed by BGD to aid users migrating from v2 to v3.
+Assets in scope: DAI, MATIC, wBTC, wETH, USDC and USDT.
 
-## Specification
+## Frozen Assets
 
-| Market       | Asset  | Current Slope1 | Rec Slope1 |
-| ------------ | ------ | -------------- | ---------- |
-| Ethereum V2  | USDC   | 5%             | 6%         |
-| Ethereum V2  | USDT   | 5%             | 6%         |
-| Ethereum V2  | DAI    | 5%             | 6%         |
-| Ethereum V2  | FRAX   | 5%             | 6%         |
-| Ethereum V2  | sUSD   | 5%             | 6%         |
-| Ethereum V2  | GUSD   | 5%             | 6%         |
-| Ethereum V2  | LUSD   | 5%             | 6%         |
-| Ethereum V2  | USDP   | 5%             | 6%         |
-| Ethereum V3  | USDC   | 5%             | 6%         |
-| Ethereum V3  | USDT   | 5%             | 6%         |
-| Ethereum V3  | DAI    | 5%             | 6%         |
-| Ethereum V3  | FRAX   | 5%             | 6%         |
-| Ethereum V3  | LUSD   | 5%             | 6%         |
-| Avalanche V2 | USDC   | 5%             | 6%         |
-| Avalanche V2 | USDT   | 5%             | 6%         |
-| Avalanche V2 | DAI    | 5%             | 6%         |
-| Avalanche V3 | USDC   | 5%             | 6%         |
-| Avalanche V3 | USDT   | 5%             | 6%         |
-| Avalanche V3 | DAI    | 5%             | 6%         |
-| Avalanche V3 | MAI    | 5%             | 6%         |
-| Avalanche V3 | FRAX   | 5%             | 6%         |
-| Polygon V2   | USDC   | 5%             | 6%         |
-| Polygon V2   | USDT   | 5%             | 6%         |
-| Polygon V2   | DAI    | 5%             | 6%         |
-| Polygon V3   | USDC.e | 7%             | No Change  |
-| Polygon V3   | USDC   | 5%             | 6%         |
-| Polygon V3   | USDT   | 5%             | 6%         |
-| Polygon V3   | DAI    | 5%             | 6%         |
-| Polygon V3   | MAI    | 5%             | 6%         |
-| Optimism V3  | USDC.e | 7%             | No Change  |
-| Optimism V3  | USDC   | 5%             | 6%         |
-| Optimism V3  | USDT   | 5%             | 6%         |
-| Optimism V3  | DAI    | 5%             | 6%         |
-| Optimism V3  | sUSD   | 5%             | 6%         |
-| Optimism V3  | LUSD   | 5%             | 6%         |
-| Optimism V3  | MAI    | 5%             | 6%         |
-| Arbitrum V3  | USDC   | 5%             | 6%         |
-| Arbitrum V3  | USDC.e | 7%             | No Change  |
-| Arbitrum V3  | USDT   | 5%             | 6%         |
-| Arbitrum V3  | DAI    | 5%             | 6%         |
-| Arbitrum V3  | LUSD   | 5%             | 6%         |
-| Arbitrum V3  | FRAX   | 5%             | 6%         |
-| Arbitrum V3  | MAI    | 5%             | 6%         |
-| Base V3      | USDC   | 5%             | 6%         |
-| Base V3      | USDbC  | 7%             | No Change  |
-| Metis V3     | USDC   | 5%             | 6%         |
-| Metis V3     | USDT   | 5%             | 6%         |
-| Gnosis V3    | USDC   | 5%             | 6%         |
-| Gnosis V3    | xDAI   | 5%             | 6%         |
+Each frozen reserve contains a small portion of funds with a very minimal amount of debt. For these assets we recommend a more aggressive implementation: reduce the Uoptimal to 10.00%, revise Slope1 to 50.00% and Slope2 to 1,000.00% - with the exception of BAL, which receives a Uoptimal of 20% due to current utilisation being around 15%.
+Assets in scope: BAL, CRV, DPI, GHST, LINK and SUSHI.
+
+# Specification
+
+The following parameters are to be updated as follows in the Polygon V2 Market:
+| Asset | Current Slope1 | Proposed Slope1 | Current Uoptimal | Proposed Uoptimal | Current Slope2 | Proposed Slope2 |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| BAL | 27.00% | 50.00% | 65.00% | 20.00% | 236.00% | 1,000.00% |
+| CRV | 17.00% | 50.00% | 25.00% | 10.00% | 392.00% | 1,000.00% |
+| DAI | 12.00% | 12.75% | 71.00% | 71.00% | 105.00% | 750.00% |
+| GHST | 7.00% | 50.00% | 23.00% | 10.00% | 413.00% | 1,000.00% |
+| LINK | 7.00% | 50.00% | 25.00% | 10.00% | 402.00% | 1,000.00% |
+| USDT | 12.00% | 12.75% | 52.00% | 52.00% | 236.00% | 750.00% |
+| wBTC | 4.00% | 4.75% | 37.00% | 37.00% | 536.00% | 750.00% |
+| wETH | 4.00% | 4.75% | 40.00% | 40.00% | 167.00% | 750.00% |
+| wMATIC| 6.00% | 6.75% | 48.00% | 48.00% | 440.00% | 750.00% |
+| wUSDC | 12.00% | 12.75% | 77.00% | 77.00% | 134.00% | 750.00% |
 
 ## References
 
-- Implementation: [AaveV2Ethereum](https://github.com/bgd-labs/aave-proposals-v3/blob/cfbcf8fce5a168a5bd17d9dae385e0ca7d39d560/src/20231221_Multi_StablecoinIRCurvesUpdates/AaveV2Ethereum_StablecoinIRCurvesUpdates_20231221.sol), [AaveV2Polygon](https://github.com/bgd-labs/aave-proposals-v3/blob/cfbcf8fce5a168a5bd17d9dae385e0ca7d39d560/src/20231221_Multi_StablecoinIRCurvesUpdates/AaveV2Polygon_StablecoinIRCurvesUpdates_20231221.sol), [AaveV2Avalanche](https://github.com/bgd-labs/aave-proposals-v3/blob/cfbcf8fce5a168a5bd17d9dae385e0ca7d39d560/src/20231221_Multi_StablecoinIRCurvesUpdates/AaveV2Avalanche_StablecoinIRCurvesUpdates_20231221.sol), [AaveV3Ethereum](https://github.com/bgd-labs/aave-proposals-v3/blob/cfbcf8fce5a168a5bd17d9dae385e0ca7d39d560/src/20231221_Multi_StablecoinIRCurvesUpdates/AaveV3Ethereum_StablecoinIRCurvesUpdates_20231221.sol), [AaveV3Polygon](https://github.com/bgd-labs/aave-proposals-v3/blob/cfbcf8fce5a168a5bd17d9dae385e0ca7d39d560/src/20231221_Multi_StablecoinIRCurvesUpdates/AaveV3Polygon_StablecoinIRCurvesUpdates_20231221.sol), [AaveV3Avalanche](https://github.com/bgd-labs/aave-proposals-v3/blob/cfbcf8fce5a168a5bd17d9dae385e0ca7d39d560/src/20231221_Multi_StablecoinIRCurvesUpdates/AaveV3Avalanche_StablecoinIRCurvesUpdates_20231221.sol), [AaveV3Optimism](https://github.com/bgd-labs/aave-proposals-v3/blob/cfbcf8fce5a168a5bd17d9dae385e0ca7d39d560/src/20231221_Multi_StablecoinIRCurvesUpdates/AaveV3Optimism_StablecoinIRCurvesUpdates_20231221.sol), [AaveV3Arbitrum](https://github.com/bgd-labs/aave-proposals-v3/blob/cfbcf8fce5a168a5bd17d9dae385e0ca7d39d560/src/20231221_Multi_StablecoinIRCurvesUpdates/AaveV3Arbitrum_StablecoinIRCurvesUpdates_20231221.sol), [AaveV3Metis](https://github.com/bgd-labs/aave-proposals-v3/blob/cfbcf8fce5a168a5bd17d9dae385e0ca7d39d560/src/20231221_Multi_StablecoinIRCurvesUpdates/AaveV3Metis_StablecoinIRCurvesUpdates_20231221.sol), [AaveV3Base](https://github.com/bgd-labs/aave-proposals-v3/blob/cfbcf8fce5a168a5bd17d9dae385e0ca7d39d560/src/20231221_Multi_StablecoinIRCurvesUpdates/AaveV3Base_StablecoinIRCurvesUpdates_20231221.sol), [AaveV3Gnosis](https://github.com/bgd-labs/aave-proposals-v3/blob/cfbcf8fce5a168a5bd17d9dae385e0ca7d39d560/src/20231221_Multi_StablecoinIRCurvesUpdates/AaveV3Gnosis_StablecoinIRCurvesUpdates_20231221.sol)
-- Tests: [AaveV2Ethereum](https://github.com/bgd-labs/aave-proposals-v3/blob/cfbcf8fce5a168a5bd17d9dae385e0ca7d39d560/src/20231221_Multi_StablecoinIRCurvesUpdates/AaveV2Ethereum_StablecoinIRCurvesUpdates_20231221.t.sol), [AaveV2Polygon](https://github.com/bgd-labs/aave-proposals-v3/blob/cfbcf8fce5a168a5bd17d9dae385e0ca7d39d560/src/20231221_Multi_StablecoinIRCurvesUpdates/AaveV2Polygon_StablecoinIRCurvesUpdates_20231221.t.sol), [AaveV2Avalanche](https://github.com/bgd-labs/aave-proposals-v3/blob/cfbcf8fce5a168a5bd17d9dae385e0ca7d39d560/src/20231221_Multi_StablecoinIRCurvesUpdates/AaveV2Avalanche_StablecoinIRCurvesUpdates_20231221.t.sol), [AaveV3Ethereum](https://github.com/bgd-labs/aave-proposals-v3/blob/cfbcf8fce5a168a5bd17d9dae385e0ca7d39d560/src/20231221_Multi_StablecoinIRCurvesUpdates/AaveV3Ethereum_StablecoinIRCurvesUpdates_20231221.t.sol), [AaveV3Polygon](https://github.com/bgd-labs/aave-proposals-v3/blob/cfbcf8fce5a168a5bd17d9dae385e0ca7d39d560/src/20231221_Multi_StablecoinIRCurvesUpdates/AaveV3Polygon_StablecoinIRCurvesUpdates_20231221.t.sol), [AaveV3Avalanche](https://github.com/bgd-labs/aave-proposals-v3/blob/cfbcf8fce5a168a5bd17d9dae385e0ca7d39d560/src/20231221_Multi_StablecoinIRCurvesUpdates/AaveV3Avalanche_StablecoinIRCurvesUpdates_20231221.t.sol), [AaveV3Optimism](https://github.com/bgd-labs/aave-proposals-v3/blob/cfbcf8fce5a168a5bd17d9dae385e0ca7d39d560/src/20231221_Multi_StablecoinIRCurvesUpdates/AaveV3Optimism_StablecoinIRCurvesUpdates_20231221.t.sol), [AaveV3Arbitrum](https://github.com/bgd-labs/aave-proposals-v3/blob/cfbcf8fce5a168a5bd17d9dae385e0ca7d39d560/src/20231221_Multi_StablecoinIRCurvesUpdates/AaveV3Arbitrum_StablecoinIRCurvesUpdates_20231221.t.sol), [AaveV3Metis](https://github.com/bgd-labs/aave-proposals-v3/blob/cfbcf8fce5a168a5bd17d9dae385e0ca7d39d560/src/20231221_Multi_StablecoinIRCurvesUpdates/AaveV3Metis_StablecoinIRCurvesUpdates_20231221.t.sol), [AaveV3Base](https://github.com/bgd-labs/aave-proposals-v3/blob/cfbcf8fce5a168a5bd17d9dae385e0ca7d39d560/src/20231221_Multi_StablecoinIRCurvesUpdates/AaveV3Base_StablecoinIRCurvesUpdates_20231221.t.sol), [AaveV3Gnosis](https://github.com/bgd-labs/aave-proposals-v3/blob/cfbcf8fce5a168a5bd17d9dae385e0ca7d39d560/src/20231221_Multi_StablecoinIRCurvesUpdates/AaveV3Gnosis_StablecoinIRCurvesUpdates_20231221.t.sol)
-- [Snapshot](https://snapshot.org/#/aave.eth/proposal/0x7c158085e4aa7de3a337d0a84a31eed65a7f7f9e3dce45ec90205b448e6f7ab9)
-- [Discussion](https://governance.aave.com/t/arfc-chaos-labs-stablecoin-ir-curves-updates/15838)
+- Implementation: [AaveV2Polygon](https://github.com/bgd-labs/aave-proposals-v3/blob/main/src/20240410_AaveV2Polygon_IRCurveUpdates/AaveV2Polygon_MultipleIRCurvesUpdates_20240410.sol)
+- Tests: [AaveV2Polygon](https://github.com/bgd-labs/aave-proposals-v3/blob/main/src/20240410_AaveV2Polygon_IRCurveUpdates/AaveV2Polygon_MultipleIRCurvesUpdates_20240410.t.sol)
+- [Snapshot]()
+- [Discussion](https://governance.aave.com/t/arfc-polygon-v2-borrow-rate-adjustments/17252)
 
 # Disclaimer
 
-Chaos Labs has not been compensated by any third party for publishing this ARFC.
+TokenLogic and karpatkey receive no payment for this proposal. TokenLogic and karpatkey are both delegates within the Aave community.
 
-## Copyright
+# Copyright
 
 Copyright and related rights waived via [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
