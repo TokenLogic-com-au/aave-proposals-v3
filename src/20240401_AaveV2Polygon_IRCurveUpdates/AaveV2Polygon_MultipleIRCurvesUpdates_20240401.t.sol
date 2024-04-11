@@ -15,7 +15,7 @@ contract AaveV2Polygon_MultipleIRCurvesUpdates_20240401_Test is ProtocolV2TestBa
   AaveV2Polygon_MultipleIRCurvesUpdates_20240401 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('polygon'), 55472471);
+    vm.createSelectFork(vm.rpcUrl('polygon'), 55704407);
     proposal = new AaveV2Polygon_MultipleIRCurvesUpdates_20240401();
   }
 

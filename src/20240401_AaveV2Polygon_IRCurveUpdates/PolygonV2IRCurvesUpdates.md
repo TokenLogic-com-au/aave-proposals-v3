@@ -24,30 +24,29 @@ Assets in scope: DAI, MATIC, wBTC, wETH, USDC and USDT.
 
 ## Frozen Assets
 
-Each frozen reserve contains a small portion of funds with a very minimal amount of debt. For these assets we recommend a more aggressive implementation: reduce the Uoptimal to 10.00%, revise Slope1 to 50.00% and Slope2 to 1,000.00% - with the exception of BAL, which receives a Uoptimal of 20% due to current utilisation being around 15%.
-Assets in scope: BAL, CRV, DPI, GHST, LINK and SUSHI.
+Each frozen reserve contains a small portion of funds with a very minimal amount of debt. For these assets we recommend a more aggressive implementation: reduce the Uoptimal to 10.00%, revise Slope1 to 50.00% and Slope2 to 500.00% - with the exception of BAL, which receives a Uoptimal of 20% due to current utilisation being around 15%.
 
 # Specification
 
 The following parameters are to be updated as follows in the Polygon V2 Market:
 | Asset | Current Slope1 | Proposed Slope1 | Current Uoptimal | Proposed Uoptimal | Current Slope2 | Proposed Slope2 |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| BAL | 27.00% | 50.00% | 65.00% | 20.00% | 236.00% | 1,000.00% |
-| CRV | 17.00% | 50.00% | 25.00% | 10.00% | 392.00% | 1,000.00% |
-| DAI | 12.00% | 12.75% | 71.00% | 71.00% | 105.00% | 750.00% |
-| GHST | 7.00% | 50.00% | 23.00% | 10.00% | 413.00% | 1,000.00% |
-| LINK | 7.00% | 50.00% | 25.00% | 10.00% | 402.00% | 1,000.00% |
-| USDT | 12.00% | 12.75% | 52.00% | 52.00% | 236.00% | 750.00% |
-| wBTC | 4.00% | 4.75% | 37.00% | 37.00% | 536.00% | 750.00% |
-| wETH | 4.00% | 4.75% | 40.00% | 40.00% | 167.00% | 750.00% |
-| wMATIC| 6.00% | 6.75% | 48.00% | 48.00% | 440.00% | 750.00% |
-| wUSDC | 12.00% | 12.75% | 77.00% | 77.00% | 134.00% | 750.00% |
+| BAL | 27.00% | 50.00% | 65.00% | 20.00% | 236.00% | 500.00% |
+| CRV | 17.00% | 50.00% | 25.00% | 10.00% | 392.00% | 500.00% |
+| DAI | 12.00% | 12.75% | 71.00% | 71.00% | 105.00% | 200.00% |
+| GHST | 7.00% | 50.00% | 23.00% | 10.00% | 413.00% | 500.00% |
+| LINK | 7.00% | 50.00% | 25.00% | 10.00% | 402.00% | 500.00% |
+| USDT | 12.00% | 12.75% | 52.00% | 52.00% | 236.00% | 236.00% |
+| wBTC | 4.00% | 4.75% | 37.00% | 37.00% | 536.00% | 536.00% |
+| wETH | 4.00% | 4.75% | 40.00% | 40.00% | 167.00% | 200.00% |
+| wMATIC| 6.00% | 6.75% | 48.00% | 48.00% | 440.00% | 500.00% |
+| wUSDC | 12.00% | 12.75% | 77.00% | 77.00% | 134.00% | 200.00% |
 
 ## References
 
 - Implementation: [AaveV2Polygon](https://github.com/bgd-labs/aave-proposals-v3/blob/main/src/20240401_AaveV2Polygon_IRCurveUpdates/AaveV2Polygon_MultipleIRCurvesUpdates_20240401.sol)
 - Tests: [AaveV2Polygon](https://github.com/bgd-labs/aave-proposals-v3/blob/main/src/20240401_AaveV2Polygon_IRCurveUpdates/AaveV2Polygon_MultipleIRCurvesUpdates_20240401.t.sol)
-- [Snapshot]()
+- [Snapshot](https://snapshot.org/#/aave.eth/proposal/0x95643085ee16eb0eaa4110a9f0ea8223009f9521e596e1a958303705a5001363)
 - [Discussion](https://governance.aave.com/t/arfc-polygon-v2-borrow-rate-adjustments/17252)
 
 # Disclaimer

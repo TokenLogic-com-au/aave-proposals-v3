@@ -10,7 +10,7 @@ import {IV2RateStrategyFactory} from 'aave-helpers/v2-config-engine/IV2RateStrat
 /**
  * @title Polygon v2 Borrow Rate Adjustments
  * @author Luigy_Karpatkey
- * - Snapshot:  Direct-to-AIP
+ * - Snapshot: https://snapshot.org/#/aave.eth/proposal/0x95643085ee16eb0eaa4110a9f0ea8223009f9521e596e1a958303705a5001363
  * - Discussion: https://governance.aave.com/t/arfc-polygon-v2-borrow-rate-adjustments/17252
  */
 
@@ -31,7 +31,7 @@ contract AaveV2Polygon_MultipleIRCurvesUpdates_20240401 is AaveV2PayloadPolygon 
         optimalUtilizationRate: _bpsToRay(20_00),
         baseVariableBorrowRate: EngineFlags.KEEP_CURRENT,
         variableRateSlope1: _bpsToRay(50_00),
-        variableRateSlope2: _bpsToRay(1_000_00),
+        variableRateSlope2: _bpsToRay(500_00),
         stableRateSlope1: EngineFlags.KEEP_CURRENT,
         stableRateSlope2: EngineFlags.KEEP_CURRENT
       })
@@ -43,7 +43,7 @@ contract AaveV2Polygon_MultipleIRCurvesUpdates_20240401 is AaveV2PayloadPolygon 
         optimalUtilizationRate: _bpsToRay(10_00),
         baseVariableBorrowRate: EngineFlags.KEEP_CURRENT,
         variableRateSlope1: _bpsToRay(50_00),
-        variableRateSlope2: _bpsToRay(1_000_00),
+        variableRateSlope2: _bpsToRay(500_00),
         stableRateSlope1: EngineFlags.KEEP_CURRENT,
         stableRateSlope2: EngineFlags.KEEP_CURRENT
       })
@@ -55,7 +55,7 @@ contract AaveV2Polygon_MultipleIRCurvesUpdates_20240401 is AaveV2PayloadPolygon 
         optimalUtilizationRate: _bpsToRay(10_00),
         baseVariableBorrowRate: EngineFlags.KEEP_CURRENT,
         variableRateSlope1: _bpsToRay(50_00),
-        variableRateSlope2: _bpsToRay(1_000_00),
+        variableRateSlope2: _bpsToRay(500_00),
         stableRateSlope1: EngineFlags.KEEP_CURRENT,
         stableRateSlope2: EngineFlags.KEEP_CURRENT
       })
@@ -67,7 +67,7 @@ contract AaveV2Polygon_MultipleIRCurvesUpdates_20240401 is AaveV2PayloadPolygon 
         optimalUtilizationRate: _bpsToRay(10_00),
         baseVariableBorrowRate: EngineFlags.KEEP_CURRENT,
         variableRateSlope1: _bpsToRay(50_00),
-        variableRateSlope2: _bpsToRay(1_000_00),
+        variableRateSlope2: _bpsToRay(500_00),
         stableRateSlope1: EngineFlags.KEEP_CURRENT,
         stableRateSlope2: EngineFlags.KEEP_CURRENT
       })
@@ -80,7 +80,7 @@ contract AaveV2Polygon_MultipleIRCurvesUpdates_20240401 is AaveV2PayloadPolygon 
         optimalUtilizationRate: EngineFlags.KEEP_CURRENT,
         baseVariableBorrowRate: EngineFlags.KEEP_CURRENT,
         variableRateSlope1: _bpsToRay(12_75),
-        variableRateSlope2: _bpsToRay(750_00),
+        variableRateSlope2: _bpsToRay(200_00),
         stableRateSlope1: EngineFlags.KEEP_CURRENT,
         stableRateSlope2: EngineFlags.KEEP_CURRENT
       })
@@ -91,7 +91,7 @@ contract AaveV2Polygon_MultipleIRCurvesUpdates_20240401 is AaveV2PayloadPolygon 
         optimalUtilizationRate: EngineFlags.KEEP_CURRENT,
         baseVariableBorrowRate: EngineFlags.KEEP_CURRENT,
         variableRateSlope1: _bpsToRay(12_75),
-        variableRateSlope2: _bpsToRay(750_00),
+        variableRateSlope2: EngineFlags.KEEP_CURRENT,
         stableRateSlope1: EngineFlags.KEEP_CURRENT,
         stableRateSlope2: EngineFlags.KEEP_CURRENT
       })
@@ -102,7 +102,7 @@ contract AaveV2Polygon_MultipleIRCurvesUpdates_20240401 is AaveV2PayloadPolygon 
         optimalUtilizationRate: EngineFlags.KEEP_CURRENT,
         baseVariableBorrowRate: EngineFlags.KEEP_CURRENT,
         variableRateSlope1: _bpsToRay(12_75),
-        variableRateSlope2: _bpsToRay(750_00),
+        variableRateSlope2: _bpsToRay(200_00),
         stableRateSlope1: EngineFlags.KEEP_CURRENT,
         stableRateSlope2: EngineFlags.KEEP_CURRENT
       })
@@ -116,7 +116,7 @@ contract AaveV2Polygon_MultipleIRCurvesUpdates_20240401 is AaveV2PayloadPolygon 
         optimalUtilizationRate: EngineFlags.KEEP_CURRENT,
         baseVariableBorrowRate: EngineFlags.KEEP_CURRENT,
         variableRateSlope1: _bpsToRay(4_75),
-        variableRateSlope2: _bpsToRay(750_00),
+        variableRateSlope2: EngineFlags.KEEP_CURRENT,
         stableRateSlope1: EngineFlags.KEEP_CURRENT,
         stableRateSlope2: EngineFlags.KEEP_CURRENT
       })
@@ -127,7 +127,7 @@ contract AaveV2Polygon_MultipleIRCurvesUpdates_20240401 is AaveV2PayloadPolygon 
         optimalUtilizationRate: EngineFlags.KEEP_CURRENT,
         baseVariableBorrowRate: EngineFlags.KEEP_CURRENT,
         variableRateSlope1: _bpsToRay(4_75),
-        variableRateSlope2: _bpsToRay(750_00),
+        variableRateSlope2: _bpsToRay(200_00),
         stableRateSlope1: EngineFlags.KEEP_CURRENT,
         stableRateSlope2: EngineFlags.KEEP_CURRENT
       })
@@ -138,7 +138,7 @@ contract AaveV2Polygon_MultipleIRCurvesUpdates_20240401 is AaveV2PayloadPolygon 
         optimalUtilizationRate: EngineFlags.KEEP_CURRENT,
         baseVariableBorrowRate: EngineFlags.KEEP_CURRENT,
         variableRateSlope1: _bpsToRay(6_75),
-        variableRateSlope2: _bpsToRay(750_00),
+        variableRateSlope2: _bpsToRay(500_00),
         stableRateSlope1: EngineFlags.KEEP_CURRENT,
         stableRateSlope2: EngineFlags.KEEP_CURRENT
       })
