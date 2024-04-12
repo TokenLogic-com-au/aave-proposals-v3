@@ -6,21 +6,21 @@
 
 | description | value before | value after |
 | --- | --- | --- |
-| reserveFactor | 88 % | 93 % |
+| reserveFactor | 93 % | 98 % |
 
 
 #### DAI ([0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063](https://polygonscan.com/address/0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063))
 
 | description | value before | value after |
 | --- | --- | --- |
-| reserveFactor | 86 % | 91 % |
+| reserveFactor | 91 % | 96 % |
 
 
 #### USDT ([0xc2132D05D31c914a87C6611C10748AEb04B58e8F](https://polygonscan.com/address/0xc2132D05D31c914a87C6611C10748AEb04B58e8F))
 
 | description | value before | value after |
 | --- | --- | --- |
-| reserveFactor | 87 % | 92 % |
+| reserveFactor | 92 % | 97 % |
 
 
 ## Raw diff
@@ -30,20 +30,20 @@
   "reserves": {
     "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174": {
       "reserveFactor": {
-        "from": 8800,
-        "to": 9300
+        "from": 9300,
+        "to": 9800
       }
     },
     "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063": {
       "reserveFactor": {
-        "from": 8600,
-        "to": 9100
+        "from": 9100,
+        "to": 9600
       }
     },
     "0xc2132D05D31c914a87C6611C10748AEb04B58e8F": {
       "reserveFactor": {
-        "from": 8700,
-        "to": 9200
+        "from": 9200,
+        "to": 9700
       }
     }
   }
