@@ -32,7 +32,7 @@ contract AaveV3Ethereum_ARFCAddRsETHToAaveV3Ethereum_20240724 is AaveV3PayloadEt
     listings[0] = IAaveV3ConfigEngine.Listing({
       asset: rsETH,
       assetSymbol: 'rsETH',
-      priceFeed: 0x78C12ccE8346B936117655Dd3D70a2501Fd3d6e6,
+      priceFeed: 0x03c68933f7a3F76875C0bc670a58e69294cDFD01,
       eModeCategory: AaveV3EthereumEModes.ETH_CORRELATED,
       enabledToBorrow: EngineFlags.ENABLED,
       stableRateModeEnabled: EngineFlags.DISABLED,
