@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {GovV3Helpers} from 'aave-helpers/GovV3Helpers.sol';
+import {GovV3Helpers, IPayloadsControllerCore} from 'aave-helpers/GovV3Helpers.sol';
 import {AaveV3Ethereum} from 'aave-address-book/AaveV3Ethereum.sol';
 import {IERC20} from 'solidity-utils/contracts/oz-common/interfaces/IERC20.sol';
 
@@ -32,7 +32,11 @@ contract AaveV3Ethereum_ARFCAddRsETHToAaveV3Ethereum_20240724_Test is ProtocolV3
     );
   }
 
-  function test_collectorHasrsETHFunds() public {
+  function test_initailFundDeposit() public {
+    IPayloadsControllerCore payloadsController = GovV3Helpers.getPayloadsController(block.chainid);
+
+    uint256 prevExecutorBalance = IERC20(proposal.rsETH()).balanceOf(address(payloadsController));
+
     GovV3Helpers.executePayload(vm, address(proposal));
     (address aTokenAddress, , ) = AaveV3Ethereum
       .AAVE_PROTOCOL_DATA_PROVIDER
@@ -41,5 +45,8 @@ contract AaveV3Ethereum_ARFCAddRsETHToAaveV3Ethereum_20240724_Test is ProtocolV3
       IERC20(aTokenAddress).balanceOf(address(AaveV3Ethereum.COLLECTOR)),
       proposal.rsETH_SEED_AMOUNT()
     );
+
+    uint256 afterExecutorBalance = IERC20(proposal.rsETH()).balanceOf(address(payloadsController));
+    assertEq(prevExecutorBalance - afterExecutorBalance, proposal.rsETH_SEED_AMOUNT());
   }
 }
