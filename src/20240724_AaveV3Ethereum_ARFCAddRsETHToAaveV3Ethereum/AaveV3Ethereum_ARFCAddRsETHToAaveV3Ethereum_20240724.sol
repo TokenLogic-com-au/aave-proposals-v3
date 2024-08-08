@@ -32,7 +32,7 @@ contract AaveV3Ethereum_ARFCAddRsETHToAaveV3Ethereum_20240724 is AaveV3PayloadEt
       asset: rsETH,
       assetSymbol: 'rsETH',
       priceFeed: 0x03c68933f7a3F76875C0bc670a58e69294cDFD01, // TODO change this address to capo price feed
-      eModeCategory: AaveV3EthereumEModes.ETH_CORRELATED,
+      eModeCategory: AaveV3EthereumEModes.NONE,
       enabledToBorrow: EngineFlags.ENABLED,
       stableRateModeEnabled: EngineFlags.DISABLED,
       borrowableInIsolation: EngineFlags.DISABLED,
