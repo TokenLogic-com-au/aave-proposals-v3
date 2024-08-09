@@ -17,8 +17,15 @@ contract AaveV3Ethereum_ARFCAddRsETHToAaveV3Ethereum_20240724_Test is ProtocolV3
   AaveV3Ethereum_ARFCAddRsETHToAaveV3Ethereum_20240724 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('mainnet'), 20377074);
+    vm.createSelectFork(vm.rpcUrl('mainnet'), 20491191);
     proposal = new AaveV3Ethereum_ARFCAddRsETHToAaveV3Ethereum_20240724();
+
+    vm.startPrank(0x22561c5931143536309C17e832587b625C390b9A);
+    IERC20(proposal.rsETH()).transfer(
+      address(AaveV3Ethereum.ACL_ADMIN),
+      proposal.rsETH_SEED_AMOUNT()
+    );
+    vm.stopPrank();
   }
 
   /**
@@ -32,10 +39,10 @@ contract AaveV3Ethereum_ARFCAddRsETHToAaveV3Ethereum_20240724_Test is ProtocolV3
     );
   }
 
-  function test_initailFundDeposit() public {
-    IPayloadsControllerCore payloadsController = GovV3Helpers.getPayloadsController(block.chainid);
-
-    uint256 prevExecutorBalance = IERC20(proposal.rsETH()).balanceOf(address(payloadsController));
+  function test_initialFundDeposit() public {
+    uint256 prevExecutorBalance = IERC20(proposal.rsETH()).balanceOf(
+      address(AaveV3Ethereum.ACL_ADMIN)
+    );
 
     GovV3Helpers.executePayload(vm, address(proposal));
     (address aTokenAddress, , ) = AaveV3Ethereum
@@ -46,7 +53,9 @@ contract AaveV3Ethereum_ARFCAddRsETHToAaveV3Ethereum_20240724_Test is ProtocolV3
       proposal.rsETH_SEED_AMOUNT()
     );
 
-    uint256 afterExecutorBalance = IERC20(proposal.rsETH()).balanceOf(address(payloadsController));
+    uint256 afterExecutorBalance = IERC20(proposal.rsETH()).balanceOf(
+      address(AaveV3Ethereum.ACL_ADMIN)
+    );
     assertEq(prevExecutorBalance - afterExecutorBalance, proposal.rsETH_SEED_AMOUNT());
   }
 }

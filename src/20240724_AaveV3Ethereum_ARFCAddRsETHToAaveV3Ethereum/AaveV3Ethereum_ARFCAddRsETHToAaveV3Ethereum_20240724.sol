@@ -18,6 +18,7 @@ contract AaveV3Ethereum_ARFCAddRsETHToAaveV3Ethereum_20240724 is AaveV3PayloadEt
   using SafeERC20 for IERC20;
 
   address public constant rsETH = 0xA1290d69c65A6Fe4DF752f95823fae25cB99e5A7;
+  address public constant rsETH_PRICE_FEED = 0xD6270dAabFe4862306190298C2B48fed9e15C847; // TODO change this address to capo price feed
   uint256 public constant rsETH_SEED_AMOUNT = 0.01 ether;
 
   function _postExecute() internal override {
@@ -31,26 +32,26 @@ contract AaveV3Ethereum_ARFCAddRsETHToAaveV3Ethereum_20240724 is AaveV3PayloadEt
     listings[0] = IAaveV3ConfigEngine.Listing({
       asset: rsETH,
       assetSymbol: 'rsETH',
-      priceFeed: 0x03c68933f7a3F76875C0bc670a58e69294cDFD01, // TODO change this address to capo price feed
-      eModeCategory: AaveV3EthereumEModes.NONE,
+      priceFeed: rsETH_PRICE_FEED,
+      eModeCategory: AaveV3EthereumEModes.ETH_CORRELATED,
       enabledToBorrow: EngineFlags.ENABLED,
       stableRateModeEnabled: EngineFlags.DISABLED,
       borrowableInIsolation: EngineFlags.DISABLED,
       withSiloedBorrowing: EngineFlags.DISABLED,
       flashloanable: EngineFlags.ENABLED,
-      ltv: 72_50,
+      ltv: 72_00,
       liqThreshold: 75_00,
       liqBonus: 7_50,
       reserveFactor: 15_00,
-      supplyCap: 8_000,
-      borrowCap: 800,
+      supplyCap: 19_000,
+      borrowCap: 1_900,
       debtCeiling: 0,
       liqProtocolFee: 10_00,
       rateStrategyParams: IAaveV3ConfigEngine.InterestRateInputData({
-        optimalUsageRatio: _bpsToRay(45_00),
-        baseVariableBorrowRate: _bpsToRay(0),
-        variableRateSlope1: _bpsToRay(7_00),
-        variableRateSlope2: _bpsToRay(300_00)
+        optimalUsageRatio: 45_00,
+        baseVariableBorrowRate: 0,
+        variableRateSlope1: 7_00,
+        variableRateSlope2: 300_00
       })
     });
 
