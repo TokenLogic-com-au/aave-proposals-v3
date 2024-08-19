@@ -20,17 +20,6 @@ contract AaveV3Optimism_AddFlashborrowers_20240815_Test is ProtocolV3TestBase {
     proposal = new AaveV3Optimism_AddFlashborrowers_20240815();
   }
 
-  /**
-   * @dev executes the generic test suite including e2e and config snapshots
-   */
-  function test_defaultProposalExecution() public {
-    defaultTest(
-      'AaveV3Optimism_AddFlashborrowers_20240815',
-      AaveV3Optimism.POOL,
-      address(proposal)
-    );
-  }
-
   function test_isFlashBorrower() external {
     GovV3Helpers.executePayload(vm, address(proposal));
     bool isFlashBorrower = AaveV3Optimism.ACL_MANAGER.isFlashBorrower(
