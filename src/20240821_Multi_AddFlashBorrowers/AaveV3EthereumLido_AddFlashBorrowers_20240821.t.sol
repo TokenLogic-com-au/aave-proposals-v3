@@ -26,5 +26,20 @@ contract AaveV3EthereumLido_AddFlashBorrowers_20240821_Test is ProtocolV3TestBas
       proposal.CIAN_FLASH_LOAN_HELPER()
     );
     assertEq(isFlashBorrower, true);
+
+    isFlashBorrower = AaveV3EthereumLido.ACL_MANAGER.isFlashBorrower(
+      proposal.INDEX_COOP_FLASH_MINT_LEVERAGED()
+    );
+    assertEq(isFlashBorrower, true);
+
+    isFlashBorrower = AaveV3EthereumLido.ACL_MANAGER.isFlashBorrower(
+      proposal.CONTANGO_PERMISSIONED_AAVE_WRAPPER()
+    );
+    assertEq(isFlashBorrower, true);
+
+    isFlashBorrower = AaveV3EthereumLido.ACL_MANAGER.isFlashBorrower(
+      proposal.SEVEN_SEAS_ETHER_FI_LIQUID_ETH()
+    );
+    assertEq(isFlashBorrower, true);
   }
 }
