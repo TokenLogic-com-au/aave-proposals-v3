@@ -13,7 +13,7 @@ import {IEmissionManager} from 'aave-v3-origin/contracts/rewards/interfaces/IEmi
  */
 contract AaveV3Ethereum_IncentiveCampaign_20241028 is IProposalGenericExecutor {
   address public constant ALC_SAFE = 0xA1c93D2687f7014Aaf588c764E3Ce80aF016229b;
-  address public constant ALC_TREASURY = 0xac140648435d03f784879cd789130F22Ef588Fcd;
+  address public constant ACI_TREASURY = 0xac140648435d03f784879cd789130F22Ef588Fcd;
   uint256 public constant GHO_AMOUNT = 300_000 ether;
 
   function execute() external {
@@ -21,7 +21,7 @@ contract AaveV3Ethereum_IncentiveCampaign_20241028 is IProposalGenericExecutor {
 
     IEmissionManager(AaveV3Ethereum.EMISSION_MANAGER).setEmissionAdmin(
       AaveV3EthereumAssets.PYUSD_A_TOKEN,
-      ALC_TREASURY
+      ACI_TREASURY
     );
   }
 }

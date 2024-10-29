@@ -40,6 +40,6 @@ contract AaveV3Ethereum_IncentiveCampaign_20241028_Test is ProtocolV3TestBase {
     address pyusdEmissionAdmin = IEmissionManager(AaveV3Ethereum.EMISSION_MANAGER).getEmissionAdmin(
       AaveV3EthereumAssets.PYUSD_A_TOKEN
     );
-    assertEq(pyusdEmissionAdmin, proposal.ALC_TREASURY());
+    assertEq(pyusdEmissionAdmin, proposal.ACI_TREASURY());
   }
 }
