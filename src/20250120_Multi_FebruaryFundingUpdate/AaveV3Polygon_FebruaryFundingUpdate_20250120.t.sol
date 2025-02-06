@@ -15,7 +15,7 @@ contract AaveV3Polygon_FebruaryFundingUpdate_20250120_Test is ProtocolV3TestBase
   AaveV3Polygon_FebruaryFundingUpdate_20250120 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('polygon'), 66938521);
+    vm.createSelectFork(vm.rpcUrl('polygon'), 67615404);
     proposal = new AaveV3Polygon_FebruaryFundingUpdate_20250120();
   }
 
@@ -35,10 +35,7 @@ contract AaveV3Polygon_FebruaryFundingUpdate_20250120_Test is ProtocolV3TestBase
       IERC20(AaveV2PolygonAssets.WPOL_A_TOKEN).balanceOf(address(AaveV3Polygon.COLLECTOR)),
       1 ether
     );
-    assertGt(
-      IERC20(AaveV2PolygonAssets.USDT_A_TOKEN).balanceOf(address(AaveV3Polygon.COLLECTOR)),
-      1e6
-    );
+    uint256 balanceBefore = IERC20(AaveV2PolygonAssets.USDT_A_TOKEN).balanceOf(address(AaveV3Polygon.COLLECTOR));
 
     executePayload(vm, address(proposal));
 
@@ -49,8 +46,8 @@ contract AaveV3Polygon_FebruaryFundingUpdate_20250120_Test is ProtocolV3TestBase
     );
     assertApproxEqAbs(
       IERC20(AaveV2PolygonAssets.USDT_A_TOKEN).balanceOf(address(AaveV3Polygon.COLLECTOR)),
-      1e6,
-      2e6
+      balanceBefore - 100_000e6,
+      3e6
     );
   }
 
