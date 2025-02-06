@@ -16,6 +16,8 @@ import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGen
 contract AaveV3Polygon_FebruaryFundingUpdate_20250120 is IProposalGenericExecutor {
   using CollectorUtils for ICollector;
 
+  uint256 public constant USDT_TO_WITHDRAW = 100_000e6;
+
   function execute() external {
     _withdraw();
     _deposit();
@@ -37,9 +39,7 @@ contract AaveV3Polygon_FebruaryFundingUpdate_20250120 is IProposalGenericExecuto
       CollectorUtils.IOInput({
         pool: address(AaveV2Polygon.POOL),
         underlying: AaveV2PolygonAssets.USDT_UNDERLYING,
-        amount: IERC20(AaveV2PolygonAssets.USDT_A_TOKEN).balanceOf(
-          address(AaveV3Polygon.COLLECTOR)
-        ) - 1e6
+        amount: USDT_TO_WITHDRAW
       }),
       address(AaveV3Polygon.COLLECTOR)
     );
