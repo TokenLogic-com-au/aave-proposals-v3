@@ -167,7 +167,7 @@ export const config: ConfigFile = {
           },
         ],
       },
-      cache: {blockNumber: 22117340},
+      cache: {blockNumber: 22217303},
     },
     AaveV3Arbitrum: {
       configs: {

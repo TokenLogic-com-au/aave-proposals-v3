@@ -29,6 +29,27 @@ contract AaveV3Ethereum_LRTAndWstETHUnificationSummary_20250324 is AaveV3Payload
     AaveV3Ethereum.COLLECTOR.transfer(IERC20(aEthEzETH), AaveV3Ethereum.DUST_BIN, DUST_AMOUNT);
   }
 
+  function collateralsUpdates()
+    public
+    pure
+    override
+    returns (IAaveV3ConfigEngine.CollateralUpdate[] memory)
+  {
+    IAaveV3ConfigEngine.CollateralUpdate[]
+      memory collateralUpdate = new IAaveV3ConfigEngine.CollateralUpdate[](1);
+
+    collateralUpdate[0] = IAaveV3ConfigEngine.CollateralUpdate({
+      asset: AaveV3EthereumAssets.weETH_UNDERLYING,
+      ltv: 75_00,
+      liqThreshold: 77_00,
+      liqBonus: EngineFlags.KEEP_CURRENT,
+      debtCeiling: EngineFlags.KEEP_CURRENT,
+      liqProtocolFee: EngineFlags.KEEP_CURRENT
+    });
+
+    return collateralUpdate;
+  }
+
   function capsUpdates() public pure override returns (IAaveV3ConfigEngine.CapsUpdate[] memory) {
     IAaveV3ConfigEngine.CapsUpdate[] memory capsUpdate = new IAaveV3ConfigEngine.CapsUpdate[](1);
 

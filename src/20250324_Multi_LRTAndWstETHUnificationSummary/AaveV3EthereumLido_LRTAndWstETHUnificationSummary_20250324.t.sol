@@ -15,7 +15,7 @@ contract AaveV3EthereumLido_LRTAndWstETHUnificationSummary_20250324_Test is Prot
   AaveV3EthereumLido_LRTAndWstETHUnificationSummary_20250324 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('mainnet'), 22117340);
+    vm.createSelectFork(vm.rpcUrl('mainnet'), 22217303);
     proposal = new AaveV3EthereumLido_LRTAndWstETHUnificationSummary_20250324();
   }
 

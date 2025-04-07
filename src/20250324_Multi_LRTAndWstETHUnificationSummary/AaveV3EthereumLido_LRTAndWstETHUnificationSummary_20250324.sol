@@ -12,6 +12,27 @@ import {IAaveV3ConfigEngine} from 'aave-v3-origin/contracts/extensions/v3-config
  * - Discussion: https://governance.aave.com/t/arfc-core-instance-add-ezeth-and-update-rseth-emode-parameters/21505
  */
 contract AaveV3EthereumLido_LRTAndWstETHUnificationSummary_20250324 is AaveV3PayloadEthereumLido {
+  function collateralsUpdates()
+    public
+    pure
+    override
+    returns (IAaveV3ConfigEngine.CollateralUpdate[] memory)
+  {
+    IAaveV3ConfigEngine.CollateralUpdate[]
+      memory collateralUpdate = new IAaveV3ConfigEngine.CollateralUpdate[](1);
+
+    collateralUpdate[0] = IAaveV3ConfigEngine.CollateralUpdate({
+      asset: AaveV3EthereumLidoAssets.WETH_UNDERLYING,
+      ltv: 84_00,
+      liqThreshold: 85_00,
+      liqBonus: EngineFlags.KEEP_CURRENT,
+      debtCeiling: EngineFlags.KEEP_CURRENT,
+      liqProtocolFee: EngineFlags.KEEP_CURRENT
+    });
+
+    return collateralUpdate;
+  }
+
   function eModeCategoriesUpdates()
     public
     pure
@@ -19,48 +40,16 @@ contract AaveV3EthereumLido_LRTAndWstETHUnificationSummary_20250324 is AaveV3Pay
     returns (IAaveV3ConfigEngine.EModeCategoryUpdate[] memory)
   {
     IAaveV3ConfigEngine.EModeCategoryUpdate[]
-      memory eModeUpdates = new IAaveV3ConfigEngine.EModeCategoryUpdate[](2);
+      memory eModeUpdates = new IAaveV3ConfigEngine.EModeCategoryUpdate[](1);
 
     eModeUpdates[0] = IAaveV3ConfigEngine.EModeCategoryUpdate({
-      eModeCategory: 6,
-      ltv: 94_50,
-      liqThreshold: 96_00,
+      eModeCategory: AaveV3EthereumLidoEModes.ETH_CORRELATED,
+      ltv: 95_00,
+      liqThreshold: 96_50,
       liqBonus: 1_00,
       label: 'wstETH_WETH'
     });
-    eModeUpdates[1] = IAaveV3ConfigEngine.EModeCategoryUpdate({
-      eModeCategory: AaveV3EthereumLidoEModes.RSETH_LST_MAIN,
-      ltv: 93_00,
-      liqThreshold: 95_00,
-      liqBonus: EngineFlags.KEEP_CURRENT,
-      label: 'rsETH_wstETH'
-    });
 
     return eModeUpdates;
-  }
-  function assetsEModeUpdates()
-    public
-    pure
-    override
-    returns (IAaveV3ConfigEngine.AssetEModeUpdate[] memory)
-  {
-    IAaveV3ConfigEngine.AssetEModeUpdate[]
-      memory assetEModeUpdates = new IAaveV3ConfigEngine.AssetEModeUpdate[](2);
-
-    // wstETH_WETH
-    assetEModeUpdates[0] = IAaveV3ConfigEngine.AssetEModeUpdate({
-      asset: AaveV3EthereumLidoAssets.wstETH_UNDERLYING,
-      eModeCategory: 6,
-      borrowable: EngineFlags.DISABLED,
-      collateral: EngineFlags.ENABLED
-    });
-    assetEModeUpdates[1] = IAaveV3ConfigEngine.AssetEModeUpdate({
-      asset: AaveV3EthereumLidoAssets.WETH_UNDERLYING,
-      eModeCategory: 6,
-      borrowable: EngineFlags.ENABLED,
-      collateral: EngineFlags.DISABLED
-    });
-
-    return assetEModeUpdates;
   }
 }
