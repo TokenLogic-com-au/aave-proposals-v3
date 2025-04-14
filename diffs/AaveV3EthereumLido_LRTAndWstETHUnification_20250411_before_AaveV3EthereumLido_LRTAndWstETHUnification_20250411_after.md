@@ -48,6 +48,18 @@
 
 
 
+### EMode: rsETH/Stablecoins(id: 6)
+
+| description | value before | value after |
+| --- | --- | --- |
+| eMode.label | - | rsETH/Stablecoins |
+| eMode.ltv | - | 72 % |
+| eMode.liquidationThreshold | - | 75 % |
+| eMode.liquidationBonus | - | 7.5 % |
+| eMode.borrowableBitmap | - | USDS, USDC, GHO |
+| eMode.collateralBitmap | - | rsETH |
+
+
 ## Raw diff
 
 ```json
@@ -65,6 +77,18 @@
       "ltv": {
         "from": 9350,
         "to": 9500
+      }
+    },
+    "6": {
+      "from": null,
+      "to": {
+        "borrowableBitmap": "76",
+        "collateralBitmap": "128",
+        "eModeCategory": 6,
+        "label": "rsETH/Stablecoins",
+        "liquidationBonus": 10750,
+        "liquidationThreshold": 7500,
+        "ltv": 7200
       }
     }
   },
@@ -95,6 +119,18 @@
       "label": "AaveV3EthereumLido.POOL",
       "balanceDiff": null,
       "stateDiff": {
+        "0x01290583d43e205f46f8d824d1236df318521e471f570a5b36fa1844856e40d6": {
+          "previousValue": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "newValue": "0x000000000000000000000000000000000000000000000000008029fe1d4c1c20"
+        },
+        "0x01290583d43e205f46f8d824d1236df318521e471f570a5b36fa1844856e40d7": {
+          "previousValue": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "newValue": "0x72734554482f537461626c65636f696e73000000000000000000000000000022"
+        },
+        "0x01290583d43e205f46f8d824d1236df318521e471f570a5b36fa1844856e40d8": {
+          "previousValue": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "newValue": "0x000000000000000000000000000000000000000000000000000000000000004c"
+        },
         "0x8e0cc0f1f0504b4cb44a23b328568106915b169e79003737a7b094503cdbeeb0": {
           "previousValue": "0x00000000000000000000000000000000000000000000000000012774254e2486",
           "newValue": "0x0000000000000000000000000000000000000000000000000001277425b2251c"

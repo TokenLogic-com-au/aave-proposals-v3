@@ -47,7 +47,7 @@ contract AaveV3EthereumLido_LRTAndWstETHUnification_20250411 is AaveV3PayloadEth
     returns (IAaveV3ConfigEngine.EModeCategoryUpdate[] memory)
   {
     IAaveV3ConfigEngine.EModeCategoryUpdate[]
-      memory eModeUpdates = new IAaveV3ConfigEngine.EModeCategoryUpdate[](1);
+      memory eModeUpdates = new IAaveV3ConfigEngine.EModeCategoryUpdate[](2);
 
     eModeUpdates[0] = IAaveV3ConfigEngine.EModeCategoryUpdate({
       eModeCategory: AaveV3EthereumLidoEModes.ETH_CORRELATED,
@@ -56,7 +56,50 @@ contract AaveV3EthereumLido_LRTAndWstETHUnification_20250411 is AaveV3PayloadEth
       liqBonus: 1_00,
       label: 'wstETH/WETH'
     });
+    eModeUpdates[1] = IAaveV3ConfigEngine.EModeCategoryUpdate({
+      eModeCategory: 6,
+      ltv: 72_00,
+      liqThreshold: 75_00,
+      liqBonus: 7_50,
+      label: 'rsETH/Stablecoins'
+    });
 
     return eModeUpdates;
+  }
+  function assetsEModeUpdates()
+    public
+    pure
+    override
+    returns (IAaveV3ConfigEngine.AssetEModeUpdate[] memory)
+  {
+    IAaveV3ConfigEngine.AssetEModeUpdate[]
+      memory assetEModeUpdates = new IAaveV3ConfigEngine.AssetEModeUpdate[](4);
+
+    assetEModeUpdates[0] = IAaveV3ConfigEngine.AssetEModeUpdate({
+      asset: AaveV3EthereumLidoAssets.USDC_UNDERLYING,
+      eModeCategory: 6,
+      borrowable: EngineFlags.ENABLED,
+      collateral: EngineFlags.DISABLED
+    });
+    assetEModeUpdates[1] = IAaveV3ConfigEngine.AssetEModeUpdate({
+      asset: AaveV3EthereumLidoAssets.USDS_UNDERLYING,
+      eModeCategory: 6,
+      borrowable: EngineFlags.ENABLED,
+      collateral: EngineFlags.DISABLED
+    });
+    assetEModeUpdates[2] = IAaveV3ConfigEngine.AssetEModeUpdate({
+      asset: AaveV3EthereumLidoAssets.GHO_UNDERLYING,
+      eModeCategory: 6,
+      borrowable: EngineFlags.ENABLED,
+      collateral: EngineFlags.DISABLED
+    });
+    assetEModeUpdates[3] = IAaveV3ConfigEngine.AssetEModeUpdate({
+      asset: AaveV3EthereumLidoAssets.rsETH_UNDERLYING,
+      eModeCategory: 6,
+      borrowable: EngineFlags.DISABLED,
+      collateral: EngineFlags.ENABLED
+    });
+
+    return assetEModeUpdates;
   }
 }

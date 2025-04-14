@@ -40,7 +40,19 @@
 | eMode.collateralBitmap (unchanged) | wrsETH | wrsETH |
 
 
-### EMode: weETH/WETH(id: 6)
+### EMode: rsETH/USDC(id: 6)
+
+| description | value before | value after |
+| --- | --- | --- |
+| eMode.label | - | rsETH/USDC |
+| eMode.ltv | - | 72 % |
+| eMode.liquidationThreshold | - | 75 % |
+| eMode.liquidationBonus | - | 7.5 % |
+| eMode.borrowableBitmap | - | USDC |
+| eMode.collateralBitmap | - | wrsETH |
+
+
+### EMode: weETH/WETH(id: 7)
 
 | description | value before | value after |
 | --- | --- | --- |
@@ -52,7 +64,7 @@
 | eMode.collateralBitmap | - | weETH |
 
 
-### EMode: wstETH/WETH(id: 7)
+### EMode: wstETH/WETH(id: 8)
 
 | description | value before | value after |
 | --- | --- | --- |
@@ -64,7 +76,7 @@
 | eMode.collateralBitmap | - | wstETH |
 
 
-### EMode: cbETH/WETH(id: 8)
+### EMode: cbETH/WETH(id: 9)
 
 | description | value before | value after |
 | --- | --- | --- |
@@ -94,22 +106,22 @@
     "6": {
       "from": null,
       "to": {
-        "borrowableBitmap": "1",
-        "collateralBitmap": "32",
+        "borrowableBitmap": "16",
+        "collateralBitmap": "512",
         "eModeCategory": 6,
-        "label": "weETH/WETH",
-        "liquidationBonus": 10100,
-        "liquidationThreshold": 9500,
-        "ltv": 9300
+        "label": "rsETH/USDC",
+        "liquidationBonus": 10750,
+        "liquidationThreshold": 7500,
+        "ltv": 7200
       }
     },
     "7": {
       "from": null,
       "to": {
         "borrowableBitmap": "1",
-        "collateralBitmap": "8",
+        "collateralBitmap": "32",
         "eModeCategory": 7,
-        "label": "wstETH/WETH",
+        "label": "weETH/WETH",
         "liquidationBonus": 10100,
         "liquidationThreshold": 9500,
         "ltv": 9300
@@ -119,8 +131,20 @@
       "from": null,
       "to": {
         "borrowableBitmap": "1",
-        "collateralBitmap": "2",
+        "collateralBitmap": "8",
         "eModeCategory": 8,
+        "label": "wstETH/WETH",
+        "liquidationBonus": 10100,
+        "liquidationThreshold": 9500,
+        "ltv": 9300
+      }
+    },
+    "9": {
+      "from": null,
+      "to": {
+        "borrowableBitmap": "1",
+        "collateralBitmap": "2",
+        "eModeCategory": 9,
         "label": "cbETH/WETH",
         "liquidationBonus": 10200,
         "liquidationThreshold": 9500,
@@ -161,15 +185,15 @@
       "stateDiff": {
         "0x01290583d43e205f46f8d824d1236df318521e471f570a5b36fa1844856e40d6": {
           "previousValue": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "newValue": "0x00000000000000000000000000000000000000000000000000202774251c2454"
+          "newValue": "0x000000000000000000000000000000000000000000000000020029fe1d4c1c20"
         },
         "0x01290583d43e205f46f8d824d1236df318521e471f570a5b36fa1844856e40d7": {
           "previousValue": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "newValue": "0x77654554482f5745544800000000000000000000000000000000000000000014"
+          "newValue": "0x72734554482f5553444300000000000000000000000000000000000000000014"
         },
         "0x01290583d43e205f46f8d824d1236df318521e471f570a5b36fa1844856e40d8": {
           "previousValue": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "newValue": "0x0000000000000000000000000000000000000000000000000000000000000001"
+          "newValue": "0x0000000000000000000000000000000000000000000000000000000000000010"
         },
         "0x06511f122a6ecc4dc280e9f39df5119c2e43c998c438a2cdea36d46bbc885187": {
           "previousValue": "0x100000000000000000000103e80000186a00000000011194851229fe1d4c1c52",
@@ -177,11 +201,11 @@
         },
         "0x1e4061ed12ce1f4439fe6c7922bd1dce45af754358ce2f94214f93749947e40a": {
           "previousValue": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "newValue": "0x00000000000000000000000000000000000000000000000000082774251c2454"
+          "newValue": "0x00000000000000000000000000000000000000000000000000202774251c2454"
         },
         "0x1e4061ed12ce1f4439fe6c7922bd1dce45af754358ce2f94214f93749947e40b": {
           "previousValue": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "newValue": "0x7773744554482f57455448000000000000000000000000000000000000000016"
+          "newValue": "0x77654554482f5745544800000000000000000000000000000000000000000014"
         },
         "0x1e4061ed12ce1f4439fe6c7922bd1dce45af754358ce2f94214f93749947e40c": {
           "previousValue": "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -197,13 +221,25 @@
         },
         "0xe1eef7f3dc95a7682cb02e33f0d6a7c6e59cd5f4d1f5d7b4e6308bb610481917": {
           "previousValue": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "newValue": "0x000000000000000000000000000000000000000000000000000227d8251c2454"
+          "newValue": "0x00000000000000000000000000000000000000000000000000082774251c2454"
         },
         "0xe1eef7f3dc95a7682cb02e33f0d6a7c6e59cd5f4d1f5d7b4e6308bb610481918": {
           "previousValue": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "newValue": "0x63624554482f5745544800000000000000000000000000000000000000000014"
+          "newValue": "0x7773744554482f57455448000000000000000000000000000000000000000016"
         },
         "0xe1eef7f3dc95a7682cb02e33f0d6a7c6e59cd5f4d1f5d7b4e6308bb610481919": {
+          "previousValue": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "newValue": "0x0000000000000000000000000000000000000000000000000000000000000001"
+        },
+        "0xe6576186fab02514991562c0b55059c5b708dacefbb0b209be6f33d8dcdcb49b": {
+          "previousValue": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "newValue": "0x000000000000000000000000000000000000000000000000000227d8251c2454"
+        },
+        "0xe6576186fab02514991562c0b55059c5b708dacefbb0b209be6f33d8dcdcb49c": {
+          "previousValue": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "newValue": "0x63624554482f5745544800000000000000000000000000000000000000000014"
+        },
+        "0xe6576186fab02514991562c0b55059c5b708dacefbb0b209be6f33d8dcdcb49d": {
           "previousValue": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "newValue": "0x0000000000000000000000000000000000000000000000000000000000000001"
         }

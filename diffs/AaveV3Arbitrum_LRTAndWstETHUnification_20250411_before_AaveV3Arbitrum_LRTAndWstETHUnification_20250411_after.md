@@ -40,6 +40,18 @@
 | eMode.collateralBitmap (unchanged) | rsETH | rsETH |
 
 
+### EMode: rsETH/Stablecoins(id: 6)
+
+| description | value before | value after |
+| --- | --- | --- |
+| eMode.label | - | rsETH/Stablecoins |
+| eMode.ltv | - | 72 % |
+| eMode.liquidationThreshold | - | 75 % |
+| eMode.liquidationBonus | - | 7.5 % |
+| eMode.borrowableBitmap | - | USDC, USD₮0 |
+| eMode.collateralBitmap | - | rsETH |
+
+
 ## Raw diff
 
 ```json
@@ -53,6 +65,18 @@
       "ltv": {
         "from": 9250,
         "to": 9300
+      }
+    },
+    "6": {
+      "from": null,
+      "to": {
+        "borrowableBitmap": "36",
+        "collateralBitmap": "262144",
+        "eModeCategory": 6,
+        "label": "rsETH/Stablecoins",
+        "liquidationBonus": 10750,
+        "liquidationThreshold": 7500,
+        "ltv": 7200
       }
     }
   },
@@ -73,6 +97,18 @@
       "label": "AaveV3Arbitrum.POOL",
       "balanceDiff": null,
       "stateDiff": {
+        "0x01290583d43e205f46f8d824d1236df318521e471f570a5b36fa1844856e40d6": {
+          "previousValue": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "newValue": "0x000000000000000000000000000000000000000000000004000029fe1d4c1c20"
+        },
+        "0x01290583d43e205f46f8d824d1236df318521e471f570a5b36fa1844856e40d7": {
+          "previousValue": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "newValue": "0x72734554482f537461626c65636f696e73000000000000000000000000000022"
+        },
+        "0x01290583d43e205f46f8d824d1236df318521e471f570a5b36fa1844856e40d8": {
+          "previousValue": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "newValue": "0x0000000000000000000000000000000000000000000000000000000000000024"
+        },
         "0x4f0da5bca7ea3ed2a5fd7fbf6d310bc05d68502cf438424218eeef530670c853": {
           "previousValue": "0x100000000000000000000203e800001adb00000000011194851229fe1d4c1c52",
           "newValue": "0x100000000000000000000203e800001adb00000000011194851229fe1e141d4c"
