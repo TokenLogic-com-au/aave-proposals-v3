@@ -209,44 +209,49 @@ The following adjustments are to be implemented on all instances within the same
 The Prime instance has the highest LTV/LT for ETH correlated assets.
 
 Pause the current wstETH/wETH Legacy eMode Update
-|Parameter|Value|
-|:-:|:-:|
-|Asset|wstETH, WETH|
-|Max LTV|93.5|
-|Liquidation Threshold|95.5|
-|Liquidation Penalty|1.00%|
+
+|       Parameter       |    Value     |
+| :-------------------: | :----------: |
+|         Asset         | wstETH, WETH |
+|        Max LTV        |     93.5     |
+| Liquidation Threshold |     95.5     |
+|  Liquidation Penalty  |    1.00%     |
 
 Update WETH LTV and LT Parameters
-|Parameter|Current|Proposed|
-|:-:|:-:|:-:|
-|LTV|82.00%|84.00%|
-|LT|83.00%|85.00%|
+
+| Parameter | Current | Proposed |
+| :-------: | :-----: | :------: |
+|    LTV    | 82.00%  |  84.00%  |
+|    LT     | 83.00%  |  85.00%  |
 
 Update wstETH LTV and LT Parameters
-|Parameter|Current|Proposed|
-|:-:|:-:|:-:|
-|LTV|80.00%|82.00%|
-|LT|81.00%|83.00%|
+
+| Parameter | Current | Proposed |
+| :-------: | :-----: | :------: |
+|    LTV    | 80.00%  |  82.00%  |
+|    LT     | 81.00%  |  83.00%  |
 
 Create new v3.2 liquid eMode
-|Parameter|Value|Value|
-|:-:|:-:|:-:|
-|Asset|wstETH|WETH|
-|Collateral|Yes|No|
-|Borrowable|No|Yes|
-|Max LTV|95.00%|-|
-|Liquidation Threshold|96.50%|-|
-|Liquidation Penalty|1.00%|-|
+
+|       Parameter       | Value  | Value |
+| :-------------------: | :----: | :---: |
+|         Asset         | wstETH | WETH  |
+|      Collateral       |  Yes   |  No   |
+|      Borrowable       |   No   |  Yes  |
+|        Max LTV        | 95.00% |   -   |
+| Liquidation Threshold | 96.50% |   -   |
+|  Liquidation Penalty  | 1.00%  |   -   |
 
 Create new v3.2 liquid eMode
-|Parameter|Value|Value|Value|Value|
-|:-:|:-:|:-:|:-:|:-:|
-|Asset|rsETH|USDS|USDC|GHO|
-|Collateral|Yes|No|No|No|
-|Borrowable|No|Yes|Yes|Yes|
-|Max LTV|72.00%|-|-|-|
-|Liquidation Threshold|75.00%|-|-|-|
-|Liquidation Penalty|7.50%|-|-|-|
+
+|       Parameter       | Value  | Value | Value | Value |
+| :-------------------: | :----: | :---: | :---: | :---: |
+|         Asset         | rsETH  | USDS  | USDC  |  GHO  |
+|      Collateral       |  Yes   |  No   |  No   |  No   |
+|      Borrowable       |   No   |  Yes  |  Yes  |  Yes  |
+|        Max LTV        | 72.00% |   -   |   -   |   -   |
+| Liquidation Threshold | 75.00% |   -   |   -   |   -   |
+|  Liquidation Penalty  | 7.50%  |   -   |   -   |   -   |
 
 ### Core - Ethereum
 
