@@ -10,14 +10,14 @@ This publication presents a comprehensive overview of proposed LRT and LST risk 
 
 ## Motivation
 
-This publication incorporates the feedback and recent discussion into a single holistic publication. For ease of reference, those publications are referenced below:
+This publication incorporates the feedback and recent discussions into a single holistic publication. For ease of reference, those publications are referenced below:
 
 - [[ARFC] wstETH and weETH E-Modes and LT/LTV Adjustments on Ethereum, Arbitrum, Base - 03.12.25](https://governance.aave.com/t/arfc-wsteth-and-weeth-e-modes-and-lt-ltv-adjustments-on-ethereum-arbitrum-base-03-12-25/21370)
 - [[ARFC] rsETH LTV & LT Update](https://governance.aave.com/t/arfc-rseth-ltv-lt-update/21305)
 - [[ARFC] Core Instance - Add ezETH and update rsETH eMode Parameters](https://governance.aave.com/t/arfc-core-instance-add-ezeth-and-update-rseth-emode-parameters/21505)
 - [[Risk Stewards]wstETH/wETH eMode Update - Ethereum, Arbitrum & Base Instances](https://governance.aave.com/t/risk-stewards-wsteth-weth-emode-update-ethereum-arbitrum-base-instances/21333)
 
-Each of the following sub-section presents insights into how each parameter is to be adjusted.
+Each of the following sub-sections presents insights into how each parameter is to be adjusted.
 
 ### Prime Instance - wstETH and WETH eMode
 
@@ -125,11 +125,11 @@ Enable rsETH to access stablecoin liquidity on Prime, Arbitrum and Base instance
 (Base)
 
 |       Parameter       | Value  | Value |
-| :-------------------: | :----: | :---: | --- |
+| :-------------------: | :----: | :---: |
 |         Asset         | rsETH  | USDC  |
 |      Collateral       |  Yes   |  No   |
 |      Borrowable       |   No   |  Yes  |
-|        Max LTV        | 72.00% |       | -   |
+|        Max LTV        | 72.00% |   -   |
 | Liquidation Threshold | 75.00% |   -   |
 |  Liquidation Penalty  | 7.50%  |   -   |
 
