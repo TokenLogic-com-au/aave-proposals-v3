@@ -182,7 +182,7 @@ export const config: ConfigFile = {
             label: '',
           },
           {eModeCategory: 6, ltv: '72', liqThreshold: '75', liqBonus: '7.5', label: 'rsETH/USDC'},
-          {eModeCategory: 7, ltv: '93', liqThreshold: '95', liqBonus: '1', label: 'weETH/WETH'},
+          {eModeCategory: 7, ltv: '93', liqThreshold: '95', liqBonus: '1.25', label: 'weETH/WETH'},
           {eModeCategory: 8, ltv: '93', liqThreshold: '95', liqBonus: '1', label: 'wstETH/WETH'},
           {eModeCategory: 9, ltv: '93', liqThreshold: '95', liqBonus: '1', label: 'cbETH/WETH'},
         ],

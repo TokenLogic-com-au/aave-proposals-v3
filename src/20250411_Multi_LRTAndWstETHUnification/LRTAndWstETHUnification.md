@@ -172,7 +172,7 @@ To align the asset parameter configuration on Base instance with other instances
 |      Borrowable       |   No   |  Yes  |
 |        Max LTV        | 93.00% |   -   |
 | Liquidation Threshold | 95.00% |   -   |
-|  Liquidation Penalty  | 1.00%  |   -   |
+|  Liquidation Penalty  | 1.25%  |   -   |
 
 #### wstETH/WETH eMode Update
 
@@ -341,7 +341,7 @@ Create weETH/wETH liquid eMode.
 |      Borrowable       |   No   |  Yes  |
 |        Max LTV        | 93.00% |   -   |
 | Liquidation Threshold | 95.00% |   -   |
-|  Liquidation Penalty  | 1.00%  |   -   |
+|  Liquidation Penalty  | 1.25%  |   -   |
 
 Create wstETH/WETH eMode Update
 

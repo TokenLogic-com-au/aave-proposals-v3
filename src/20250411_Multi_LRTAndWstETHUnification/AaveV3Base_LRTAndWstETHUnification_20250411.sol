@@ -59,7 +59,7 @@ contract AaveV3Base_LRTAndWstETHUnification_20250411 is AaveV3PayloadBase {
       eModeCategory: 7,
       ltv: 93_00,
       liqThreshold: 95_00,
-      liqBonus: 1_00,
+      liqBonus: 1_25,
       label: 'weETH/WETH'
     });
     eModeUpdates[3] = IAaveV3ConfigEngine.EModeCategoryUpdate({
