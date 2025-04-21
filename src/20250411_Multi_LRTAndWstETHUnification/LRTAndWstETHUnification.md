@@ -299,17 +299,6 @@ weETH LTV/LT Update.
 
 ### Base
 
-ezETH/wstETH liquid eMode, no change.
-
-|       Parameter       | Value  | Value  |
-| :-------------------: | :----: | :----: |
-|         Asset         | ezETH  | wstETH |
-|      Collateral       |  Yes   |   No   |
-|      Borrowable       |   No   |  Yes   |
-|        Max LTV        | 93.00% |   -    |
-| Liquidation Threshold | 95.00% |   -    |
-|  Liquidation Penalty  | 1.00%  |   -    |
-
 rsETH/wstETH liquid eMode, no change.
 
 |       Parameter       |      Value      | Value  |
