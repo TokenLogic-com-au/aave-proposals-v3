@@ -6,6 +6,7 @@ import {IUpgradeableBurnMintTokenPool_1_5_1} from 'src/interfaces/ccip/tokenPool
 import {IRateLimiter} from 'src/interfaces/ccip/IRateLimiter.sol';
 import {GhoBase} from 'aave-address-book/GhoBase.sol';
 
+import {CCIPUtils} from './CCIPUtils.sol';
 import {CCIPLaunchConstants} from './CCIPLaunchConstants.sol';
 
 /**
@@ -39,7 +40,7 @@ contract AaveV3Base_DeployGHOOnSonic_20250519 is IProposalGenericExecutor {
     remotePoolAddresses[0] = abi.encode(REMOTE_TOKEN_POOL_SONIC);
 
     chainsToAdd[0] = IUpgradeableBurnMintTokenPool_1_5_1.ChainUpdate({
-      remoteChainSelector: CCIPLaunchConstants.SONIC_CHAIN_SELECTOR,
+      remoteChainSelector: CCIPUtils.SONIC_CHAIN_SELECTOR,
       remotePoolAddresses: remotePoolAddresses,
       remoteTokenAddress: abi.encode(REMOTE_GHO_TOKEN_SONIC),
       outboundRateLimiterConfig: rateLimiterConfig,
