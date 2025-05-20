@@ -13,7 +13,6 @@ library CCIPLaunchConstants {
   uint128 internal constant CCIP_RATE_LIMIT_CAPACITY = 1_000_000e18;
   uint128 internal constant CCIP_RATE_LIMIT_REFILL_RATE = 200e18;
   uint128 internal constant CCIP_BUCKET_CAPACITY = 15_000_000e18;
-  uint64 internal constant SONIC_CHAIN_SELECTOR = 1673871237479749969;
 
   // Arbitrum Addresses
   address internal constant ARB_TOKEN_ADMIN_REGISTRY = 0x39AE1032cF4B334a1Ed41cdD0833bdD7c7E7751E;
@@ -72,9 +71,26 @@ library CCIPLaunchConstants {
   address internal constant SONIC_ARB_ON_RAMP = 0x140E6D5ba903F684944Dd27369d767DdEf958c9B;
   address internal constant SONIC_ETH_ON_RAMP = 0x014ABcfDbCe9F67d0Df34574664a6C0A241Ec03A;
   address internal constant SONIC_BASE_ON_RAMP = 0xAAb6D9fc00aAc37373206e91789CcDE1E851b3E4;
+  address internal constant SONIC_GNO_ON_RAMP = address(0);
 
   // SONIC OFF_RAMPs
   address internal constant SONIC_ARB_OFF_RAMP = 0x2C1539696E29012806a15Bcd9845Ed1278a9fd63;
   address internal constant SONIC_BASE_OFF_RAMP = 0xbeEDd1C5C13C5886c3d600e94Ff9e82C04A53C38;
   address internal constant SONIC_ETH_OFF_RAMP = 0x658d9ae41A9c291De423d3B4B6C064f6dD0e7Ed2;
+  address internal constant SONIC_GNO_OFF_RAMP = address(0);
+
+  // Gnosis
+
+  address internal constant GNO_TOKEN_POOL = 0xDe6539018B095353A40753Dc54C91C68c9487D4E;
+  address internal constant GNO_GHO_TOKEN = 0xfc421aD3C883Bf9E7C4f42dE845C4e4405799e73;
+
+  // Gnosis ON_RAMPs
+  address internal constant GNO_ARB_ON_RAMP = 0x140E6D5ba903F684944Dd27369d767DdEf958c9B;
+  address internal constant GNO_ETH_ON_RAMP = 0x014ABcfDbCe9F67d0Df34574664a6C0A241Ec03A;
+  address internal constant GNO_BASE_ON_RAMP = 0xAAb6D9fc00aAc37373206e91789CcDE1E851b3E4;
+
+  // Gnosis OFF_RAMPs
+  address internal constant GNO_ARB_OFF_RAMP = 0x2C1539696E29012806a15Bcd9845Ed1278a9fd63;
+  address internal constant GNO_BASE_OFF_RAMP = 0xbeEDd1C5C13C5886c3d600e94Ff9e82C04A53C38;
+  address internal constant GNO_ETH_OFF_RAMP = 0x658d9ae41A9c291De423d3B4B6C064f6dD0e7Ed2;
 }

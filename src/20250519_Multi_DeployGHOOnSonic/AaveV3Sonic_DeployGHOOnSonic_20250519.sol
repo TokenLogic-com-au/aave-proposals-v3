@@ -29,6 +29,10 @@ contract AaveV3Sonic_DeployGHOOnSonic_20250519 is IProposalGenericExecutor {
   uint64 public constant BASE_CHAIN_SELECTOR = CCIPUtils.BASE_CHAIN_SELECTOR;
   uint64 public constant ARB_CHAIN_SELECTOR = CCIPUtils.ARB_CHAIN_SELECTOR;
   uint64 public constant ETH_CHAIN_SELECTOR = CCIPUtils.ETH_CHAIN_SELECTOR;
+  uint64 public constant GNOSIS_CHAIN_SELECTOR = CCIPUtils.GNOSIS_CHAIN_SELECTOR;
+
+  // https://gnosisscan.io/address/0xDe6539018B095353A40753Dc54C91C68c9487D4E
+  address internal constant REMOTE_TOKEN_POOL_GNO = 0xDe6539018B095353A40753Dc54C91C68c9487D4E;
 
   uint128 public constant CCIP_BUCKET_CAPACITY = CCIPLaunchConstants.CCIP_BUCKET_CAPACITY;
 
@@ -110,7 +114,7 @@ contract AaveV3Sonic_DeployGHOOnSonic_20250519 is IProposalGenericExecutor {
     });
 
     IUpgradeableBurnMintTokenPool_1_5_1.ChainUpdate[]
-      memory chainsToAdd = new IUpgradeableBurnMintTokenPool_1_5_1.ChainUpdate[](3);
+      memory chainsToAdd = new IUpgradeableBurnMintTokenPool_1_5_1.ChainUpdate[](4);
 
     {
       bytes[] memory remotePoolAddresses = new bytes[](1);
@@ -143,6 +147,18 @@ contract AaveV3Sonic_DeployGHOOnSonic_20250519 is IProposalGenericExecutor {
         remoteChainSelector: BASE_CHAIN_SELECTOR,
         remotePoolAddresses: remotePoolAddresses,
         remoteTokenAddress: abi.encode(AaveV3BaseAssets.GHO_UNDERLYING),
+        outboundRateLimiterConfig: rateLimiterConfig,
+        inboundRateLimiterConfig: rateLimiterConfig
+      });
+    }
+
+    {
+      bytes[] memory remotePoolAddresses = new bytes[](1);
+      remotePoolAddresses[0] = abi.encode(REMOTE_TOKEN_POOL_GNO);
+      chainsToAdd[2] = IUpgradeableBurnMintTokenPool_1_5_1.ChainUpdate({
+        remoteChainSelector: GNOSIS_CHAIN_SELECTOR,
+        remotePoolAddresses: remotePoolAddresses,
+        remoteTokenAddress: abi.encode(CCIPLaunchConstants.GNO_GHO_TOKEN),
         outboundRateLimiterConfig: rateLimiterConfig,
         inboundRateLimiterConfig: rateLimiterConfig
       });

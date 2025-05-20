@@ -42,7 +42,8 @@ contract AaveV3Arbitrum_DeployGHOOnSonic_20250519_Test is ProtocolV3TestBase {
   uint64 internal constant ARB_CHAIN_SELECTOR = CCIPUtils.ARB_CHAIN_SELECTOR;
   uint64 internal constant BASE_CHAIN_SELECTOR = CCIPUtils.BASE_CHAIN_SELECTOR;
   uint64 internal constant ETH_CHAIN_SELECTOR = CCIPUtils.ETH_CHAIN_SELECTOR;
-  uint64 internal constant SONIC_CHAIN_SELECTOR = CCIPLaunchConstants.SONIC_CHAIN_SELECTOR;
+  uint64 internal constant SONIC_CHAIN_SELECTOR = CCIPUtils.SONIC_CHAIN_SELECTOR;
+  uint64 internal constant GNO_CHAIN_SELECTOR = CCIPUtils.GNO_CHAIN_SELECTOR;
 
   uint128 public constant CCIP_RATE_LIMIT_CAPACITY = CCIPLaunchConstants.CCIP_RATE_LIMIT_CAPACITY;
   uint128 public constant CCIP_RATE_LIMIT_REFILL_RATE =
@@ -62,7 +63,7 @@ contract AaveV3Arbitrum_DeployGHOOnSonic_20250519_Test is ProtocolV3TestBase {
 
   address internal constant RISK_COUNCIL = CCIPLaunchConstants.RISK_COUNCIL;
   address public constant NEW_REMOTE_TOKEN_SONIC = CCIPLaunchConstants.SONIC_GHO_TOKEN;
-  IRouter internal constant ROUTER = IRouter(CCIPLaunchConstants.ARB_CCIP_ROUTER);
+  IRouter internal constant ROUTER = IRouter(CCIPLaunchConstants.SONIC_CCIP_ROUTER);
 
   IGhoCcipSteward internal constant NEW_GHO_CCIP_STEWARD =
     IGhoCcipSteward(GhoArbitrum.GHO_CCIP_STEWARD);
@@ -71,13 +72,49 @@ contract AaveV3Arbitrum_DeployGHOOnSonic_20250519_Test is ProtocolV3TestBase {
 
   address internal constant NEW_REMOTE_POOL_ETH = GhoEthereum.GHO_CCIP_TOKEN_POOL;
   address internal constant NEW_REMOTE_POOL_BASE = GhoBase.GHO_CCIP_TOKEN_POOL;
-  address internal constant NEW_REMOTE_POOL_sonic = CCIPLaunchConstants.SONIC_TOKEN_POOL;
+  address internal constant NEW_REMOTE_POOL_GNOSIS = CCIPLaunchConstants.GNO_TOKEN_POOL;
+  address internal constant NEW_REMOTE_POOL_SONIC = CCIPLaunchConstants.SONIC_TOKEN_POOL;
 
   AaveV3Arbitrum_DeployGHOOnSonic_20250519 internal proposal;
+
+  address internal alice = makeAddr('alice');
+  address internal bob = makeAddr('bob');
+  address internal carol = makeAddr('carol');
+
+  event Burned(address indexed sender, uint256 amount);
+  event Minted(address indexed sender, address indexed recipient, uint256 amount);
+  event CCIPSendRequested(IInternal.EVM2EVMMessage message);
+
+  error CallerIsNotARampOnRouter(address);
+  error InvalidSourcePoolAddress(bytes);
 
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('arbitrum'), 338322405);
     proposal = new AaveV3Arbitrum_DeployGHOOnSonic_20250519();
+    _validateConstants();
+  }
+
+  function _validateConstants() private view {
+    assertEq(proposal.GNOSIS_CHAIN_SELECTOR(), GNO_CHAIN_SELECTOR);
+    assertEq(address(proposal.TOKEN_POOL()), address(NEW_TOKEN_POOL));
+    assertEq(proposal.REMOTE_TOKEN_POOL_GNOSIS(), NEW_REMOTE_POOL_GNOSIS);
+    assertEq(proposal.REMOTE_GHO_TOKEN_GNOSIS(), NEW_REMOTE_TOKEN_GNO);
+    assertEq(proposal.CCIP_RATE_LIMIT_CAPACITY(), CCIP_RATE_LIMIT_CAPACITY);
+    assertEq(proposal.CCIP_RATE_LIMIT_REFILL_RATE(), CCIP_RATE_LIMIT_REFILL_RATE);
+
+    assertEq(TOKEN_ADMIN_REGISTRY.typeAndVersion(), 'TokenAdminRegistry 1.5.0');
+    assertEq(NEW_TOKEN_POOL.typeAndVersion(), 'BurnMintTokenPool 1.5.1');
+    assertEq(ROUTER.typeAndVersion(), 'Router 1.2.0');
+
+    _assertOnRamp(ETH_ON_RAMP, ARB_CHAIN_SELECTOR, ETH_CHAIN_SELECTOR, ROUTER);
+    _assertOnRamp(GNO_ON_RAMP, ARB_CHAIN_SELECTOR, GNO_CHAIN_SELECTOR, ROUTER);
+    _assertOffRamp(ETH_OFF_RAMP, ETH_CHAIN_SELECTOR, ARB_CHAIN_SELECTOR, ROUTER);
+    _assertOffRamp(GNO_OFF_RAMP, GNO_CHAIN_SELECTOR, ARB_CHAIN_SELECTOR, ROUTER);
+
+    assertEq(NEW_GHO_CCIP_STEWARD.RISK_COUNCIL(), RISK_COUNCIL);
+    assertEq(NEW_GHO_CCIP_STEWARD.GHO_TOKEN(), AaveV3ArbitrumAssets.GHO_UNDERLYING);
+    assertEq(NEW_GHO_CCIP_STEWARD.GHO_TOKEN_POOL(), address(NEW_TOKEN_POOL));
+    assertFalse(NEW_GHO_CCIP_STEWARD.BRIDGE_LIMIT_ENABLED());
   }
 
   /**
