@@ -32,7 +32,7 @@ contract AaveV3Ethereum_MayFundingPartB_20250516 is IProposalGenericExecutor {
       ,
       uint256 deposit,
       address tokenAddress,
-      uint256 startTime,
+      ,
       uint256 stopTime,
       uint256 remainingBalance,
 
