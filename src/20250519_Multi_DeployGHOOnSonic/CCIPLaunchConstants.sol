@@ -19,11 +19,11 @@ library CCIPLaunchConstants {
   address internal constant ARB_CCIP_ROUTER = 0x141fa059441E0ca23ce184B6A78bafD2A517DdE8;
 
   // Arbitrum ON_RAMPs
-  address internal constant ARB_SONIC_ON_RAMP = 0xF0592475d795FB9Ef80B2ddB511d8c6Eb14D821F;
+  address internal constant ARB_SONIC_ON_RAMP = 0x6cb060f7f8b0F8C58A4032C82dCf917c6d438f46;
   address internal constant ARB_ETH_ON_RAMP = 0x67761742ac8A21Ec4D76CA18cbd701e5A6F3Bef3;
 
   // Arbitrum OFF_RAMPs
-  address internal constant ARB_SONIC_OFF_RAMP = 0x78867d5D2791eFE73df1cE23Fb7bF4B2db94EE0D;
+  address internal constant ARB_SONIC_OFF_RAMP = 0xf88166dB9E9B7c59068f2dC9bD5d53A719a41e68;
   address internal constant ARB_ETH_OFF_RAMP = 0x91e46cc5590A4B9182e47f40006140A7077Dec31;
 
   // Base Addresses

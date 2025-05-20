@@ -68,7 +68,7 @@ contract AaveV3Arbitrum_DeployGHOOnSonic_20250519_Test is ProtocolV3TestBase {
 
   address internal constant RISK_COUNCIL = CCIPLaunchConstants.RISK_COUNCIL;
   address public constant NEW_REMOTE_TOKEN_SONIC = CCIPLaunchConstants.SONIC_GHO_TOKEN;
-  IRouter internal constant ROUTER = IRouter(CCIPLaunchConstants.SONIC_CCIP_ROUTER);
+  IRouter internal constant ROUTER = IRouter(CCIPLaunchConstants.ARB_CCIP_ROUTER);
 
   IGhoCcipSteward internal constant NEW_GHO_CCIP_STEWARD =
     IGhoCcipSteward(GhoArbitrum.GHO_CCIP_STEWARD);
@@ -113,9 +113,9 @@ contract AaveV3Arbitrum_DeployGHOOnSonic_20250519_Test is ProtocolV3TestBase {
     assertEq(ROUTER.typeAndVersion(), 'Router 1.2.0');
 
     _assertOnRamp(ETH_ON_RAMP, ARB_CHAIN_SELECTOR, ETH_CHAIN_SELECTOR, ROUTER);
-    _assertOnRamp(SONIC_ON_RAMP, ARB_CHAIN_SELECTOR, GNO_CHAIN_SELECTOR, ROUTER);
+    _assertOnRamp(SONIC_ON_RAMP, ARB_CHAIN_SELECTOR, SONIC_CHAIN_SELECTOR, ROUTER);
     _assertOffRamp(ETH_OFF_RAMP, ETH_CHAIN_SELECTOR, ARB_CHAIN_SELECTOR, ROUTER);
-    _assertOffRamp(SONIC_OFF_RAMP, GNO_CHAIN_SELECTOR, ARB_CHAIN_SELECTOR, ROUTER);
+    _assertOffRamp(SONIC_OFF_RAMP, SONIC_CHAIN_SELECTOR, ARB_CHAIN_SELECTOR, ROUTER);
 
     assertEq(NEW_GHO_CCIP_STEWARD.RISK_COUNCIL(), RISK_COUNCIL);
     assertEq(NEW_GHO_CCIP_STEWARD.GHO_TOKEN(), AaveV3ArbitrumAssets.GHO_UNDERLYING);
@@ -276,7 +276,7 @@ contract AaveV3Arbitrum_DeployGHOOnSonic_20250519_PostExecution is
     assertEq(NEW_TOKEN_POOL.getRemotePools(SONIC_CHAIN_SELECTOR).length, 1);
     assertEq(
       NEW_TOKEN_POOL.getRemotePools(SONIC_CHAIN_SELECTOR)[0],
-      abi.encode(address(NEW_REMOTE_POOL_GNOSIS))
+      abi.encode(address(NEW_REMOTE_POOL_SONIC))
     );
     assertEq(
       NEW_TOKEN_POOL.getCurrentInboundRateLimiterState(SONIC_CHAIN_SELECTOR),
@@ -288,7 +288,7 @@ contract AaveV3Arbitrum_DeployGHOOnSonic_20250519_PostExecution is
     );
   }
 
-  function test_sendMessageToGnosisSucceeds(uint256 amount) public {
+  function test_sendMessageToSonicSucceeds(uint256 amount) public {
     uint256 bridgeableAmount = _min(
       GHO.getFacilitator(address(NEW_TOKEN_POOL)).bucketLevel,
       CCIP_RATE_LIMIT_CAPACITY
@@ -358,7 +358,7 @@ contract AaveV3Arbitrum_DeployGHOOnSonic_20250519_PostExecution is
     assertEq(GHO.getFacilitator(address(NEW_TOKEN_POOL)).bucketLevel, bucketLevel - amount);
   }
 
-  function test_offRampViaGnosisSucceeds(uint256 amount) public {
+  function test_offRampViaSonicSucceeds(uint256 amount) public {
     (uint256 bucketCapacity, uint256 bucketLevel) = GHO.getFacilitatorBucket(
       address(NEW_TOKEN_POOL)
     );
@@ -379,7 +379,7 @@ contract AaveV3Arbitrum_DeployGHOOnSonic_20250519_PostExecution is
         receiver: alice,
         amount: amount,
         localToken: address(GHO),
-        sourcePoolAddress: abi.encode(address(NEW_REMOTE_POOL_GNOSIS)),
+        sourcePoolAddress: abi.encode(address(NEW_REMOTE_POOL_SONIC)),
         sourcePoolData: new bytes(0),
         offchainTokenData: new bytes(0)
       })
@@ -472,7 +472,7 @@ contract AaveV3Arbitrum_DeployGHOOnSonic_20250519_PostExecution is
     vm.expectRevert(
       abi.encodeWithSelector(
         InvalidSourcePoolAddress.selector,
-        abi.encode(address(NEW_REMOTE_POOL_GNOSIS))
+        abi.encode(address(NEW_REMOTE_POOL_SONIC))
       )
     );
     vm.prank(address(ETH_OFF_RAMP));
@@ -483,7 +483,7 @@ contract AaveV3Arbitrum_DeployGHOOnSonic_20250519_PostExecution is
         receiver: alice,
         amount: amount,
         localToken: address(GHO),
-        sourcePoolAddress: abi.encode(address(NEW_REMOTE_POOL_GNOSIS)),
+        sourcePoolAddress: abi.encode(address(NEW_REMOTE_POOL_SONIC)),
         sourcePoolData: new bytes(0),
         offchainTokenData: new bytes(0)
       })
