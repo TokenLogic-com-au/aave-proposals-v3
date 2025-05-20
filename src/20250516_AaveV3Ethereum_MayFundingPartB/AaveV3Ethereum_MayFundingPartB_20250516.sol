@@ -44,7 +44,10 @@ contract AaveV3Ethereum_MayFundingPartB_20250516 is IProposalGenericExecutor {
   function execute() external {
     _modifyTokenlogicStream();
     _migrateDaiToUsds();
+    _allowances();
+  }
 
+  function _allowances() internal {
     AaveV3Ethereum.COLLECTOR.approve(IERC20(AaveV3EthereumLidoAssets.GHO_A_TOKEN), MERIT_SAFE, 0);
 
     AaveV3Ethereum.COLLECTOR.approve(
@@ -66,16 +69,9 @@ contract AaveV3Ethereum_MayFundingPartB_20250516 is IProposalGenericExecutor {
   }
 
   function _modifyTokenlogicStream() internal {
-    (
-      ,
-      ,
-      uint256 deposit,
-      address tokenAddress,
-      ,
-      uint256 stopTime,
-      uint256 remainingBalance,
-
-    ) = AaveV3Ethereum.COLLECTOR.getStream(TOKENLOGIC_STREAM_ID);
+    (, , , address tokenAddress, , uint256 stopTime, uint256 remainingBalance, ) = AaveV3Ethereum
+      .COLLECTOR
+      .getStream(TOKENLOGIC_STREAM_ID);
 
     AaveV3Ethereum.COLLECTOR.cancelStream(TOKENLOGIC_STREAM_ID);
 
