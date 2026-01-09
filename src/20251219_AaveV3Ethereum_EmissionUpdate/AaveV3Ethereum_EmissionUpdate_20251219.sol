@@ -15,7 +15,7 @@ import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
  * - Discussion: https://governance.aave.com/t/arfc-safety-module-umbrella-emission-update/23103/9
  */
 contract AaveV3Ethereum_EmissionUpdate_20251219 is IProposalGenericExecutor {
-  uint128 public constant AAVE_EMISSION_PER_SECOND_STK_BPT = uint128(40 ether) / 1 days;
+  uint128 public constant AAVE_EMISSION_PER_SECOND_STK_BPT = uint128(130 ether) / 1 days;
 
   function execute() external override {
     IStakeToken.AssetConfigInput[] memory config = new IStakeToken.AssetConfigInput[](1);
