@@ -350,4 +350,26 @@ library GhoCCIPChains {
         isVersion_1_6: true
       });
   }
+
+  /**
+   * @notice Returns the ChainInfo constant for X-Layer
+   * @return The ChainInfo constant for X-Layer
+   */
+  function XLAYER() public pure returns (ChainInfo memory) {
+    return
+      ChainInfo({
+        chainSelector: CCIPChainSelectors.XLAYER,
+        ghoToken: 0xDe6539018B095353A40753Dc54C91C68c9487D4E,
+        ghoCCIPTokenPool: 0xA5Ba213867E175A182a5dd6A9193C6158738105A,
+        ghoBucketSteward: 0x20fd5f3FCac8883a3A0A2bBcD658A2d2c6EFa6B6,
+        ghoAaveCoreSteward: 0xA5Ba213867E175A182a5dd6A9193C6158738105A,
+        ghoCCIPSteward: 0xFAdC082665577b533e62A7B0E067f884cA5C5E8F,
+        aclManager: address(AaveV3XLayer.ACL_MANAGER),
+        tokenAdminRegistry: CCIPChainTokenAdminRegistries.XLAYER,
+        owner: GovernanceV3XLayer.EXECUTOR_LVL_1,
+        ccipRouter: CCIPChainRouters.XLAYER,
+        linkToken: 0x8aF9711B44695a5A081F25AB9903DDB73aCf8FA9,
+        isVersion_1_6: true
+      });
+  }
 }
