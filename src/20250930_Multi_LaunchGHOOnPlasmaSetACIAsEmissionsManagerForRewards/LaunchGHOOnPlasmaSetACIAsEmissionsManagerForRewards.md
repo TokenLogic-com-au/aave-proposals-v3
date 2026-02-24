@@ -47,7 +47,7 @@ The table below illustrates the configured risk parameters for **GHO**
 | ------------------------- | -----------------------------------------: |
 | Isolation Mode            |                                      false |
 | Borrowable                |                                    ENABLED |
-| Collateral Enabled        |                                       true |
+| Collateral Enabled        |                                      false |
 | Supply Cap (GHO)          |                                 50,000,000 |
 | Borrow Cap (GHO)          |                                 20,000,000 |
 | Debt Ceiling              |                                      USD 0 |
@@ -65,7 +65,7 @@ The table below illustrates the configured risk parameters for **GHO**
 | Borrowable in Isolation   |                                   DISABLED |
 | Oracle                    | 0xb0e1c7830aA781362f79225559Aa068E6bDaF1d1 |
 
-Additionally [0xac140648435d03f784879cd789130F22Ef588Fcd](https://plasmascan.to/address/0xac140648435d03f784879cd789130F22Ef588Fcd) has been set as the emission admin for GHO and the corresponding aToken.
+Additionally [0xac140648435d03f784879cd789130F22Ef588Fcd](https://plasmascan.to/address/0xac140648435d03f784879cd789130F22Ef588Fcd) has been set as the emission admin for GHO and the corresponding aToken and vToken.
 
 ### EModes
 
@@ -131,9 +131,9 @@ Additionally [0xac140648435d03f784879cd789130F22Ef588Fcd](https://plasmascan.to/
 
 ### Facilitator & Bridging
 
-Deploy an **OwnableFacilitator** facilitator on Ethereum to enable GHO issuance for Plasma.
+Add a **GhoDirectFacilitator** on Ethereum to enable GHO issuance for Plasma.
 
-- **OwnableFacilitator Mint Cap**: 50M GHO
+- **Mint Cap**: 50M GHO
 - **Initial Mint**: 50M GHO
 
 As required, future Minting of GHO on Ethereum, to be supplied into the RemoteGSM on Plasma (or other networks) will be performed via direct submission of AIPs.

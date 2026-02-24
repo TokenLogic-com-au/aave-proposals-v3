@@ -117,7 +117,7 @@ contract AaveV3Plasma_LaunchGHOOnPlasmaSetACIAsEmissionsManagerForRewards_202509
     // GSM USDT
     GsmConfig memory gsmUsdtConfig = GsmConfig({
       sellFee: 0, // 0%
-      buyFee: 0.001e4, // 0.2%
+      buyFee: 0.001e4, // 0.1%
       exposureCap: proposal.INITIAL_EXPOSURE_CAP(),
       isFrozen: false,
       isSeized: false,
