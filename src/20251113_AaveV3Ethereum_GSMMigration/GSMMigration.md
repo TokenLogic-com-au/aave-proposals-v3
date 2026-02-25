@@ -19,7 +19,7 @@ To create a unified GSM paradigm for both mainnet and L2s, a newer version of th
 - Deploy GhoReserve to hold GHO to be used by GSMs
 - Deploy new stataUSDC and stataUSDT GSM4626 from the Gho-Core repository with their respective Oracles
 - Grant the Executor the `'LIQUIDATOR_ROLE'` to be able to seize the existing GSMs
-- Grant the RiskcCouncil the `LIMIT_MANAGER_ROLE` on the GhoReserve and `MINTER_ROLE` on the GhoDirectFacilitator to manage capacity
+- Grant the RiskCouncil the `LIMIT_MANAGER_ROLE` on the GhoReserve and `MINTER_ROLE` on the GhoDirectFacilitator to manage capacity
 - Seize the current USDC and USDT GSMs by calling the `seize()` function.
   - This freezes actions on them and transfers the underlying tokens to the collector
 - Add the `GhoDirectFacilitator` as a facilitator on the GHO token contract
