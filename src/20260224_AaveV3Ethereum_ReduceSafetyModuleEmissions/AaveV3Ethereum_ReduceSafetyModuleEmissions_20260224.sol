@@ -17,8 +17,6 @@ contract AaveV3Ethereum_ReduceSafetyModuleEmissions_20260224 is IProposalGeneric
   uint256 public constant STK_AAVE_COOLDOWN_SECONDS = 2 days;
 
   function execute() external override {
-    IStakeToken(AaveSafetyModule.STK_ABPT).setCooldownSeconds(0);
-
     IStakeToken stkAAVE = IStakeToken(AaveSafetyModule.STK_AAVE);
 
     IStakeToken.AssetConfigInput[] memory stkAAVEConfig = new IStakeToken.AssetConfigInput[](1);
@@ -30,5 +28,18 @@ contract AaveV3Ethereum_ReduceSafetyModuleEmissions_20260224 is IProposalGeneric
 
     stkAAVE.configureAssets(stkAAVEConfig);
     stkAAVE.setCooldownSeconds(STK_AAVE_COOLDOWN_SECONDS);
+
+    IStakeToken stkBPT = IStakeToken(AaveSafetyModule.STK_AAVE_WSTETH_BPTV2);
+
+    IStakeToken.AssetConfigInput[] memory stkBPTConfig = new IStakeToken.AssetConfigInput[](1);
+    stkBPTConfig[0] = IStakeToken.AssetConfigInput({
+      emissionPerSecond: 0,
+      totalStaked: IERC20(AaveSafetyModule.STK_AAVE_WSTETH_BPTV2).totalSupply(),
+      underlyingAsset: AaveSafetyModule.STK_AAVE_WSTETH_BPTV2
+    });
+
+    stkBPT.configureAssets(stkBPTConfig);
+    stkBPT.setCooldownSeconds(0);
+    stkBPT.setMaxSlashablePercentage(0);
   }
 }

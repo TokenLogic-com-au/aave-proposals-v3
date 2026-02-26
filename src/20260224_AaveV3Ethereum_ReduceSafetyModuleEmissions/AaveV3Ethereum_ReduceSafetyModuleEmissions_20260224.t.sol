@@ -31,38 +31,42 @@ contract AaveV3Ethereum_ReduceSafetyModuleEmissions_20260224_Test is ProtocolV3T
     );
   }
 
-  function test_stkABPT_emissionsZero() public {
-    (uint128 emissionBefore, , ) = IStakeToken(AaveSafetyModule.STK_ABPT).assets(
-      AaveSafetyModule.STK_ABPT
+  function test_stkBPT_emissionsZero() public {
+    (uint128 emissionBefore, , ) = IStakeToken(AaveSafetyModule.STK_AAVE_WSTETH_BPTV2).assets(
+      AaveSafetyModule.STK_AAVE_WSTETH_BPTV2
     );
-    assertEq(emissionBefore, 0, 'stkABPT emission already 0 before');
+    assertGt(emissionBefore, 0, 'stkBPT emission should be > 0 before');
 
     executePayload(vm, address(proposal));
 
-    (uint128 emissionAfter, , ) = IStakeToken(AaveSafetyModule.STK_ABPT).assets(
-      AaveSafetyModule.STK_ABPT
+    (uint128 emissionAfter, , ) = IStakeToken(AaveSafetyModule.STK_AAVE_WSTETH_BPTV2).assets(
+      AaveSafetyModule.STK_AAVE_WSTETH_BPTV2
     );
-    assertEq(emissionAfter, 0, 'stkABPT emission should be 0 after');
+    assertEq(emissionAfter, 0, 'stkBPT emission should be 0 after');
   }
 
-  function test_stkABPT_cooldownZero() public {
-    uint256 cooldownBefore = IStakeToken(AaveSafetyModule.STK_ABPT).getCooldownSeconds();
-    assertEq(cooldownBefore, 20 days, 'stkABPT cooldown should be 20 days before');
+  function test_stkBPT_cooldownZero() public {
+    uint256 cooldownBefore = IStakeToken(AaveSafetyModule.STK_AAVE_WSTETH_BPTV2)
+      .getCooldownSeconds();
+    assertGt(cooldownBefore, 0, 'stkBPT cooldown should be > 0 before');
 
     executePayload(vm, address(proposal));
 
-    uint256 cooldownAfter = IStakeToken(AaveSafetyModule.STK_ABPT).getCooldownSeconds();
-    assertEq(cooldownAfter, 0, 'stkABPT cooldown should be 0 after');
+    uint256 cooldownAfter = IStakeToken(AaveSafetyModule.STK_AAVE_WSTETH_BPTV2)
+      .getCooldownSeconds();
+    assertEq(cooldownAfter, 0, 'stkBPT cooldown should be 0 after');
   }
 
-  function test_stkABPT_slashingDisabled() public {
-    uint256 slashBefore = IStakeToken(AaveSafetyModule.STK_ABPT).getMaxSlashablePercentage();
-    assertEq(slashBefore, 0, 'stkABPT slashing already 0 before');
+  function test_stkBPT_slashingDisabled() public {
+    uint256 slashBefore = IStakeToken(AaveSafetyModule.STK_AAVE_WSTETH_BPTV2)
+      .getMaxSlashablePercentage();
+    assertGt(slashBefore, 0, 'stkBPT slashing should be > 0 before');
 
     executePayload(vm, address(proposal));
 
-    uint256 slashAfter = IStakeToken(AaveSafetyModule.STK_ABPT).getMaxSlashablePercentage();
-    assertEq(slashAfter, 0, 'stkABPT slashing should be 0 after');
+    uint256 slashAfter = IStakeToken(AaveSafetyModule.STK_AAVE_WSTETH_BPTV2)
+      .getMaxSlashablePercentage();
+    assertEq(slashAfter, 0, 'stkBPT slashing should be 0 after');
   }
 
   function test_stkAAVE_emissionsReduced() public {
