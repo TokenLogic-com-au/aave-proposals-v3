@@ -46,8 +46,8 @@ That’s not the outcome we want. We’re professionals. We want a graceful wind
 
 ## References
 
-- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260302_AaveV3Ethereum_ACIIsLeavingAave/AaveV3Ethereum_ACIIsLeavingAave_20260302.sol)
-- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260302_AaveV3Ethereum_ACIIsLeavingAave/AaveV3Ethereum_ACIIsLeavingAave_20260302.t.sol)
+- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/bc13493c62b18d7dbc89c85045d5dcb9f9bd7139/src/20260302_AaveV3Ethereum_ACIIsLeavingAave/AaveV3Ethereum_ACIIsLeavingAave_20260302.sol)
+- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/bc13493c62b18d7dbc89c85045d5dcb9f9bd7139/src/20260302_AaveV3Ethereum_ACIIsLeavingAave/AaveV3Ethereum_ACIIsLeavingAave_20260302.t.sol)
 - [Discussion](https://governance.aave.com/t/direct-to-aip-aci-stream-settlement/24206)
 
 ## Copyright
