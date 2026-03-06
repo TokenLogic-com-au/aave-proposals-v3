@@ -9,8 +9,8 @@ import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 /**
  * @title Reduce Safety Module Emissions
  * @author @TokenLogic
- * - Snapshot: https;//
- * - Discussion: https://
+ * - Snapshot: https://snapshot.box/#/s:aavedao.eth/proposal/0xe76461b0936fc892904c1696066b9fa3688e1042078d9c9f06c1a937736a100e
+ * - Discussion: https://governance.aave.com/t/arfc-safety-module-reduce-emissions/24203
  */
 contract AaveV3Ethereum_ReduceSafetyModuleEmissions_20260224 is IProposalGenericExecutor {
   uint128 public constant STK_AAVE_EMISSION_PER_SECOND = uint128(uint256(220 ether) / 1 days);
