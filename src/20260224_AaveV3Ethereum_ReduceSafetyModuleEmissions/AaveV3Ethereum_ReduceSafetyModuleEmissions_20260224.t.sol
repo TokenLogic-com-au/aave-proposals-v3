@@ -93,20 +93,31 @@ contract AaveV3Ethereum_ReduceSafetyModuleEmissions_20260224_Test is ProtocolV3T
 
   function test_stkAAVE_cooldownReduced() public {
     uint256 cooldownBefore = IStakeToken(AaveSafetyModule.STK_AAVE).getCooldownSeconds();
-    assertGt(
-      cooldownBefore,
-      proposal.STK_AAVE_COOLDOWN_SECONDS(),
-      'stkAAVE cooldown should be higher before'
-    );
+    assertGt(cooldownBefore, 2 days, 'stkAAVE cooldown should be higher before');
 
     executePayload(vm, address(proposal));
 
     uint256 cooldownAfter = IStakeToken(AaveSafetyModule.STK_AAVE).getCooldownSeconds();
-    assertEq(
-      cooldownAfter,
-      proposal.STK_AAVE_COOLDOWN_SECONDS(),
-      'stkAAVE cooldown should be 2 days after'
-    );
+    assertEq(cooldownAfter, 2 days, 'stkAAVE cooldown should be 2 days after');
+  }
+
+  function test_stkBPT_rewardsDoNotAccrue() public {
+    address staker = makeAddr('bptStaker');
+    address bptToken = IStakeToken(AaveSafetyModule.STK_AAVE_WSTETH_BPTV2).STAKED_TOKEN();
+    deal(bptToken, staker, 1 ether);
+
+    executePayload(vm, address(proposal));
+
+    vm.startPrank(staker);
+    IERC20(bptToken).approve(AaveSafetyModule.STK_AAVE_WSTETH_BPTV2, 1 ether);
+    IStakeToken(AaveSafetyModule.STK_AAVE_WSTETH_BPTV2).stake(staker, 1 ether);
+    vm.stopPrank();
+
+    vm.warp(block.timestamp + 30 days);
+
+    uint256 rewardsBalance = IStakeToken(AaveSafetyModule.STK_AAVE_WSTETH_BPTV2)
+      .getTotalRewardsBalance(staker);
+    assertEq(rewardsBalance, 0, 'stkBPT rewards should be 0 after emissions disabled');
   }
 
   function test_stkAAVE_rewardsAccrue() public {
