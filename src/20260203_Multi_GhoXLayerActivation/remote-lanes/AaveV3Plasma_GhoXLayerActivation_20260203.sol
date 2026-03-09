@@ -6,7 +6,7 @@ import {GhoCCIPChains} from '../../helpers/gho-launch/constants/GhoCCIPChains.so
 /**
  * @title Plasma<>X-Layer GHO CCIP Lane
  * @author TokenLogic
- * - Snapshot: TODO
+ * - Snapshot: https://snapshot.box/#/s:aavedao.eth/proposal/0x251c520f1f1da8287168420fa2d2a73a2eb5342c3c62508553123129dec059b0
  * - Discussion: https://governance.aave.com/t/arfc-launch-gho-on-x-layer-set-aci-as-emissions-manager-for-rewards/23178
  */
 contract AaveV3Plasma_GhoXLayerActivation_20260203 is AaveV3GHOLane {

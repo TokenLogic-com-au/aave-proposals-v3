@@ -12,7 +12,7 @@ import {AaveV3XLayer_GhoXLayerActivation_20260203} from '../AaveV3XLayer_GhoXLay
 contract AaveV3XLayer_GhoXLayerActivation_20260203_Test is ProtocolV3TestBase {
   AaveV3XLayer_GhoXLayerActivation_20260203 internal proposal;
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('mantle'), 90174807);
+    vm.createSelectFork(vm.rpcUrl('xlayer'), 54062163);
     proposal = new AaveV3XLayer_GhoXLayerActivation_20260203();
   }
 

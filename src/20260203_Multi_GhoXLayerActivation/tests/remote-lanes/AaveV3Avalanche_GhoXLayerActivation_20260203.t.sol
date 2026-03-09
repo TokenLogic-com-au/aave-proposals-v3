@@ -7,7 +7,7 @@ import {AaveV3GHOLane} from '../../../helpers/gho-launch/AaveV3GHOLane.sol';
 import {AaveV3Avalanche_GhoXLayerActivation_20260203} from '../../remote-lanes/AaveV3Avalanche_GhoXLayerActivation_20260203.sol';
 import {AaveV3Avalanche} from 'aave-address-book/AaveV3Avalanche.sol';
 
-uint256 constant AVALANCHE_BLOCK_NUMBER = 77188767;
+uint256 constant AVALANCHE_BLOCK_NUMBER = 79742860;
 
 contract Avalanche_XLayer_AaveV3GHOLane_20260105_Test_PreExecution is
   AaveV3GHORemoteLaneTest_PreExecution
@@ -31,26 +31,6 @@ contract Avalanche_XLayer_AaveV3GHOLane_20260105_Test_PreExecution is
       AaveV3Avalanche.POOL,
       address(proposal)
     );
-  }
-
-  // Overridden because it has two pools for Ethereum chain selector
-  function _assertAgainstSupportedChain(
-    GhoCCIPChains.ChainInfo memory supportedChain
-  ) internal virtual override {
-    if (supportedChain.chainSelector == GhoCCIPChains.ETHEREUM().chainSelector) {
-      assertEq(
-        LOCAL_TOKEN_POOL.getRemoteToken(supportedChain.chainSelector),
-        abi.encode(supportedChain.ghoToken),
-        'Remote token mismatch for supported chain'
-      );
-      assertEq(
-        LOCAL_TOKEN_POOL.getRemotePools(supportedChain.chainSelector)[1],
-        abi.encode(supportedChain.ghoCCIPTokenPool),
-        'Remote pool mismatch for supported chain'
-      );
-    } else {
-      super._assertAgainstSupportedChain(supportedChain);
-    }
   }
 
   function _assertOnAndOffRamps() internal view override {
@@ -92,31 +72,6 @@ contract Avalanche_XLayer_AaveV3GHOLane_20260105_Test_PostExecution is
       AVALANCHE_BLOCK_NUMBER
     )
   {}
-
-  // Overridden because it has two pools for Ethereum chain selector
-  function _assertAgainstSupportedChain(
-    GhoCCIPChains.ChainInfo memory supportedChain
-  ) internal view virtual override {
-    if (supportedChain.chainSelector == GhoCCIPChains.ETHEREUM().chainSelector) {
-      assertEq(
-        LOCAL_TOKEN_POOL.getRemoteToken(supportedChain.chainSelector),
-        abi.encode(supportedChain.ghoToken),
-        'Remote token mismatch for supported chain'
-      );
-      assertEq(
-        LOCAL_TOKEN_POOL.getRemotePools(supportedChain.chainSelector).length,
-        2,
-        'Amount of remote pools mismatch for supported chain'
-      );
-      assertEq(
-        LOCAL_TOKEN_POOL.getRemotePools(supportedChain.chainSelector)[1],
-        abi.encode(supportedChain.ghoCCIPTokenPool),
-        'Remote pool mismatch for supported chain'
-      );
-    } else {
-      super._assertAgainstSupportedChain(supportedChain);
-    }
-  }
 
   function _deployAaveV3GHOLaneProposal() internal virtual override returns (AaveV3GHOLane) {
     return new AaveV3Avalanche_GhoXLayerActivation_20260203();

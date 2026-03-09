@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import {GovV3Helpers, IPayloadsControllerCore, PayloadsControllerUtils} from 'aave-helpers/src/GovV3Helpers.sol';
 import {GovernanceV3Ethereum} from 'aave-address-book/GovernanceV3Ethereum.sol';
 
-import {EthereumScript, AvalancheScript, ArbitrumScript, BaseScript, GnosisScript, InkScript, PlasmaScript, MantleScript} from 'solidity-utils/contracts/utils/ScriptUtils.sol';
+import {EthereumScript, AvalancheScript, ArbitrumScript, BaseScript, GnosisScript, InkScript, PlasmaScript, MantleScript, XLayerScript} from 'solidity-utils/contracts/utils/ScriptUtils.sol';
 import {AaveV3Ethereum_GhoXLayerActivation_20260203} from './remote-lanes/AaveV3Ethereum_GhoXLayerActivation_20260203.sol';
 import {AaveV3Avalanche_GhoXLayerActivation_20260203} from './remote-lanes/AaveV3Avalanche_GhoXLayerActivation_20260203.sol';
 import {AaveV3Arbitrum_GhoXLayerActivation_20260203} from './remote-lanes/AaveV3Arbitrum_GhoXLayerActivation_20260203.sol';
@@ -294,7 +294,7 @@ contract CreateProposal is EthereumScript {
     {
       IPayloadsControllerCore.ExecutionAction[]
         memory actionsXLayer = new IPayloadsControllerCore.ExecutionAction[](1);
-      actionsPlasma[0] = GovV3Helpers.buildAction(
+      actionsXLayer[0] = GovV3Helpers.buildAction(
         type(AaveV3XLayer_GhoXLayerActivation_20260203).creationCode
       );
       payloads[8] = GovV3Helpers.buildXLayerPayload(vm, actionsXLayer);

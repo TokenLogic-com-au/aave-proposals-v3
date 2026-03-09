@@ -7,7 +7,7 @@ import {AaveV3GHOLane} from '../../../helpers/gho-launch/AaveV3GHOLane.sol';
 import {AaveV3Mantle_GhoXLayerActivation_20260203} from '../../remote-lanes/AaveV3Mantle_GhoXLayerActivation_20260203.sol';
 import {AaveV3Mantle} from 'aave-address-book/AaveV3Mantle.sol';
 
-uint256 constant MANTLE_BLOCK_NUMBER = 91006170;
+uint256 constant MANTLE_BLOCK_NUMBER = 92474200;
 
 contract Mantle_XLayer_AaveV3GHOLane_20260105_Test_PreExecution is
   AaveV3GHORemoteLaneTest_PreExecution
@@ -29,29 +29,9 @@ contract Mantle_XLayer_AaveV3GHOLane_20260105_Test_PreExecution is
     defaultTest('AaveV3Mantle_GhoXLayerActivation_20260203', AaveV3Mantle.POOL, address(proposal));
   }
 
-  // Overridden because it has two pools for Ethereum chain selector
-  function _assertAgainstSupportedChain(
-    GhoCCIPChains.ChainInfo memory supportedChain
-  ) internal virtual override {
-    if (supportedChain.chainSelector == GhoCCIPChains.ETHEREUM().chainSelector) {
-      assertEq(
-        LOCAL_TOKEN_POOL.getRemoteToken(supportedChain.chainSelector),
-        abi.encode(supportedChain.ghoToken),
-        'Remote token mismatch for supported chain'
-      );
-      assertEq(
-        LOCAL_TOKEN_POOL.getRemotePools(supportedChain.chainSelector)[1],
-        abi.encode(supportedChain.ghoCCIPTokenPool),
-        'Remote pool mismatch for supported chain'
-      );
-    } else {
-      super._assertAgainstSupportedChain(supportedChain);
-    }
-  }
-
   function _assertOnAndOffRamps() internal view override {
-    _assertOnRamp(
-      _localOutboundLaneToEth(),
+    _assertOnRamp_1_6(
+      _localOutboundLaneToEth_1_6(),
       LOCAL_CHAIN_SELECTOR,
       ETH_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
@@ -62,8 +42,8 @@ contract Mantle_XLayer_AaveV3GHOLane_20260105_Test_PreExecution is
       REMOTE_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
     );
-    _assertOffRamp(
-      _localInboundLaneFromEth(),
+    _assertOffRamp_1_6(
+      _localInboundLaneFromEth_1_6(),
       ETH_CHAIN_SELECTOR,
       LOCAL_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
@@ -89,38 +69,13 @@ contract Mantle_XLayer_AaveV3GHOLane_20260105_Test_PostExecution is
     )
   {}
 
-  // Overridden because it has two pools for Ethereum chain selector
-  function _assertAgainstSupportedChain(
-    GhoCCIPChains.ChainInfo memory supportedChain
-  ) internal view virtual override {
-    if (supportedChain.chainSelector == GhoCCIPChains.ETHEREUM().chainSelector) {
-      assertEq(
-        LOCAL_TOKEN_POOL.getRemoteToken(supportedChain.chainSelector),
-        abi.encode(supportedChain.ghoToken),
-        'Remote token mismatch for supported chain'
-      );
-      assertEq(
-        LOCAL_TOKEN_POOL.getRemotePools(supportedChain.chainSelector).length,
-        2,
-        'Amount of remote pools mismatch for supported chain'
-      );
-      assertEq(
-        LOCAL_TOKEN_POOL.getRemotePools(supportedChain.chainSelector)[1],
-        abi.encode(supportedChain.ghoCCIPTokenPool),
-        'Remote pool mismatch for supported chain'
-      );
-    } else {
-      super._assertAgainstSupportedChain(supportedChain);
-    }
-  }
-
   function _deployAaveV3GHOLaneProposal() internal virtual override returns (AaveV3GHOLane) {
     return new AaveV3Mantle_GhoXLayerActivation_20260203();
   }
 
   function _assertOnAndOffRamps() internal view override {
-    _assertOnRamp(
-      _localOutboundLaneToEth(),
+    _assertOnRamp_1_6(
+      _localOutboundLaneToEth_1_6(),
       LOCAL_CHAIN_SELECTOR,
       ETH_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
@@ -131,8 +86,8 @@ contract Mantle_XLayer_AaveV3GHOLane_20260105_Test_PostExecution is
       REMOTE_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
     );
-    _assertOffRamp(
-      _localInboundLaneFromEth(),
+    _assertOffRamp_1_6(
+      _localInboundLaneFromEth_1_6(),
       ETH_CHAIN_SELECTOR,
       LOCAL_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER

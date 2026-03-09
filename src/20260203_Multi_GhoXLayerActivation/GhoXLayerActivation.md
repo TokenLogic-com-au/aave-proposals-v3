@@ -17,7 +17,7 @@ This AIP includes a series of actions required to launch GHO on Mantle:
 2. Configure GhoCcipSteward.
 3. Configure GhoBucketSteward
 
-   The table below lists the address of the new **Mantle** deployments
+   The table below lists the address of the new **X-Layer** deployments
 
    | Contract           | Address                                                                                                                 |
    | :----------------- | :---------------------------------------------------------------------------------------------------------------------- |
@@ -31,7 +31,7 @@ This AIP includes a series of actions required to launch GHO on Mantle:
 
 - Implementation: [AaveV3Ethereum](https://github.com/bgd-labs/aave-proposals-v3/blob/main/src/20260203_Multi_GhoXLayerActivation/AaveV3Ethereum_GhoXLayerActivation_20260203.sol), [AaveV3Avalanche](https://github.com/bgd-labs/aave-proposals-v3/blob/main/src/20260203_Multi_GhoXLayerActivation/AaveV3Avalanche_GhoXLayerActivation_20260203.sol), [AaveV3Arbitrum](https://github.com/bgd-labs/aave-proposals-v3/blob/main/src/20260203_Multi_GhoXLayerActivation/AaveV3Arbitrum_GhoXLayerActivation_20260203.sol), [AaveV3Base](https://github.com/bgd-labs/aave-proposals-v3/blob/main/src/20260203_Multi_GhoXLayerActivation/AaveV3Base_GhoXLayerActivation_20260203.sol), [AaveV3Gnosis](https://github.com/bgd-labs/aave-proposals-v3/blob/main/src/20260203_Multi_GhoXLayerActivation/AaveV3Gnosis_GhoXLayerActivation_20260203.sol), [AaveV3Plasma](https://github.com/bgd-labs/aave-proposals-v3/blob/main/src/20260203_Multi_GhoXLayerActivation/AaveV3Plasma_GhoXLayerActivation_20260203.sol)
 - Tests: [AaveV3Ethereum](https://github.com/bgd-labs/aave-proposals-v3/blob/main/src/20260203_Multi_GhoXLayerActivation/AaveV3Ethereum_GhoXLayerActivation_20260203.t.sol), [AaveV3Avalanche](https://github.com/bgd-labs/aave-proposals-v3/blob/main/src/20260203_Multi_GhoXLayerActivation/AaveV3Avalanche_GhoXLayerActivation_20260203.t.sol), [AaveV3Arbitrum](https://github.com/bgd-labs/aave-proposals-v3/blob/main/src/20260203_Multi_GhoXLayerActivation/AaveV3Arbitrum_GhoXLayerActivation_20260203.t.sol), [AaveV3Base](https://github.com/bgd-labs/aave-proposals-v3/blob/main/src/20260203_Multi_GhoXLayerActivation/AaveV3Base_GhoXLayerActivation_20260203.t.sol), [AaveV3Gnosis](https://github.com/bgd-labs/aave-proposals-v3/blob/main/src/20260203_Multi_GhoXLayerActivation/AaveV3Gnosis_GhoXLayerActivation_20260203.t.sol), [AaveV3Plasma](https://github.com/bgd-labs/aave-proposals-v3/blob/main/src/20260203_Multi_GhoXLayerActivation/AaveV3Plasma_GhoXLayerActivation_20260203.t.sol)
-  [Snapshot](TODO)
+  [Snapshot](https://snapshot.box/#/s:aavedao.eth/proposal/0x251c520f1f1da8287168420fa2d2a73a2eb5342c3c62508553123129dec059b0)
 - [Discussion](https://governance.aave.com/t/arfc-launch-gho-on-x-layer-set-aci-as-emissions-manager-for-rewards/23178)
 
 ## Copyright

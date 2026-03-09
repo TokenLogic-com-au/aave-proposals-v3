@@ -7,7 +7,7 @@ import {AaveV3GHOLane} from '../../../helpers/gho-launch/AaveV3GHOLane.sol';
 import {AaveV3Ink_GhoXLayerActivation_20260203} from '../../remote-lanes/AaveV3Ink_GhoXLayerActivation_20260203.sol';
 import {AaveV3InkWhitelabel} from 'aave-address-book/AaveV3InkWhitelabel.sol';
 
-uint256 constant INK_BLOCK_NUMBER = 36644029;
+uint256 constant INK_BLOCK_NUMBER = 39580201;
 
 contract Ink_XLayer_AaveV3GHOLane_20260105_Test_PreExecution is
   AaveV3GHORemoteLaneTest_PreExecution
@@ -26,7 +26,7 @@ contract Ink_XLayer_AaveV3GHOLane_20260105_Test_PreExecution is
   }
 
   function test_defaultProposalExecution() public virtual {
-    defaultTest('Ink_XLayer_AaveV3GHOLane_20260105', AaveV3InkWhitelabel.POOL, address(proposal));
+    executePayload(vm, address(proposal));
   }
 
   function _assertOnAndOffRamps() internal view override {
