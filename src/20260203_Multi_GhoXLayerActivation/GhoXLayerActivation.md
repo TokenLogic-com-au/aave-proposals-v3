@@ -1,31 +1,39 @@
 ---
 title: "Gho X-Layer Activation"
 author: "@TokenLogic"
-discussions: TODO
-snapshot: TODO
+discussions: https://governance.aave.com/t/arfc-launch-gho-on-x-layer-set-aci-as-emissions-manager-for-rewards/23178
+snapshot: https://snapshot.box/#/s:aavedao.eth/proposal/0x251c520f1f1da8287168420fa2d2a73a2eb5342c3c62508553123129dec059b0
 ---
 
 ## Simple Summary
 
+This AIP proposes activating CCIP Lanes for GHO on the X-Layer blockchain.
+
 ## Motivation
+
+X Layer is expected to act as both a payment-focused network and a DeFi hub, creating new avenues for user onboarding, real-world adoption, and capital efficiency.
+
+Deploying GHO concurrently with the Aave instance on X-Layer ensures that GHO has every chance of becoming foundational to DeFi and payments infrastructure on a chain optimized for Money 2.0 utility.
+
+The goal is to establish GHO as a key stablecoin within X Layer’s ecosystem from inception, facilitating reward programs, liquidity incentives, and seamless integration with the upcoming Aave deployment.
 
 ## Specification
 
-This AIP includes a series of actions required to launch GHO on Mantle:
+This AIP includes a series of actions required to launch GHO on X-Layer:
 
-1. Configure new Chainlink CCIP lanes between Mantle and the chains where GHO is launched with a rate limit of 1.5M GHO capacity and 300 GHO per second rate.
+1. Configure new Chainlink CCIP lanes between X-Layer and the chains where GHO is launched with a rate limit of 1.5M GHO capacity and 300 GHO per second rate.
 2. Configure GhoCcipSteward.
 3. Configure GhoBucketSteward
 
    The table below lists the address of the new **X-Layer** deployments
 
-   | Contract           | Address                                                                                                                 |
-   | :----------------- | :---------------------------------------------------------------------------------------------------------------------- |
-   | GhoToken           | [0xfc421aD3C883Bf9E7C4f42dE845C4e4405799e73](https://mantlescan.xyz/address/0xb0e1c7830aa781362f79225559aa068e6bdaf1d1) |
-   | GhoTokenPool       | [0xDe6539018B095353A40753Dc54C91C68c9487D4E](https://mantlescan.xyz/address/0xde6539018b095353a40753dc54c91c68c9487d4e) |
-   | GhoBucketSteward   | [0x2Ce400703dAcc37b7edFA99D228b8E70a4d3831B](https://mantlescan.xyz/address/0x2ce400703dacc37b7edfa99d228b8e70a4d3831b) |
-   | GhoCcipSteward     | [0x20fd5f3FCac8883a3A0A2bBcD658A2d2c6EFa6B6](https://mantlescan.xyz/address/0x20fd5f3FCac8883a3A0A2bBcD658A2d2c6EFa6B6) |
-   | GhoAavecoreSteward | [0xA5Ba213867E175A182a5dd6A9193C6158738105A](https://mantlescan.xyz/address/0xA5Ba213867E175A182a5dd6A9193C6158738105A) |
+   | Contract           | Address                                                                                                                                  |
+   | :----------------- | :--------------------------------------------------------------------------------------------------------------------------------------- |
+   | GhoToken           | [0xDe6539018B095353A40753Dc54C91C68c9487D4E](https://www.oklink.com/x-layer/address/0xDe6539018B095353A40753Dc54C91C68c9487D4E)          |
+   | GhoTokenPool       | [0xA5Ba213867E175A182a5dd6A9193C6158738105A](https://www.oklink.com/x-layer/address/0xA5Ba213867E175A182a5dd6A9193C6158738105A)          |
+   | GhoBucketSteward   | [0x20fd5f3FCac8883a3A0A2bBcD658A2d2c6EFa6B6](https://www.oklink.com/x-layer/address/0x20fd5f3FCac8883a3A0A2bBcD658A2d2c6EFa6B6)          |
+   | GhoCcipSteward     | [0xFAdC082665577b533e62A7B0E067f884cA5C5E8F](https://www.oklink.com/x-layer/address/0xFAdC082665577b533e62A7B0E067f884cA5C5E8F)          |
+   | GhoAavecoreSteward | [0x6e637e1e48025e51315d50ab96d5b3be1971a715](https://www.oklink.com/x-layer/address/0x6e637e1e48025e51315d50ab96d5b3be1971a715/contract) |
 
 ## References
 

@@ -7,12 +7,12 @@ import {AaveV3XLayer_GhoXLayerActivation_20260203} from '../AaveV3XLayer_GhoXLay
 
 /**
  * @dev Test for AaveV3Mantle_GhoMantleActivation_20260105
- * command: FOUNDRY_PROFILE=test forge test --match-path=src/20260105_AaveV3Mantle_GhoMantleActivation/tests/AaveV3XLayer_GhoXLayerActivation_20260203.t.sol -vv
+ * command: FOUNDRY_PROFILE=test forge test --match-path=src/20260203_Multi_GhoXLayerActivation/tests/AaveV3XLayer_GhoXLayerActivation_20260203.t.sol -vv
  */
 contract AaveV3XLayer_GhoXLayerActivation_20260203_Test is ProtocolV3TestBase {
   AaveV3XLayer_GhoXLayerActivation_20260203 internal proposal;
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('xlayer'), 54062163);
+    vm.createSelectFork(vm.rpcUrl('xlayer'), 54320430);
     proposal = new AaveV3XLayer_GhoXLayerActivation_20260203();
   }
 
