@@ -93,12 +93,20 @@ contract AaveV3Ethereum_ReduceSafetyModuleEmissions_20260224_Test is ProtocolV3T
 
   function test_stkAAVE_cooldownReduced() public {
     uint256 cooldownBefore = IStakeToken(AaveSafetyModule.STK_AAVE).getCooldownSeconds();
-    assertGt(cooldownBefore, 2 days, 'stkAAVE cooldown should be higher before');
+    assertGt(
+      cooldownBefore,
+      proposal.STK_AAVE_COOLDOWN_SECONDS(),
+      'stkAAVE cooldown should be higher before'
+    );
 
     executePayload(vm, address(proposal));
 
     uint256 cooldownAfter = IStakeToken(AaveSafetyModule.STK_AAVE).getCooldownSeconds();
-    assertEq(cooldownAfter, 2 days, 'stkAAVE cooldown should be 2 days after');
+    assertEq(
+      cooldownAfter,
+      proposal.STK_AAVE_COOLDOWN_SECONDS(),
+      'stkAAVE cooldown should be 2 days after'
+    );
   }
 
   function test_stkBPT_rewardsDoNotAccrue() public {

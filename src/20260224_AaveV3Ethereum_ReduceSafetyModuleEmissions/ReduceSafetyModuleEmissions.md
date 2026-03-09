@@ -1,7 +1,7 @@
 ---
 title: "Reduce Safety Module Emissions"
 author: "@TokenLogic"
-discussions: "https://governance.aave.com/t/arfc-safety-module-reduce-emissions/24203/13"
+discussions: "https://governance.aave.com/t/arfc-safety-module-reduce-emissions/24203"
 snapshot: "https://snapshot.box/#/s:aavedao.eth/proposal/0xe76461b0936fc892904c1696066b9fa3688e1042078d9c9f06c1a937736a100e"
 ---
 
@@ -34,7 +34,7 @@ Combined annual emission savings: **~29,200 AAVE (~0.18% of total supply, ~$3.6M
 - Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260224_AaveV3Ethereum_ReduceSafetyModuleEmissions/AaveV3Ethereum_ReduceSafetyModuleEmissions_20260224.sol)
 - Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260224_AaveV3Ethereum_ReduceSafetyModuleEmissions/AaveV3Ethereum_ReduceSafetyModuleEmissions_20260224.t.sol)
 - [Snapshot](https://snapshot.box/#/s:aavedao.eth/proposal/0xe76461b0936fc892904c1696066b9fa3688e1042078d9c9f06c1a937736a100e)
-- [Discussion](https://governance.aave.com/t/arfc-safety-module-reduce-emissions/24203/13)
+- [Discussion](https://governance.aave.com/t/arfc-safety-module-reduce-emissions/24203)
 
 ## Copyright
 
