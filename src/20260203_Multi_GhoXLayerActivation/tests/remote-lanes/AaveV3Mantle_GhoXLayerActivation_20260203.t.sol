@@ -26,7 +26,13 @@ contract Mantle_XLayer_AaveV3GHOLane_20260105_Test_PreExecution is
   }
 
   function test_defaultProposalExecution() public virtual {
-    defaultTest('AaveV3Mantle_GhoXLayerActivation_20260203', AaveV3Mantle.POOL, address(proposal));
+    defaultTest(
+      'AaveV3Mantle_GhoXLayerActivation_20260203',
+      AaveV3Mantle.POOL,
+      address(proposal),
+      false,
+      false
+    );
   }
 
   function _assertOnAndOffRamps() internal view override {
