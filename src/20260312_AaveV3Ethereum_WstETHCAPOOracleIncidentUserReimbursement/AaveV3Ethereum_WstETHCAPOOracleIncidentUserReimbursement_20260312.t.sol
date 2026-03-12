@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import {AaveV3Ethereum, AaveV3EthereumAssets} from 'aave-address-book/AaveV3Ethereum.sol';
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
-
+import {MiscEthereum} from 'aave-address-book/MiscEthereum.sol';
 import 'forge-std/Test.sol';
 import {ProtocolV3TestBase, ReserveConfig} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {AaveV3Ethereum_WstETHCAPOOracleIncidentUserReimbursement_20260312} from './AaveV3Ethereum_WstETHCAPOOracleIncidentUserReimbursement_20260312.sol';
@@ -34,12 +34,24 @@ contract AaveV3Ethereum_WstETHCAPOOracleIncidentUserReimbursement_20260312_Test 
   }
 
   function test_afcAllowance() public {
+    assertEq(
+      IERC20(AaveV3EthereumAssets.WETH_UNDERLYING).allowance(
+        address(AaveV3Ethereum.COLLECTOR),
+        MiscEthereum.AFC_SAFE
+      ),
+      0,
+      'AFC WETH allowance should be 0 before'
+    );
+
     executePayload(vm, address(proposal));
 
-    uint256 allowance = IERC20(AaveV3EthereumAssets.WETH_UNDERLYING).allowance(
-      address(AaveV3Ethereum.COLLECTOR),
-      proposal.AFC()
+    assertEq(
+      IERC20(AaveV3EthereumAssets.WETH_UNDERLYING).allowance(
+        address(AaveV3Ethereum.COLLECTOR),
+        MiscEthereum.AFC_SAFE
+      ),
+      proposal.WETH_REIMBURSEMENT(),
+      'AFC WETH allowance mismatch after'
     );
-    assertEq(allowance, proposal.WETH_AMOUNT(), 'AFC WETH allowance mismatch');
   }
 }
