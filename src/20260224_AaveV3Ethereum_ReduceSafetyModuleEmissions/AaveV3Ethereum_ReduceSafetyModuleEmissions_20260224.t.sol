@@ -128,6 +128,36 @@ contract AaveV3Ethereum_ReduceSafetyModuleEmissions_20260224_Test is ProtocolV3T
     assertEq(rewardsBalance, 0, 'stkBPT rewards should be 0 after emissions disabled');
   }
 
+  function test_stkBPT_fullWithdrawalFlow() public {
+    address staker = makeAddr('bptWithdrawer');
+    address bptToken = IStakeToken(AaveSafetyModule.STK_AAVE_WSTETH_BPTV2).STAKED_TOKEN();
+    uint256 stakeAmount = 1 ether;
+    deal(bptToken, staker, stakeAmount);
+
+    vm.startPrank(staker);
+    IERC20(bptToken).approve(AaveSafetyModule.STK_AAVE_WSTETH_BPTV2, stakeAmount);
+    IStakeToken(AaveSafetyModule.STK_AAVE_WSTETH_BPTV2).stake(staker, stakeAmount);
+    vm.stopPrank();
+
+    executePayload(vm, address(proposal));
+
+    vm.startPrank(staker);
+    IStakeToken(AaveSafetyModule.STK_AAVE_WSTETH_BPTV2).cooldown();
+    vm.stopPrank();
+
+    vm.warp(block.timestamp + 1);
+
+    uint256 stkBPTBalance = IERC20(AaveSafetyModule.STK_AAVE_WSTETH_BPTV2).balanceOf(staker);
+    uint256 bptBalanceBefore = IERC20(bptToken).balanceOf(staker);
+
+    vm.startPrank(staker);
+    IStakeToken(AaveSafetyModule.STK_AAVE_WSTETH_BPTV2).redeem(staker, stkBPTBalance);
+    vm.stopPrank();
+
+    uint256 bptBalanceAfter = IERC20(bptToken).balanceOf(staker);
+    assertGt(bptBalanceAfter, bptBalanceBefore, 'stkBPT full withdrawal failed');
+  }
+
   function test_stkAAVE_rewardsAccrue() public {
     address staker = makeAddr('staker');
     deal(AaveV3EthereumAssets.AAVE_UNDERLYING, staker, 1 ether);
