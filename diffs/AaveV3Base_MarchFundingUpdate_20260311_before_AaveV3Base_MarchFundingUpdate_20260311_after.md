@@ -1,0 +1,41 @@
+## Event logs
+
+#### 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 (AaveV3Base.ASSETS.USDC.UNDERLYING)
+
+| index | event |
+| --- | --- |
+| 0 | Approval(owner: 0xBA9424d650A4F5c80a0dA641254d1AcCE2A37057, spender: 0x22740deBa78d5a0c24C58C740e3715ec29de1bFa, value: 1,300,000 [1300000000000, 6 decimals]) |
+
+#### 0x9390B1735def18560c509E2d0bc090E9d6BA257a (AaveV3Base.ACL_ADMIN, GovernanceV3Base.EXECUTOR_LVL_1)
+
+| index | event |
+| --- | --- |
+| 1 | ExecutedAction(target: 0x5615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f, value: 0, signature: execute(), data: 0x, executionTime: 1773256077, withDelegatecall: true, resultData: 0x) |
+
+#### 0x2DC219E716793fb4b21548C0f009Ba3Af753ab01 (GovernanceV3Base.PAYLOADS_CONTROLLER)
+
+| index | event |
+| --- | --- |
+| 2 | PayloadExecuted(payloadId: 101) |
+
+## Raw storage changes
+
+### 0x2dc219e716793fb4b21548c0f009ba3af753ab01 (GovernanceV3Base.PAYLOADS_CONTROLLER)
+
+| slot | previous value | new value |
+| --- | --- | --- |
+| 0x5ed25f7f90ee98fc55a6c59d7b052a857d4bf613ad8f5f7fd8077c1e252c6c1a | 0x0069b1bd8c000000000002000000000000000000000000000000000000000000 | 0x0069b1bd8c000000000003000000000000000000000000000000000000000000 |
+| 0x5ed25f7f90ee98fc55a6c59d7b052a857d4bf613ad8f5f7fd8077c1e252c6c1b | 0x000000000000000000093a8000000000000069dfe20d00000000000000000000 | 0x000000000000000000093a8000000000000069dfe20d00000000000069b1bd8d |
+
+### 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913 (AaveV3Base.ASSETS.USDC.UNDERLYING)
+
+| slot | previous value | new value |
+| --- | --- | --- |
+| 0xd053ae572e99a404f9f50336d8f9c8c93fe02a931d8e88be221e74dabb49dc5a | 0x0000000000000000000000000000000000000000000000000000000000000000 | 0x0000000000000000000000000000000000000000000000000000012eae09c800 |
+
+
+## Raw diff
+
+```json
+{}
+```

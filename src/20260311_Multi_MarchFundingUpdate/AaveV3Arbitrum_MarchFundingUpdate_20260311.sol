@@ -24,6 +24,12 @@ contract AaveV3Arbitrum_MarchFundingUpdate_20260311 is IProposalGenericExecutor 
   /// https://arbiscan.io/address/0x096760F208390250649E3e8763348E783AEF5562
   address public constant USDC_GATEWAY = 0x096760F208390250649E3e8763348E783AEF5562;
 
+  /// https://arbiscan.io/address/0x09e9222E96E7B4AE2a407B98d48e330053351EEe
+  address public constant STANDARD_GATEWAY = 0x09e9222E96E7B4AE2a407B98d48e330053351EEe;
+
+  /// https://arbiscan.io/address/0x07D4692291B9E30E326fd31706f686f83f331B82
+  address public constant WSTETH_GATEWAY = 0x07D4692291B9E30E326fd31706f686f83f331B82;
+
   function execute() external {
     _approvals();
     _bridges();
@@ -71,7 +77,7 @@ contract AaveV3Arbitrum_MarchFundingUpdate_20260311 is IProposalGenericExecutor 
     IAaveArbEthERC20Bridge(MiscArbitrum.AAVE_ARB_ETH_BRIDGE).bridge(
       AaveV3ArbitrumAssets.LINK_UNDERLYING,
       AaveV3EthereumAssets.LINK_UNDERLYING,
-      USDC_GATEWAY, // TODO: Correct Gateway
+      STANDARD_GATEWAY,
       linkBalance
     );
 
@@ -87,7 +93,7 @@ contract AaveV3Arbitrum_MarchFundingUpdate_20260311 is IProposalGenericExecutor 
     IAaveArbEthERC20Bridge(MiscArbitrum.AAVE_ARB_ETH_BRIDGE).bridge(
       AaveV3ArbitrumAssets.wstETH_UNDERLYING,
       AaveV3EthereumAssets.wstETH_UNDERLYING,
-      USDC_GATEWAY, // TODO: Correct Gateway
+      WSTETH_GATEWAY,
       wstethBalance
     );
 

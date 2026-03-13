@@ -49,6 +49,7 @@ contract AaveV3Polygon_MarchFundingUpdate_20260311 is IProposalGenericExecutor {
       AaveV3PolygonAssets.DAI_UNDERLYING,
       daiBalance
     );
+
     // USDC
     uint256 usdcBalance = IERC20(AaveV3PolygonAssets.USDC_UNDERLYING).balanceOf(
       address(AaveV3Polygon.COLLECTOR)
@@ -62,6 +63,7 @@ contract AaveV3Polygon_MarchFundingUpdate_20260311 is IProposalGenericExecutor {
       AaveV3PolygonAssets.USDC_UNDERLYING,
       usdcBalance
     );
+
     /// WBTC
     uint256 wbtcBalance = IERC20(AaveV3PolygonAssets.WBTC_UNDERLYING).balanceOf(
       address(AaveV3Polygon.COLLECTOR)
@@ -75,6 +77,7 @@ contract AaveV3Polygon_MarchFundingUpdate_20260311 is IProposalGenericExecutor {
       AaveV3PolygonAssets.WBTC_UNDERLYING,
       wbtcBalance
     );
+
     /// WETH
     uint256 wethBalance = IERC20(AaveV3PolygonAssets.WETH_UNDERLYING).balanceOf(
       address(AaveV3Polygon.COLLECTOR)
