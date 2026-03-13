@@ -37,12 +37,13 @@ contract AaveV3Arbitrum_MarchFundingUpdate_20260311 is IProposalGenericExecutor 
 
   function _approvals() internal {
     AaveV3Arbitrum.COLLECTOR.approve(
-      IERC20(AaveV3ArbitrumAssets.USDCn_UNDERLYING),
+      IERC20(AaveV3ArbitrumAssets.USDCn_A_TOKEN),
       MiscArbitrum.AFC_SAFE,
       USDC_ALLOWANCE
     );
+
     AaveV3Arbitrum.COLLECTOR.approve(
-      IERC20(AaveV3ArbitrumAssets.USDT_UNDERLYING),
+      IERC20(AaveV3ArbitrumAssets.USDT_A_TOKEN),
       MiscArbitrum.AFC_SAFE,
       USDT_ALLOWANCE
     );

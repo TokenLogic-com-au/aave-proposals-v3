@@ -28,7 +28,7 @@ contract AaveV3Base_MarchFundingUpdate_20260311_Test is ProtocolV3TestBase {
 
   function test_approvals() public {
     assertEq(
-      IERC20(AaveV3BaseAssets.USDC_UNDERLYING).allowance(
+      IERC20(AaveV3BaseAssets.USDC_A_TOKEN).allowance(
         address(AaveV3Base.COLLECTOR),
         MiscBase.AFC_SAFE
       ),
@@ -38,7 +38,7 @@ contract AaveV3Base_MarchFundingUpdate_20260311_Test is ProtocolV3TestBase {
     executePayload(vm, address(proposal));
 
     assertEq(
-      IERC20(AaveV3BaseAssets.USDC_UNDERLYING).allowance(
+      IERC20(AaveV3BaseAssets.USDC_A_TOKEN).allowance(
         address(AaveV3Base.COLLECTOR),
         MiscBase.AFC_SAFE
       ),
@@ -46,7 +46,7 @@ contract AaveV3Base_MarchFundingUpdate_20260311_Test is ProtocolV3TestBase {
     );
 
     vm.startPrank(MiscBase.AFC_SAFE);
-    IERC20(AaveV3BaseAssets.USDC_UNDERLYING).transferFrom(
+    IERC20(AaveV3BaseAssets.USDC_A_TOKEN).transferFrom(
       address(AaveV3Base.COLLECTOR),
       MiscBase.AFC_SAFE,
       proposal.USDC_ALLOWANCE()

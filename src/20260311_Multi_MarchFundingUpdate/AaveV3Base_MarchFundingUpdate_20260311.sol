@@ -17,7 +17,7 @@ contract AaveV3Base_MarchFundingUpdate_20260311 is IProposalGenericExecutor {
 
   function execute() external {
     AaveV3Base.COLLECTOR.approve(
-      IERC20(AaveV3BaseAssets.USDC_UNDERLYING),
+      IERC20(AaveV3BaseAssets.USDC_A_TOKEN),
       MiscBase.AFC_SAFE,
       USDC_ALLOWANCE
     );

@@ -104,6 +104,7 @@ contract AaveV3Ethereum_MarchFundingUpdate_20260311 is IProposalGenericExecutor 
       AaveV3EthereumAssets.WETH_UNDERLYING,
       WETH_SWAP_BUDGET_AMOUNT
     );
+
     IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD).increaseTokenBudget(
       AaveV3EthereumAssets.USDT_UNDERLYING,
       USDT_SWAP_BUDGET_AMOUNT
