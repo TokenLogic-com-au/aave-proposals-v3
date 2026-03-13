@@ -64,18 +64,18 @@ contract AaveV3Arbitrum_MarchFundingUpdate_20260311_Test is ProtocolV3TestBase {
     );
 
     assertEq(
-      IERC20(AaveV3ArbitrumAssets.USDCn_A_TOKEN).allowance(
+      IERC20(AaveV3ArbitrumAssets.USDT_A_TOKEN).allowance(
         address(AaveV3Arbitrum.COLLECTOR),
         MiscArbitrum.AFC_SAFE
       ),
-      proposal.USDC_ALLOWANCE()
+      proposal.USDT_ALLOWANCE()
     );
 
     vm.startPrank(MiscArbitrum.AFC_SAFE);
-    IERC20(AaveV3ArbitrumAssets.USDT_A_TOKEN).transferFrom(
+    IERC20(AaveV3ArbitrumAssets.USDCn_A_TOKEN).transferFrom(
       address(AaveV3Arbitrum.COLLECTOR),
       MiscArbitrum.AFC_SAFE,
-      proposal.USDT_ALLOWANCE()
+      proposal.USDC_ALLOWANCE()
     );
 
     IERC20(AaveV3ArbitrumAssets.USDT_A_TOKEN).transferFrom(

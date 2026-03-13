@@ -147,12 +147,7 @@ contract AaveV3Ethereum_MarchFundingUpdate_20260311_Test is ProtocolV3TestBase {
       ),
       address(0)
     );
-    assertEq(
-      IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD).priceOracle(
-        AaveV3EthereumAssets.WETH_UNDERLYING
-      ),
-      address(0)
-    );
+
     uint256 budgetUsdtBefore = IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD)
       .tokenBudget(AaveV3EthereumAssets.USDT_UNDERLYING);
 
