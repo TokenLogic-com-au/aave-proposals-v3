@@ -43,8 +43,8 @@ Upon AIP execution, the AFC will distribute the appropriate refund amount to eac
 
 ## References
 
-- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260312_AaveV3Ethereum_WstETHCAPOOracleIncidentUserReimbursement/AaveV3Ethereum_WstETHCAPOOracleIncidentUserReimbursement_20260312.sol)
-- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260312_AaveV3Ethereum_WstETHCAPOOracleIncidentUserReimbursement/AaveV3Ethereum_WstETHCAPOOracleIncidentUserReimbursement_20260312.t.sol)
+- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/a93ce7ec2ed3a2df946f6add33b9951bb022d9dc/src/20260312_AaveV3Ethereum_WstETHCAPOOracleIncidentUserReimbursement/AaveV3Ethereum_WstETHCAPOOracleIncidentUserReimbursement_20260312.sol)
+- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/a93ce7ec2ed3a2df946f6add33b9951bb022d9dc/src/20260312_AaveV3Ethereum_WstETHCAPOOracleIncidentUserReimbursement/AaveV3Ethereum_WstETHCAPOOracleIncidentUserReimbursement_20260312.t.sol)
 - Snapshot: Direct-to-AIP
 - [Discussion](https://governance.aave.com/t/direct-to-aip-wsteth-capo-oracle-incident-user-reimbursement/24275)
 
