@@ -92,18 +92,6 @@ Bridge all of the following via the AaveArbitrumEthereumBridge:
 - wstETH
 - USDC.e
 
-### Ink
-
-To support the continued success of the friendly Tydro deployment, several Allowances are to be created, enabling revenue to be distributed to users as part of the Ahab program.
-
-Amount: 80,000 aInkWlGHO `0xC629140A8aA21F8f319A21F41b2DC1b0431693C1`
-Amount: 200 aInkWlWETH `0x2B35eF056728BaFFaC103e3b81cB029788006EF9`
-Amount: 350,000 aInkWlUSDT `0x99cBF1Ff4527675Ed3301671105C9F7748fb8a04`
-Amount: 165,000 aInkWlUSDG `0x4cd13ce4edbB5523fd4849252b5f1bF215129D10`
-Amount: 70,000 aInkWlUSDC `0x70A38B0c90441e991346B7A0Cd98C8528dD1c234`
-Spender: AFC `0x22740deBa78d5a0c24C58C740e3715ec29de1bFa`
-Method: `approve()` the above assets on the Aave Collector contract to the AFC address.
-
 ## References
 
 - Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260311_Multi_MarchFundingUpdate/AaveV3Ethereum_MarchFundingUpdate_20260311.sol), [AaveV3Polygon](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260311_Multi_MarchFundingUpdate/AaveV3Polygon_MarchFundingUpdate_20260311.sol), [AaveV3Arbitrum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260311_Multi_MarchFundingUpdate/AaveV3Arbitrum_MarchFundingUpdate_20260311.sol), [AaveV3Base](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260311_Multi_MarchFundingUpdate/AaveV3Base_MarchFundingUpdate_20260311.sol)
