@@ -16,7 +16,7 @@ contract AaveV3Ethereum_ReduceSafetyModuleEmissions_20260224_Test is ProtocolV3T
   AaveV3Ethereum_ReduceSafetyModuleEmissions_20260224 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('mainnet'), 24528301);
+    vm.createSelectFork(vm.rpcUrl('mainnet'), 24670048);
     proposal = new AaveV3Ethereum_ReduceSafetyModuleEmissions_20260224();
   }
 
@@ -143,19 +143,17 @@ contract AaveV3Ethereum_ReduceSafetyModuleEmissions_20260224_Test is ProtocolV3T
 
     vm.startPrank(staker);
     IStakeToken(AaveSafetyModule.STK_AAVE_WSTETH_BPTV2).cooldown();
-    vm.stopPrank();
-
-    vm.warp(block.timestamp + 1);
-
     uint256 stkBPTBalance = IERC20(AaveSafetyModule.STK_AAVE_WSTETH_BPTV2).balanceOf(staker);
     uint256 bptBalanceBefore = IERC20(bptToken).balanceOf(staker);
-
-    vm.startPrank(staker);
     IStakeToken(AaveSafetyModule.STK_AAVE_WSTETH_BPTV2).redeem(staker, stkBPTBalance);
-    vm.stopPrank();
-
     uint256 bptBalanceAfter = IERC20(bptToken).balanceOf(staker);
-    assertGt(bptBalanceAfter, bptBalanceBefore, 'stkBPT full withdrawal failed');
+    assertEq(bptBalanceAfter, bptBalanceBefore + stakeAmount, 'stkBPT full withdrawal failed');
+    assertEq(
+      IERC20(AaveSafetyModule.STK_AAVE_WSTETH_BPTV2).balanceOf(staker),
+      0,
+      'stkBpt balance is not zero'
+    );
+    vm.stopPrank();
   }
 
   function test_stkAAVE_rewardsAccrue() public {
