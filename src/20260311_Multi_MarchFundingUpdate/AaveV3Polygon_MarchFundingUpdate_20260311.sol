@@ -16,6 +16,7 @@ import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGen
 contract AaveV3Polygon_MarchFundingUpdate_20260311 is IProposalGenericExecutor {
   uint256 public constant USDC_ALLOWANCE = 125_000e6;
   uint256 public constant USDT_ALLOWANCE = 210_000e6;
+  uint256 public constant EURS_ALLOWANCE = 80_000e2;
 
   function execute() external {
     _approvals();
@@ -24,14 +25,19 @@ contract AaveV3Polygon_MarchFundingUpdate_20260311 is IProposalGenericExecutor {
 
   function _approvals() internal {
     AaveV3Polygon.COLLECTOR.approve(
-      IERC20(AaveV3PolygonAssets.USDCn_UNDERLYING),
+      IERC20(AaveV3PolygonAssets.USDCn_A_TOKEN),
       MiscPolygon.AFC_SAFE,
       USDC_ALLOWANCE
     );
     AaveV3Polygon.COLLECTOR.approve(
-      IERC20(AaveV3PolygonAssets.USDT0_UNDERLYING),
+      IERC20(AaveV3PolygonAssets.USDT0_A_TOKEN),
       MiscPolygon.AFC_SAFE,
       USDT_ALLOWANCE
+    );
+    AaveV3Polygon.COLLECTOR.approve(
+      IERC20(AaveV3PolygonAssets.EURS_A_TOKEN),
+      MiscPolygon.AFC_SAFE,
+      EURS_ALLOWANCE
     );
   }
 

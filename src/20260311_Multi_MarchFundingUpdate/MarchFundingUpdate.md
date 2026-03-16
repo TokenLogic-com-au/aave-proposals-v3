@@ -40,9 +40,9 @@ Method: `approve()` above assets on the Aave Collector contract to the AFC addre
 
 Reimburse 24,900 GHO to TokenLogic for sGHO audit expenses incurred.
 
-Asset: GHO: 0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f
+Asset: GHO: `0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f`
 Amount: 24,900
-Spender: TokenLogic 0xAA088dfF3dcF619664094945028d44E779F19894
+Spender: TokenLogic `0xAA088dfF3dcF619664094945028d44E779F19894`
 
 ### Polygon
 
@@ -50,7 +50,7 @@ With EURS trading above the peg, EURS will be withdrawn from Aave on Polygon and
 
 Create an Allowance that enables the AFC to receive EURS, convert it to USDC, and bridge the proceeds to Ethereum.
 
-Amount: 80,000 EURS `0x38d693cE1dF5AaDF7bC62595A37D667aD57922e5`
+Amount: 80,000 aEURS `0x38d693cE1dF5AaDF7bC62595A37D667aD57922e5`
 Spender: AFC `0x22740deBa78d5a0c24C58C740e3715ec29de1bFa`
 Method: `approve()` above assets on the Aave Collector contract to the AFC address
 
@@ -63,8 +63,8 @@ Bridge all of the following via the AavePolygonEthereumBridge:
 
 To support bridging assets not supported by the above, an allowance will be created, enabling the AFC to bridge the following assets from Polygon to Ethereum.
 
-Amount: 125,000 USDCn `0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359`
-Amount: 210,000 USDT0 `0xc2132D05D31c914a87C6611C10748AEb04B58e8F`
+Amount: 125,000 aUSDCn `0xA4D94019934D8333Ef880ABFFbF2FDd611C762BD`
+Amount: 210,000 aUSDT0 `0x6ab707Aca953eDAeFBc4fD23bA73294241490620`
 Spender: AFC `0x22740deBa78d5a0c24C58C740e3715ec29de1bFa`
 Method: `approve()` the above assets on the Aave Collector contract to the AFC address
 
@@ -72,7 +72,7 @@ Method: `approve()` the above assets on the Aave Collector contract to the AFC a
 
 To support asset bridging, an Allowance will be created, enabling the AFC to bridge the following assets from Base to Ethereum.
 
-Amount: 1,300,000 USDC `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`
+Amount: 1,300,000 aUSDC `0x4e65fE4DbA92790696d040ac24Aa414708F5c0AB`
 Spender: AFC `0x22740deBa78d5a0c24C58C740e3715ec29de1bFa`
 Method: `approve()` the above assets on the Aave Collector contract to the AFC address
 
@@ -80,8 +80,8 @@ Method: `approve()` the above assets on the Aave Collector contract to the AFC a
 
 To support asset bridging, an Allowance will be created, enabling the AFC to bridge the following assets from Arbitrum to Ethereum.
 
-Amount: 3,300,000 USDCn `0xaf88d065e77c8cC2239327C5EDb3A432268e5831`
-Amount: 1,300,000 USDT0 `0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9`
+Amount: 3,300,000 aUSDCn `0x724dc807b04555b71ed48a6896b6F41593b8C637`
+Amount: 1,300,000 aUSDT0 `0x6ab707Aca953eDAeFBc4fD23bA73294241490620`
 Spender: AFC `0x22740deBa78d5a0c24C58C740e3715ec29de1bFa`
 Method: `approve()` the above assets on the Aave Collector contract to the AFC address.
 
