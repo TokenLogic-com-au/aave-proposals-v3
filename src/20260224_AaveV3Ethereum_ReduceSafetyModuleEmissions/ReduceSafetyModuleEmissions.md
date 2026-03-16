@@ -31,8 +31,8 @@ Combined annual emission savings: **~29,200 AAVE (~0.18% of total supply, ~$3.6M
 
 ## References
 
-- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260224_AaveV3Ethereum_ReduceSafetyModuleEmissions/AaveV3Ethereum_ReduceSafetyModuleEmissions_20260224.sol)
-- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260224_AaveV3Ethereum_ReduceSafetyModuleEmissions/AaveV3Ethereum_ReduceSafetyModuleEmissions_20260224.t.sol)
+- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/4ccf67880287701d393bb13015b73b1ad41db29c/src/20260224_AaveV3Ethereum_ReduceSafetyModuleEmissions/AaveV3Ethereum_ReduceSafetyModuleEmissions_20260224.sol)
+- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/4ccf67880287701d393bb13015b73b1ad41db29c/src/20260224_AaveV3Ethereum_ReduceSafetyModuleEmissions/AaveV3Ethereum_ReduceSafetyModuleEmissions_20260224.t.sol)
 - [Snapshot](https://snapshot.box/#/s:aavedao.eth/proposal/0xe76461b0936fc892904c1696066b9fa3688e1042078d9c9f06c1a937736a100e)
 - [Discussion](https://governance.aave.com/t/arfc-safety-module-reduce-emissions/24203)
 
