@@ -52,8 +52,8 @@ Copyright and related rights waived via CC0.
 
 ## References
 
-- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260316_Multi_ReEnableWstETHBorrowCaps/AaveV3Ethereum_ReEnableWstETHBorrowCaps_20260316.sol), [AaveV3EthereumLido](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260316_Multi_ReEnableWstETHBorrowCaps/AaveV3EthereumLido_ReEnableWstETHBorrowCaps_20260316.sol)
-- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260316_Multi_ReEnableWstETHBorrowCaps/AaveV3Ethereum_ReEnableWstETHBorrowCaps_20260316.t.sol), [AaveV3EthereumLido](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260316_Multi_ReEnableWstETHBorrowCaps/AaveV3EthereumLido_ReEnableWstETHBorrowCaps_20260316.t.sol)
+- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/43e0633d8f407b6c49b51ce04c64e513f20c1fca/src/20260316_Multi_ReEnableWstETHBorrowCaps/AaveV3Ethereum_ReEnableWstETHBorrowCaps_20260316.sol), [AaveV3EthereumLido](https://github.com/aave-dao/aave-proposals-v3/blob/43e0633d8f407b6c49b51ce04c64e513f20c1fca/src/20260316_Multi_ReEnableWstETHBorrowCaps/AaveV3EthereumLido_ReEnableWstETHBorrowCaps_20260316.sol)
+- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/43e0633d8f407b6c49b51ce04c64e513f20c1fca/src/20260316_Multi_ReEnableWstETHBorrowCaps/AaveV3Ethereum_ReEnableWstETHBorrowCaps_20260316.t.sol), [AaveV3EthereumLido](https://github.com/aave-dao/aave-proposals-v3/blob/43e0633d8f407b6c49b51ce04c64e513f20c1fca/src/20260316_Multi_ReEnableWstETHBorrowCaps/AaveV3EthereumLido_ReEnableWstETHBorrowCaps_20260316.t.sol)
 - Snapshot: Direct-to-AIP
 - [Discussion](https://governance.aave.com/t/direct-to-aip-re-enable-wsteth-borrow-caps-on-ethereum-core-and-prime-post-capo-incident/24295)
 
