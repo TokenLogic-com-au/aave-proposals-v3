@@ -140,8 +140,8 @@ The table below illustrates the configured risk parameters for the assets to be 
 
 ## References
 
-- Implementation: [AaveV3XLayer](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260306_AaveV3XLayer_AaveV36XLayerActivation/AaveV3XLayer_AaveV36XLayerActivation_20260306.sol)
-- Tests: [AaveV3XLayer](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260306_AaveV3XLayer_AaveV36XLayerActivation/AaveV3XLayer_AaveV36XLayerActivation_20260306.t.sol)
+- Implementation: [AaveV3XLayer](https://github.com/aave-dao/aave-proposals-v3/blob/9fcc1e6b8398fc2f166e78e709bccf96917a9acb/src/20260306_AaveV3XLayer_AaveV36XLayerActivation/AaveV3XLayer_AaveV36XLayerActivation_20260306.sol)
+- Tests: [AaveV3XLayer](https://github.com/aave-dao/aave-proposals-v3/blob/9fcc1e6b8398fc2f166e78e709bccf96917a9acb/src/20260306_AaveV3XLayer_AaveV36XLayerActivation/AaveV3XLayer_AaveV36XLayerActivation_20260306.t.sol)
 - [Snapshot](https://snapshot.org/#/s:aavedao.eth/proposal/0x251c520f1f1da8287168420fa2d2a73a2eb5342c3c62508553123129dec059b0)
 - [Discussion](https://governance.aave.com/t/arfc-deploy-aave-v3-on-x-layer/23175/18)
 
