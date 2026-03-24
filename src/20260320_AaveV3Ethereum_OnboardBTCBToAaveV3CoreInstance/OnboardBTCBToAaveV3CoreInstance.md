@@ -49,8 +49,8 @@ Additionally [0xac140648435d03f784879cd789130F22Ef588Fcd](https://etherscan.io/a
 
 ## References
 
-- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260320_AaveV3Ethereum_OnboardBTCBToAaveV3CoreInstance/AaveV3Ethereum_OnboardBTCBToAaveV3CoreInstance_20260320.sol)
-- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260320_AaveV3Ethereum_OnboardBTCBToAaveV3CoreInstance/AaveV3Ethereum_OnboardBTCBToAaveV3CoreInstance_20260320.t.sol)
+- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/1f810a66b4bf85e6b9ad1fe5a2fe2f5c08f5486b/src/20260320_AaveV3Ethereum_OnboardBTCBToAaveV3CoreInstance/AaveV3Ethereum_OnboardBTCBToAaveV3CoreInstance_20260320.sol)
+- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/1f810a66b4bf85e6b9ad1fe5a2fe2f5c08f5486b/src/20260320_AaveV3Ethereum_OnboardBTCBToAaveV3CoreInstance/AaveV3Ethereum_OnboardBTCBToAaveV3CoreInstance_20260320.t.sol)
 - Snapshot: Direct-to-AIP
 - [Discussion](https://governance.aave.com/t/direct-to-aip-onboard-btc-b-to-aave-v3-core-instance/23357)
 
