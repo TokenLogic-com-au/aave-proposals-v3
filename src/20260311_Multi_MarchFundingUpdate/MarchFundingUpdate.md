@@ -34,10 +34,6 @@ Increase USDT budget by 2,000,000 USDT
 
 Create an Allowance that enables the AFC to receive bridged EURC and convert to USDC.
 
-Amount: 82,000 EURC `0x38d693cE1dF5AaDF7bC62595A37D667aD57922e5`
-Spender: AFC `0x22740deBa78d5a0c24C58C740e3715ec29de1bFa`
-Method: `approve()` above assets on the Aave Collector contract to the AFC address
-
 Reimburse 24,900 GHO to TokenLogic for sGHO audit expenses incurred.
 
 Asset: GHO: `0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f`
@@ -82,6 +78,7 @@ To support asset bridging, an Allowance will be created, enabling the AFC to bri
 
 Amount: 3,300,000 aUSDCn `0x724dc807b04555b71ed48a6896b6F41593b8C637`
 Amount: 1,300,000 aUSDT0 `0x6ab707Aca953eDAeFBc4fD23bA73294241490620`
+Amount: 37 aWstETH `0x513c7E3a9c69cA3e22550eF58AC1C0088e918FFf`
 Spender: AFC `0x22740deBa78d5a0c24C58C740e3715ec29de1bFa`
 Method: `approve()` the above assets on the Aave Collector contract to the AFC address.
 
@@ -89,7 +86,6 @@ Bridge all of the following via the AaveArbitrumEthereumBridge:
 
 - DAI
 - LINK
-- wstETH
 - USDC.e
 
 ## References

@@ -33,49 +33,37 @@
 | 3 | Transfer(from: 0x0000000000000000000000000000000000000000, to: 0x464C71f6c2F760DdA6093dCB91C24c39e5d6e18c, value: 67.1905 [67190517921629941999, 18 decimals]) |
 | 4 | Mint(caller: 0xd01607c3C5eCABa394D8be377a08590149325722, onBehalfOf: 0x464C71f6c2F760DdA6093dCB91C24c39e5d6e18c, value: 67.1905 [67190517921629941999, 18 decimals], balanceIncrease: 1487983661156999, index: 1.0610 [1061020227880921283563057213, 27 decimals]) |
 
-#### 0x1aBaEA1f7C830bD89Acc67eC4af516284b1bC33c (AaveV3Ethereum.ASSETS.EURC.UNDERLYING)
-
-| index | event |
-| --- | --- |
-| 6 | Approval(owner: 0x464C71f6c2F760DdA6093dCB91C24c39e5d6e18c, spender: 0x22740deBa78d5a0c24C58C740e3715ec29de1bFa, value: 82,000 [82000000000, 6 decimals]) |
-
 #### 0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f (AaveV3Ethereum.ASSETS.GHO.UNDERLYING, AaveV3EthereumHorizon.ASSETS.GHO.UNDERLYING, AaveV3EthereumLido.ASSETS.GHO.UNDERLYING, GhoEthereum.GHO_TOKEN, UmbrellaEthereum.UMBRELLA_STAKE_ASSETS.STK_GHO_V1.UNDERLYING)
 
 | index | event |
 | --- | --- |
-| 7 | Approval(owner: 0x464C71f6c2F760DdA6093dCB91C24c39e5d6e18c, spender: 0xAA088dfF3dcF619664094945028d44E779F19894, value: 24,900 [24900000000000000000000, 18 decimals]) |
+| 6 | Approval(owner: 0x464C71f6c2F760DdA6093dCB91C24c39e5d6e18c, spender: 0xAA088dfF3dcF619664094945028d44E779F19894, value: 24,900 [24900000000000000000000, 18 decimals]) |
 
 #### 0xb7D402138Cb01BfE97d95181C849379d6AD14d19 (AaveV3Ethereum.COLLECTOR_SWAP_STEWARD)
 
 | index | event |
 | --- | --- |
-| 8 | SetTokenOracle(token: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 (symbol: WETH), oracle: 0x5424384B256154046E9667dDFaaa5e550145215e) |
-| 9 | SetSwappablePair(fromToken: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 (symbol: WETH), toToken: 0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f (symbol: GHO), allowed: true) |
-| 10 | SetSwappablePair(fromToken: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 (symbol: WETH), toToken: 0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9 (symbol: AAVE), allowed: true) |
-| 11 | SetSwappablePair(fromToken: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 (symbol: WETH), toToken: 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 (symbol: USDC), allowed: true) |
-| 12 | SetSwappablePair(fromToken: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 (symbol: WETH), toToken: 0xdAC17F958D2ee523a2206206994597C13D831ec7 (symbol: USDT), allowed: true) |
-| 13 | UpdatedTokenBudget(token: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 (symbol: WETH), budget: 3000000000000000000000) |
-| 14 | UpdatedTokenBudget(token: 0xdAC17F958D2ee523a2206206994597C13D831ec7 (symbol: USDT), budget: 5277190796328) |
+| 7 | SetTokenOracle(token: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 (symbol: WETH), oracle: 0x5424384B256154046E9667dDFaaa5e550145215e) |
+| 8 | SetSwappablePair(fromToken: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 (symbol: WETH), toToken: 0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f (symbol: GHO), allowed: true) |
+| 9 | SetSwappablePair(fromToken: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 (symbol: WETH), toToken: 0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9 (symbol: AAVE), allowed: true) |
+| 10 | SetSwappablePair(fromToken: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 (symbol: WETH), toToken: 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 (symbol: USDC), allowed: true) |
+| 11 | SetSwappablePair(fromToken: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 (symbol: WETH), toToken: 0xdAC17F958D2ee523a2206206994597C13D831ec7 (symbol: USDT), allowed: true) |
+| 12 | UpdatedTokenBudget(token: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 (symbol: WETH), budget: 3000000000000000000000) |
+| 13 | UpdatedTokenBudget(token: 0xdAC17F958D2ee523a2206206994597C13D831ec7 (symbol: USDT), budget: 5277190796328) |
 
 #### 0x5300A1a15135EA4dc7aD5a167152C01EFc9b192A (AaveV2Ethereum.POOL_ADMIN, AaveV2EthereumAMM.POOL_ADMIN, AaveV3Ethereum.ACL_ADMIN, AaveV3EthereumEtherFi.ACL_ADMIN, AaveV3EthereumHorizon.ACL_ADMIN, AaveV3EthereumLido.ACL_ADMIN, GovernanceV3Ethereum.EXECUTOR_LVL_1)
 
 | index | event |
 | --- | --- |
-| 15 | ExecutedAction(target: 0x5615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f, value: 0, signature: execute(), data: 0x, executionTime: 1773256067, withDelegatecall: true, resultData: 0x) |
+| 14 | ExecutedAction(target: 0x5615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f, value: 0, signature: execute(), data: 0x, executionTime: 1773256067, withDelegatecall: true, resultData: 0x) |
 
 #### 0xdAbad81aF85554E9ae636395611C58F7eC1aAEc5 (GovernanceV3Ethereum.PAYLOADS_CONTROLLER)
 
 | index | event |
 | --- | --- |
-| 16 | PayloadExecuted(payloadId: 412) |
+| 15 | PayloadExecuted(payloadId: 412) |
 
 ## Raw storage changes
-
-### 0x1abaea1f7c830bd89acc67ec4af516284b1bc33c (AaveV3Ethereum.ASSETS.EURC.UNDERLYING)
-
-| slot | previous value | new value |
-| --- | --- | --- |
-| 0xa8c66b1acb1305b500713558e67e23ae8d60c8d3d35f65873bfc56d418fc5f5c | 0x0000000000000000000000000000000000000000000000000000000000000000 | 0x000000000000000000000000000000000000000000000000000000131794b400 |
 
 ### 0x40d16fc0246ad3160ccc09b8d0d3a2cd28ae6c2f (AaveV3Ethereum.ASSETS.GHO.UNDERLYING, AaveV3EthereumHorizon.ASSETS.GHO.UNDERLYING, AaveV3EthereumLido.ASSETS.GHO.UNDERLYING, GhoEthereum.GHO_TOKEN, UmbrellaEthereum.UMBRELLA_STAKE_ASSETS.STK_GHO_V1.UNDERLYING)
 

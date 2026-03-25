@@ -28,11 +28,8 @@ contract AaveV3Ethereum_MarchFundingUpdate_20260311 is IProposalGenericExecutor 
   uint256 public constant WETH_SWAP_BUDGET_AMOUNT = 3_000 ether;
   uint256 public constant USDT_SWAP_BUDGET_AMOUNT = 2_000_000e6;
 
-  uint256 public constant EURC_ALLOWANCE = 82_000e6;
-
   function execute() external {
     _depositEth();
-    _runway();
     _reimbursements();
     _swapPathsAndBudget();
     _replenishAllowances();
@@ -49,14 +46,6 @@ contract AaveV3Ethereum_MarchFundingUpdate_20260311 is IProposalGenericExecutor 
       address(AaveV3Ethereum.POOL),
       address(AaveV3Ethereum.COLLECTOR),
       0
-    );
-  }
-
-  function _runway() internal {
-    AaveV3Ethereum.COLLECTOR.approve(
-      IERC20(AaveV3EthereumAssets.EURC_UNDERLYING),
-      MiscEthereum.AFC_SAFE,
-      EURC_ALLOWANCE
     );
   }
 

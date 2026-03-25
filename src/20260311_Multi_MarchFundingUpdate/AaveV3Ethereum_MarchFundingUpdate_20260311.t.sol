@@ -36,32 +36,6 @@ contract AaveV3Ethereum_MarchFundingUpdate_20260311_Test is ProtocolV3TestBase {
     );
   }
 
-  function test_runway() public {
-    uint256 allowanceEurcBefore = IERC20(AaveV3EthereumAssets.EURC_UNDERLYING).allowance(
-      address(AaveV3Ethereum.COLLECTOR),
-      MiscEthereum.AFC_SAFE
-    );
-
-    assertEq(allowanceEurcBefore, 0);
-
-    executePayload(vm, address(proposal));
-
-    uint256 allowanceEurcAfter = IERC20(AaveV3EthereumAssets.EURC_UNDERLYING).allowance(
-      address(AaveV3Ethereum.COLLECTOR),
-      MiscEthereum.AFC_SAFE
-    );
-
-    assertGt(allowanceEurcAfter, allowanceEurcBefore);
-
-    vm.startPrank(MiscEthereum.AFC_SAFE);
-    IERC20(AaveV3EthereumAssets.EURC_UNDERLYING).transferFrom(
-      address(AaveV3Ethereum.COLLECTOR),
-      MiscEthereum.AFC_SAFE,
-      IERC20(AaveV3EthereumAssets.EURC_UNDERLYING).balanceOf(address(AaveV3Ethereum.COLLECTOR))
-    );
-    vm.stopPrank();
-  }
-
   function test_reimbursements() public {
     uint256 allowanceBefore = IERC20(AaveV3EthereumAssets.GHO_UNDERLYING).allowance(
       address(AaveV3Ethereum.COLLECTOR),
