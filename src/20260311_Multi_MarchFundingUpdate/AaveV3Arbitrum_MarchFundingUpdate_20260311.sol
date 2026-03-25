@@ -17,6 +17,7 @@ import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGen
 contract AaveV3Arbitrum_MarchFundingUpdate_20260311 is IProposalGenericExecutor {
   uint256 public constant USDC_ALLOWANCE = 3_300_000e6;
   uint256 public constant USDT_ALLOWANCE = 1_300_000e6;
+  uint256 public constant WSTETH_ALLOWANCE = 37 ether;
 
   /// https://arbiscan.io/address/0x467194771dAe2967Aef3ECbEDD3Bf9a310C76C65
   address public constant DAI_GATEWAY = 0x467194771dAe2967Aef3ECbEDD3Bf9a310C76C65;
@@ -26,9 +27,6 @@ contract AaveV3Arbitrum_MarchFundingUpdate_20260311 is IProposalGenericExecutor 
 
   /// https://arbiscan.io/address/0x09e9222E96E7B4AE2a407B98d48e330053351EEe
   address public constant STANDARD_GATEWAY = 0x09e9222E96E7B4AE2a407B98d48e330053351EEe;
-
-  /// https://arbiscan.io/address/0x07D4692291B9E30E326fd31706f686f83f331B82
-  address public constant WSTETH_GATEWAY = 0x07D4692291B9E30E326fd31706f686f83f331B82;
 
   function execute() external {
     _approvals();
@@ -46,6 +44,12 @@ contract AaveV3Arbitrum_MarchFundingUpdate_20260311 is IProposalGenericExecutor 
       IERC20(AaveV3ArbitrumAssets.USDT_A_TOKEN),
       MiscArbitrum.AFC_SAFE,
       USDT_ALLOWANCE
+    );
+
+    AaveV3Arbitrum.COLLECTOR.approve(
+      IERC20(AaveV3ArbitrumAssets.wstETH_A_TOKEN),
+      MiscArbitrum.AFC_SAFE,
+      WSTETH_ALLOWANCE
     );
   }
 
@@ -80,22 +84,6 @@ contract AaveV3Arbitrum_MarchFundingUpdate_20260311 is IProposalGenericExecutor 
       AaveV3EthereumAssets.LINK_UNDERLYING,
       STANDARD_GATEWAY,
       linkBalance
-    );
-
-    // wstETH
-    uint256 wstethBalance = IERC20(AaveV3ArbitrumAssets.wstETH_UNDERLYING).balanceOf(
-      address(AaveV3Arbitrum.COLLECTOR)
-    );
-    AaveV3Arbitrum.COLLECTOR.transfer(
-      IERC20(AaveV3ArbitrumAssets.wstETH_UNDERLYING),
-      MiscArbitrum.AAVE_ARB_ETH_BRIDGE,
-      wstethBalance
-    );
-    IAaveArbEthERC20Bridge(MiscArbitrum.AAVE_ARB_ETH_BRIDGE).bridge(
-      AaveV3ArbitrumAssets.wstETH_UNDERLYING,
-      AaveV3EthereumAssets.wstETH_UNDERLYING,
-      WSTETH_GATEWAY,
-      wstethBalance
     );
 
     // USDC

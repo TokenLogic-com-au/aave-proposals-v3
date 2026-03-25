@@ -18,7 +18,7 @@ contract AaveV3Arbitrum_MarchFundingUpdate_20260311_Test is ProtocolV3TestBase {
   AaveV3Arbitrum_MarchFundingUpdate_20260311 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('arbitrum'), 440761931);
+    vm.createSelectFork(vm.rpcUrl('arbitrum'), 445295701);
     proposal = new AaveV3Arbitrum_MarchFundingUpdate_20260311();
 
     ArbSysMock arbsys = new ArbSysMock();
@@ -53,6 +53,14 @@ contract AaveV3Arbitrum_MarchFundingUpdate_20260311_Test is ProtocolV3TestBase {
       0
     );
 
+    assertEq(
+      IERC20(AaveV3ArbitrumAssets.wstETH_A_TOKEN).allowance(
+        address(AaveV3Arbitrum.COLLECTOR),
+        MiscArbitrum.AFC_SAFE
+      ),
+      0
+    );
+
     executePayload(vm, address(proposal));
 
     assertEq(
@@ -71,17 +79,31 @@ contract AaveV3Arbitrum_MarchFundingUpdate_20260311_Test is ProtocolV3TestBase {
       proposal.USDT_ALLOWANCE()
     );
 
+    assertEq(
+      IERC20(AaveV3ArbitrumAssets.wstETH_A_TOKEN).allowance(
+        address(AaveV3Arbitrum.COLLECTOR),
+        MiscArbitrum.AFC_SAFE
+      ),
+      proposal.WSTETH_ALLOWANCE()
+    );
+
     vm.startPrank(MiscArbitrum.AFC_SAFE);
     IERC20(AaveV3ArbitrumAssets.USDCn_A_TOKEN).transferFrom(
       address(AaveV3Arbitrum.COLLECTOR),
       MiscArbitrum.AFC_SAFE,
-      proposal.USDC_ALLOWANCE()
+      proposal.USDC_ALLOWANCE() - 200_000e6 // Not full amount available yet
     );
 
     IERC20(AaveV3ArbitrumAssets.USDT_A_TOKEN).transferFrom(
       address(AaveV3Arbitrum.COLLECTOR),
       MiscArbitrum.AFC_SAFE,
-      proposal.USDT_ALLOWANCE()
+      proposal.USDT_ALLOWANCE() - 30_000e6 // Not full amount available yet
+    );
+
+    IERC20(AaveV3ArbitrumAssets.wstETH_A_TOKEN).transferFrom(
+      address(AaveV3Arbitrum.COLLECTOR),
+      MiscArbitrum.AFC_SAFE,
+      proposal.WSTETH_ALLOWANCE()
     );
     vm.stopPrank();
   }
@@ -95,17 +117,12 @@ contract AaveV3Arbitrum_MarchFundingUpdate_20260311_Test is ProtocolV3TestBase {
       address(AaveV3Arbitrum.COLLECTOR)
     );
 
-    uint256 wstethCollectorBalanceBefore = IERC20(AaveV3ArbitrumAssets.wstETH_UNDERLYING).balanceOf(
-      address(AaveV3Arbitrum.COLLECTOR)
-    );
-
     uint256 usdcCollectorBalanceBefore = IERC20(AaveV3ArbitrumAssets.USDC_UNDERLYING).balanceOf(
       address(AaveV3Arbitrum.COLLECTOR)
     );
 
     assertGt(daiCollectorBalanceBefore, 0);
     assertGt(linkCollectorBalanceBefore, 0);
-    assertGt(wstethCollectorBalanceBefore, 0);
     assertGt(usdcCollectorBalanceBefore, 0);
 
     vm.expectEmit(true, true, true, true, MiscArbitrum.AAVE_ARB_ETH_BRIDGE);
@@ -113,9 +130,6 @@ contract AaveV3Arbitrum_MarchFundingUpdate_20260311_Test is ProtocolV3TestBase {
 
     vm.expectEmit(true, true, true, true, MiscArbitrum.AAVE_ARB_ETH_BRIDGE);
     emit Bridge(AaveV3ArbitrumAssets.LINK_UNDERLYING, linkCollectorBalanceBefore);
-
-    vm.expectEmit(true, true, true, true, MiscArbitrum.AAVE_ARB_ETH_BRIDGE);
-    emit Bridge(AaveV3ArbitrumAssets.wstETH_UNDERLYING, wstethCollectorBalanceBefore);
 
     vm.expectEmit(true, true, true, true, MiscArbitrum.AAVE_ARB_ETH_BRIDGE);
     emit Bridge(AaveV3ArbitrumAssets.USDC_UNDERLYING, usdcCollectorBalanceBefore);
@@ -129,11 +143,6 @@ contract AaveV3Arbitrum_MarchFundingUpdate_20260311_Test is ProtocolV3TestBase {
 
     assertEq(
       IERC20(AaveV3ArbitrumAssets.LINK_UNDERLYING).balanceOf(address(AaveV3Arbitrum.COLLECTOR)),
-      0
-    );
-
-    assertEq(
-      IERC20(AaveV3ArbitrumAssets.wstETH_UNDERLYING).balanceOf(address(AaveV3Arbitrum.COLLECTOR)),
       0
     );
 

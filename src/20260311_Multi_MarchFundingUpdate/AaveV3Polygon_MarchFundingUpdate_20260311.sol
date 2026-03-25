@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
+import {AaveV2Polygon, AaveV2PolygonAssets} from 'aave-address-book/AaveV2Polygon.sol';
 import {AaveV3Polygon, AaveV3PolygonAssets} from 'aave-address-book/AaveV3Polygon.sol';
 import {MiscPolygon} from 'aave-address-book/MiscPolygon.sol';
 import {IAavePolEthERC20Bridge} from 'aave-helpers/src/bridges/polygon/IAavePolEthERC20Bridge.sol';
@@ -15,8 +16,9 @@ import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGen
  */
 contract AaveV3Polygon_MarchFundingUpdate_20260311 is IProposalGenericExecutor {
   uint256 public constant USDC_ALLOWANCE = 125_000e6;
-  uint256 public constant USDT_ALLOWANCE = 210_000e6;
-  uint256 public constant EURS_ALLOWANCE = 80_000e2;
+  uint256 public constant USDT_ALLOWANCE_V3 = 180_000e6;
+  uint256 public constant USDT_ALLOWANCE_V2 = 50_000e6;
+  uint256 public constant EURS_ALLOWANCE = 79_000e2;
 
   function execute() external {
     _approvals();
@@ -32,7 +34,12 @@ contract AaveV3Polygon_MarchFundingUpdate_20260311 is IProposalGenericExecutor {
     AaveV3Polygon.COLLECTOR.approve(
       IERC20(AaveV3PolygonAssets.USDT0_A_TOKEN),
       MiscPolygon.AFC_SAFE,
-      USDT_ALLOWANCE
+      USDT_ALLOWANCE_V3
+    );
+    AaveV2Polygon.COLLECTOR.approve(
+      IERC20(AaveV2PolygonAssets.USDT0_A_TOKEN),
+      MiscPolygon.AFC_SAFE,
+      USDT_ALLOWANCE_V2
     );
     AaveV3Polygon.COLLECTOR.approve(
       IERC20(AaveV3PolygonAssets.EURS_A_TOKEN),

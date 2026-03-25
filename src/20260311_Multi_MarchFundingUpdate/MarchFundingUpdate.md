@@ -50,7 +50,7 @@ With EURS trading above the peg, EURS will be withdrawn from Aave on Polygon and
 
 Create an Allowance that enables the AFC to receive EURS, convert it to USDC, and bridge the proceeds to Ethereum.
 
-Amount: 80,000 aEURS `0x38d693cE1dF5AaDF7bC62595A37D667aD57922e5`
+Amount: 79,000 aEURS `0x38d693cE1dF5AaDF7bC62595A37D667aD57922e5`
 Spender: AFC `0x22740deBa78d5a0c24C58C740e3715ec29de1bFa`
 Method: `approve()` above assets on the Aave Collector contract to the AFC address
 
@@ -64,7 +64,7 @@ Bridge all of the following via the AavePolygonEthereumBridge:
 To support bridging assets not supported by the above, an allowance will be created, enabling the AFC to bridge the following assets from Polygon to Ethereum.
 
 Amount: 125,000 aUSDCn `0xA4D94019934D8333Ef880ABFFbF2FDd611C762BD`
-Amount: 210,000 aUSDT0 `0x6ab707Aca953eDAeFBc4fD23bA73294241490620`
+Amount: 230,000 aUSDT0 (split between v2/v3) `0x6ab707Aca953eDAeFBc4fD23bA73294241490620`
 Spender: AFC `0x22740deBa78d5a0c24C58C740e3715ec29de1bFa`
 Method: `approve()` the above assets on the Aave Collector contract to the AFC address
 

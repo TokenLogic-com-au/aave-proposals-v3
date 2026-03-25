@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
+import {AaveV2Polygon, AaveV2PolygonAssets} from 'aave-address-book/AaveV2Polygon.sol';
 import {AaveV3Polygon, AaveV3PolygonAssets} from 'aave-address-book/AaveV3Polygon.sol';
 import {MiscPolygon} from 'aave-address-book/MiscPolygon.sol';
 import {ProtocolV3TestBase, ReserveConfig} from 'aave-helpers/src/ProtocolV3TestBase.sol';
@@ -17,7 +18,7 @@ contract AaveV3Polygon_MarchFundingUpdate_20260311_Test is ProtocolV3TestBase {
   AaveV3Polygon_MarchFundingUpdate_20260311 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('polygon'), 84068021);
+    vm.createSelectFork(vm.rpcUrl('polygon'), 84634770);
     proposal = new AaveV3Polygon_MarchFundingUpdate_20260311();
   }
 
@@ -38,6 +39,13 @@ contract AaveV3Polygon_MarchFundingUpdate_20260311_Test is ProtocolV3TestBase {
     );
     assertEq(
       IERC20(AaveV3PolygonAssets.USDT0_A_TOKEN).allowance(
+        address(AaveV3Polygon.COLLECTOR),
+        MiscPolygon.AFC_SAFE
+      ),
+      0
+    );
+    assertEq(
+      IERC20(AaveV2PolygonAssets.USDT0_A_TOKEN).allowance(
         address(AaveV3Polygon.COLLECTOR),
         MiscPolygon.AFC_SAFE
       ),
@@ -65,7 +73,14 @@ contract AaveV3Polygon_MarchFundingUpdate_20260311_Test is ProtocolV3TestBase {
         address(AaveV3Polygon.COLLECTOR),
         MiscPolygon.AFC_SAFE
       ),
-      proposal.USDT_ALLOWANCE()
+      proposal.USDT_ALLOWANCE_V3()
+    );
+    assertEq(
+      IERC20(AaveV2PolygonAssets.USDT0_A_TOKEN).allowance(
+        address(AaveV3Polygon.COLLECTOR),
+        MiscPolygon.AFC_SAFE
+      ),
+      proposal.USDT_ALLOWANCE_V2()
     );
     assertEq(
       IERC20(AaveV3PolygonAssets.EURS_A_TOKEN).allowance(
@@ -85,7 +100,13 @@ contract AaveV3Polygon_MarchFundingUpdate_20260311_Test is ProtocolV3TestBase {
     IERC20(AaveV3PolygonAssets.USDT0_A_TOKEN).transferFrom(
       address(AaveV3Polygon.COLLECTOR),
       MiscPolygon.AFC_SAFE,
-      proposal.USDT_ALLOWANCE()
+      proposal.USDT_ALLOWANCE_V3()
+    );
+
+    IERC20(AaveV2PolygonAssets.USDT0_A_TOKEN).transferFrom(
+      address(AaveV3Polygon.COLLECTOR),
+      MiscPolygon.AFC_SAFE,
+      proposal.USDT_ALLOWANCE_V2()
     );
 
     IERC20(AaveV3PolygonAssets.EURS_A_TOKEN).transferFrom(
