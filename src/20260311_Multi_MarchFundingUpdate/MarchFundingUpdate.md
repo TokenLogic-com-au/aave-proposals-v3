@@ -32,13 +32,13 @@ Swap To Aaset: `GHO`, `AAVE`, `USDC`, `USDT`
 Increase WETH budget by 3,000 WETH
 Increase USDT budget by 2,000,000 USDT
 
-Create an Allowance that enables the AFC to receive bridged EURC and convert to USDC.
-
 Reimburse 24,900 GHO to TokenLogic for sGHO audit expenses incurred.
 
 Asset: GHO: `0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f`
 Amount: 24,900
 Spender: TokenLogic `0xAA088dfF3dcF619664094945028d44E779F19894`
+
+Deposit idle ETH on the Collector to aWETH on Aave V3.
 
 ### Polygon
 
