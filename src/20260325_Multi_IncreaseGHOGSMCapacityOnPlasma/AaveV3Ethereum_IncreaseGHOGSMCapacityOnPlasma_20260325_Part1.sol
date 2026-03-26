@@ -13,7 +13,7 @@ import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelec
  * - Snapshot: Direct-to-AIP
  * - Discussion: https://governance.aave.com/t/direct-to-aip-increase-gho-gsm-capacity-on-plasma/24327
  */
-contract AaveV3Ethereum_IncreaseGHOGSMCapacityOnPlasma_20260325 is IProposalGenericExecutor {
+contract AaveV3Ethereum_IncreaseGHOGSMCapacityOnPlasma_20260325_Part1 is IProposalGenericExecutor {
   // 50M GHO bridge amount + 10% leeway in case of other bridges
   uint256 public constant TEMP_BRIDGE_CAPACITY = 55_000_000 ether;
   uint256 public constant NEW_BRIDGE_LIMIT = 150_000_000 ether;

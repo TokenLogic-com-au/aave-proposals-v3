@@ -19,32 +19,28 @@ import {IGhoDirectFacilitator} from 'src/interfaces/IGhoDirectFacilitator.sol';
  * - Snapshot: https://snapshot.box/#/s:aavedao.eth/proposal/0xeb3572580924976867073ad9c8012cb9e52093c76dafebd7d3aebf318f2576fb
  * - Discussion: https://governance.aave.com/t/arfc-launch-gho-on-plasma-set-aci-as-emissions-manager-for-rewards/22994/6
  */
-contract AaveV3Ethereum_LaunchGHOOnPlasmaSetACIAsEmissionsManagerForRewards_20250930_Part2 is
-  IProposalGenericExecutor
-{
+contract AaveV3Ethereum_IncreaseGHOGSMCapacityOnPlasma_20260325_Part2 is IProposalGenericExecutor {
   using SafeERC20 for IERC20;
 
-  // GhoDirectFacilitator Constants
-  // https://etherscan.io/address/0x2bd010Ab5393AB51b601B99C4B33ba148d9466e9
-  address public constant DIRECT_FACILITATOR = 0x2bd010Ab5393AB51b601B99C4B33ba148d9466e9;
-  string public constant DIRECT_FACILITATOR_NAME = 'GhoDirectFacilitator Plasma';
-  uint128 public constant DIRECT_FACILITATOR_CAPACITY = 50_000_000 ether;
+  uint128 public constant DIRECT_FACILITATOR_CAPACITY = 100_000_000 ether;
 
   // https://etherscan.io/address/0x7f2f96fcdc3a29be75938d2ac3d92e7006919fe6
   address public constant CCIP_BRIDGE = 0x7F2f96fcdC3A29Be75938d2aC3D92E7006919fe6;
 
-  uint128 public constant DEFAULT_RATE_LIMITER_CAPACITY = 1_500_000 ether;
-  uint128 public constant DEFAULT_RATE_LIMITER_RATE = 300 ether;
+  uint128 internal constant NEW_DEFAULT_RATE_LIMITER_CAPACITY = 5_000_000e18;
+  uint128 internal constant NEW_DEFAULT_RATE_LIMITER_RATE = 1_000e18;
   uint256 public constant PLASMA_BRIDGE_AMOUNT = 50_000_000 ether;
 
   function execute() external {
-    IGhoToken(AaveV3EthereumAssets.GHO_UNDERLYING).addFacilitator(
-      DIRECT_FACILITATOR,
-      DIRECT_FACILITATOR_NAME,
+    IGhoToken(AaveV3EthereumAssets.GHO_UNDERLYING).setFacilitatorBucketCapacity(
+      GhoEthereum.GHO_DIRECT_FACILITATOR_PLASMA_GSMS,
       DIRECT_FACILITATOR_CAPACITY
     );
 
-    IGhoDirectFacilitator(DIRECT_FACILITATOR).mint(address(this), PLASMA_BRIDGE_AMOUNT);
+    IGhoDirectFacilitator(GhoEthereum.GHO_DIRECT_FACILITATOR_PLASMA_GSMS).mint(
+      address(this),
+      PLASMA_BRIDGE_AMOUNT
+    );
 
     IERC20(AaveV3EthereumAssets.GHO_UNDERLYING).approve(CCIP_BRIDGE, PLASMA_BRIDGE_AMOUNT);
 
@@ -60,13 +56,13 @@ contract AaveV3Ethereum_LaunchGHOOnPlasmaSetACIAsEmissionsManagerForRewards_2025
       CCIPChainSelectors.PLASMA,
       IRateLimiter.Config({
         isEnabled: true,
-        capacity: DEFAULT_RATE_LIMITER_CAPACITY,
-        rate: DEFAULT_RATE_LIMITER_RATE
+        capacity: NEW_DEFAULT_RATE_LIMITER_CAPACITY,
+        rate: NEW_DEFAULT_RATE_LIMITER_RATE
       }),
       IRateLimiter.Config({
         isEnabled: true,
-        capacity: DEFAULT_RATE_LIMITER_CAPACITY,
-        rate: DEFAULT_RATE_LIMITER_RATE
+        capacity: NEW_DEFAULT_RATE_LIMITER_CAPACITY,
+        rate: NEW_DEFAULT_RATE_LIMITER_RATE
       })
     );
   }
