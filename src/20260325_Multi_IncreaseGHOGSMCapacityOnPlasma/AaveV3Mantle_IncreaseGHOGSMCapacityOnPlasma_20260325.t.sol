@@ -2,9 +2,10 @@
 pragma solidity ^0.8.0;
 
 import {AaveV3Mantle} from 'aave-address-book/AaveV3Mantle.sol';
+import {GhoMantle} from 'aave-address-book/GhoMantle.sol';
+import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
+import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 
-import 'forge-std/Test.sol';
-import {ProtocolV3TestBase, ReserveConfig} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {AaveV3Mantle_IncreaseGHOGSMCapacityOnPlasma_20260325} from './AaveV3Mantle_IncreaseGHOGSMCapacityOnPlasma_20260325.sol';
 
 /**
@@ -26,7 +27,21 @@ contract AaveV3Mantle_IncreaseGHOGSMCapacityOnPlasma_20260325_Test is ProtocolV3
     defaultTest(
       'AaveV3Mantle_IncreaseGHOGSMCapacityOnPlasma_20260325',
       AaveV3Mantle.POOL,
-      address(proposal)
+      address(proposal),
+      false,
+      false
     );
+  }
+
+  function test_newBucketCapacity() public {
+    (uint256 limit, ) = IGhoToken(GhoMantle.GHO_TOKEN).getFacilitatorBucket(
+      GhoMantle.GHO_CCIP_TOKEN_POOL
+    );
+    assertLt(limit, proposal.NEW_BRIDGE_LIMIT());
+
+    executePayload(vm, address(proposal));
+
+    (limit, ) = IGhoToken(GhoMantle.GHO_TOKEN).getFacilitatorBucket(GhoMantle.GHO_CCIP_TOKEN_POOL);
+    assertEq(limit, proposal.NEW_BRIDGE_LIMIT());
   }
 }

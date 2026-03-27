@@ -2,6 +2,9 @@
 pragma solidity ^0.8.0;
 
 import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGenericExecutor.sol';
+import {GhoBase} from 'aave-address-book/GhoBase.sol';
+
+import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 
 /**
  * @title Increase GHO GSM Capacity on Plasma
@@ -10,7 +13,12 @@ import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGen
  * - Discussion: https://governance.aave.com/t/direct-to-aip-increase-gho-gsm-capacity-on-plasma/24327
  */
 contract AaveV3Base_IncreaseGHOGSMCapacityOnPlasma_20260325 is IProposalGenericExecutor {
+  uint128 public constant NEW_BRIDGE_LIMIT = 150_000_000 ether;
+
   function execute() external {
-    // custom code goes here
+    IGhoToken(GhoBase.GHO_TOKEN).setFacilitatorBucketCapacity(
+      GhoBase.GHO_CCIP_TOKEN_POOL,
+      NEW_BRIDGE_LIMIT
+    );
   }
 }
