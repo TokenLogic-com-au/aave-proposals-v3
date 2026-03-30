@@ -28,7 +28,7 @@ Update Aave Swapper Permission
 To support continued AAVE and GHO Buybacks, extend the following permissions to the SwapStewardContract contract.
 
 Swap From Asset: `wETH`
-Swap To Aaset: `GHO`, `AAVE`, `USDC`, `USDT`
+Swap To Asset: `GHO`, `AAVE`, `USDC`, `USDT`
 Increase WETH budget by 3,000 WETH
 Increase USDT budget by 2,000,000 USDT
 
