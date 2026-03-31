@@ -98,8 +98,8 @@ ACI is not directly affiliated with Pendle and did not receive compensation for 
 
 ## References
 
-- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260324_AaveV3Ethereum_ListingPTSrUsde25JUN2026/AaveV3Ethereum_ListingPTSrUsde25JUN2026_20260324.sol)
-- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260324_AaveV3Ethereum_ListingPTSrUsde25JUN2026/AaveV3Ethereum_ListingPTSrUsde25JUN2026_20260324.t.sol)
+- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/be83455908c3833b50286c3025ab3ae44b0423bf/src/20260324_AaveV3Ethereum_ListingPTSrUsde25JUN2026/AaveV3Ethereum_ListingPTSrUsde25JUN2026_20260324.sol)
+- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/be83455908c3833b50286c3025ab3ae44b0423bf/src/20260324_AaveV3Ethereum_ListingPTSrUsde25JUN2026/AaveV3Ethereum_ListingPTSrUsde25JUN2026_20260324.t.sol)
 - Snapshot: Direct-to-AIP
 - [Discussion](https://governance.aave.com/t/direct-to-aip-onboard-strata-srusde-june-expiry-pt-tokens-to-v3-core-instance/24313)
 
