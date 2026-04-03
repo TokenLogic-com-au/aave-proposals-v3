@@ -49,8 +49,8 @@ wstETH Stablecoins #3
 
 ## References
 
-- Implementation: [AaveV3MegaEth](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260402_AaveV3MegaEth_CollateralParametersAdjustmentOnMegaETHV3/AaveV3MegaEth_CollateralParametersAdjustmentOnMegaETHV3_20260402.sol)
-- Tests: [AaveV3MegaEth](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260402_AaveV3MegaEth_CollateralParametersAdjustmentOnMegaETHV3/AaveV3MegaEth_CollateralParametersAdjustmentOnMegaETHV3_20260402.t.sol)
+- Implementation: [AaveV3MegaEth](https://github.com/aave-dao/aave-proposals-v3/blob/a4481dde9403bc7d286eba9f63cdf282ba51a511/src/20260402_AaveV3MegaEth_CollateralParametersAdjustmentOnMegaETHV3/AaveV3MegaEth_CollateralParametersAdjustmentOnMegaETHV3_20260402.sol)
+- Tests: [AaveV3MegaEth](https://github.com/aave-dao/aave-proposals-v3/blob/a4481dde9403bc7d286eba9f63cdf282ba51a511/src/20260402_AaveV3MegaEth_CollateralParametersAdjustmentOnMegaETHV3/AaveV3MegaEth_CollateralParametersAdjustmentOnMegaETHV3_20260402.t.sol)
 - Snapshot: Direct-To-AIP
 - [Discussion](https://governance.aave.com/t/direct-to-aip-collateral-parameters-adjustment-on-aave-v3-megaeth-instance/24334)
 
