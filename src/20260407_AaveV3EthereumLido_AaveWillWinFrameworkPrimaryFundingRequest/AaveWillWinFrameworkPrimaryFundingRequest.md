@@ -34,8 +34,8 @@ The specification has been taken in consultation with Token Logic, the treasury 
 
 ## References
 
-- Implementation: [AaveV3EthereumLido](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260407_AaveV3EthereumLido_AaveWillWinFrameworkPrimaryFundingRequest/AaveV3EthereumLido_AaveWillWinFrameworkPrimaryFundingRequest_20260407.sol)
-- Tests: [AaveV3EthereumLido](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260407_AaveV3EthereumLido_AaveWillWinFrameworkPrimaryFundingRequest/AaveV3EthereumLido_AaveWillWinFrameworkPrimaryFundingRequest_20260407.t.sol)
+- Implementation: [AaveV3EthereumLido](https://github.com/aave-dao/aave-proposals-v3/blob/6b22488812c15f537a03f827f73c24e31a8a3fc2/src/20260407_AaveV3EthereumLido_AaveWillWinFrameworkPrimaryFundingRequest/AaveV3EthereumLido_AaveWillWinFrameworkPrimaryFundingRequest_20260407.sol)
+- Tests: [AaveV3EthereumLido](https://github.com/aave-dao/aave-proposals-v3/blob/6b22488812c15f537a03f827f73c24e31a8a3fc2/src/20260407_AaveV3EthereumLido_AaveWillWinFrameworkPrimaryFundingRequest/AaveV3EthereumLido_AaveWillWinFrameworkPrimaryFundingRequest_20260407.t.sol)
 - [Snapshot](https://snapshot.org/#/aavedao.eth/proposal/0x35901c1a7cd2baf56dfd120024793b30dd73c52e1c0a9810ff78efbca3b5fbcb)
 - [Discussion](https://governance.aave.com/t/arfc-aave-will-win-framework/24352)
 
