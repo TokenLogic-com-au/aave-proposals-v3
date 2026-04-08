@@ -27,7 +27,9 @@ contract AaveV3XLayer_IncreaseGHOGSMCapacityOnPlasma_20260325_Test is ProtocolV3
     defaultTest(
       'AaveV3XLayer_IncreaseGHOGSMCapacityOnPlasma_20260325',
       AaveV3XLayer.POOL,
-      address(proposal)
+      address(proposal),
+      false,
+      false
     );
   }
 

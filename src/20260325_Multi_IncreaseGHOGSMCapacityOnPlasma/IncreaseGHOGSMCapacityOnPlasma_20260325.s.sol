@@ -6,10 +6,12 @@ import {GovernanceV3Ethereum} from 'aave-address-book/GovernanceV3Ethereum.sol';
 
 import {EthereumScript, AvalancheScript, ArbitrumScript, BaseScript, PlasmaScript, MantleScript, XLayerScript} from 'solidity-utils/contracts/utils/ScriptUtils.sol';
 import {AaveV3Ethereum_IncreaseGHOGSMCapacityOnPlasma_20260325_Part1} from './AaveV3Ethereum_IncreaseGHOGSMCapacityOnPlasma_20260325_Part1.sol';
+import {AaveV3Ethereum_IncreaseGHOGSMCapacityOnPlasma_20260325_Part2} from './AaveV3Ethereum_IncreaseGHOGSMCapacityOnPlasma_20260325_Part2.sol';
 import {AaveV3Avalanche_IncreaseGHOGSMCapacityOnPlasma_20260325} from './AaveV3Avalanche_IncreaseGHOGSMCapacityOnPlasma_20260325.sol';
 import {AaveV3Arbitrum_IncreaseGHOGSMCapacityOnPlasma_20260325} from './AaveV3Arbitrum_IncreaseGHOGSMCapacityOnPlasma_20260325.sol';
 import {AaveV3Base_IncreaseGHOGSMCapacityOnPlasma_20260325} from './AaveV3Base_IncreaseGHOGSMCapacityOnPlasma_20260325.sol';
-import {AaveV3Plasma_IncreaseGHOGSMCapacityOnPlasma_20260325} from './AaveV3Plasma_IncreaseGHOGSMCapacityOnPlasma_20260325.sol';
+import {AaveV3Plasma_IncreaseGHOGSMCapacityOnPlasma_20260325_Part1} from './AaveV3Plasma_IncreaseGHOGSMCapacityOnPlasma_20260325_Part1.sol';
+import {AaveV3Plasma_IncreaseGHOGSMCapacityOnPlasma_20260325_Part2} from './AaveV3Plasma_IncreaseGHOGSMCapacityOnPlasma_20260325_Part2.sol';
 import {AaveV3Mantle_IncreaseGHOGSMCapacityOnPlasma_20260325} from './AaveV3Mantle_IncreaseGHOGSMCapacityOnPlasma_20260325.sol';
 import {AaveV3XLayer_IncreaseGHOGSMCapacityOnPlasma_20260325} from './AaveV3XLayer_IncreaseGHOGSMCapacityOnPlasma_20260325.sol';
 
@@ -24,11 +26,15 @@ contract DeployEthereum is EthereumScript {
     address payload0 = GovV3Helpers.deployDeterministic(
       type(AaveV3Ethereum_IncreaseGHOGSMCapacityOnPlasma_20260325_Part1).creationCode
     );
+    address payload1 = GovV3Helpers.deployDeterministic(
+      type(AaveV3Ethereum_IncreaseGHOGSMCapacityOnPlasma_20260325_Part2).creationCode
+    );
 
     // compose action
     IPayloadsControllerCore.ExecutionAction[]
-      memory actions = new IPayloadsControllerCore.ExecutionAction[](1);
+      memory actions = new IPayloadsControllerCore.ExecutionAction[](2);
     actions[0] = GovV3Helpers.buildAction(payload0);
+    actions[1] = GovV3Helpers.buildAction(payload1);
 
     // register action at payloadsController
     GovV3Helpers.createPayload(actions);
@@ -110,13 +116,17 @@ contract DeployPlasma is PlasmaScript {
   function run() external broadcast {
     // deploy payloads
     address payload0 = GovV3Helpers.deployDeterministic(
-      type(AaveV3Plasma_IncreaseGHOGSMCapacityOnPlasma_20260325).creationCode
+      type(AaveV3Plasma_IncreaseGHOGSMCapacityOnPlasma_20260325_Part1).creationCode
+    );
+    address payload1 = GovV3Helpers.deployDeterministic(
+      type(AaveV3Plasma_IncreaseGHOGSMCapacityOnPlasma_20260325_Part2).creationCode
     );
 
     // compose action
     IPayloadsControllerCore.ExecutionAction[]
-      memory actions = new IPayloadsControllerCore.ExecutionAction[](1);
+      memory actions = new IPayloadsControllerCore.ExecutionAction[](2);
     actions[0] = GovV3Helpers.buildAction(payload0);
+    actions[1] = GovV3Helpers.buildAction(payload1);
 
     // register action at payloadsController
     GovV3Helpers.createPayload(actions);
@@ -179,9 +189,12 @@ contract CreateProposal is EthereumScript {
     // compose actions for validation
     {
       IPayloadsControllerCore.ExecutionAction[]
-        memory actionsEthereum = new IPayloadsControllerCore.ExecutionAction[](1);
+        memory actionsEthereum = new IPayloadsControllerCore.ExecutionAction[](2);
       actionsEthereum[0] = GovV3Helpers.buildAction(
         type(AaveV3Ethereum_IncreaseGHOGSMCapacityOnPlasma_20260325_Part1).creationCode
+      );
+      actionsEthereum[1] = GovV3Helpers.buildAction(
+        type(AaveV3Ethereum_IncreaseGHOGSMCapacityOnPlasma_20260325_Part2).creationCode
       );
       payloads[0] = GovV3Helpers.buildMainnetPayload(vm, actionsEthereum);
     }
@@ -215,9 +228,12 @@ contract CreateProposal is EthereumScript {
 
     {
       IPayloadsControllerCore.ExecutionAction[]
-        memory actionsPlasma = new IPayloadsControllerCore.ExecutionAction[](1);
+        memory actionsPlasma = new IPayloadsControllerCore.ExecutionAction[](2);
       actionsPlasma[0] = GovV3Helpers.buildAction(
-        type(AaveV3Plasma_IncreaseGHOGSMCapacityOnPlasma_20260325).creationCode
+        type(AaveV3Plasma_IncreaseGHOGSMCapacityOnPlasma_20260325_Part1).creationCode
+      );
+      actionsPlasma[1] = GovV3Helpers.buildAction(
+        type(AaveV3Plasma_IncreaseGHOGSMCapacityOnPlasma_20260325_Part2).creationCode
       );
       payloads[4] = GovV3Helpers.buildPlasmaPayload(vm, actionsPlasma);
     }
