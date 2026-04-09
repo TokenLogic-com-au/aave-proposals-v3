@@ -50,10 +50,10 @@ contract AaveV3Plasma_IncreaseGHOGSMCapacityOnPlasma_20260325_Test is ProtocolV3
       GhoPlasma.GHO_CCIP_TOKEN_POOL
     ).getCurrentInboundRateLimiterState(CCIPChainSelectors.ETHEREUM);
 
-    assertEq(bucket.capacity, proposal.NEW_DEFAULT_RATE_LIMITER_CAPACITY());
-    assertEq(bucket.rate, proposal.NEW_DEFAULT_RATE_LIMITER_RATE());
+    assertEq(bucket.capacity, proposal.DEFAULT_RATE_LIMITER_CAPACITY());
+    assertEq(bucket.rate, proposal.DEFAULT_RATE_LIMITER_RATE());
     assertTrue(bucket.isEnabled);
-    assertEq(bucket.tokens, proposal.NEW_DEFAULT_RATE_LIMITER_CAPACITY());
+    assertEq(bucket.tokens, proposal.DEFAULT_RATE_LIMITER_CAPACITY());
 
     executePayload(vm, address(proposal));
 

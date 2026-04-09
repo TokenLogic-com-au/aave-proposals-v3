@@ -38,6 +38,7 @@ contract AaveV3Ethereum_LaunchGHOOnEthereumSetACIAsEmissionsManagerForRewards_20
   );
 
   AaveV3Ethereum_IncreaseGHOGSMCapacityOnPlasma_20260325_Part2 internal proposal;
+  uint128 internal constant RATE_LIMIT_CAPACITY = 55_000_000 ether;
 
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('mainnet'), 24838165);
@@ -48,17 +49,17 @@ contract AaveV3Ethereum_LaunchGHOOnEthereumSetACIAsEmissionsManagerForRewards_20
     // Mock the update from Part 1
     vm.startPrank(GovernanceV3Ethereum.EXECUTOR_LVL_1);
     IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setBridgeLimit(
-      proposal.DIRECT_FACILITATOR_CAPACITY() * 2
+      150_000_000 ether
     );
 
     IUpgradeableBurnMintTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
       CCIPChainSelectors.PLASMA,
-      IRateLimiter.Config({isEnabled: true, capacity: 55_000_000 ether, rate: 54_999_999 ether}),
       IRateLimiter.Config({
         isEnabled: true,
-        capacity: proposal.NEW_DEFAULT_RATE_LIMITER_CAPACITY(),
-        rate: proposal.NEW_DEFAULT_RATE_LIMITER_RATE()
-      })
+        capacity: RATE_LIMIT_CAPACITY,
+        rate: RATE_LIMIT_CAPACITY - 1
+      }),
+      IRateLimiter.Config({isEnabled: true, capacity: 1_500_000 ether, rate: 300 ether})
     );
     vm.stopPrank();
     vm.warp(block.timestamp + 1);
@@ -67,10 +68,10 @@ contract AaveV3Ethereum_LaunchGHOOnEthereumSetACIAsEmissionsManagerForRewards_20
       GhoEthereum.GHO_CCIP_TOKEN_POOL
     ).getCurrentOutboundRateLimiterState(CCIPChainSelectors.PLASMA);
 
-    assertGt(bucket.capacity, proposal.NEW_DEFAULT_RATE_LIMITER_CAPACITY());
-    assertGt(bucket.rate, proposal.NEW_DEFAULT_RATE_LIMITER_RATE());
+    assertEq(bucket.capacity, RATE_LIMIT_CAPACITY);
+    assertEq(bucket.rate, RATE_LIMIT_CAPACITY - 1);
     assertTrue(bucket.isEnabled);
-    assertGt(bucket.tokens, proposal.NEW_DEFAULT_RATE_LIMITER_CAPACITY());
+    assertEq(bucket.tokens, RATE_LIMIT_CAPACITY);
 
     executePayload(vm, address(proposal));
 
@@ -89,23 +90,23 @@ contract AaveV3Ethereum_LaunchGHOOnEthereumSetACIAsEmissionsManagerForRewards_20
       .getFacilitator(GhoEthereum.GHO_DIRECT_FACILITATOR_PLASMA_GSMS);
 
     IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setBridgeLimit(
-      proposal.DIRECT_FACILITATOR_CAPACITY() * 2
+      150_000_000 ether
     );
 
     IUpgradeableBurnMintTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
       CCIPChainSelectors.PLASMA,
-      IRateLimiter.Config({isEnabled: true, capacity: 55_000_000 ether, rate: 54_999_999 ether}),
       IRateLimiter.Config({
         isEnabled: true,
-        capacity: proposal.NEW_DEFAULT_RATE_LIMITER_CAPACITY(),
-        rate: proposal.NEW_DEFAULT_RATE_LIMITER_RATE()
-      })
+        capacity: RATE_LIMIT_CAPACITY,
+        rate: RATE_LIMIT_CAPACITY - 1
+      }),
+      IRateLimiter.Config({isEnabled: true, capacity: 1_500_000 ether, rate: 300 ether})
     );
     vm.stopPrank();
     vm.warp(block.timestamp + 1);
 
-    assertEq(facilitator.bucketCapacity, 0);
-    assertEq(facilitator.bucketLevel, 0);
+    assertEq(facilitator.bucketCapacity, proposal.PLASMA_BRIDGE_AMOUNT());
+    assertEq(facilitator.bucketLevel, proposal.PLASMA_BRIDGE_AMOUNT());
 
     uint256 fee = IAaveGhoCcipBridge(proposal.CCIP_BRIDGE()).quoteBridge(
       CCIPChainSelectors.PLASMA,
@@ -131,7 +132,7 @@ contract AaveV3Ethereum_LaunchGHOOnEthereumSetACIAsEmissionsManagerForRewards_20
     );
 
     assertEq(facilitator.bucketCapacity, proposal.DIRECT_FACILITATOR_CAPACITY());
-    assertEq(facilitator.bucketLevel, proposal.PLASMA_BRIDGE_AMOUNT());
+    assertEq(facilitator.bucketLevel, proposal.PLASMA_BRIDGE_AMOUNT() * 2);
     assertEq(
       IERC20(AaveV3EthereumAssets.LINK_UNDERLYING).balanceOf(proposal.CCIP_BRIDGE()),
       feeBalance - fee
@@ -140,7 +141,7 @@ contract AaveV3Ethereum_LaunchGHOOnEthereumSetACIAsEmissionsManagerForRewards_20
 
   function test_tokenPoolLimits() public {
     GhoCCIPChains.ChainInfo[] memory chains = GhoCCIPChains.getAllChainsExcept(
-      CCIPChainSelectors.MANTLE,
+      CCIPChainSelectors.ETHEREUM,
       false
     );
 
@@ -156,6 +157,26 @@ contract AaveV3Ethereum_LaunchGHOOnEthereumSetACIAsEmissionsManagerForRewards_20
         _getOldRateLimiterConfig()
       );
     }
+
+    vm.startPrank(GovernanceV3Ethereum.EXECUTOR_LVL_1);
+    IGhoToken.Facilitator memory facilitator = IGhoToken(AaveV3EthereumAssets.GHO_UNDERLYING)
+      .getFacilitator(GhoEthereum.GHO_DIRECT_FACILITATOR_PLASMA_GSMS);
+
+    IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setBridgeLimit(
+      150_000_000 ether
+    );
+
+    IUpgradeableBurnMintTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
+      CCIPChainSelectors.PLASMA,
+      IRateLimiter.Config({
+        isEnabled: true,
+        capacity: RATE_LIMIT_CAPACITY,
+        rate: RATE_LIMIT_CAPACITY - 1
+      }),
+      IRateLimiter.Config({isEnabled: true, capacity: 1_500_000 ether, rate: 300 ether})
+    );
+    vm.stopPrank();
+    vm.warp(block.timestamp + 1);
 
     executePayload(vm, address(proposal));
 

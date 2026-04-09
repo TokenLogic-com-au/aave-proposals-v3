@@ -17,8 +17,8 @@ import {IGhoDirectFacilitator} from 'src/interfaces/IGhoDirectFacilitator.sol';
 /**
  * @title Add GHO and deploy GSM on Plasma.
  * @author @TokenLogic
- * - Snapshot: https://snapshot.box/#/s:aavedao.eth/proposal/0xeb3572580924976867073ad9c8012cb9e52093c76dafebd7d3aebf318f2576fb
- * - Discussion: https://governance.aave.com/t/arfc-launch-gho-on-plasma-set-aci-as-emissions-manager-for-rewards/22994/6
+ * - Snapshot: Direct-to-AIP
+ * - Discussion: https://governance.aave.com/t/direct-to-aip-increase-gho-gsm-capacity-on-plasma/24327
  */
 contract AaveV3Ethereum_IncreaseGHOGSMCapacityOnPlasma_20260325_Part2 is IProposalGenericExecutor {
   using SafeERC20 for IERC20;
@@ -54,7 +54,7 @@ contract AaveV3Ethereum_IncreaseGHOGSMCapacityOnPlasma_20260325_Part2 is IPropos
 
     // Restore bridge limits
     GhoCCIPChains.ChainInfo[] memory chains = GhoCCIPChains.getAllChainsExcept(
-      CCIPChainSelectors.ARBITRUM,
+      CCIPChainSelectors.ETHEREUM,
       false
     );
 

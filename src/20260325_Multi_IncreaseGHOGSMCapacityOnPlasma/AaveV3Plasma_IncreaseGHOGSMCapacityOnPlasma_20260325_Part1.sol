@@ -20,23 +20,31 @@ import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 contract AaveV3Plasma_IncreaseGHOGSMCapacityOnPlasma_20260325_Part1 is IProposalGenericExecutor {
   using SafeERC20 for IERC20;
 
-  uint128 public constant NEW_DEFAULT_RATE_LIMITER_CAPACITY = 5_000_000e18;
-  uint128 public constant NEW_DEFAULT_RATE_LIMITER_RATE = 1_000e18;
+  uint128 public constant DEFAULT_RATE_LIMITER_CAPACITY = 1_500_000 ether;
+  uint128 public constant DEFAULT_RATE_LIMITER_RATE = 300 ether;
 
-  uint256 public constant BRIDGED_AMOUNT = 50_000_000 ether;
+  uint128 public constant NEW_BRIDGE_LIMIT = 150_000_000 ether;
+
+  // 50M GHO bridge amount + 10% leeway in case of other bridges
+  uint256 public constant TEMP_BRIDGE_CAPACITY = 55_000_000 ether;
 
   function execute() external {
+    IGhoToken(GhoPlasma.GHO_TOKEN).setFacilitatorBucketCapacity(
+      GhoPlasma.GHO_CCIP_TOKEN_POOL,
+      NEW_BRIDGE_LIMIT
+    );
+
     IUpgradeableBurnMintTokenPool(GhoPlasma.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
       CCIPChainSelectors.ETHEREUM,
       IRateLimiter.Config({
         isEnabled: true,
-        capacity: NEW_DEFAULT_RATE_LIMITER_CAPACITY,
-        rate: NEW_DEFAULT_RATE_LIMITER_RATE
+        capacity: DEFAULT_RATE_LIMITER_CAPACITY,
+        rate: DEFAULT_RATE_LIMITER_RATE
       }),
       IRateLimiter.Config({
         isEnabled: true,
-        capacity: uint128(NEW_DEFAULT_RATE_LIMITER_CAPACITY),
-        rate: uint128(NEW_DEFAULT_RATE_LIMITER_CAPACITY) - 1 // Set rate to capacity so it fills to limit right away (-1 because they cannot be the same)
+        capacity: uint128(TEMP_BRIDGE_CAPACITY),
+        rate: uint128(TEMP_BRIDGE_CAPACITY) - 1 // Set rate to capacity so it fills to limit right away (-1 because they cannot be the same)
       })
     );
   }
