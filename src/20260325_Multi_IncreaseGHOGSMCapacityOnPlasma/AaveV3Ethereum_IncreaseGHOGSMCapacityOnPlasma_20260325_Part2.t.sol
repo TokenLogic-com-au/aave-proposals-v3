@@ -10,17 +10,16 @@ import {IAaveGhoCcipBridge} from 'aave-helpers/src/bridges/ccip/interfaces/IAave
 
 import {GhoCCIPChains} from 'src/helpers/gho-launch/constants/GhoCCIPChains.sol';
 import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
-import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
-import {IUpgradeableLockReleaseTokenPool} from 'src/interfaces/ccip/IUpgradeableLockReleaseTokenPool.sol';
+import {IUpgradeableLockReleaseTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableLockReleaseTokenPool.sol';
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 
 import {AaveV3Ethereum_IncreaseGHOGSMCapacityOnPlasma_20260325_Part2} from './AaveV3Ethereum_IncreaseGHOGSMCapacityOnPlasma_20260325_Part2.sol';
 
 /**
- * @dev Test for AaveV3Ethereum_LaunchGHOOnPlasmaSetACIAsEmissionsManagerForRewards_20250930_Part2
+ * @dev Test for AaveV3Ethereum_LaunchGHOOnPlasmaSetACIAsEmissionsManagerForRewards_20260325_Part2
  * command: FOUNDRY_PROFILE=test forge test --match-path=src/20260325_Multi_IncreaseGHOGSMCapacityOnPlasma/AaveV3Ethereum_IncreaseGHOGSMCapacityOnPlasma_20260325_Part2.t.sol -vv
  */
-contract AaveV3Ethereum_LaunchGHOOnEthereumSetACIAsEmissionsManagerForRewards_20250930_Part2_Test is
+contract AaveV3Ethereum_LaunchGHOOnEthereumSetACIAsEmissionsManagerForRewards_20260325_Part2_Test is
   ProtocolV3TestBase
 {
   /**
@@ -52,7 +51,7 @@ contract AaveV3Ethereum_LaunchGHOOnEthereumSetACIAsEmissionsManagerForRewards_20
       150_000_000 ether
     );
 
-    IUpgradeableBurnMintTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
+    IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
       CCIPChainSelectors.PLASMA,
       IRateLimiter.Config({
         isEnabled: true,
@@ -64,7 +63,7 @@ contract AaveV3Ethereum_LaunchGHOOnEthereumSetACIAsEmissionsManagerForRewards_20
     vm.stopPrank();
     vm.warp(block.timestamp + 1);
 
-    IRateLimiter.TokenBucket memory bucket = IUpgradeableBurnMintTokenPool(
+    IRateLimiter.TokenBucket memory bucket = IUpgradeableLockReleaseTokenPool(
       GhoEthereum.GHO_CCIP_TOKEN_POOL
     ).getCurrentOutboundRateLimiterState(CCIPChainSelectors.PLASMA);
 
@@ -75,7 +74,7 @@ contract AaveV3Ethereum_LaunchGHOOnEthereumSetACIAsEmissionsManagerForRewards_20
 
     executePayload(vm, address(proposal));
 
-    bucket = IUpgradeableBurnMintTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
+    bucket = IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
       .getCurrentOutboundRateLimiterState(CCIPChainSelectors.PLASMA);
 
     assertEq(bucket.capacity, proposal.NEW_DEFAULT_RATE_LIMITER_CAPACITY());
@@ -93,7 +92,7 @@ contract AaveV3Ethereum_LaunchGHOOnEthereumSetACIAsEmissionsManagerForRewards_20
       150_000_000 ether
     );
 
-    IUpgradeableBurnMintTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
+    IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
       CCIPChainSelectors.PLASMA,
       IRateLimiter.Config({
         isEnabled: true,
@@ -147,12 +146,12 @@ contract AaveV3Ethereum_LaunchGHOOnEthereumSetACIAsEmissionsManagerForRewards_20
 
     for (uint256 i = 0; i < chains.length; i++) {
       assertEq(
-        IUpgradeableBurnMintTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
+        IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
           .getCurrentInboundRateLimiterState(chains[i].chainSelector),
         _getOldRateLimiterConfig()
       );
       assertEq(
-        IUpgradeableBurnMintTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
+        IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
           .getCurrentOutboundRateLimiterState(chains[i].chainSelector),
         _getOldRateLimiterConfig()
       );
@@ -166,7 +165,7 @@ contract AaveV3Ethereum_LaunchGHOOnEthereumSetACIAsEmissionsManagerForRewards_20
       150_000_000 ether
     );
 
-    IUpgradeableBurnMintTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
+    IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
       CCIPChainSelectors.PLASMA,
       IRateLimiter.Config({
         isEnabled: true,
@@ -182,12 +181,12 @@ contract AaveV3Ethereum_LaunchGHOOnEthereumSetACIAsEmissionsManagerForRewards_20
 
     for (uint256 i = 0; i < chains.length; i++) {
       assertEq(
-        IUpgradeableBurnMintTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
+        IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
           .getCurrentInboundRateLimiterState(chains[i].chainSelector),
         _getRateLimiterConfig()
       );
       assertEq(
-        IUpgradeableBurnMintTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
+        IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
           .getCurrentOutboundRateLimiterState(chains[i].chainSelector),
         _getRateLimiterConfig()
       );

@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
-import {SafeERC20} from 'openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol';
 import {AaveV3Plasma, AaveV3PlasmaAssets} from 'aave-address-book/AaveV3Plasma.sol';
 import {GhoPlasma} from 'aave-address-book/GhoPlasma.sol';
 import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
@@ -18,8 +16,6 @@ import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
  * - Discussion: https://governance.aave.com/t/direct-to-aip-increase-gho-gsm-capacity-on-plasma/24327
  */
 contract AaveV3Plasma_IncreaseGHOGSMCapacityOnPlasma_20260325_Part1 is IProposalGenericExecutor {
-  using SafeERC20 for IERC20;
-
   uint128 public constant DEFAULT_RATE_LIMITER_CAPACITY = 1_500_000 ether;
   uint128 public constant DEFAULT_RATE_LIMITER_RATE = 300 ether;
 
