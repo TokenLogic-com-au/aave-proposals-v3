@@ -87,11 +87,11 @@ abstract contract AaveV3GHOLaneTest is ProtocolV3TestBase {
   ///// Constants to setup
 
   function _ccipRateLimitCapacity() internal view virtual returns (uint128) {
-    return 1_500_000e18;
+    return 3_000_000e18;
   }
 
   function _ccipRateLimitRefillRate() internal view virtual returns (uint128) {
-    return 300e18;
+    return 1_000e18;
   }
 
   // Local Chain's outbound lane to Ethereum (OnRamp address)
@@ -405,7 +405,7 @@ abstract contract AaveV3GHOLaneTest is ProtocolV3TestBase {
   }
 
   function _getRateLimiterConfig() internal view virtual returns (IRateLimiter.Config memory) {
-    return IRateLimiter.Config({isEnabled: true, capacity: 1_500_000e18, rate: 300e18});
+    return IRateLimiter.Config({isEnabled: true, capacity: 3_000_000e18, rate: 1_000e18});
   }
 
   function _getOutboundRefillTime(uint256 amount) internal view virtual returns (uint256) {

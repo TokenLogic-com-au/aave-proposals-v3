@@ -2,7 +2,11 @@
 pragma solidity ^0.8.0;
 
 import {AaveV3Ethereum} from 'aave-address-book/AaveV3Ethereum.sol';
-import {ProtocolV3TestBase, ReserveConfig} from 'aave-helpers/src/ProtocolV3TestBase.sol';
+import {GhoEthereum} from 'aave-address-book/GhoEthereum.sol';
+import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
+
+import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
+import {IUpgradeableLockReleaseTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableLockReleaseTokenPool.sol';
 import {AaveV3Ethereum_IncreaseGHOGSMCapacityOnPlasma_20260325_Part1} from './AaveV3Ethereum_IncreaseGHOGSMCapacityOnPlasma_20260325_Part1.sol';
 
 /**
@@ -13,7 +17,7 @@ contract AaveV3Ethereum_IncreaseGHOGSMCapacityOnPlasma_20260325_Test is Protocol
   AaveV3Ethereum_IncreaseGHOGSMCapacityOnPlasma_20260325_Part1 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('mainnet'), 24735281);
+    vm.createSelectFork(vm.rpcUrl('mainnet'), 24838165);
     proposal = new AaveV3Ethereum_IncreaseGHOGSMCapacityOnPlasma_20260325_Part1();
   }
 
@@ -26,5 +30,50 @@ contract AaveV3Ethereum_IncreaseGHOGSMCapacityOnPlasma_20260325_Test is Protocol
       AaveV3Ethereum.POOL,
       address(proposal)
     );
+  }
+
+  function test_bridgeLimit() public {
+    assertEq(
+      IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).getBridgeLimit(),
+      100_000_000 ether
+    );
+
+    executePayload(vm, address(proposal));
+
+    assertEq(
+      IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).getBridgeLimit(),
+      proposal.NEW_BRIDGE_LIMIT()
+    );
+  }
+
+  function test_rateLimiter() public {
+    IRateLimiter.TokenBucket memory bucket = IUpgradeableLockReleaseTokenPool(
+      GhoEthereum.GHO_CCIP_TOKEN_POOL
+    ).getCurrentOutboundRateLimiterState(CCIPChainSelectors.PLASMA);
+
+    assertEq(bucket.capacity, proposal.DEFAULT_RATE_LIMITER_CAPACITY());
+    assertEq(bucket.rate, proposal.DEFAULT_RATE_LIMITER_RATE());
+    assertTrue(bucket.isEnabled);
+    assertEq(bucket.tokens, proposal.DEFAULT_RATE_LIMITER_CAPACITY());
+
+    executePayload(vm, address(proposal));
+
+    bucket = IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
+      .getCurrentOutboundRateLimiterState(CCIPChainSelectors.PLASMA);
+
+    assertEq(bucket.capacity, proposal.TEMP_BRIDGE_CAPACITY());
+    assertEq(bucket.rate, proposal.TEMP_BRIDGE_CAPACITY() - 1);
+    assertTrue(bucket.isEnabled);
+    assertEq(bucket.tokens, proposal.DEFAULT_RATE_LIMITER_CAPACITY());
+
+    vm.warp(block.timestamp + 1);
+
+    bucket = IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
+      .getCurrentOutboundRateLimiterState(CCIPChainSelectors.PLASMA);
+
+    assertEq(bucket.capacity, proposal.TEMP_BRIDGE_CAPACITY());
+    assertEq(bucket.rate, proposal.TEMP_BRIDGE_CAPACITY() - 1);
+    assertTrue(bucket.isEnabled);
+    assertEq(bucket.tokens, proposal.TEMP_BRIDGE_CAPACITY());
   }
 }

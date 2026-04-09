@@ -3,9 +3,13 @@ pragma solidity ^0.8.0;
 
 import {AaveV3Base} from 'aave-address-book/AaveV3Base.sol';
 import {GhoBase} from 'aave-address-book/GhoBase.sol';
-import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 
+import {GhoCCIPChains} from 'src/helpers/gho-launch/constants/GhoCCIPChains.sol';
+import {CCIPChainSelectors} from 'src/helpers/gho-launch/constants/CCIPChainSelectors.sol';
+import {IUpgradeableBurnMintTokenPool_1_5_1} from 'src/interfaces/ccip/tokenPool/IUpgradeableBurnMintTokenPool.sol';
+import {IRateLimiter} from 'src/interfaces/ccip/IRateLimiter.sol';
+import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 import {AaveV3Base_IncreaseGHOGSMCapacityOnPlasma_20260325} from './AaveV3Base_IncreaseGHOGSMCapacityOnPlasma_20260325.sol';
 
 /**
@@ -16,7 +20,7 @@ contract AaveV3Base_IncreaseGHOGSMCapacityOnPlasma_20260325_Test is ProtocolV3Te
   AaveV3Base_IncreaseGHOGSMCapacityOnPlasma_20260325 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('base'), 43830526);
+    vm.createSelectFork(vm.rpcUrl('base'), 44449950);
     proposal = new AaveV3Base_IncreaseGHOGSMCapacityOnPlasma_20260325();
   }
 
@@ -41,5 +45,62 @@ contract AaveV3Base_IncreaseGHOGSMCapacityOnPlasma_20260325_Test is ProtocolV3Te
 
     (limit, ) = IGhoToken(GhoBase.GHO_TOKEN).getFacilitatorBucket(GhoBase.GHO_CCIP_TOKEN_POOL);
     assertEq(limit, proposal.NEW_BRIDGE_LIMIT());
+  }
+
+  function test_tokenPoolLimits() public {
+    GhoCCIPChains.ChainInfo[] memory chains = GhoCCIPChains.getAllChainsExcept(
+      CCIPChainSelectors.BASE,
+      false
+    );
+
+    for (uint256 i = 0; i < chains.length; i++) {
+      assertEq(
+        IUpgradeableBurnMintTokenPool_1_5_1(GhoBase.GHO_CCIP_TOKEN_POOL)
+          .getCurrentInboundRateLimiterState(chains[i].chainSelector),
+        _getOldRateLimiterConfig()
+      );
+      assertEq(
+        IUpgradeableBurnMintTokenPool_1_5_1(GhoBase.GHO_CCIP_TOKEN_POOL)
+          .getCurrentOutboundRateLimiterState(chains[i].chainSelector),
+        _getOldRateLimiterConfig()
+      );
+    }
+
+    executePayload(vm, address(proposal));
+
+    for (uint256 i = 0; i < chains.length; i++) {
+      assertEq(
+        IUpgradeableBurnMintTokenPool_1_5_1(GhoBase.GHO_CCIP_TOKEN_POOL)
+          .getCurrentInboundRateLimiterState(chains[i].chainSelector),
+        _getRateLimiterConfig()
+      );
+      assertEq(
+        IUpgradeableBurnMintTokenPool_1_5_1(GhoBase.GHO_CCIP_TOKEN_POOL)
+          .getCurrentOutboundRateLimiterState(chains[i].chainSelector),
+        _getRateLimiterConfig()
+      );
+    }
+  }
+
+  function _getOldRateLimiterConfig() internal view virtual returns (IRateLimiter.Config memory) {
+    return IRateLimiter.Config({isEnabled: true, capacity: 1_500_000e18, rate: 300e18});
+  }
+
+  function _getRateLimiterConfig() internal view virtual returns (IRateLimiter.Config memory) {
+    return
+      IRateLimiter.Config({
+        isEnabled: true,
+        capacity: proposal.NEW_DEFAULT_RATE_LIMITER_CAPACITY(),
+        rate: proposal.NEW_DEFAULT_RATE_LIMITER_RATE()
+      });
+  }
+
+  function assertEq(
+    IRateLimiter.TokenBucket memory bucket,
+    IRateLimiter.Config memory config
+  ) internal view virtual {
+    assertEq(bucket.isEnabled, config.isEnabled);
+    assertEq(bucket.capacity, config.capacity);
+    assertEq(bucket.rate, config.rate);
   }
 }

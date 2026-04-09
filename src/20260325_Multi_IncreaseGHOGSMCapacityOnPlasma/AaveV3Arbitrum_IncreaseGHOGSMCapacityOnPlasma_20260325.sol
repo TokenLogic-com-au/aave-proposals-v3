@@ -17,8 +17,8 @@ import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
  */
 contract AaveV3Arbitrum_IncreaseGHOGSMCapacityOnPlasma_20260325 is IProposalGenericExecutor {
   uint128 public constant NEW_BRIDGE_LIMIT = 150_000_000 ether;
-  uint128 internal constant NEW_DEFAULT_RATE_LIMITER_CAPACITY = 5_000_000e18;
-  uint128 internal constant NEW_DEFAULT_RATE_LIMITER_RATE = 1_000e18;
+  uint128 public constant NEW_DEFAULT_RATE_LIMITER_CAPACITY = 5_000_000e18;
+  uint128 public constant NEW_DEFAULT_RATE_LIMITER_RATE = 1_000e18;
 
   function execute() external {
     IGhoToken(GhoArbitrum.GHO_TOKEN).setFacilitatorBucketCapacity(
@@ -30,9 +30,10 @@ contract AaveV3Arbitrum_IncreaseGHOGSMCapacityOnPlasma_20260325 is IProposalGene
       CCIPChainSelectors.ARBITRUM,
       false
     );
+
     for (uint256 i = 0; i < chains.length; i++) {
       IUpgradeableBurnMintTokenPool(GhoArbitrum.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
-        CCIPChainSelectors.ETHEREUM,
+        chains[i].chainSelector,
         IRateLimiter.Config({
           isEnabled: true,
           capacity: NEW_DEFAULT_RATE_LIMITER_CAPACITY,

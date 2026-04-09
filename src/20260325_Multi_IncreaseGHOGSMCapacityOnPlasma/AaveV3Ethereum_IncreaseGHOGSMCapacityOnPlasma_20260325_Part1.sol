@@ -18,8 +18,8 @@ contract AaveV3Ethereum_IncreaseGHOGSMCapacityOnPlasma_20260325_Part1 is IPropos
   uint256 public constant TEMP_BRIDGE_CAPACITY = 55_000_000 ether;
   uint256 public constant NEW_BRIDGE_LIMIT = 150_000_000 ether;
 
-  uint128 internal constant NEW_DEFAULT_RATE_LIMITER_CAPACITY = 5_000_000e18;
-  uint128 internal constant NEW_DEFAULT_RATE_LIMITER_RATE = 1_000e18;
+  uint128 public constant DEFAULT_RATE_LIMITER_CAPACITY = 1_500_000 ether;
+  uint128 public constant DEFAULT_RATE_LIMITER_RATE = 300 ether;
 
   function execute() external {
     IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setBridgeLimit(
@@ -36,8 +36,8 @@ contract AaveV3Ethereum_IncreaseGHOGSMCapacityOnPlasma_20260325_Part1 is IPropos
       }),
       IRateLimiter.Config({
         isEnabled: true,
-        capacity: NEW_DEFAULT_RATE_LIMITER_CAPACITY,
-        rate: NEW_DEFAULT_RATE_LIMITER_RATE
+        capacity: DEFAULT_RATE_LIMITER_CAPACITY,
+        rate: DEFAULT_RATE_LIMITER_RATE
       })
     );
   }

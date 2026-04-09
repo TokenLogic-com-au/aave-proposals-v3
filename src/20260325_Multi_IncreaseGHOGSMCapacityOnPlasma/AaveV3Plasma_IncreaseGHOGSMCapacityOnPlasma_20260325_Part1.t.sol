@@ -18,7 +18,7 @@ contract AaveV3Plasma_IncreaseGHOGSMCapacityOnPlasma_20260325_Test is ProtocolV3
   AaveV3Plasma_IncreaseGHOGSMCapacityOnPlasma_20260325_Part1 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('plasma'), 17518537);
+    vm.createSelectFork(vm.rpcUrl('plasma'), 18757880);
     proposal = new AaveV3Plasma_IncreaseGHOGSMCapacityOnPlasma_20260325_Part1();
   }
 
