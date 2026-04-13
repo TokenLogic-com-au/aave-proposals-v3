@@ -69,8 +69,8 @@ Additionally [0xac140648435d03f784879cd789130F22Ef588Fcd](https://etherscan.io/a
 
 ## References
 
-- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260407_AaveV3Ethereum_OnboardPTUSDG28MAY2026OnV3Core/AaveV3Ethereum_OnboardPTUSDG28MAY2026OnV3Core_20260407.sol)
-- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260407_AaveV3Ethereum_OnboardPTUSDG28MAY2026OnV3Core/AaveV3Ethereum_OnboardPTUSDG28MAY2026OnV3Core_20260407.t.sol)
+- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/3d14f188c0e02756dc2df5db6b3408f098819ec0/src/20260407_AaveV3Ethereum_OnboardPTUSDG28MAY2026OnV3Core/AaveV3Ethereum_OnboardPTUSDG28MAY2026OnV3Core_20260407.sol)
+- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/3d14f188c0e02756dc2df5db6b3408f098819ec0/src/20260407_AaveV3Ethereum_OnboardPTUSDG28MAY2026OnV3Core/AaveV3Ethereum_OnboardPTUSDG28MAY2026OnV3Core_20260407.t.sol)
 - [Snapshot](https://snapshot.org/#/s:aavedao.eth/proposal/0xaa29094accbcccd70088fb77dfd2800a4488319a0942b226c5699ea35d1c9e19)
 - [Discussion](https://governance.aave.com/t/arfc-onboard-pt-usdg-28may2026-to-aave-v3-core-instance/24345/4)
 
