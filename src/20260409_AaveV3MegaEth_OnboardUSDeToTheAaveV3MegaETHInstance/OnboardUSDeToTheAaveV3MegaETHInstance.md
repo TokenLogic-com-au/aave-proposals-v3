@@ -54,8 +54,8 @@ A Cap Adapter using the USDT price feed has been deployed for USDe, with the con
 
 ## References
 
-- Implementation: [AaveV3MegaEth](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260409_AaveV3MegaEth_OnboardUSDeToTheAaveV3MegaETHInstance/AaveV3MegaEth_OnboardUSDeToTheAaveV3MegaETHInstance_20260409.sol)
-- Tests: [AaveV3MegaEth](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260409_AaveV3MegaEth_OnboardUSDeToTheAaveV3MegaETHInstance/AaveV3MegaEth_OnboardUSDeToTheAaveV3MegaETHInstance_20260409.t.sol)
+- Implementation: [AaveV3MegaEth](https://github.com/aave-dao/aave-proposals-v3/blob/c589695716d5b3f76ea133b541c84510395668a9/src/20260409_AaveV3MegaEth_OnboardUSDeToTheAaveV3MegaETHInstance/AaveV3MegaEth_OnboardUSDeToTheAaveV3MegaETHInstance_20260409.sol)
+- Tests: [AaveV3MegaEth](https://github.com/aave-dao/aave-proposals-v3/blob/c589695716d5b3f76ea133b541c84510395668a9/src/20260409_AaveV3MegaEth_OnboardUSDeToTheAaveV3MegaETHInstance/AaveV3MegaEth_OnboardUSDeToTheAaveV3MegaETHInstance_20260409.t.sol)
 - Snapshot: Direct-to-AIP
 - [Discussion](https://governance.aave.com/t/direct-to-aip-onboard-usde-to-the-aave-v3-megaeth-instance/24389)
 
