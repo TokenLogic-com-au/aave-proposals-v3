@@ -38,8 +38,8 @@ The proposal executes the following changes on the Aave V3 Scroll instance:
 
 ## References
 
-- Implementation: [AaveV3Scroll](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260411_AaveV3Scroll_DeprecateAaveV3Scroll/AaveV3Scroll_DeprecateAaveV3Scroll_20260411.sol)
-- Tests: [AaveV3Scroll](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260411_AaveV3Scroll_DeprecateAaveV3Scroll/AaveV3Scroll_DeprecateAaveV3Scroll_20260411.t.sol)
+- Implementation: [AaveV3Scroll](https://github.com/aave-dao/aave-proposals-v3/blob/94d54123c14c41761e556e0106201f85a446b232/src/20260411_AaveV3Scroll_DeprecateAaveV3Scroll/AaveV3Scroll_DeprecateAaveV3Scroll_20260411.sol)
+- Tests: [AaveV3Scroll](https://github.com/aave-dao/aave-proposals-v3/blob/94d54123c14c41761e556e0106201f85a446b232/src/20260411_AaveV3Scroll_DeprecateAaveV3Scroll/AaveV3Scroll_DeprecateAaveV3Scroll_20260411.t.sol)
 - Snapshot: Direct-To-AIP
 - [Discussion](https://governance.aave.com/t/direct-to-aip-aave-v3-scroll-instance-deprecation/24432)
 
