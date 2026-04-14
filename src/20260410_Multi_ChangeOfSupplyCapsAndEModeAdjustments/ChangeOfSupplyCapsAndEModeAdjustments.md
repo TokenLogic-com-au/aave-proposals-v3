@@ -42,8 +42,8 @@ Chaos Labs has not been compensated by any third party for publishing this recom
 
 ## References
 
-- Implementation: [AaveV3Plasma](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260410_Multi_ChangeOfSupplyCapsAndEModeAdjustments/AaveV3Plasma_ChangeOfSupplyCapsAndEModeAdjustments_20260410.sol)
-- Tests: [AaveV3Plasma](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260410_Multi_ChangeOfSupplyCapsAndEModeAdjustments/AaveV3Plasma_ChangeOfSupplyCapsAndEModeAdjustments_20260410.t.sol)
+- Implementation: [AaveV3Plasma](https://github.com/aave-dao/aave-proposals-v3/blob/b71ecc8dadda5ad22b3edcd2b9ee3b45a0788d5f/src/20260410_Multi_ChangeOfSupplyCapsAndEModeAdjustments/AaveV3Plasma_ChangeOfSupplyCapsAndEModeAdjustments_20260410.sol)
+- Tests: [AaveV3Plasma](https://github.com/aave-dao/aave-proposals-v3/blob/b71ecc8dadda5ad22b3edcd2b9ee3b45a0788d5f/src/20260410_Multi_ChangeOfSupplyCapsAndEModeAdjustments/AaveV3Plasma_ChangeOfSupplyCapsAndEModeAdjustments_20260410.t.sol)
 - Snapshot: Direct-to-AIP
 - [Discussion](https://governance.aave.com/t/direct-to-aip-change-of-supply-caps-and-adjustment-of-e-mode-assets-on-aave-v3-07-04-26/24396)
 
