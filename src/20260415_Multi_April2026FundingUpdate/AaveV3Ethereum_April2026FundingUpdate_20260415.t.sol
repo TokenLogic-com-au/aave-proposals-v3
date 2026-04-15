@@ -1,0 +1,207 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
+import {AaveV3Ethereum, AaveV3EthereumAssets} from 'aave-address-book/AaveV3Ethereum.sol';
+import {AaveV3EthereumLido, AaveV3EthereumLidoAssets} from 'aave-address-book/AaveV3EthereumLido.sol';
+import {MiscEthereum} from 'aave-address-book/MiscEthereum.sol';
+import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
+import {IStreamable} from 'aave-address-book/common/IStreamable.sol';
+
+import {AaveV3Ethereum_April2026FundingUpdate_20260415} from './AaveV3Ethereum_April2026FundingUpdate_20260415.sol';
+
+interface IMainnetSwapSteward {
+  function tokenBudget(address token) external view returns (uint256);
+}
+
+/**
+ * @dev Test for AaveV3Ethereum_April2026FundingUpdate_20260415
+ * command: FOUNDRY_PROFILE=test forge test --match-path=src/20260415_Multi_April2026FundingUpdate/AaveV3Ethereum_April2026FundingUpdate_20260415.t.sol -vv
+ */
+contract AaveV3Ethereum_April2026FundingUpdate_20260415_Test is ProtocolV3TestBase {
+  AaveV3Ethereum_April2026FundingUpdate_20260415 internal proposal;
+
+  function setUp() public {
+    vm.createSelectFork(vm.rpcUrl('mainnet'), 24887500);
+    proposal = new AaveV3Ethereum_April2026FundingUpdate_20260415();
+  }
+
+  /**
+   * @dev executes the generic test suite including e2e and config snapshots
+   */
+  function test_defaultProposalExecution() public {
+    defaultTest(
+      'AaveV3Ethereum_April2026FundingUpdate_20260415',
+      AaveV3Ethereum.POOL,
+      address(proposal)
+    );
+  }
+
+  function test_reimbursements() public {
+    uint256 allowanceBefore = IERC20(AaveV3EthereumAssets.GHO_UNDERLYING).allowance(
+      address(AaveV3Ethereum.COLLECTOR),
+      proposal.TOKEN_LOGIC()
+    );
+
+    assertEq(allowanceBefore, 0);
+
+    executePayload(vm, address(proposal));
+
+    uint256 allowanceAfter = IERC20(AaveV3EthereumAssets.GHO_UNDERLYING).allowance(
+      address(AaveV3Ethereum.COLLECTOR),
+      proposal.TOKEN_LOGIC()
+    );
+
+    assertEq(allowanceAfter, allowanceBefore + proposal.REIMBURSEMENTS_GHO_AMOUNT());
+  }
+
+  function test_replenishSwapTokenBudget() public {
+    uint256 budgetWethBefore = IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD)
+      .tokenBudget(AaveV3EthereumAssets.WETH_UNDERLYING);
+
+    uint256 budgetUsdtBefore = IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD)
+      .tokenBudget(AaveV3EthereumAssets.USDT_UNDERLYING);
+
+    uint256 budgetUsdcBefore = IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD)
+      .tokenBudget(AaveV3EthereumAssets.USDC_UNDERLYING);
+
+    uint256 budgetUsdeBefore = IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD)
+      .tokenBudget(AaveV3EthereumAssets.USDe_UNDERLYING);
+
+    uint256 budgetUsdsBefore = IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD)
+      .tokenBudget(AaveV3EthereumAssets.USDS_UNDERLYING);
+
+    uint256 budgetDaiBefore = IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD)
+      .tokenBudget(AaveV3EthereumAssets.DAI_UNDERLYING);
+
+    executePayload(vm, address(proposal));
+
+    uint256 budgetWethAfter = IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD)
+      .tokenBudget(AaveV3EthereumAssets.WETH_UNDERLYING);
+
+    uint256 budgetUsdtAfter = IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD)
+      .tokenBudget(AaveV3EthereumAssets.USDT_UNDERLYING);
+
+    uint256 budgetUsdcAfter = IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD)
+      .tokenBudget(AaveV3EthereumAssets.USDC_UNDERLYING);
+
+    uint256 budgetUsdeAfter = IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD)
+      .tokenBudget(AaveV3EthereumAssets.USDe_UNDERLYING);
+
+    uint256 budgetUsdsAfter = IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD)
+      .tokenBudget(AaveV3EthereumAssets.USDS_UNDERLYING);
+
+    uint256 budgetDaiAfter = IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD).tokenBudget(
+      AaveV3EthereumAssets.DAI_UNDERLYING
+    );
+
+    assertEq(budgetWethAfter, budgetWethBefore + proposal.WETH_SWAP_BUDGET_AMOUNT());
+    assertEq(budgetUsdtAfter, budgetUsdtBefore + proposal.USDT_SWAP_BUDGET_AMOUNT());
+    assertEq(budgetUsdcAfter, budgetUsdcBefore + proposal.USDC_SWAP_BUDGET_AMOUNT());
+    assertEq(budgetUsdeAfter, budgetUsdeBefore + proposal.USDe_SWAP_BUDGET_AMOUNT());
+    assertEq(budgetUsdsAfter, budgetUsdsBefore + proposal.USDS_SWAP_BUDGET_AMOUNT());
+    assertEq(budgetDaiAfter, budgetDaiBefore + proposal.DAI_SWAP_BUDGET_AMOUNT());
+  }
+
+  function test_merit() public {
+    uint256 allowanceBefore = IERC20(AaveV3EthereumLidoAssets.GHO_A_TOKEN).allowance(
+      address(AaveV3Ethereum.COLLECTOR),
+      MiscEthereum.MERIT_AHAB_SAFE
+    );
+
+    assertEq(allowanceBefore, 0);
+
+    executePayload(vm, address(proposal));
+
+    uint256 allowanceAfter = IERC20(AaveV3EthereumLidoAssets.GHO_A_TOKEN).allowance(
+      address(AaveV3Ethereum.COLLECTOR),
+      MiscEthereum.MERIT_AHAB_SAFE
+    );
+
+    assertEq(allowanceAfter, proposal.MERIT_ALLOWANCE());
+  }
+
+  function test_tydro() public {
+    uint256 allowanceBefore = IERC20(AaveV3EthereumAssets.AAVE_UNDERLYING).allowance(
+      address(AaveV3Ethereum.COLLECTOR),
+      MiscEthereum.AFC_SAFE
+    );
+
+    assertEq(allowanceBefore, 0);
+
+    executePayload(vm, address(proposal));
+
+    uint256 allowanceAfter = IERC20(AaveV3EthereumAssets.AAVE_UNDERLYING).allowance(
+      address(AaveV3Ethereum.COLLECTOR),
+      MiscEthereum.AFC_SAFE
+    );
+
+    assertEq(allowanceAfter, proposal.TYDRO_ALLOWANCE());
+  }
+
+  function test_stream_cancel() public {
+    uint256 aaveBalancesBeforeUsers = IERC20(AaveV3EthereumAssets.AAVE_UNDERLYING).balanceOf(
+      proposal.STREAM_RECIPIENT()
+    );
+    uint256 unclaimedAAVE = IStreamable(MiscEthereum.ECOSYSTEM_RESERVE).balanceOf(
+      proposal.OLD_STREAM(),
+      proposal.STREAM_RECIPIENT()
+    );
+
+    executePayload(vm, address(proposal));
+
+    vm.expectRevert();
+    IStreamable(MiscEthereum.ECOSYSTEM_RESERVE).getStream(proposal.OLD_STREAM());
+
+    assertEq(
+      IERC20(AaveV3EthereumAssets.AAVE_UNDERLYING).balanceOf(proposal.STREAM_RECIPIENT()),
+      aaveBalancesBeforeUsers + unclaimedAAVE + proposal.STREAM_AMOUNT(),
+      'unclaimed AAVE not propoerly distributed'
+    );
+  }
+
+  function test_stream_new() public {
+    // 0.001% tolerance due to stream computation inaccuracy
+    uint256 maxDeltaStreamBalance = 0.00001e18; // 0.001%
+
+    uint256 nextStreamId = IStreamable(MiscEthereum.ECOSYSTEM_RESERVE).getNextStreamId();
+
+    vm.expectRevert();
+    IStreamable(MiscEthereum.ECOSYSTEM_RESERVE).getStream(nextStreamId);
+
+    executePayload(vm, address(proposal));
+
+    // any sooner and we miss the transfered aave from stream cancellation
+    uint256 aaveBalancesBeforeUsers = IERC20(AaveV3EthereumAssets.AAVE_UNDERLYING).balanceOf(
+      proposal.STREAM_RECIPIENT()
+    );
+
+    vm.warp(block.timestamp + proposal.STREAM_DURATION() + 1 days);
+
+    // Stream transfers
+    uint256 finalBalanceToWithdraw = IStreamable(MiscEthereum.ECOSYSTEM_RESERVE).balanceOf(
+      nextStreamId,
+      proposal.STREAM_RECIPIENT()
+    );
+
+    assertApproxEqRel(
+      finalBalanceToWithdraw,
+      proposal.STREAM_AMOUNT(),
+      maxDeltaStreamBalance,
+      'AAVE Stream final balance is not correct'
+    );
+
+    vm.prank(proposal.STREAM_RECIPIENT());
+    IStreamable(MiscEthereum.ECOSYSTEM_RESERVE).withdrawFromStream(
+      nextStreamId,
+      finalBalanceToWithdraw
+    );
+
+    assertApproxEqRel(
+      IERC20(AaveV3EthereumAssets.AAVE_UNDERLYING).balanceOf(proposal.STREAM_RECIPIENT()),
+      aaveBalancesBeforeUsers + proposal.STREAM_AMOUNT(),
+      maxDeltaStreamBalance,
+      'AAVE Stream final withdraw is not correct'
+    );
+  }
+}
