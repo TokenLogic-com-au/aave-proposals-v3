@@ -35,10 +35,7 @@ contract AaveV3Ethereum_April2026FundingUpdate_20260415 is IProposalGenericExecu
   uint256 public constant STREAM = 1;
 
   uint256 public constant OLD_STREAM = 100015;
-  uint256 public constant STREAM_DURATION = 365 days;
-  uint256 public constant STREAM_AMOUNT = 1_700 ether;
   address public constant STREAM_RECIPIENT = 0xbC540e0729B732fb14afA240aA5A047aE9ba7dF0;
-  uint256 public constant STREAM_BLOCK = 1762607375;
 
   function execute() external {
     _depositEth();
@@ -64,10 +61,14 @@ contract AaveV3Ethereum_April2026FundingUpdate_20260415 is IProposalGenericExecu
   }
 
   function _reimbursements() internal {
+    uint256 currentAllowance = IERC20(AaveV3EthereumAssets.GHO_UNDERLYING).allowance(
+      address(AaveV3Ethereum.COLLECTOR),
+      TOKEN_LOGIC
+    );
     AaveV3Ethereum.COLLECTOR.approve(
       IERC20(AaveV3EthereumAssets.GHO_UNDERLYING),
       TOKEN_LOGIC,
-      REIMBURSEMENTS_GHO_AMOUNT
+      currentAllowance + REIMBURSEMENTS_GHO_AMOUNT
     );
   }
 
@@ -112,8 +113,9 @@ contract AaveV3Ethereum_April2026FundingUpdate_20260415 is IProposalGenericExecu
   }
 
   function _tydro() internal {
-    AaveV3Ethereum.COLLECTOR.approve(
-      IERC20(AaveV3EthereumAssets.AAVE_UNDERLYING),
+    MiscEthereum.AAVE_ECOSYSTEM_RESERVE_CONTROLLER.approve(
+      MiscEthereum.ECOSYSTEM_RESERVE,
+      AaveV3EthereumAssets.AAVE_UNDERLYING,
       MiscEthereum.AFC_SAFE,
       TYDRO_ALLOWANCE
     );
@@ -123,17 +125,6 @@ contract AaveV3Ethereum_April2026FundingUpdate_20260415 is IProposalGenericExecu
     MiscEthereum.AAVE_ECOSYSTEM_RESERVE_CONTROLLER.cancelStream(
       MiscEthereum.ECOSYSTEM_RESERVE,
       OLD_STREAM
-    );
-
-    uint256 amount = (STREAM_AMOUNT / STREAM_DURATION) * STREAM_DURATION;
-
-    MiscEthereum.AAVE_ECOSYSTEM_RESERVE_CONTROLLER.createStream(
-      MiscEthereum.ECOSYSTEM_RESERVE,
-      STREAM_RECIPIENT,
-      amount,
-      AaveV3EthereumAssets.AAVE_UNDERLYING,
-      STREAM_BLOCK,
-      STREAM_BLOCK + STREAM_DURATION
     );
   }
 }

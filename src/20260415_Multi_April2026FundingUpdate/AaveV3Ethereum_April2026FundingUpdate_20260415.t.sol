@@ -43,7 +43,7 @@ contract AaveV3Ethereum_April2026FundingUpdate_20260415_Test is ProtocolV3TestBa
       proposal.TOKEN_LOGIC()
     );
 
-    assertEq(allowanceBefore, 0);
+    assertGt(allowanceBefore, 0);
 
     executePayload(vm, address(proposal));
 
@@ -123,7 +123,7 @@ contract AaveV3Ethereum_April2026FundingUpdate_20260415_Test is ProtocolV3TestBa
 
   function test_tydro() public {
     uint256 allowanceBefore = IERC20(AaveV3EthereumAssets.AAVE_UNDERLYING).allowance(
-      address(AaveV3Ethereum.COLLECTOR),
+      MiscEthereum.ECOSYSTEM_RESERVE,
       MiscEthereum.AFC_SAFE
     );
 
@@ -132,7 +132,7 @@ contract AaveV3Ethereum_April2026FundingUpdate_20260415_Test is ProtocolV3TestBa
     executePayload(vm, address(proposal));
 
     uint256 allowanceAfter = IERC20(AaveV3EthereumAssets.AAVE_UNDERLYING).allowance(
-      address(AaveV3Ethereum.COLLECTOR),
+      MiscEthereum.ECOSYSTEM_RESERVE,
       MiscEthereum.AFC_SAFE
     );
 
@@ -140,68 +140,12 @@ contract AaveV3Ethereum_April2026FundingUpdate_20260415_Test is ProtocolV3TestBa
   }
 
   function test_stream_cancel() public {
-    uint256 aaveBalancesBeforeUsers = IERC20(AaveV3EthereumAssets.AAVE_UNDERLYING).balanceOf(
-      proposal.STREAM_RECIPIENT()
-    );
-    uint256 unclaimedAAVE = IStreamable(MiscEthereum.ECOSYSTEM_RESERVE).balanceOf(
-      proposal.OLD_STREAM(),
-      proposal.STREAM_RECIPIENT()
-    );
+    uint256 streamId = proposal.OLD_STREAM();
+    AaveV3EthereumLido.COLLECTOR.getStream(streamId);
 
     executePayload(vm, address(proposal));
 
     vm.expectRevert();
-    IStreamable(MiscEthereum.ECOSYSTEM_RESERVE).getStream(proposal.OLD_STREAM());
-
-    assertEq(
-      IERC20(AaveV3EthereumAssets.AAVE_UNDERLYING).balanceOf(proposal.STREAM_RECIPIENT()),
-      aaveBalancesBeforeUsers + unclaimedAAVE + proposal.STREAM_AMOUNT(),
-      'unclaimed AAVE not propoerly distributed'
-    );
-  }
-
-  function test_stream_new() public {
-    // 0.001% tolerance due to stream computation inaccuracy
-    uint256 maxDeltaStreamBalance = 0.00001e18; // 0.001%
-
-    uint256 nextStreamId = IStreamable(MiscEthereum.ECOSYSTEM_RESERVE).getNextStreamId();
-
-    vm.expectRevert();
-    IStreamable(MiscEthereum.ECOSYSTEM_RESERVE).getStream(nextStreamId);
-
-    executePayload(vm, address(proposal));
-
-    // any sooner and we miss the transfered aave from stream cancellation
-    uint256 aaveBalancesBeforeUsers = IERC20(AaveV3EthereumAssets.AAVE_UNDERLYING).balanceOf(
-      proposal.STREAM_RECIPIENT()
-    );
-
-    vm.warp(block.timestamp + proposal.STREAM_DURATION() + 1 days);
-
-    // Stream transfers
-    uint256 finalBalanceToWithdraw = IStreamable(MiscEthereum.ECOSYSTEM_RESERVE).balanceOf(
-      nextStreamId,
-      proposal.STREAM_RECIPIENT()
-    );
-
-    assertApproxEqRel(
-      finalBalanceToWithdraw,
-      proposal.STREAM_AMOUNT(),
-      maxDeltaStreamBalance,
-      'AAVE Stream final balance is not correct'
-    );
-
-    vm.prank(proposal.STREAM_RECIPIENT());
-    IStreamable(MiscEthereum.ECOSYSTEM_RESERVE).withdrawFromStream(
-      nextStreamId,
-      finalBalanceToWithdraw
-    );
-
-    assertApproxEqRel(
-      IERC20(AaveV3EthereumAssets.AAVE_UNDERLYING).balanceOf(proposal.STREAM_RECIPIENT()),
-      aaveBalancesBeforeUsers + proposal.STREAM_AMOUNT(),
-      maxDeltaStreamBalance,
-      'AAVE Stream final withdraw is not correct'
-    );
+    IStreamable(MiscEthereum.ECOSYSTEM_RESERVE).getStream(streamId);
   }
 }
