@@ -17,7 +17,7 @@ This publication addresses near-term operational requirements, consolidates asse
 
 The MainnetSwapSteward will continue executing a rolling GHO acquisition strategy to maintain adequate runway, support AAVE buybacks, and preserve sufficient budget to fund ongoing growth initiatives.
 
-Reimburse TokenLogic for costs incurred in facilitating the audit of one PR intended to streamline the UX for moving from USDC or USDT to GHO or sGHO. The Gho Router contract allows users to swap routes, use GSMs (Gho Stability Modules), and enter/exit sGHO. he total cost of ChainSecurity’s audit was 21,322 GHO.
+Reimburse TokenLogic for costs incurred in facilitating the audit of one PR intended to streamline the UX for moving from USDC or USDT to GHO or sGHO. The Gho Router contract allows users to swap routes, use GSMs (Gho Stability Modules), and enter/exit sGHO. The total cost of ChainSecurity’s audit was 21,322 GHO.
 
 ## Specification
 
@@ -42,7 +42,7 @@ Amount: 1.55M aAvaUSDT `0x6ab707Aca953eDAeFBc4fD23bA73294241490620`
 Amount: 650k avUSDT `0x532E6537FEA298397212F09A61e03311686f548e`
 Amount: 2.25M avUSDC `0x46A51127C3ce23fb7AB1DE06226147F446e4a857`
 Amount: 3.5M aAvaUSDC `0x625E7708f30cA75bfd92586e17077590C60eb4cD`
-Amount: 2.75 aAvaDAI `0x82E64f49Ed5EC1bC6e43DAD4FC8Af9bb3A2312EE`
+Amount: 2.75M aAvaDAI `0x82E64f49Ed5EC1bC6e43DAD4FC8Af9bb3A2312EE`
 Amount: 335 aAvaWETH `0xe50fA9b3c56FfB159cB0FCA61F5c9D750e8128c8`
 Spender: AFC `0x22740deBa78d5a0c24C58C740e3715ec29de1bFa`
 
