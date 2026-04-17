@@ -153,7 +153,7 @@ contract AaveV3Ethereum_April2026FundingUpdate_20260415_Test is ProtocolV3TestBa
 
   function test_stream_cancel() public {
     uint256 streamId = proposal.OLD_STREAM();
-    AaveV3EthereumLido.COLLECTOR.getStream(streamId);
+    IStreamable(MiscEthereum.ECOSYSTEM_RESERVE).getStream(streamId);
 
     executePayload(vm, address(proposal));
 

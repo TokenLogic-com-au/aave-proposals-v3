@@ -83,7 +83,7 @@ Create 1M aEthLidoGHO allowance to Aave Labs in order to reimburse for on-going 
 
 Asset: aEthLidoGHO: `0x18eFE565A5373f430e2F809b97De30335B3ad96A`
 Amount: 1M
-Spender: TokenLogic `0xaaf400e4bbc38b5e2136c1a36946bf841a357307`
+Spender: Aave Labs `0xaaf400e4bbc38b5e2136c1a36946bf841a357307`
 Method: `approve()` the above assets on the Collector.
 
 ### Bug Bounty

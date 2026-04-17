@@ -36,7 +36,6 @@ contract AaveV3Ethereum_April2026FundingUpdate_20260415 is IProposalGenericExecu
 
   uint256 public constant MERIT_ALLOWANCE = 2_000_000 ether;
   uint256 public constant TYDRO_ALLOWANCE = 30_000 ether;
-  uint256 public constant STREAM = 1;
 
   uint256 public constant OLD_STREAM = 100015;
   // https://etherscan.io/address/0xbC540e0729B732fb14afA240aA5A047aE9ba7dF0
