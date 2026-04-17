@@ -43,7 +43,13 @@ contract AaveV3Ethereum_April2026FundingUpdate_20260415_Test is ProtocolV3TestBa
       proposal.TOKEN_LOGIC()
     );
 
+    uint256 allowanceBeforeLabs = IERC20(AaveV3EthereumLidoAssets.GHO_A_TOKEN).allowance(
+      address(AaveV3Ethereum.COLLECTOR),
+      proposal.AAVE_LABS()
+    );
+
     assertGt(allowanceBefore, 0);
+    assertEq(allowanceBeforeLabs, 0);
 
     executePayload(vm, address(proposal));
 
@@ -52,7 +58,13 @@ contract AaveV3Ethereum_April2026FundingUpdate_20260415_Test is ProtocolV3TestBa
       proposal.TOKEN_LOGIC()
     );
 
+    uint256 allowanceAfterLabs = IERC20(AaveV3EthereumLidoAssets.GHO_A_TOKEN).allowance(
+      address(AaveV3Ethereum.COLLECTOR),
+      proposal.AAVE_LABS()
+    );
+
     assertEq(allowanceAfter, allowanceBefore + proposal.REIMBURSEMENTS_GHO_AMOUNT());
+    assertEq(allowanceAfterLabs, allowanceBeforeLabs + proposal.AAVE_LABS_ALLOWANCE());
   }
 
   function test_replenishSwapTokenBudget() public {

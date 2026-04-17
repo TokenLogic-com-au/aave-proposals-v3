@@ -23,6 +23,10 @@ contract AaveV3Ethereum_April2026FundingUpdate_20260415 is IProposalGenericExecu
   address public constant TOKEN_LOGIC = 0xAA088dfF3dcF619664094945028d44E779F19894;
   uint256 public constant REIMBURSEMENTS_GHO_AMOUNT = 21_322 ether;
 
+  // https://etherscan.io/address/0xaaf400e4bbc38b5e2136c1a36946bf841a357307
+  address public constant AAVE_LABS = 0xAAf400e4Bbc38B5E2136C1a36946Bf841A357307;
+  uint256 public constant AAVE_LABS_ALLOWANCE = 1_000_000 ether;
+
   uint256 public constant WETH_SWAP_BUDGET_AMOUNT = 5_000 ether;
   uint256 public constant USDT_SWAP_BUDGET_AMOUNT = 10_000_000e6;
   uint256 public constant USDC_SWAP_BUDGET_AMOUNT = 10_000_000e6;
@@ -35,9 +39,13 @@ contract AaveV3Ethereum_April2026FundingUpdate_20260415 is IProposalGenericExecu
   uint256 public constant STREAM = 1;
 
   uint256 public constant OLD_STREAM = 100015;
+  // https://etherscan.io/address/0xbC540e0729B732fb14afA240aA5A047aE9ba7dF0
   address public constant STREAM_RECIPIENT = 0xbC540e0729B732fb14afA240aA5A047aE9ba7dF0;
 
+  // https://etherscan.io/address/0xa9E6B917F3e0a89664d648B6DF474AB88D0D15ff
   address public constant BUGBOUNTY_RECEIVER = 0xa9E6B917F3e0a89664d648B6DF474AB88D0D15ff;
+
+  // https://etherscan.io/address/0x7119f398b6C06095c6E8964C1f58e7C1BAa79E18
   address public constant IMMUNEFI = 0x7119f398b6C06095c6E8964C1f58e7C1BAa79E18;
   uint256 public constant BUGBOUNTY_AMOUNT = 5_000 ether;
   uint256 public constant BUGBOUNTY_FEE = 500 ether;
@@ -67,6 +75,7 @@ contract AaveV3Ethereum_April2026FundingUpdate_20260415 is IProposalGenericExecu
   }
 
   function _reimbursements() internal {
+    // TL
     uint256 currentAllowance = IERC20(AaveV3EthereumAssets.GHO_UNDERLYING).allowance(
       address(AaveV3Ethereum.COLLECTOR),
       TOKEN_LOGIC
@@ -75,6 +84,13 @@ contract AaveV3Ethereum_April2026FundingUpdate_20260415 is IProposalGenericExecu
       IERC20(AaveV3EthereumAssets.GHO_UNDERLYING),
       TOKEN_LOGIC,
       currentAllowance + REIMBURSEMENTS_GHO_AMOUNT
+    );
+
+    // Aave Labs
+    AaveV3EthereumLido.COLLECTOR.approve(
+      IERC20(AaveV3EthereumLidoAssets.GHO_A_TOKEN),
+      AAVE_LABS,
+      AAVE_LABS_ALLOWANCE
     );
   }
 

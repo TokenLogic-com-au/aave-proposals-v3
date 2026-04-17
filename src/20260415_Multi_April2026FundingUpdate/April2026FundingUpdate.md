@@ -79,6 +79,13 @@ Asset: GHO: `0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f`
 Amount: 21,322
 Spender: TokenLogic `0xAA088dfF3dcF619664094945028d44E779F19894`
 
+Create 1M aEthLidoGHO allowance to Aave Labs in order to reimburse for on-going audit costs.
+
+Asset: aEthLidoGHO: `0x18eFE565A5373f430e2F809b97De30335B3ad96A`
+Amount: 1M
+Spender: TokenLogic `0xaaf400e4bbc38b5e2136c1a36946bf841a357307`
+Method: `approve()` the above assets on the Collector.
+
 ### Bug Bounty
 
 - 5,000 GHO to `0xa9E6B917F3e0a89664d648B6DF474AB88D0D15ff`
