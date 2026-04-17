@@ -37,6 +37,11 @@ contract AaveV3Ethereum_April2026FundingUpdate_20260415 is IProposalGenericExecu
   uint256 public constant OLD_STREAM = 100015;
   address public constant STREAM_RECIPIENT = 0xbC540e0729B732fb14afA240aA5A047aE9ba7dF0;
 
+  address public constant BUGBOUNTY_RECEIVER = 0xa9E6B917F3e0a89664d648B6DF474AB88D0D15ff;
+  address public constant IMMUNEFI = 0x7119f398b6C06095c6E8964C1f58e7C1BAa79E18;
+  uint256 public constant BUGBOUNTY_AMOUNT = 5_000 ether;
+  uint256 public constant BUGBOUNTY_FEE = 500 ether;
+
   function execute() external {
     _depositEth();
     _reimbursements();
@@ -44,6 +49,7 @@ contract AaveV3Ethereum_April2026FundingUpdate_20260415 is IProposalGenericExecu
     _merit();
     _tydro();
     _streams();
+    _bugBounty();
   }
 
   function _depositEth() internal {
@@ -125,6 +131,20 @@ contract AaveV3Ethereum_April2026FundingUpdate_20260415 is IProposalGenericExecu
     MiscEthereum.AAVE_ECOSYSTEM_RESERVE_CONTROLLER.cancelStream(
       MiscEthereum.ECOSYSTEM_RESERVE,
       OLD_STREAM
+    );
+  }
+
+  function _bugBounty() internal {
+    AaveV3Ethereum.COLLECTOR.transfer(
+      IERC20(AaveV3EthereumAssets.GHO_UNDERLYING),
+      BUGBOUNTY_RECEIVER,
+      BUGBOUNTY_AMOUNT
+    );
+
+    AaveV3Ethereum.COLLECTOR.transfer(
+      IERC20(AaveV3EthereumAssets.GHO_UNDERLYING),
+      IMMUNEFI,
+      BUGBOUNTY_FEE
     );
   }
 }

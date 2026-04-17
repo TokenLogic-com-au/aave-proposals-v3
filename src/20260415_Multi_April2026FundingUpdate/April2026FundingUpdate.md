@@ -9,7 +9,8 @@ discussions: "https://governance.aave.com/t/direct-to-aip-april-2026-funding-upd
 This publication presents the April Funding Update, consisting of the following key activities:
 
 - Acquire GHO to support the runway; and,
-- Create Allowances to support Operations.
+- Create Allowances to support Operations,
+- Paying out bug bounties and reimbursements.
 
 ## Motivation
 
@@ -77,6 +78,12 @@ Reimburse 21,322 GHO to TokenLogic for GhoRouter audit expenses incurred.
 Asset: GHO: `0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f`
 Amount: 21,322
 Spender: TokenLogic `0xAA088dfF3dcF619664094945028d44E779F19894`
+
+### Bug Bounty
+
+- 5,000 GHO to `0xa9E6B917F3e0a89664d648B6DF474AB88D0D15ff`
+- $500 GHO to `0x7119f398b6C06095c6E8964C1f58e7C1BAa79E18` (immunefi.eth).
+  This is the fee corresponding to 10% of the previous bounty.
 
 ## References
 

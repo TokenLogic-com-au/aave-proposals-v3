@@ -148,4 +148,43 @@ contract AaveV3Ethereum_April2026FundingUpdate_20260415_Test is ProtocolV3TestBa
     vm.expectRevert();
     IStreamable(MiscEthereum.ECOSYSTEM_RESERVE).getStream(streamId);
   }
+
+  function test_bugBounty() public {
+    uint256 balanceCollectorBefore = IERC20(AaveV3EthereumAssets.GHO_UNDERLYING).balanceOf(
+      address(AaveV3Ethereum.COLLECTOR)
+    );
+
+    // Validate the Collector has enough GHO tokens
+    assertGe(balanceCollectorBefore, proposal.BUGBOUNTY_AMOUNT() + proposal.BUGBOUNTY_FEE());
+
+    uint256 balanceBeforeRecipient = IERC20(AaveV3EthereumAssets.GHO_UNDERLYING).balanceOf(
+      proposal.BUGBOUNTY_RECEIVER()
+    );
+
+    uint256 balanceBeforeImmunefi = IERC20(AaveV3EthereumAssets.GHO_UNDERLYING).balanceOf(
+      proposal.IMMUNEFI()
+    );
+
+    executePayload(vm, address(proposal));
+
+    uint256 balanceAfterRecipient = IERC20(AaveV3EthereumAssets.GHO_UNDERLYING).balanceOf(
+      proposal.BUGBOUNTY_RECEIVER()
+    );
+
+    uint256 balanceAfterImmunefi = IERC20(AaveV3EthereumAssets.GHO_UNDERLYING).balanceOf(
+      proposal.IMMUNEFI()
+    );
+
+    assertEq(balanceAfterRecipient, balanceBeforeRecipient + proposal.BUGBOUNTY_AMOUNT());
+    assertEq(balanceAfterImmunefi, balanceBeforeImmunefi + proposal.BUGBOUNTY_FEE());
+
+    uint256 balanceCollectorAfter = IERC20(AaveV3EthereumAssets.GHO_UNDERLYING).balanceOf(
+      address(AaveV3Ethereum.COLLECTOR)
+    );
+
+    assertEq(
+      balanceCollectorAfter,
+      balanceCollectorBefore - proposal.BUGBOUNTY_AMOUNT() - proposal.BUGBOUNTY_FEE()
+    );
+  }
 }
