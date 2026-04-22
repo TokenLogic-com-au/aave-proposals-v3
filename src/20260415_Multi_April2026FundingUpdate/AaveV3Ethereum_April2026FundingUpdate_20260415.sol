@@ -109,12 +109,6 @@ contract AaveV3Ethereum_April2026FundingUpdate_20260415 is IProposalGenericExecu
     );
 
     IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD).setSwappablePair(
-      AaveV3EthereumAssets.RLUSD_UNDERLYING,
-      AaveV3EthereumAssets.WETH_UNDERLYING,
-      true
-    );
-
-    IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD).setSwappablePair(
       AaveV3EthereumAssets.WBTC_UNDERLYING,
       AaveV3EthereumAssets.WETH_UNDERLYING,
       true

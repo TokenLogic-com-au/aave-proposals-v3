@@ -74,6 +74,7 @@ Method: approve() on the Aave Collector contract to the ahab address
 | ----- | ------ |
 | WBTC  | 70     |
 | ETH   | 10k    |
+| LINK  | 60k    |
 | USDC  | 10M    |
 | USDT  | 10M    |
 | USDe  | 10M    |
@@ -85,6 +86,8 @@ Reference: [MainnetSwapSteward forum post](https://governance.aave.com/t/arfc-st
 Alongside these budgets, add ability to swap tokens to WETH.
 Add WBTC as a swappable asset.
 Add LINK as a swappable asset.
+Add 1Inch to WETH path.
+Add SNX to WETH path.
 
 ### Reimbursements
 
