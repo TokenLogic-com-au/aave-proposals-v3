@@ -23,6 +23,9 @@ contract AaveV3Avalanche_April2026FundingUpdate_20260415 is IProposalGenericExec
   uint256 public constant DAI_ALLOWANCE = 2_750_000 ether;
   uint256 public constant WETH_ALLOWANCE = 335 ether;
 
+  uint256 public constant WAVAX_ALLOWANCE = 118_000 ether;
+  uint256 public constant BTC_ALLOWANCE = 4e8;
+
   function execute() external {
     AaveV3Avalanche.COLLECTOR.approve(
       IERC20(AaveV3AvalancheAssets.USDt_A_TOKEN),
@@ -58,6 +61,18 @@ contract AaveV3Avalanche_April2026FundingUpdate_20260415 is IProposalGenericExec
       IERC20(AaveV3AvalancheAssets.WETHe_A_TOKEN),
       MiscAvalanche.AFC_SAFE,
       WETH_ALLOWANCE
+    );
+
+    AaveV3Avalanche.COLLECTOR.approve(
+      IERC20(AaveV3AvalancheAssets.WAVAX_A_TOKEN),
+      MiscAvalanche.AFC_SAFE,
+      WAVAX_ALLOWANCE
+    );
+
+    AaveV3Avalanche.COLLECTOR.approve(
+      IERC20(AaveV3AvalancheAssets.BTCb_A_TOKEN),
+      MiscAvalanche.AFC_SAFE,
+      BTC_ALLOWANCE
     );
   }
 }

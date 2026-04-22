@@ -138,4 +138,40 @@ contract AaveV3Avalanche_April2026FundingUpdate_20260415_Test is ProtocolV3TestB
 
     assertEq(allowanceAfter, allowanceBefore + proposal.WETH_ALLOWANCE());
   }
+
+  function test_approvals_wavax() public {
+    uint256 allowanceBefore = IERC20(AaveV3AvalancheAssets.WAVAX_A_TOKEN).allowance(
+      address(AaveV3Avalanche.COLLECTOR),
+      MiscAvalanche.AFC_SAFE
+    );
+
+    assertEq(allowanceBefore, 0);
+
+    executePayload(vm, address(proposal));
+
+    uint256 allowanceAfter = IERC20(AaveV3AvalancheAssets.WAVAX_A_TOKEN).allowance(
+      address(AaveV3Avalanche.COLLECTOR),
+      MiscAvalanche.AFC_SAFE
+    );
+
+    assertEq(allowanceAfter, allowanceBefore + proposal.WAVAX_ALLOWANCE());
+  }
+
+  function test_approvals_btc() public {
+    uint256 allowanceBefore = IERC20(AaveV3AvalancheAssets.BTCb_A_TOKEN).allowance(
+      address(AaveV3Avalanche.COLLECTOR),
+      MiscAvalanche.AFC_SAFE
+    );
+
+    assertEq(allowanceBefore, 0);
+
+    executePayload(vm, address(proposal));
+
+    uint256 allowanceAfter = IERC20(AaveV3AvalancheAssets.BTCb_A_TOKEN).allowance(
+      address(AaveV3Avalanche.COLLECTOR),
+      MiscAvalanche.AFC_SAFE
+    );
+
+    assertEq(allowanceAfter, allowanceBefore + proposal.BTC_ALLOWANCE());
+  }
 }

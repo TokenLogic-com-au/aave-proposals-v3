@@ -36,17 +36,29 @@
 | --- | --- |
 | 5 | Approval(owner: 0x5ba7fd868c40c16f7aDfAe6CF87121E13FC2F7a0, spender: 0x22740deBa78d5a0c24C58C740e3715ec29de1bFa, value: 335 [335000000000000000000, 18 decimals]) |
 
+#### 0x6d80113e533a2C0fe82EaBD35f1875DcEA89Ea97 (AaveV3Avalanche.ASSETS.WAVAX.A_TOKEN)
+
+| index | event |
+| --- | --- |
+| 6 | Approval(owner: 0x5ba7fd868c40c16f7aDfAe6CF87121E13FC2F7a0, spender: 0x22740deBa78d5a0c24C58C740e3715ec29de1bFa, value: 118,000 [118000000000000000000000, 18 decimals]) |
+
+#### 0x8ffDf2DE812095b1D19CB146E4c004587C0A0692 (AaveV3Avalanche.ASSETS.BTCb.A_TOKEN)
+
+| index | event |
+| --- | --- |
+| 7 | Approval(owner: 0x5ba7fd868c40c16f7aDfAe6CF87121E13FC2F7a0, spender: 0x22740deBa78d5a0c24C58C740e3715ec29de1bFa, value: 4 [400000000, 8 decimals]) |
+
 #### 0x3C06dce358add17aAf230f2234bCCC4afd50d090 (AaveV2Avalanche.POOL_ADMIN, AaveV3Avalanche.ACL_ADMIN, GovernanceV3Avalanche.EXECUTOR_LVL_1)
 
 | index | event |
 | --- | --- |
-| 6 | ExecutedAction(target: 0x5615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f, value: 0, signature: execute(), data: 0x, executionTime: 1776283636, withDelegatecall: true, resultData: 0x) |
+| 8 | ExecutedAction(target: 0x5615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f, value: 0, signature: execute(), data: 0x, executionTime: 1776283636, withDelegatecall: true, resultData: 0x) |
 
 #### 0x1140CB7CAfAcC745771C2Ea31e7B5C653c5d0B80 (GovernanceV3Avalanche.PAYLOADS_CONTROLLER)
 
 | index | event |
 | --- | --- |
-| 7 | PayloadExecuted(payloadId: 112) |
+| 9 | PayloadExecuted(payloadId: 112) |
 
 ## Raw storage changes
 
@@ -81,11 +93,23 @@
 | --- | --- | --- |
 | 0x78105f43014f66b9c9916c836be42b71536a601ac72955b914acd43e5639dd9b | 0x0000000000000000000000000000000000000000000000000000000000000000 | 0x00000000000000000000000000000000000000000000000000000168e3330c00 |
 
+### 0x6d80113e533a2c0fe82eabd35f1875dcea89ea97 (AaveV3Avalanche.ASSETS.WAVAX.A_TOKEN)
+
+| slot | previous value | new value |
+| --- | --- | --- |
+| 0x78105f43014f66b9c9916c836be42b71536a601ac72955b914acd43e5639dd9b | 0x0000000000000000000000000000000000000000000000000000000000000000 | 0x0000000000000000000000000000000000000000000018fccaf619349dc00000 |
+
 ### 0x82e64f49ed5ec1bc6e43dad4fc8af9bb3a2312ee (AaveV3Avalanche.ASSETS.DAIe.A_TOKEN)
 
 | slot | previous value | new value |
 | --- | --- | --- |
 | 0x78105f43014f66b9c9916c836be42b71536a601ac72955b914acd43e5639dd9b | 0x0000000000000000000000000000000000000000000000000000000000000000 | 0x000000000000000000000000000000000000000000024655cc78b38d7ac00000 |
+
+### 0x8ffdf2de812095b1d19cb146e4c004587c0a0692 (AaveV3Avalanche.ASSETS.BTCb.A_TOKEN)
+
+| slot | previous value | new value |
+| --- | --- | --- |
+| 0x78105f43014f66b9c9916c836be42b71536a601ac72955b914acd43e5639dd9b | 0x0000000000000000000000000000000000000000000000000000000000000000 | 0x0000000000000000000000000000000000000000000000000000000017d78400 |
 
 ### 0xe50fa9b3c56ffb159cb0fca61f5c9d750e8128c8 (AaveV3Avalanche.ASSETS.WETHe.A_TOKEN)
 

@@ -10,6 +10,8 @@ import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGen
 
 interface IMainnetSwapSteward {
   function increaseTokenBudget(address token, uint256 budget) external;
+  function setSwappablePair(address fromToken, address toToken, bool allowed) external;
+  function setTokenOracle(address token, address oracle) external;
 }
 
 /**
@@ -27,12 +29,16 @@ contract AaveV3Ethereum_April2026FundingUpdate_20260415 is IProposalGenericExecu
   address public constant AAVE_LABS = 0xAAf400e4Bbc38B5E2136C1a36946Bf841A357307;
   uint256 public constant AAVE_LABS_ALLOWANCE = 1_000_000 ether;
 
-  uint256 public constant WETH_SWAP_BUDGET_AMOUNT = 5_000 ether;
+  uint256 public constant AHAB_ALLOWANCE = 15_000 ether;
+
+  uint256 public constant WBTC_SWAP_BUDGET_AMOUNT = 70e8;
+  uint256 public constant WETH_SWAP_BUDGET_AMOUNT = 10_000 ether;
   uint256 public constant USDT_SWAP_BUDGET_AMOUNT = 10_000_000e6;
   uint256 public constant USDC_SWAP_BUDGET_AMOUNT = 10_000_000e6;
   uint256 public constant USDe_SWAP_BUDGET_AMOUNT = 10_000_000 ether;
   uint256 public constant USDS_SWAP_BUDGET_AMOUNT = 10_000_000 ether;
   uint256 public constant DAI_SWAP_BUDGET_AMOUNT = 5_000_000 ether;
+  uint256 public constant LINK_SWAP_BUDGET_AMOUNT = 60_000 ether;
 
   uint256 public constant MERIT_ALLOWANCE = 2_000_000 ether;
   uint256 public constant TYDRO_ALLOWANCE = 30_000 ether;
@@ -50,13 +56,117 @@ contract AaveV3Ethereum_April2026FundingUpdate_20260415 is IProposalGenericExecu
   uint256 public constant BUGBOUNTY_FEE = 500 ether;
 
   function execute() external {
+    _swapPaths();
     _depositEth();
     _reimbursements();
     _replenishAllowances();
     _merit();
+    _ahab();
     _tydro();
     _streams();
     _bugBounty();
+  }
+
+  function _swapPaths() internal {
+    // Add Oracles
+
+    IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD).setTokenOracle(
+      AaveV3EthereumAssets.WBTC_UNDERLYING,
+      AaveV3EthereumAssets.WBTC_ORACLE
+    );
+
+    IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD).setTokenOracle(
+      AaveV3EthereumAssets.LINK_UNDERLYING,
+      AaveV3EthereumAssets.LINK_ORACLE
+    );
+
+    // wBTC Swap Paths
+
+    IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD).setSwappablePair(
+      AaveV3EthereumAssets.WBTC_UNDERLYING,
+      AaveV3EthereumAssets.USDC_UNDERLYING,
+      true
+    );
+
+    IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD).setSwappablePair(
+      AaveV3EthereumAssets.WBTC_UNDERLYING,
+      AaveV3EthereumAssets.USDT_UNDERLYING,
+      true
+    );
+
+    IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD).setSwappablePair(
+      AaveV3EthereumAssets.WBTC_UNDERLYING,
+      AaveV3EthereumAssets.AAVE_UNDERLYING,
+      true
+    );
+
+    // To wETH
+
+    IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD).setSwappablePair(
+      AaveV3EthereumAssets.ONE_INCH_UNDERLYING,
+      AaveV3EthereumAssets.WETH_UNDERLYING,
+      true
+    );
+
+    IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD).setSwappablePair(
+      AaveV3EthereumAssets.RLUSD_UNDERLYING,
+      AaveV3EthereumAssets.WETH_UNDERLYING,
+      true
+    );
+
+    IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD).setSwappablePair(
+      AaveV3EthereumAssets.WBTC_UNDERLYING,
+      AaveV3EthereumAssets.WETH_UNDERLYING,
+      true
+    );
+
+    IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD).setSwappablePair(
+      AaveV3EthereumAssets.USDS_UNDERLYING,
+      AaveV3EthereumAssets.WETH_UNDERLYING,
+      true
+    );
+
+    IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD).setSwappablePair(
+      AaveV3EthereumAssets.USDC_UNDERLYING,
+      AaveV3EthereumAssets.WETH_UNDERLYING,
+      true
+    );
+
+    IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD).setSwappablePair(
+      AaveV3EthereumAssets.USDT_UNDERLYING,
+      AaveV3EthereumAssets.WETH_UNDERLYING,
+      true
+    );
+
+    IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD).setSwappablePair(
+      AaveV3EthereumAssets.USDe_UNDERLYING,
+      AaveV3EthereumAssets.WETH_UNDERLYING,
+      true
+    );
+
+    IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD).setSwappablePair(
+      AaveV3EthereumAssets.AAVE_UNDERLYING,
+      AaveV3EthereumAssets.WETH_UNDERLYING,
+      true
+    );
+
+    IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD).setSwappablePair(
+      AaveV3EthereumAssets.LINK_UNDERLYING,
+      AaveV3EthereumAssets.WETH_UNDERLYING,
+      true
+    );
+
+    IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD).setSwappablePair(
+      AaveV3EthereumAssets.SNX_UNDERLYING,
+      AaveV3EthereumAssets.WETH_UNDERLYING,
+      true
+    );
+
+    IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD).setSwappablePair(
+      AaveV3EthereumAssets.UNI_UNDERLYING,
+      AaveV3EthereumAssets.WETH_UNDERLYING,
+      true
+    );
   }
 
   function _depositEth() internal {
@@ -95,6 +205,11 @@ contract AaveV3Ethereum_April2026FundingUpdate_20260415 is IProposalGenericExecu
 
   function _replenishAllowances() internal {
     IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD).increaseTokenBudget(
+      AaveV3EthereumAssets.WBTC_UNDERLYING,
+      WBTC_SWAP_BUDGET_AMOUNT
+    );
+
+    IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD).increaseTokenBudget(
       AaveV3EthereumAssets.WETH_UNDERLYING,
       WETH_SWAP_BUDGET_AMOUNT
     );
@@ -123,6 +238,11 @@ contract AaveV3Ethereum_April2026FundingUpdate_20260415 is IProposalGenericExecu
       AaveV3EthereumAssets.DAI_UNDERLYING,
       DAI_SWAP_BUDGET_AMOUNT
     );
+
+    IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD).increaseTokenBudget(
+      AaveV3EthereumAssets.LINK_UNDERLYING,
+      LINK_SWAP_BUDGET_AMOUNT
+    );
   }
 
   function _merit() internal {
@@ -130,6 +250,14 @@ contract AaveV3Ethereum_April2026FundingUpdate_20260415 is IProposalGenericExecu
       IERC20(AaveV3EthereumLidoAssets.GHO_A_TOKEN),
       MiscEthereum.MERIT_AHAB_SAFE,
       MERIT_ALLOWANCE
+    );
+  }
+
+  function _ahab() internal {
+    AaveV3Ethereum.COLLECTOR.approve(
+      IERC20(AaveV3EthereumAssets.WETH_A_TOKEN),
+      MiscEthereum.AHAB_SAFE,
+      AHAB_ALLOWANCE
     );
   }
 

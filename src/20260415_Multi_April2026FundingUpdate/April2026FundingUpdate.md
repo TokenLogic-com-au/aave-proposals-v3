@@ -44,6 +44,8 @@ Amount: 650k avUSDT `0x532E6537FEA298397212F09A61e03311686f548e`
 Amount: 2.25M avUSDC `0x46A51127C3ce23fb7AB1DE06226147F446e4a857`
 Amount: 3.5M aAvaUSDC `0x625E7708f30cA75bfd92586e17077590C60eb4cD`
 Amount: 2.75M aAvaDAI `0x82E64f49Ed5EC1bC6e43DAD4FC8Af9bb3A2312EE`
+Amount: 118,000 aAvaWAVAX `0x6d80113e533a2C0fe82EaBD35f1875DcEA89Ea97`
+Amount: 4 aAvaBTC.b `0x8ffdf2de812095b1d19cb146e4c004587c0a0692`
 Amount: 335 aAvaWETH `0xe50fA9b3c56FfB159cB0FCA61F5c9D750e8128c8`
 Spender: AFC `0x22740deBa78d5a0c24C58C740e3715ec29de1bFa`
 
@@ -58,11 +60,20 @@ Amount: 30,000 AAVE `0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9`
 Spender: AFC `0x22740deBa78d5a0c24C58C740e3715ec29de1bFa`
 Method: `approve()` the above assets on the Ecosystem Reserve contract to the AFC address from which it will be routed to the Ink Network.
 
+### Funding Flexibility
+
+To support continued operations and provide flexible funding optionality, create the following Allowance.
+
+Amount: 15k aEthWETH
+Spender: Ahab `0xAA2461f0f0A3dE5fEAF3273eAe16DEF861cf594e`
+Method: approve() on the Aave Collector contract to the ahab address
+
 ### Token Budget
 
 | Token | Amount |
 | ----- | ------ |
-| ETH   | 5k     |
+| WBTC  | 70     |
+| ETH   | 10k    |
 | USDC  | 10M    |
 | USDT  | 10M    |
 | USDe  | 10M    |
@@ -70,6 +81,10 @@ Method: `approve()` the above assets on the Ecosystem Reserve contract to the AF
 | DAI   | 5M     |
 
 Reference: [MainnetSwapSteward forum post](https://governance.aave.com/t/arfc-steward-deployment-mainnetswapsteward-and-rewardssteward/23070).
+
+Alongside these budgets, add ability to swap tokens to WETH.
+Add WBTC as a swappable asset.
+Add LINK as a swappable asset.
 
 ### Reimbursements
 
