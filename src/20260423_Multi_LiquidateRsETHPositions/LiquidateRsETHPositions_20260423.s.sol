@@ -31,14 +31,24 @@ contract DeployEthereum is EthereumScript {
       type(AaveV3Ethereum_LiquidateRsETHPositionUser2_20260423).creationCode
     );
 
-    // compose action
-    IPayloadsControllerCore.ExecutionAction[]
-      memory actions = new IPayloadsControllerCore.ExecutionAction[](2);
-    actions[0] = GovV3Helpers.buildAction(payload0);
-    actions[1] = GovV3Helpers.buildAction(payload1);
+    {
+      // compose action
+      IPayloadsControllerCore.ExecutionAction[]
+        memory actions = new IPayloadsControllerCore.ExecutionAction[](1);
+      actions[0] = GovV3Helpers.buildAction(payload0);
 
-    // register action at payloadsController
-    GovV3Helpers.createPayload(actions);
+      // register action at payloadsController
+      GovV3Helpers.createPayload(actions);
+    }
+    {
+      // compose action
+      IPayloadsControllerCore.ExecutionAction[]
+        memory actions = new IPayloadsControllerCore.ExecutionAction[](1);
+      actions[0] = GovV3Helpers.buildAction(payload1);
+
+      // register action at payloadsController
+      GovV3Helpers.createPayload(actions);
+    }
   }
 }
 
@@ -69,18 +79,65 @@ contract DeployArbitrum is ArbitrumScript {
       type(AaveV3Arbitrum_LiquidateRsETHPositionUser6_20260423).creationCode
     );
 
-    // compose action
-    IPayloadsControllerCore.ExecutionAction[]
-      memory actions = new IPayloadsControllerCore.ExecutionAction[](6);
-    actions[0] = GovV3Helpers.buildAction(payload0);
-    actions[1] = GovV3Helpers.buildAction(payload1);
-    actions[2] = GovV3Helpers.buildAction(payload2);
-    actions[3] = GovV3Helpers.buildAction(payload3);
-    actions[4] = GovV3Helpers.buildAction(payload4);
-    actions[5] = GovV3Helpers.buildAction(payload5);
+    {
+      // compose action
+      IPayloadsControllerCore.ExecutionAction[]
+        memory actions = new IPayloadsControllerCore.ExecutionAction[](1);
+      actions[0] = GovV3Helpers.buildAction(payload0);
 
-    // register action at payloadsController
-    GovV3Helpers.createPayload(actions);
+      // register action at payloadsController
+      GovV3Helpers.createPayload(actions);
+    }
+
+    {
+      // compose action
+      IPayloadsControllerCore.ExecutionAction[]
+        memory actions = new IPayloadsControllerCore.ExecutionAction[](1);
+      actions[0] = GovV3Helpers.buildAction(payload1);
+
+      // register action at payloadsController
+      GovV3Helpers.createPayload(actions);
+    }
+
+    {
+      // compose action
+      IPayloadsControllerCore.ExecutionAction[]
+        memory actions = new IPayloadsControllerCore.ExecutionAction[](1);
+      actions[0] = GovV3Helpers.buildAction(payload2);
+
+      // register action at payloadsController
+      GovV3Helpers.createPayload(actions);
+    }
+
+    {
+      // compose action
+      IPayloadsControllerCore.ExecutionAction[]
+        memory actions = new IPayloadsControllerCore.ExecutionAction[](1);
+      actions[0] = GovV3Helpers.buildAction(payload3);
+
+      // register action at payloadsController
+      GovV3Helpers.createPayload(actions);
+    }
+
+    {
+      // compose action
+      IPayloadsControllerCore.ExecutionAction[]
+        memory actions = new IPayloadsControllerCore.ExecutionAction[](1);
+      actions[0] = GovV3Helpers.buildAction(payload4);
+
+      // register action at payloadsController
+      GovV3Helpers.createPayload(actions);
+    }
+
+    {
+      // compose action
+      IPayloadsControllerCore.ExecutionAction[]
+        memory actions = new IPayloadsControllerCore.ExecutionAction[](1);
+      actions[0] = GovV3Helpers.buildAction(payload5);
+
+      // register action at payloadsController
+      GovV3Helpers.createPayload(actions);
+    }
   }
 }
 
