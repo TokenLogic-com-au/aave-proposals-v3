@@ -32,8 +32,8 @@ The execution of this proposal marks the deadline for LEND->AAVE migrations and 
 
 - [LEND to AAVE Migrator on Etherscan](https://etherscan.io/address/0x317625234562b1526ea2fac4030ea499c5291de4)
 - [New LendToAaveMigrator Implementation](https://etherscan.io/address/0x2da544ae1ea4e19b680e7a39520c64e5d35c0345#code)
-- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260429_AaveV3Ethereum_LendMigrationShutdown/AaveV3Ethereum_LendMigrationShutdown_20260429.sol)
-- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260429_AaveV3Ethereum_LendMigrationShutdown/AaveV3Ethereum_LendMigrationShutdown_20260429.t.sol)
+- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/39fc89b6d6d3d983d08ce60b95364db4354f526f/src/20260429_AaveV3Ethereum_LendMigrationShutdown/AaveV3Ethereum_LendMigrationShutdown_20260429.sol)
+- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/39fc89b6d6d3d983d08ce60b95364db4354f526f/src/20260429_AaveV3Ethereum_LendMigrationShutdown/AaveV3Ethereum_LendMigrationShutdown_20260429.t.sol)
 - [Snapshot](https://snapshot.org/#/s:aavedao.eth/proposal/0x4d9eb143c46a637dbf98d63ad00a6e53739a9b6affc0eed7d3cd35680500afaa)
 - [Discussion](https://governance.aave.com/t/arfc-winding-down-lend-migration-contract/23126)
 
