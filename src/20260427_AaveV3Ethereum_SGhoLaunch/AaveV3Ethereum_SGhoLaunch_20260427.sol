@@ -43,7 +43,7 @@ contract AaveV3Ethereum_SGhoLaunch_20260427 is IProposalGenericExecutor {
   bytes32 public constant YIELD_MANAGER_ROLE = keccak256('YIELD_MANAGER_ROLE');
 
   uint256 public constant GHO_ALLOWANCE = 10_000_000 ether;
-  uint160 public constant SUPPLY_CAP = 400_000_000 ether;
+  uint256 public constant SUPPLY_CAP = 400_000_000 ether;
   uint16 public constant FIXED_RATE = 4_25;
 
   function execute() external {

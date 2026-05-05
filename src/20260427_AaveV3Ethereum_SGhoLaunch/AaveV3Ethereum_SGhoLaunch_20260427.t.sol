@@ -6,6 +6,7 @@ import {IERC4626} from 'openzeppelin-contracts/contracts/interfaces/IERC4626.sol
 import {IAccessControl} from 'openzeppelin-contracts/contracts/access/IAccessControl.sol';
 import {AaveV3Ethereum} from 'aave-address-book/AaveV3Ethereum.sol';
 import {GhoEthereum} from 'aave-address-book/GhoEthereum.sol';
+import {GovernanceV3Ethereum} from 'aave-address-book/GovernanceV3Ethereum.sol';
 import {MiscEthereum} from 'aave-address-book/MiscEthereum.sol';
 import {GovernanceV3Ethereum} from 'aave-address-book/GovernanceV3Ethereum.sol';
 import {ProtocolV3TestBase, ReserveConfig} from 'aave-helpers/src/ProtocolV3TestBase.sol';
@@ -89,6 +90,20 @@ contract AaveV3Ethereum_SGhoLaunch_20260427_Test is ProtocolV3TestBase {
     vm.expectRevert();
     ISGho(sgho).pause();
 
+    assertFalse(
+      IAccessControl(proposal.SGHO()).hasRole(
+        proposal.TOKEN_RESCUER_ROLE(),
+        GovernanceV3Ethereum.EXECUTOR_LVL_1
+      )
+    );
+
+    assertFalse(
+      IAccessControl(proposal.SGHO()).hasRole(
+        proposal.YIELD_MANAGER_ROLE(),
+        proposal.SGHO_STEWARD()
+      )
+    );
+
     // AccessControl is only granted during execution then revoked to Governance
     assertFalse(
       IAccessControl(proposal.SGHO_STEWARD()).hasRole(
@@ -114,6 +129,20 @@ contract AaveV3Ethereum_SGhoLaunch_20260427_Test is ProtocolV3TestBase {
 
     vm.prank(MiscEthereum.PROTOCOL_GUARDIAN);
     ISGho(sgho).pause();
+
+    assertTrue(
+      IAccessControl(proposal.SGHO()).hasRole(
+        proposal.TOKEN_RESCUER_ROLE(),
+        GovernanceV3Ethereum.EXECUTOR_LVL_1
+      )
+    );
+
+    assertTrue(
+      IAccessControl(proposal.SGHO()).hasRole(
+        proposal.YIELD_MANAGER_ROLE(),
+        proposal.SGHO_STEWARD()
+      )
+    );
 
     // These have been revoked
     assertFalse(
