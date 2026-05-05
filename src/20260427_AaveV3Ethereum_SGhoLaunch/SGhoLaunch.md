@@ -19,7 +19,7 @@ However, the current sGHO implementation presents structural limitations that co
 
 Composability unlock. The current Merit-based distribution, while highly effective for bootstrapping, relies on an off-chain reward model, making it difficult for external protocols to integrate natively. Moving to ERC-4626 means yield accrues directly in the share-to-asset conversion rate, making sGHO instantly composable across DeFi lending protocols, yield aggregators, and centralised exchanges.
 
-Streamlined yield story. The eight-boost system ACI designed was instrumental in driving targeted behaviours during the growth phase. With sGHO now at scale, consolidating five of those boosts into the native rate creates a simpler, more legible value proposition for the next wave of integrators and depositors, while retaining one strategic boost continues to reward core Aave ecosystem alignment.
+Streamlined yield story. The eight-boost system ACI designed was instrumental in driving targeted behaviours during the growth phase. With sGHO now at scale, consolidating seven of those boosts into the native rate creates a simpler, more legible value proposition for the next wave of integrators and depositors, while retaining one strategic boost to continue rewarding core Aave ecosystem alignment.
 
 Frictionless onboarding. The introduction of the GhoRouter contract eliminates multi-step conversion friction. Users can go from USDC to sGHO in a single transaction, dramatically lowering the barrier to entry for new depositors and enabling seamless integration paths for partners.
 
@@ -35,7 +35,7 @@ Market opportunity. With the Sky Savings Rate at 3.75% APR and broader DeFi yiel
 | Premium over SSR             | 50 basis points                                   |
 | Steward Formula              | amplification = 0, floatRate = 0, fixedRate = 425 |
 | Maximum Rate (contract cap)  | 50% APR (5,000 bps)                               |
-| Max Supply                   | 400,000,000                                       |
+| Supply Cap                   | 400,000,000                                       |
 | Pause Guardian               | 0xAAe31e2fcadf5fd2E143E5114a70d56b9De0B845        |
 
 Create a 10M Allowance of GHO from the Collector to the AFC SAFE in order to handle rewards distribution.
