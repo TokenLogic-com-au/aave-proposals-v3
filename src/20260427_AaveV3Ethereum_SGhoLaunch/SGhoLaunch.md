@@ -36,9 +36,13 @@ Market opportunity. With the Sky Savings Rate at 3.75% APR and broader DeFi yiel
 | Steward Formula              | amplification = 0, floatRate = 0, fixedRate = 425 |
 | Maximum Rate (contract cap)  | 50% APR (5,000 bps)                               |
 | Supply Cap                   | 400,000,000                                       |
-| Pause Guardian               | 0xAAe31e2fcadf5fd2E143E5114a70d56b9De0B845        |
+| Pause Guardian               | 0x2CFe3ec4d5a6811f4B8067F0DE7e47DfA938Aa30        |
 
 Create a 10M Allowance of GHO from the Collector to the AFC SAFE in order to handle rewards distribution.
+
+Grant the PAUSE_GUARDIAN_ROLE to the PROTOCOL_GUARDIAN SAFE.
+Grant the TOKEN_RESCUER_ROLE to the Governance LVL 1 Executor.
+Grant the YIELD_MANAGER_ROLE to the sGhoSteward contract.
 
 ## References
 
