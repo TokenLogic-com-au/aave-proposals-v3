@@ -11,5 +11,5 @@ export const config: ConfigFile = {
       'https://snapshot.box/#/s:aavedao.eth/proposal/0xb9e9b01efcf6151bade78546d0f51f11d7961939b649fb7717e82ea3d43d4f47',
     votingNetwork: 'AVALANCHE',
   },
-  poolOptions: {AaveV3Ethereum: {configs: {OTHERS: {}}, cache: {blockNumber: 24974238}}},
+  poolOptions: {AaveV3Ethereum: {configs: {OTHERS: {}}, cache: {blockNumber: 25029360}}},
 };

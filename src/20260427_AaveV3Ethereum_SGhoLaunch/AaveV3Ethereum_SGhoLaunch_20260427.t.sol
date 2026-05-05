@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 import {IERC4626} from 'openzeppelin-contracts/contracts/interfaces/IERC4626.sol';
 import {IAccessControl} from 'openzeppelin-contracts/contracts/access/IAccessControl.sol';
 import {AaveV3Ethereum} from 'aave-address-book/AaveV3Ethereum.sol';
 import {GhoEthereum} from 'aave-address-book/GhoEthereum.sol';
+import {MiscEthereum} from 'aave-address-book/MiscEthereum.sol';
 import {GovernanceV3Ethereum} from 'aave-address-book/GovernanceV3Ethereum.sol';
 import {ProtocolV3TestBase, ReserveConfig} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {AaveV3Ethereum_SGhoLaunch_20260427} from './AaveV3Ethereum_SGhoLaunch_20260427.sol';
@@ -24,6 +26,7 @@ interface ISGho is IERC4626 {
   function GHO() external view returns (address);
   function supplyCap() external view returns (uint160);
   function targetRate() external view returns (uint16);
+  function pause() external;
 }
 
 /**
@@ -34,7 +37,7 @@ contract AaveV3Ethereum_SGhoLaunch_20260427_Test is ProtocolV3TestBase {
   AaveV3Ethereum_SGhoLaunch_20260427 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('mainnet'), 24974238);
+    vm.createSelectFork(vm.rpcUrl('mainnet'), 25029360);
     proposal = new AaveV3Ethereum_SGhoLaunch_20260427();
   }
 
@@ -73,7 +76,20 @@ contract AaveV3Ethereum_SGhoLaunch_20260427_Test is ProtocolV3TestBase {
   }
 
   function test_access() public {
-    // AccessControl is only granted during execution then revoked
+    assertFalse(
+      IAccessControl(proposal.SGHO()).hasRole(
+        proposal.PAUSE_GUARDIAN_ROLE(),
+        proposal.PAUSE_GUARDIAN_SAFE()
+      )
+    );
+
+    address sgho = proposal.SGHO();
+
+    vm.prank(proposal.PAUSE_GUARDIAN_SAFE());
+    vm.expectRevert();
+    ISGho(sgho).pause();
+
+    // AccessControl is only granted during execution then revoked to Governance
     assertFalse(
       IAccessControl(proposal.SGHO_STEWARD()).hasRole(
         proposal.FIXED_RATE_MANAGER_ROLE(),
@@ -89,6 +105,17 @@ contract AaveV3Ethereum_SGhoLaunch_20260427_Test is ProtocolV3TestBase {
 
     executePayload(vm, address(proposal));
 
+    assertTrue(
+      IAccessControl(proposal.SGHO()).hasRole(
+        proposal.PAUSE_GUARDIAN_ROLE(),
+        proposal.PAUSE_GUARDIAN_SAFE()
+      )
+    );
+
+    vm.prank(proposal.PAUSE_GUARDIAN_SAFE());
+    ISGho(sgho).pause();
+
+    // These have been revoked
     assertFalse(
       IAccessControl(proposal.SGHO_STEWARD()).hasRole(
         proposal.FIXED_RATE_MANAGER_ROLE(),
@@ -101,5 +128,33 @@ contract AaveV3Ethereum_SGhoLaunch_20260427_Test is ProtocolV3TestBase {
         GovernanceV3Ethereum.EXECUTOR_LVL_1
       )
     );
+  }
+
+  function test_allowance() public {
+    assertEq(
+      IERC20(GhoEthereum.GHO_TOKEN).allowance(
+        address(AaveV3Ethereum.COLLECTOR),
+        MiscEthereum.AFC_SAFE
+      ),
+      0
+    );
+
+    executePayload(vm, address(proposal));
+
+    assertEq(
+      IERC20(GhoEthereum.GHO_TOKEN).allowance(
+        address(AaveV3Ethereum.COLLECTOR),
+        MiscEthereum.AFC_SAFE
+      ),
+      proposal.GHO_ALLOWANCE()
+    );
+
+    vm.startPrank(MiscEthereum.AFC_SAFE);
+    IERC20(GhoEthereum.GHO_TOKEN).transferFrom(
+      address(AaveV3Ethereum.COLLECTOR),
+      proposal.SGHO(),
+      100_000 ether
+    );
+    vm.stopPrank();
   }
 }
