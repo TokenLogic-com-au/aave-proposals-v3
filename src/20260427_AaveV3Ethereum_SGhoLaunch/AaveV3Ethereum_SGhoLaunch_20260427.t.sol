@@ -79,13 +79,13 @@ contract AaveV3Ethereum_SGhoLaunch_20260427_Test is ProtocolV3TestBase {
     assertFalse(
       IAccessControl(proposal.SGHO()).hasRole(
         proposal.PAUSE_GUARDIAN_ROLE(),
-        proposal.PAUSE_GUARDIAN_SAFE()
+        MiscEthereum.PROTOCOL_GUARDIAN
       )
     );
 
     address sgho = proposal.SGHO();
 
-    vm.prank(proposal.PAUSE_GUARDIAN_SAFE());
+    vm.prank(MiscEthereum.PROTOCOL_GUARDIAN);
     vm.expectRevert();
     ISGho(sgho).pause();
 
@@ -108,11 +108,11 @@ contract AaveV3Ethereum_SGhoLaunch_20260427_Test is ProtocolV3TestBase {
     assertTrue(
       IAccessControl(proposal.SGHO()).hasRole(
         proposal.PAUSE_GUARDIAN_ROLE(),
-        proposal.PAUSE_GUARDIAN_SAFE()
+        MiscEthereum.PROTOCOL_GUARDIAN
       )
     );
 
-    vm.prank(proposal.PAUSE_GUARDIAN_SAFE());
+    vm.prank(MiscEthereum.PROTOCOL_GUARDIAN);
     ISGho(sgho).pause();
 
     // These have been revoked

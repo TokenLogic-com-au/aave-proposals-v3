@@ -33,9 +33,6 @@ contract AaveV3Ethereum_SGhoLaunch_20260427 is IProposalGenericExecutor {
   // https://etherscan.io/address/0x60Bf2DF49F17529Cf956D57848ebEB8a0d0a2757
   address public constant SGHO_STEWARD = 0x60Bf2DF49F17529Cf956D57848ebEB8a0d0a2757;
 
-  // https://etherscan.io/address/0xAAe31e2fcadf5fd2E143E5114a70d56b9De0B845
-  address public constant PAUSE_GUARDIAN_SAFE = 0xAAe31e2fcadf5fd2E143E5114a70d56b9De0B845;
-
   // sGhoSteward roles
   bytes32 public constant FIXED_RATE_MANAGER_ROLE = keccak256('FIXED_RATE_MANAGER_ROLE');
   bytes32 public constant SUPPLY_CAP_MANAGER_ROLE = keccak256('SUPPLY_CAP_MANAGER_ROLE');
@@ -53,7 +50,7 @@ contract AaveV3Ethereum_SGhoLaunch_20260427 is IProposalGenericExecutor {
     IAccessControl(SGHO_STEWARD).grantRole(FIXED_RATE_MANAGER_ROLE, address(this));
     IAccessControl(SGHO_STEWARD).grantRole(SUPPLY_CAP_MANAGER_ROLE, address(this));
 
-    IAccessControl(SGHO).grantRole(PAUSE_GUARDIAN_ROLE, PAUSE_GUARDIAN_SAFE);
+    IAccessControl(SGHO).grantRole(PAUSE_GUARDIAN_ROLE, MiscEthereum.PROTOCOL_GUARDIAN);
     IAccessControl(SGHO).grantRole(TOKEN_RESCUER_ROLE, GovernanceV3Ethereum.EXECUTOR_LVL_1);
     IAccessControl(SGHO).grantRole(YIELD_MANAGER_ROLE, SGHO_STEWARD);
 
