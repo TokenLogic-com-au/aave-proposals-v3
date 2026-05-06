@@ -76,6 +76,11 @@ contract AaveV3Ethereum_ExtendStkAAVEEmissions_20260505_Test is ProtocolV3TestBa
   }
 
   function test_checkRewards_stkAAVE() public {
+    (uint128 emissionPerSecond, , ) = IStakeToken(AaveSafetyModule.STK_AAVE).assets(
+      AaveSafetyModule.STK_AAVE
+    );
+    uint256 dailyEmissions = uint256(emissionPerSecond) * 1 days;
+
     address staker = makeAddr('staker');
     deal(AaveV3EthereumAssets.AAVE_UNDERLYING, staker, 1 ether);
 
@@ -90,6 +95,9 @@ contract AaveV3Ethereum_ExtendStkAAVEEmissions_20260505_Test is ProtocolV3TestBa
 
     uint256 rewardsBalance = IStakeToken(AaveSafetyModule.STK_AAVE).getTotalRewardsBalance(staker);
 
-    assertTrue(rewardsBalance > 0 && rewardsBalance <= 260e18, 'stkAAVE rewards out of range');
+    assertTrue(
+      rewardsBalance > 0 && rewardsBalance <= dailyEmissions,
+      'stkAAVE rewards out of range'
+    );
   }
 }

@@ -7,7 +7,7 @@ snapshot: "https://snapshot.box/#/s:aavedao.eth/proposal/0x0f73500d0f65c72482d35
 
 ## Simple Summary
 
-Top-up the AAVE allowance for the Safety Module **stkAAVE** to extend rewards distribution by **90 days** while keeping the current emission rate unchanged.
+Increase the AAVE allowance for the Safety Module **stkAAVE** to extend rewards distribution by **90 days** while keeping the current emission rate unchanged.
 
 ## Motivation
 
