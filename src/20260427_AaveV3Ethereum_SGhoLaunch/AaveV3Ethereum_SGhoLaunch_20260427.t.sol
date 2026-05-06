@@ -22,9 +22,15 @@ import {AaveV3Ethereum_SGhoLaunch_20260427} from './AaveV3Ethereum_SGhoLaunch_20
 contract AaveV3Ethereum_SGhoLaunch_20260427_Test is ProtocolV3TestBase {
   AaveV3Ethereum_SGhoLaunch_20260427 internal proposal;
 
+  IsGho private sgho;
+  IsGhoSteward private sghoSteward;
+
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('mainnet'), 25029360);
     proposal = new AaveV3Ethereum_SGhoLaunch_20260427();
+
+    sgho = IsGho(proposal.SGHO());
+    sghoSteward = IsGhoSteward(proposal.SGHO_STEWARD());
   }
 
   /**
@@ -35,15 +41,14 @@ contract AaveV3Ethereum_SGhoLaunch_20260427_Test is ProtocolV3TestBase {
   }
 
   function test_initialization() public {
-    assertEq(IsGho(proposal.SGHO()).targetRate(), 0);
-    assertEq(IsGho(proposal.SGHO()).supplyCap(), 0);
-    assertEq(IsGho(proposal.SGHO()).GHO(), GhoEthereum.GHO_TOKEN);
+    assertEq(sgho.targetRate(), 0);
+    assertEq(sgho.supplyCap(), 0);
+    assertEq(sgho.GHO(), GhoEthereum.GHO_TOKEN);
     assertEq(IERC4626(proposal.SGHO()).asset(), GhoEthereum.GHO_TOKEN);
 
-    assertEq(IsGhoSteward(proposal.SGHO_STEWARD()).sGHO(), proposal.SGHO());
+    assertEq(sghoSteward.sGHO(), proposal.SGHO());
 
-    IsGhoSteward.RateConfig memory rateConfig = IsGhoSteward(proposal.SGHO_STEWARD())
-      .getRateConfig();
+    IsGhoSteward.RateConfig memory rateConfig = sghoSteward.getRateConfig();
 
     assertEq(rateConfig.amplification, 0);
     assertEq(rateConfig.floatRate, 0);
@@ -51,10 +56,10 @@ contract AaveV3Ethereum_SGhoLaunch_20260427_Test is ProtocolV3TestBase {
 
     executePayload(vm, address(proposal));
 
-    assertEq(IsGho(proposal.SGHO()).targetRate(), proposal.FIXED_RATE());
-    assertEq(IsGho(proposal.SGHO()).supplyCap(), proposal.SUPPLY_CAP());
+    assertEq(sgho.targetRate(), proposal.FIXED_RATE());
+    assertEq(sgho.supplyCap(), proposal.SUPPLY_CAP());
 
-    rateConfig = IsGhoSteward(proposal.SGHO_STEWARD()).getRateConfig();
+    rateConfig = sghoSteward.getRateConfig();
 
     assertEq(rateConfig.amplification, 0);
     assertEq(rateConfig.floatRate, 0);
@@ -64,40 +69,35 @@ contract AaveV3Ethereum_SGhoLaunch_20260427_Test is ProtocolV3TestBase {
   function test_access() public {
     assertFalse(
       IAccessControl(proposal.SGHO()).hasRole(
-        IsGho(proposal.SGHO()).PAUSE_GUARDIAN_ROLE(),
+        sgho.PAUSE_GUARDIAN_ROLE(),
         MiscEthereum.PROTOCOL_GUARDIAN
       )
     );
 
-    address sgho = proposal.SGHO();
-
     vm.prank(MiscEthereum.PROTOCOL_GUARDIAN);
     vm.expectRevert();
-    IsGho(sgho).pause();
+    sgho.pause();
 
     assertFalse(
       IAccessControl(proposal.SGHO()).hasRole(
-        IsGho(proposal.SGHO()).TOKEN_RESCUER_ROLE(),
+        sgho.TOKEN_RESCUER_ROLE(),
         GovernanceV3Ethereum.EXECUTOR_LVL_1
       )
     );
 
     assertFalse(
-      IAccessControl(proposal.SGHO()).hasRole(
-        IsGho(proposal.SGHO()).YIELD_MANAGER_ROLE(),
-        proposal.SGHO_STEWARD()
-      )
+      IAccessControl(proposal.SGHO()).hasRole(sgho.YIELD_MANAGER_ROLE(), proposal.SGHO_STEWARD())
     );
 
     assertFalse(
       IAccessControl(proposal.SGHO_STEWARD()).hasRole(
-        IsGhoSteward(proposal.SGHO_STEWARD()).FIXED_RATE_MANAGER_ROLE(),
+        sghoSteward.FIXED_RATE_MANAGER_ROLE(),
         GovernanceV3Ethereum.EXECUTOR_LVL_1
       )
     );
     assertFalse(
       IAccessControl(proposal.SGHO_STEWARD()).hasRole(
-        IsGhoSteward(proposal.SGHO_STEWARD()).SUPPLY_CAP_MANAGER_ROLE(),
+        sghoSteward.SUPPLY_CAP_MANAGER_ROLE(),
         GovernanceV3Ethereum.EXECUTOR_LVL_1
       )
     );
@@ -106,37 +106,34 @@ contract AaveV3Ethereum_SGhoLaunch_20260427_Test is ProtocolV3TestBase {
 
     assertTrue(
       IAccessControl(proposal.SGHO()).hasRole(
-        IsGho(proposal.SGHO()).PAUSE_GUARDIAN_ROLE(),
+        sgho.PAUSE_GUARDIAN_ROLE(),
         MiscEthereum.PROTOCOL_GUARDIAN
       )
     );
 
     vm.prank(MiscEthereum.PROTOCOL_GUARDIAN);
-    IsGho(sgho).pause();
+    sgho.pause();
 
     assertTrue(
       IAccessControl(proposal.SGHO()).hasRole(
-        IsGho(proposal.SGHO()).TOKEN_RESCUER_ROLE(),
+        sgho.TOKEN_RESCUER_ROLE(),
         GovernanceV3Ethereum.EXECUTOR_LVL_1
       )
     );
 
     assertTrue(
-      IAccessControl(proposal.SGHO()).hasRole(
-        IsGho(proposal.SGHO()).YIELD_MANAGER_ROLE(),
-        proposal.SGHO_STEWARD()
-      )
+      IAccessControl(proposal.SGHO()).hasRole(sgho.YIELD_MANAGER_ROLE(), proposal.SGHO_STEWARD())
     );
 
     assertTrue(
       IAccessControl(proposal.SGHO_STEWARD()).hasRole(
-        IsGhoSteward(proposal.SGHO_STEWARD()).FIXED_RATE_MANAGER_ROLE(),
+        sghoSteward.FIXED_RATE_MANAGER_ROLE(),
         GovernanceV3Ethereum.EXECUTOR_LVL_1
       )
     );
     assertTrue(
       IAccessControl(proposal.SGHO_STEWARD()).hasRole(
-        IsGhoSteward(proposal.SGHO_STEWARD()).SUPPLY_CAP_MANAGER_ROLE(),
+        sghoSteward.SUPPLY_CAP_MANAGER_ROLE(),
         GovernanceV3Ethereum.EXECUTOR_LVL_1
       )
     );
@@ -146,25 +143,25 @@ contract AaveV3Ethereum_SGhoLaunch_20260427_Test is ProtocolV3TestBase {
     // RiskCouncil already has these roles from deployment
     assertTrue(
       IAccessControl(proposal.SGHO_STEWARD()).hasRole(
-        IsGhoSteward(proposal.SGHO_STEWARD()).AMPLIFICATION_MANAGER_ROLE(),
+        sghoSteward.AMPLIFICATION_MANAGER_ROLE(),
         GhoEthereum.RISK_COUNCIL
       )
     );
     assertTrue(
       IAccessControl(proposal.SGHO_STEWARD()).hasRole(
-        IsGhoSteward(proposal.SGHO_STEWARD()).FLOAT_RATE_MANAGER_ROLE(),
+        sghoSteward.FLOAT_RATE_MANAGER_ROLE(),
         GhoEthereum.RISK_COUNCIL
       )
     );
     assertTrue(
       IAccessControl(proposal.SGHO_STEWARD()).hasRole(
-        IsGhoSteward(proposal.SGHO_STEWARD()).FIXED_RATE_MANAGER_ROLE(),
+        sghoSteward.FIXED_RATE_MANAGER_ROLE(),
         GhoEthereum.RISK_COUNCIL
       )
     );
     assertTrue(
       IAccessControl(proposal.SGHO_STEWARD()).hasRole(
-        IsGhoSteward(proposal.SGHO_STEWARD()).SUPPLY_CAP_MANAGER_ROLE(),
+        sghoSteward.SUPPLY_CAP_MANAGER_ROLE(),
         GhoEthereum.RISK_COUNCIL
       )
     );
@@ -173,25 +170,25 @@ contract AaveV3Ethereum_SGhoLaunch_20260427_Test is ProtocolV3TestBase {
 
     assertTrue(
       IAccessControl(proposal.SGHO_STEWARD()).hasRole(
-        IsGhoSteward(proposal.SGHO_STEWARD()).AMPLIFICATION_MANAGER_ROLE(),
+        sghoSteward.AMPLIFICATION_MANAGER_ROLE(),
         GhoEthereum.RISK_COUNCIL
       )
     );
     assertTrue(
       IAccessControl(proposal.SGHO_STEWARD()).hasRole(
-        IsGhoSteward(proposal.SGHO_STEWARD()).FLOAT_RATE_MANAGER_ROLE(),
+        sghoSteward.FLOAT_RATE_MANAGER_ROLE(),
         GhoEthereum.RISK_COUNCIL
       )
     );
     assertTrue(
       IAccessControl(proposal.SGHO_STEWARD()).hasRole(
-        IsGhoSteward(proposal.SGHO_STEWARD()).FIXED_RATE_MANAGER_ROLE(),
+        sghoSteward.FIXED_RATE_MANAGER_ROLE(),
         GhoEthereum.RISK_COUNCIL
       )
     );
     assertTrue(
       IAccessControl(proposal.SGHO_STEWARD()).hasRole(
-        IsGhoSteward(proposal.SGHO_STEWARD()).SUPPLY_CAP_MANAGER_ROLE(),
+        sghoSteward.SUPPLY_CAP_MANAGER_ROLE(),
         GhoEthereum.RISK_COUNCIL
       )
     );
