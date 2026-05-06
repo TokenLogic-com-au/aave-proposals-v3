@@ -40,9 +40,12 @@ Market opportunity. With the Sky Savings Rate at 3.75% APR and broader DeFi yiel
 
 Create a 10M Allowance of GHO from the Collector to the AFC SAFE in order to handle rewards distribution.
 
-Grant the PAUSE_GUARDIAN_ROLE to the PROTOCOL_GUARDIAN SAFE.
-Grant the TOKEN_RESCUER_ROLE to the Governance LVL 1 Executor.
-Grant the YIELD_MANAGER_ROLE to the sGhoSteward contract.
+Grant the sGho PAUSE_GUARDIAN_ROLE to the PROTOCOL_GUARDIAN SAFE.
+Grant the sGho YIELD_MANAGER_ROLE to the sGhoSteward contract.
+
+Grant the sGhoSteward FIXED_RATE_MANAGER_ROLE to the Governance LVL 1 Executor.
+Grant the sGhoSteward SUPPLY_CAP_MANAGER_ROLE to the Governance LVL 1 Executor.
+Grant the sGho TOKEN_RESCUER_ROLE to the Governance LVL 1 Executor.
 
 ## References
 

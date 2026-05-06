@@ -9,16 +9,8 @@ import {MiscEthereum} from 'aave-address-book/MiscEthereum.sol';
 import {IAccessControl} from 'openzeppelin-contracts/contracts/access/IAccessControl.sol';
 import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGenericExecutor.sol';
 
-interface IsGhoSteward {
-  struct RateConfig {
-    uint16 amplification;
-    uint16 floatRate;
-    uint16 fixedRate;
-  }
-
-  function setRateConfig(RateConfig calldata rateConfig) external returns (uint16);
-  function setSupplyCap(uint256 supplyCap) external;
-}
+import {IsGhoSteward} from '../interfaces/IsGhoSteward.sol';
+import {IsGho} from '../interfaces/IsGho.sol';
 
 /**
  * @title sGho Launch
@@ -33,26 +25,29 @@ contract AaveV3Ethereum_SGhoLaunch_20260427 is IProposalGenericExecutor {
   // https://etherscan.io/address/0x60Bf2DF49F17529Cf956D57848ebEB8a0d0a2757
   address public constant SGHO_STEWARD = 0x60Bf2DF49F17529Cf956D57848ebEB8a0d0a2757;
 
-  // sGhoSteward roles
-  bytes32 public constant FIXED_RATE_MANAGER_ROLE = keccak256('FIXED_RATE_MANAGER_ROLE');
-  bytes32 public constant SUPPLY_CAP_MANAGER_ROLE = keccak256('SUPPLY_CAP_MANAGER_ROLE');
-
-  // sGho roles
-  bytes32 public constant PAUSE_GUARDIAN_ROLE = keccak256('PAUSE_GUARDIAN_ROLE');
-  bytes32 public constant TOKEN_RESCUER_ROLE = keccak256('TOKEN_RESCUER_ROLE');
-  bytes32 public constant YIELD_MANAGER_ROLE = keccak256('YIELD_MANAGER_ROLE');
-
   uint256 public constant GHO_ALLOWANCE = 10_000_000 ether;
   uint256 public constant SUPPLY_CAP = 400_000_000 ether;
   uint16 public constant FIXED_RATE = 4_25;
 
   function execute() external {
-    IAccessControl(SGHO_STEWARD).grantRole(FIXED_RATE_MANAGER_ROLE, address(this));
-    IAccessControl(SGHO_STEWARD).grantRole(SUPPLY_CAP_MANAGER_ROLE, address(this));
+    IAccessControl(SGHO_STEWARD).grantRole(
+      IsGhoSteward(SGHO_STEWARD).FIXED_RATE_MANAGER_ROLE(),
+      GovernanceV3Ethereum.EXECUTOR_LVL_1
+    );
+    IAccessControl(SGHO_STEWARD).grantRole(
+      IsGhoSteward(SGHO_STEWARD).SUPPLY_CAP_MANAGER_ROLE(),
+      GovernanceV3Ethereum.EXECUTOR_LVL_1
+    );
 
-    IAccessControl(SGHO).grantRole(PAUSE_GUARDIAN_ROLE, MiscEthereum.PROTOCOL_GUARDIAN);
-    IAccessControl(SGHO).grantRole(TOKEN_RESCUER_ROLE, GovernanceV3Ethereum.EXECUTOR_LVL_1);
-    IAccessControl(SGHO).grantRole(YIELD_MANAGER_ROLE, SGHO_STEWARD);
+    IAccessControl(SGHO).grantRole(
+      IsGho(SGHO).PAUSE_GUARDIAN_ROLE(),
+      MiscEthereum.PROTOCOL_GUARDIAN
+    );
+    IAccessControl(SGHO).grantRole(
+      IsGho(SGHO).TOKEN_RESCUER_ROLE(),
+      GovernanceV3Ethereum.EXECUTOR_LVL_1
+    );
+    IAccessControl(SGHO).grantRole(IsGho(SGHO).YIELD_MANAGER_ROLE(), SGHO_STEWARD);
 
     IsGhoSteward(SGHO_STEWARD).setSupplyCap(SUPPLY_CAP);
     IsGhoSteward(SGHO_STEWARD).setRateConfig(
@@ -64,8 +59,5 @@ contract AaveV3Ethereum_SGhoLaunch_20260427 is IProposalGenericExecutor {
       MiscEthereum.AFC_SAFE,
       GHO_ALLOWANCE
     );
-
-    IAccessControl(SGHO_STEWARD).revokeRole(FIXED_RATE_MANAGER_ROLE, address(this));
-    IAccessControl(SGHO_STEWARD).revokeRole(SUPPLY_CAP_MANAGER_ROLE, address(this));
   }
 }
