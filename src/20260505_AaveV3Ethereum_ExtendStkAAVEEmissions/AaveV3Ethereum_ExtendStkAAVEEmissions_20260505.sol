@@ -12,7 +12,7 @@ import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
  * @title Extend stkAAVE Emissions
  * @author @TokenLogic
  * - Snapshot: https://snapshot.box/#/s:aavedao.eth/proposal/0x0f73500d0f65c72482d352080ea9aa0aa92264eb059b8f646cf6f0e86556bc3d
- * - Discussion: https://governance.aave.com/t/arfc-amend-safety-module-emissions/16640/48
+ * - Discussion: https://governance.aave.com/t/arfc-amend-safety-module-emissions/16640/52
  */
 contract AaveV3Ethereum_ExtendStkAAVEEmissions_20260505 is IProposalGenericExecutor {
   function execute() external override {

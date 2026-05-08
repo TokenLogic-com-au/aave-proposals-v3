@@ -1,7 +1,7 @@
 ---
 title: "Extend stkAAVE Emissions"
 author: "@TokenLogic"
-discussions: "https://governance.aave.com/t/arfc-amend-safety-module-emissions/16640/48"
+discussions: "https://governance.aave.com/t/arfc-amend-safety-module-emissions/16640/52"
 snapshot: "https://snapshot.box/#/s:aavedao.eth/proposal/0x0f73500d0f65c72482d352080ea9aa0aa92264eb059b8f646cf6f0e86556bc3d"
 ---
 
@@ -28,7 +28,7 @@ The current stkAAVE allowance from the Ecosystem Reserve is approaching depletio
 - Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260505_AaveV3Ethereum_ExtendStkAAVEEmissions/AaveV3Ethereum_ExtendStkAAVEEmissions_20260505.sol)
 - Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260505_AaveV3Ethereum_ExtendStkAAVEEmissions/AaveV3Ethereum_ExtendStkAAVEEmissions_20260505.t.sol)
 - [Snapshot](https://snapshot.box/#/s:aavedao.eth/proposal/0x0f73500d0f65c72482d352080ea9aa0aa92264eb059b8f646cf6f0e86556bc3d)
-- [Discussion](https://governance.aave.com/t/arfc-amend-safety-module-emissions/16640/48)
+- [Discussion](https://governance.aave.com/t/arfc-amend-safety-module-emissions/16640/52)
 
 ## Copyright
 

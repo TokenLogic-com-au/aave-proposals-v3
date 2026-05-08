@@ -6,7 +6,7 @@ export const config: ConfigFile = {
     shortName: 'ExtendStkAAVEEmissions',
     date: '20260505',
     author: '@TokenLogic',
-    discussion: 'https://governance.aave.com/t/arfc-amend-safety-module-emissions/16640/48',
+    discussion: 'https://governance.aave.com/t/arfc-amend-safety-module-emissions/16640/52',
     snapshot:
       'https://snapshot.box/#/s:aavedao.eth/proposal/0x0f73500d0f65c72482d352080ea9aa0aa92264eb059b8f646cf6f0e86556bc3d',
     votingNetwork: 'AVALANCHE',
