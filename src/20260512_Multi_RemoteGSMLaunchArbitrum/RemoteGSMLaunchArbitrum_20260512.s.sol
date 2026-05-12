@@ -5,8 +5,10 @@ import {GovV3Helpers, IPayloadsControllerCore, PayloadsControllerUtils} from 'aa
 import {GovernanceV3Ethereum} from 'aave-address-book/GovernanceV3Ethereum.sol';
 
 import {EthereumScript, ArbitrumScript} from 'solidity-utils/contracts/utils/ScriptUtils.sol';
-import {AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512} from './AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512.sol';
-import {AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512} from './AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512.sol';
+import {AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1} from './AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1.sol';
+import {AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2} from './AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2.sol';
+import {AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1} from './AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1.sol';
+import {AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2} from './AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2.sol';
 
 /**
  * @dev Deploy Ethereum
@@ -17,16 +19,15 @@ contract DeployEthereum is EthereumScript {
   function run() external broadcast {
     // deploy payloads
     address payload0 = GovV3Helpers.deployDeterministic(
-      type(AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512).creationCode
+      type(AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1).creationCode
+    );
+    address payload1 = GovV3Helpers.deployDeterministic(
+      type(AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2).creationCode
     );
 
-    // compose action
-    IPayloadsControllerCore.ExecutionAction[]
-      memory actions = new IPayloadsControllerCore.ExecutionAction[](1);
-    actions[0] = GovV3Helpers.buildAction(payload0);
-
     // register action at payloadsController
-    GovV3Helpers.createPayload(actions);
+    GovV3Helpers.createPayload(GovV3Helpers.buildAction(payload0));
+    GovV3Helpers.createPayload(GovV3Helpers.buildAction(payload1));
   }
 }
 
@@ -39,16 +40,15 @@ contract DeployArbitrum is ArbitrumScript {
   function run() external broadcast {
     // deploy payloads
     address payload0 = GovV3Helpers.deployDeterministic(
-      type(AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512).creationCode
+      type(AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1).creationCode
+    );
+    address payload1 = GovV3Helpers.deployDeterministic(
+      type(AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2).creationCode
     );
 
-    // compose action
-    IPayloadsControllerCore.ExecutionAction[]
-      memory actions = new IPayloadsControllerCore.ExecutionAction[](1);
-    actions[0] = GovV3Helpers.buildAction(payload0);
-
     // register action at payloadsController
-    GovV3Helpers.createPayload(actions);
+    GovV3Helpers.createPayload(GovV3Helpers.buildAction(payload0));
+    GovV3Helpers.createPayload(GovV3Helpers.buildAction(payload1));
   }
 }
 
@@ -59,25 +59,43 @@ contract DeployArbitrum is ArbitrumScript {
 contract CreateProposal is EthereumScript {
   function run() external {
     // create payloads
-    PayloadsControllerUtils.Payload[] memory payloads = new PayloadsControllerUtils.Payload[](2);
+    PayloadsControllerUtils.Payload[] memory payloads = new PayloadsControllerUtils.Payload[](4);
 
     // compose actions for validation
     {
       IPayloadsControllerCore.ExecutionAction[]
         memory actionsEthereum = new IPayloadsControllerCore.ExecutionAction[](1);
       actionsEthereum[0] = GovV3Helpers.buildAction(
-        type(AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512).creationCode
+        type(AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1).creationCode
       );
       payloads[0] = GovV3Helpers.buildMainnetPayload(vm, actionsEthereum);
     }
 
     {
       IPayloadsControllerCore.ExecutionAction[]
+        memory actionsEthereum = new IPayloadsControllerCore.ExecutionAction[](1);
+      actionsEthereum[0] = GovV3Helpers.buildAction(
+        type(AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2).creationCode
+      );
+      payloads[1] = GovV3Helpers.buildMainnetPayload(vm, actionsEthereum);
+    }
+
+    {
+      IPayloadsControllerCore.ExecutionAction[]
         memory actionsArbitrum = new IPayloadsControllerCore.ExecutionAction[](1);
       actionsArbitrum[0] = GovV3Helpers.buildAction(
-        type(AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512).creationCode
+        type(AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1).creationCode
       );
-      payloads[1] = GovV3Helpers.buildArbitrumPayload(vm, actionsArbitrum);
+      payloads[2] = GovV3Helpers.buildArbitrumPayload(vm, actionsArbitrum);
+    }
+
+    {
+      IPayloadsControllerCore.ExecutionAction[]
+        memory actionsArbitrum = new IPayloadsControllerCore.ExecutionAction[](1);
+      actionsArbitrum[0] = GovV3Helpers.buildAction(
+        type(AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2).creationCode
+      );
+      payloads[3] = GovV3Helpers.buildArbitrumPayload(vm, actionsArbitrum);
     }
 
     // create proposal
