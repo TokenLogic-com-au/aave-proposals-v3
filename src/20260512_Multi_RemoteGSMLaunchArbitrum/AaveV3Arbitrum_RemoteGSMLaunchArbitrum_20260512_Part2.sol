@@ -43,6 +43,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
   address public constant GSM_REGISTRY = address(0);
 
   // GSM USDT
+  // TODO: check amount (whole bridged amount, or half of it per GSM?)
   uint128 public constant GSM_USDT_RESERVE_LIMIT = 50_000_000 ether;
 
   uint128 public constant GSM_USDT_INITIAL_EXPOSURE_CAP = 10_000_000e6; // 10M, 6 decimals
@@ -57,6 +58,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
   address public constant GSM_USDT_FEE_STRATEGY = address(0);
 
   // GSM USDC
+  // TODO: check amount (whole bridged amount, or half of it per GSM?)
   uint128 public constant GSM_USDC_RESERVE_LIMIT = 50_000_000 ether;
 
   uint128 public constant GSM_USDC_INITIAL_EXPOSURE_CAP = 10_000_000e6; // 10M, 6 decimals
@@ -75,17 +77,17 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
 
     _wireGsm(
       IGsm(GSM_USDT),
+      GSM_USDT_RESERVE_LIMIT,
       USDT_ORACLE_SWAP_FREEZER,
       GSM_USDT_INITIAL_EXPOSURE_CAP,
-      GSM_USDT_FEE_STRATEGY,
-      GSM_USDT_RESERVE_LIMIT
+      GSM_USDT_FEE_STRATEGY
     );
     _wireGsm(
       IGsm(GSM_USDC),
+      GSM_USDC_RESERVE_LIMIT,
       USDC_ORACLE_SWAP_FREEZER,
       GSM_USDC_INITIAL_EXPOSURE_CAP,
-      GSM_USDC_FEE_STRATEGY,
-      GSM_USDC_RESERVE_LIMIT
+      GSM_USDC_FEE_STRATEGY
     );
 
     AaveV3Arbitrum.COLLECTOR.transfer(
