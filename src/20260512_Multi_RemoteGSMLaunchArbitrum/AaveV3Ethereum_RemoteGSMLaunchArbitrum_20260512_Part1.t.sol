@@ -35,13 +35,18 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
   function test_bridgeLimit() public {
     uint256 bridgeLimitBefore = IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
       .getBridgeLimit();
-    assertNotEq(bridgeLimitBefore, proposal.NEW_BRIDGE_LIMIT());
+    assertNotEq(
+      bridgeLimitBefore,
+      proposal.NEW_BRIDGE_LIMIT(),
+      'bridge limit should differ from NEW_BRIDGE_LIMIT before proposal'
+    );
 
     executePayload(vm, address(proposal));
 
     assertEq(
       IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).getBridgeLimit(),
-      proposal.NEW_BRIDGE_LIMIT()
+      proposal.NEW_BRIDGE_LIMIT(),
+      'bridge limit not raised to NEW_BRIDGE_LIMIT after proposal'
     );
   }
 
@@ -51,10 +56,22 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
       GhoEthereum.GHO_CCIP_TOKEN_POOL
     ).getCurrentOutboundRateLimiterState(CCIPChainSelectors.ARBITRUM);
 
-    assertEq(bucket.capacity, proposal.DEFAULT_RATE_LIMITER_CAPACITY());
-    assertEq(bucket.rate, proposal.DEFAULT_RATE_LIMITER_RATE());
-    assertTrue(bucket.isEnabled);
-    assertEq(bucket.tokens, proposal.DEFAULT_RATE_LIMITER_CAPACITY());
+    assertEq(
+      bucket.capacity,
+      proposal.DEFAULT_RATE_LIMITER_CAPACITY(),
+      'pre-proposal outbound capacity should be default'
+    );
+    assertEq(
+      bucket.rate,
+      proposal.DEFAULT_RATE_LIMITER_RATE(),
+      'pre-proposal outbound rate should be default'
+    );
+    assertTrue(bucket.isEnabled, 'pre-proposal outbound rate limiter should be enabled');
+    assertEq(
+      bucket.tokens,
+      proposal.DEFAULT_RATE_LIMITER_CAPACITY(),
+      'pre-proposal outbound tokens should equal default capacity'
+    );
 
     executePayload(vm, address(proposal));
 
@@ -62,10 +79,22 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
     bucket = IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
       .getCurrentOutboundRateLimiterState(CCIPChainSelectors.ARBITRUM);
 
-    assertEq(bucket.capacity, proposal.TEMP_BRIDGE_CAPACITY());
-    assertEq(bucket.rate, proposal.TEMP_BRIDGE_CAPACITY() - 1);
-    assertTrue(bucket.isEnabled);
-    assertEq(bucket.tokens, proposal.DEFAULT_RATE_LIMITER_CAPACITY());
+    assertEq(
+      bucket.capacity,
+      proposal.TEMP_BRIDGE_CAPACITY(),
+      'post-proposal outbound capacity should be TEMP_BRIDGE_CAPACITY'
+    );
+    assertEq(
+      bucket.rate,
+      proposal.TEMP_BRIDGE_CAPACITY() - 1,
+      'post-proposal outbound rate should be TEMP_BRIDGE_CAPACITY - 1'
+    );
+    assertTrue(bucket.isEnabled, 'post-proposal outbound rate limiter should be enabled');
+    assertEq(
+      bucket.tokens,
+      proposal.DEFAULT_RATE_LIMITER_CAPACITY(),
+      'tokens should not refill instantly after proposal'
+    );
 
     vm.warp(block.timestamp + 1);
 
@@ -73,9 +102,21 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
     bucket = IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
       .getCurrentOutboundRateLimiterState(CCIPChainSelectors.ARBITRUM);
 
-    assertEq(bucket.capacity, proposal.TEMP_BRIDGE_CAPACITY());
-    assertEq(bucket.rate, proposal.TEMP_BRIDGE_CAPACITY() - 1);
-    assertTrue(bucket.isEnabled);
-    assertEq(bucket.tokens, proposal.TEMP_BRIDGE_CAPACITY());
+    assertEq(
+      bucket.capacity,
+      proposal.TEMP_BRIDGE_CAPACITY(),
+      'outbound capacity should remain TEMP_BRIDGE_CAPACITY after 1s'
+    );
+    assertEq(
+      bucket.rate,
+      proposal.TEMP_BRIDGE_CAPACITY() - 1,
+      'outbound rate should remain TEMP_BRIDGE_CAPACITY - 1 after 1s'
+    );
+    assertTrue(bucket.isEnabled, 'outbound rate limiter should remain enabled after 1s');
+    assertEq(
+      bucket.tokens,
+      proposal.TEMP_BRIDGE_CAPACITY(),
+      'tokens should refill to TEMP_BRIDGE_CAPACITY after 1s'
+    );
   }
 }

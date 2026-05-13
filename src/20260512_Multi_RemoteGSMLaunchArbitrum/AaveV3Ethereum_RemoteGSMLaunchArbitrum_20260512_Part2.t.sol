@@ -19,20 +19,6 @@ import {AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2} from './AaveV3Eth
  * command: FOUNDRY_PROFILE=test forge test --match-path=src/20260512_Multi_RemoteGSMLaunchArbitrum/AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2.t.sol -vv
  */
 contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV3TestBase {
-  /**
-   * @dev Emitted when a new GHO transfer is issued
-   * @param messageId The ID of the cross-chain message
-   * @param destinationChainSelector The selector of the destination chain
-   * @param from The address of sender on source chain
-   * @param amount The total amount of GHO transferred
-   */
-  event BridgeMessageInitiated(
-    bytes32 indexed messageId,
-    uint64 indexed destinationChainSelector,
-    address indexed from,
-    uint256 amount
-  );
-
   AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2 internal proposal;
 
   function setUp() public {
@@ -77,10 +63,22 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
       GhoEthereum.GHO_CCIP_TOKEN_POOL
     ).getCurrentOutboundRateLimiterState(CCIPChainSelectors.ARBITRUM);
 
-    assertGt(bucket.capacity, proposal.DEFAULT_RATE_LIMITER_CAPACITY());
-    assertGt(bucket.rate, proposal.DEFAULT_RATE_LIMITER_RATE());
-    assertTrue(bucket.isEnabled);
-    assertGt(bucket.tokens, proposal.DEFAULT_RATE_LIMITER_CAPACITY());
+    assertGt(
+      bucket.capacity,
+      proposal.DEFAULT_RATE_LIMITER_CAPACITY(),
+      'pre-proposal outbound capacity should be raised'
+    );
+    assertGt(
+      bucket.rate,
+      proposal.DEFAULT_RATE_LIMITER_RATE(),
+      'pre-proposal outbound rate should be raised'
+    );
+    assertTrue(bucket.isEnabled, 'pre-proposal outbound rate limiter should be enabled');
+    assertGt(
+      bucket.tokens,
+      proposal.DEFAULT_RATE_LIMITER_CAPACITY(),
+      'pre-proposal outbound tokens should exceed default'
+    );
 
     // TODO: remove when placeholders are in place.
     // We can't run the full payload until the facilitator + bridge are deployed,
@@ -93,10 +91,22 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     bucket = IUpgradeableBurnMintTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
       .getCurrentOutboundRateLimiterState(CCIPChainSelectors.ARBITRUM);
 
-    assertEq(bucket.capacity, proposal.DEFAULT_RATE_LIMITER_CAPACITY());
-    assertEq(bucket.rate, proposal.DEFAULT_RATE_LIMITER_RATE());
-    assertTrue(bucket.isEnabled);
-    assertEq(bucket.tokens, proposal.DEFAULT_RATE_LIMITER_CAPACITY());
+    assertEq(
+      bucket.capacity,
+      proposal.DEFAULT_RATE_LIMITER_CAPACITY(),
+      'post-proposal outbound capacity should be restored to default'
+    );
+    assertEq(
+      bucket.rate,
+      proposal.DEFAULT_RATE_LIMITER_RATE(),
+      'post-proposal outbound rate should be restored to default'
+    );
+    assertTrue(bucket.isEnabled, 'post-proposal outbound rate limiter should be enabled');
+    assertEq(
+      bucket.tokens,
+      proposal.DEFAULT_RATE_LIMITER_CAPACITY(),
+      'post-proposal outbound tokens should equal default capacity'
+    );
   }
 
   function test_bridge() public {
@@ -123,8 +133,8 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     vm.stopPrank();
     vm.warp(block.timestamp + 1);
 
-    assertEq(facilitator.bucketCapacity, 0);
-    assertEq(facilitator.bucketLevel, 0);
+    assertEq(facilitator.bucketCapacity, 0, 'facilitator should not be registered before proposal');
+    assertEq(facilitator.bucketLevel, 0, 'facilitator bucket level should be 0 before proposal');
 
     uint256 fee = IAaveGhoCcipBridge(proposal.CCIP_BRIDGE()).quoteBridge(
       CCIPChainSelectors.ARBITRUM,
@@ -136,7 +146,9 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
       proposal.CCIP_BRIDGE()
     );
 
-    emit BridgeMessageInitiated(
+    // messageId is unknown ahead of time, so leave the first indexed topic unchecked.
+    vm.expectEmit(false, true, true, true);
+    emit IAaveGhoCcipBridge.BridgeMessageInitiated(
       bytes32(0),
       CCIPChainSelectors.ARBITRUM,
       GovernanceV3Ethereum.EXECUTOR_LVL_1,
@@ -149,11 +161,20 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
       proposal.DIRECT_FACILITATOR()
     );
 
-    assertEq(facilitator.bucketCapacity, proposal.DIRECT_FACILITATOR_CAPACITY());
-    assertEq(facilitator.bucketLevel, proposal.ARBITRUM_BRIDGE_AMOUNT());
+    assertEq(
+      facilitator.bucketCapacity,
+      proposal.DIRECT_FACILITATOR_CAPACITY(),
+      'facilitator capacity not set to DIRECT_FACILITATOR_CAPACITY'
+    );
+    assertEq(
+      facilitator.bucketLevel,
+      proposal.ARBITRUM_BRIDGE_AMOUNT(),
+      'facilitator bucket level should match bridged amount'
+    );
     assertEq(
       IERC20(AaveV3EthereumAssets.LINK_UNDERLYING).balanceOf(proposal.CCIP_BRIDGE()),
-      feeBalance - fee
+      feeBalance - fee,
+      'bridge LINK balance should decrease by CCIP fee'
     );
   }
 }

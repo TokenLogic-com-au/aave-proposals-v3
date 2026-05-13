@@ -18,6 +18,8 @@ import {IGhoReserve} from 'src/interfaces/IGhoReserve.sol';
 
 import {AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1} from './AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1.sol';
 import {AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2} from './AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2.sol';
+import {IOracleSwapFreezer} from './utils/IOracleSwapFreezer.sol';
+import {IFixedPriceStrategy4626} from './utils/IFixedPriceStrategy4626.sol';
 
 /**
  * @dev Test for AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2
@@ -72,10 +74,22 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     ).getCurrentInboundRateLimiterState(CCIPChainSelectors.ETHEREUM);
 
     // Before Part 2 execution, the limits should be larger than defaults.
-    assertGt(bucket.capacity, proposal.DEFAULT_RATE_LIMITER_CAPACITY());
-    assertGt(bucket.rate, proposal.DEFAULT_RATE_LIMITER_RATE());
-    assertTrue(bucket.isEnabled);
-    assertGt(bucket.tokens, proposal.DEFAULT_RATE_LIMITER_CAPACITY());
+    assertGt(
+      bucket.capacity,
+      proposal.DEFAULT_RATE_LIMITER_CAPACITY(),
+      'pre-Part2 inbound capacity should be raised'
+    );
+    assertGt(
+      bucket.rate,
+      proposal.DEFAULT_RATE_LIMITER_RATE(),
+      'pre-Part2 inbound rate should be raised'
+    );
+    assertTrue(bucket.isEnabled, 'pre-Part2 inbound rate limiter should be enabled');
+    assertGt(
+      bucket.tokens,
+      proposal.DEFAULT_RATE_LIMITER_CAPACITY(),
+      'pre-Part2 inbound tokens should exceed default capacity'
+    );
 
     executePayload(vm, address(proposal));
 
@@ -83,10 +97,22 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
       .getCurrentInboundRateLimiterState(CCIPChainSelectors.ETHEREUM);
 
     // Limits are restored to defaults after Part 2 execution.
-    assertEq(bucket.capacity, proposal.DEFAULT_RATE_LIMITER_CAPACITY());
-    assertEq(bucket.rate, proposal.DEFAULT_RATE_LIMITER_RATE());
-    assertTrue(bucket.isEnabled);
-    assertEq(bucket.tokens, proposal.DEFAULT_RATE_LIMITER_CAPACITY());
+    assertEq(
+      bucket.capacity,
+      proposal.DEFAULT_RATE_LIMITER_CAPACITY(),
+      'post-Part2 inbound capacity should be restored to default'
+    );
+    assertEq(
+      bucket.rate,
+      proposal.DEFAULT_RATE_LIMITER_RATE(),
+      'post-Part2 inbound rate should be restored to default'
+    );
+    assertTrue(bucket.isEnabled, 'post-Part2 inbound rate limiter should be enabled');
+    assertEq(
+      bucket.tokens,
+      proposal.DEFAULT_RATE_LIMITER_CAPACITY(),
+      'post-Part2 inbound tokens should equal default capacity'
+    );
   }
 
   function test_bothGsmsRegisteredAsEntities() public {
@@ -108,7 +134,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     executePayload(vm, address(proposal));
 
     uint256 limit = IGhoReserve(address(proposal.GHO_RESERVE())).getLimit(proposal.GSM_USDT());
-    assertEq(limit, proposal.GSM_USDT_RESERVE_LIMIT());
+    assertEq(limit, proposal.GSM_USDT_RESERVE_LIMIT(), 'USDT GSM reserve limit not set');
 
     GsmConfig memory gsmConfig = GsmConfig({
       sellFee: 0, // 0%
@@ -135,7 +161,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     executePayload(vm, address(proposal));
 
     uint256 limit = IGhoReserve(address(proposal.GHO_RESERVE())).getLimit(proposal.GSM_USDC());
-    assertEq(limit, proposal.GSM_USDC_RESERVE_LIMIT());
+    assertEq(limit, proposal.GSM_USDC_RESERVE_LIMIT(), 'USDC GSM reserve limit not set');
 
     GsmConfig memory gsmConfig = GsmConfig({
       sellFee: 0, // 0%
@@ -238,7 +264,11 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     address underlyingForOracle
   ) internal {
     // OracleSwapFreezer is not authorized before execution
-    assertEq(gsm.hasRole(gsm.SWAP_FREEZER_ROLE(), address(freezer)), false);
+    assertEq(
+      gsm.hasRole(gsm.SWAP_FREEZER_ROLE(), address(freezer)),
+      false,
+      'freezer should not have SWAP_FREEZER_ROLE before proposal'
+    );
 
     (uint128 freezeLowerBound, ) = freezer.getFreezeBound();
     (uint128 unfreezeLowerBound, ) = freezer.getUnfreezeBound();
@@ -247,29 +277,43 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     _mockAssetPrice(address(AaveV3Arbitrum.ORACLE), underlyingForOracle, freezeLowerBound - 1);
 
     (bool canPerformUpkeep, ) = freezer.checkUpkeep(bytes(''));
-    assertEq(canPerformUpkeep, false);
+    assertEq(canPerformUpkeep, false, 'checkUpkeep should report false before proposal');
     freezer.performUpkeep(bytes(''));
-    assertEq(gsm.getIsFrozen(), false);
+    assertEq(gsm.getIsFrozen(), false, 'GSM should not be frozen before proposal');
+
+    // Explicit "cannot perform the action": calling the privileged primitive as the
+    // freezer reverts because it does not yet hold SWAP_FREEZER_ROLE.
+    vm.prank(address(freezer));
+    vm.expectRevert();
+    gsm.setSwapFreeze(true);
 
     // Payload execution
     executePayload(vm, address(proposal));
 
     // Freezer is authorized now
-    assertEq(gsm.hasRole(gsm.SWAP_FREEZER_ROLE(), address(freezer)), true);
+    assertEq(
+      gsm.hasRole(gsm.SWAP_FREEZER_ROLE(), address(freezer)),
+      true,
+      'freezer should hold SWAP_FREEZER_ROLE after proposal'
+    );
 
     // Freezer freezes the GSM
     (canPerformUpkeep, ) = freezer.checkUpkeep(bytes(''));
-    assertEq(canPerformUpkeep, true);
+    assertEq(
+      canPerformUpkeep,
+      true,
+      'checkUpkeep should report true after proposal with bad price'
+    );
     freezer.performUpkeep(bytes(''));
-    assertEq(gsm.getIsFrozen(), true);
+    assertEq(gsm.getIsFrozen(), true, 'GSM should be frozen after freezer performs upkeep');
 
     // Price back to normal
     _mockAssetPrice(address(AaveV3Arbitrum.ORACLE), underlyingForOracle, unfreezeLowerBound + 1);
 
     (canPerformUpkeep, ) = freezer.checkUpkeep(bytes(''));
-    assertEq(canPerformUpkeep, true);
+    assertEq(canPerformUpkeep, true, 'checkUpkeep should report true with price back in band');
     freezer.performUpkeep(bytes(''));
-    assertEq(gsm.getIsFrozen(), false);
+    assertEq(gsm.getIsFrozen(), false, 'GSM should be unfrozen after price recovers');
   }
 
   function _testGsmIsOperational(IGsm gsm, address underlying) internal {
@@ -289,12 +333,12 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     assertEq(
       IERC20(underlying).balanceOf(address(gsm)),
       balanceBeforeUnderlying + amountUnderlying,
-      'underlying balance after sellAsset not equal'
+      'underlying balance in GSM after sellAsset is wrong'
     );
     assertEq(
       IGhoToken(GhoArbitrum.GHO_TOKEN).balanceOf(address(this)),
       balanceGhoBefore + ghoBought,
-      'GHO balance after sellAsset not equal'
+      'GHO balance after sellAsset is wrong'
     );
 
     (, uint256 ghoSold) = gsm.buyAsset(500e6, address(this));
@@ -302,12 +346,12 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     assertEq(
       IERC20(underlying).balanceOf(address(gsm)),
       balanceBeforeUnderlying + amountUnderlying - 500e6,
-      'underlying balance after buyAsset not equal'
+      'underlying balance in GSM after buyAsset is wrong'
     );
     assertEq(
       IGhoToken(GhoArbitrum.GHO_TOKEN).balanceOf(address(this)),
       balanceGhoBefore + ghoBought - ghoSold,
-      'GHO balance after buyAsset not equal'
+      'GHO balance after buyAsset is wrong'
     );
   }
 
@@ -319,7 +363,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
 
     vm.startPrank(GhoArbitrum.RISK_COUNCIL);
     IGsmSteward(proposal.GHO_GSM_STEWARD()).updateGsmExposureCap(address(gsm), newExposureCap);
-    assertEq(gsm.getExposureCap(), newExposureCap);
+    assertEq(gsm.getExposureCap(), newExposureCap, 'exposure cap not updated by GhoGsmSteward');
   }
 
   function _testUpdateBuySellFees(IGsm gsm) internal {
@@ -333,7 +377,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     IGsmSteward(proposal.GHO_GSM_STEWARD()).updateGsmBuySellFees(address(gsm), buyFee + 1, sellFee);
     address newStrategy = gsm.getFeeStrategy();
     uint256 newBuyFee = IGsmFeeStrategy(newStrategy).getBuyFee(1e4);
-    assertEq(newBuyFee, buyFee + 1);
+    assertEq(newBuyFee, buyFee + 1, 'buy fee not updated by GhoGsmSteward');
   }
 
   function _checkRolesConfig(IGsm gsm) internal view {
@@ -351,8 +395,14 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
       'Executor is not configurator'
     );
     // No need to be liquidator or token rescuer at the beginning
-    assertFalse(gsm.hasRole(gsm.LIQUIDATOR_ROLE(), GovernanceV3Arbitrum.EXECUTOR_LVL_1));
-    assertFalse(gsm.hasRole(gsm.TOKEN_RESCUER_ROLE(), GovernanceV3Arbitrum.EXECUTOR_LVL_1));
+    assertFalse(
+      gsm.hasRole(gsm.LIQUIDATOR_ROLE(), GovernanceV3Arbitrum.EXECUTOR_LVL_1),
+      'Executor should not have LIQUIDATOR_ROLE'
+    );
+    assertFalse(
+      gsm.hasRole(gsm.TOKEN_RESCUER_ROLE(), GovernanceV3Arbitrum.EXECUTOR_LVL_1),
+      'Executor should not have TOKEN_RESCUER_ROLE'
+    );
 
     // GHO Steward
     assertTrue(
@@ -411,14 +461,20 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     IFixedPriceStrategy4626 priceStrategy = IFixedPriceStrategy4626(gsm.PRICE_STRATEGY());
     assertEq(
       IERC4626(underlying).previewMint(1e6) * 10 ** 12,
-      priceStrategy.getAssetPriceInGho(1e6, true)
+      priceStrategy.getAssetPriceInGho(1e6, true),
+      'asset price in GHO does not match preview'
     );
     assertEq(
       IERC4626(underlying).previewWithdraw(1 ether) / 10 ** 12,
-      priceStrategy.getGhoPriceInAsset(1 ether, false)
+      priceStrategy.getGhoPriceInAsset(1 ether, false),
+      'GHO price in asset does not match preview'
     );
 
-    assertEq(gsm.getGhoTreasury(), address(AaveV3Arbitrum.COLLECTOR));
+    assertEq(
+      gsm.getGhoTreasury(),
+      address(AaveV3Arbitrum.COLLECTOR),
+      'GhoTreasury should be AaveV3Arbitrum.COLLECTOR'
+    );
 
     // Oracle freezer
     assertEq(freezer.getCanUnfreeze(), config.freezerCanUnfreeze, 'wrong freezer config');
@@ -429,22 +485,11 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     assertEq(lowerBound, config.unfreezeLowerBound, 'wrong unfreeze lower bound');
     assertEq(upperBound, config.unfreezeUpperBound, 'wrong unfreeze upper bound');
 
-    assertEq(freezer.ADDRESS_PROVIDER(), address(AaveV3Arbitrum.POOL_ADDRESSES_PROVIDER));
-    assertEq(freezer.GSM(), address(gsm));
+    assertEq(
+      freezer.ADDRESS_PROVIDER(),
+      address(AaveV3Arbitrum.POOL_ADDRESSES_PROVIDER),
+      'freezer address provider mismatch'
+    );
+    assertEq(freezer.GSM(), address(gsm), 'freezer GSM mismatch');
   }
-}
-
-interface IOracleSwapFreezer {
-  function ADDRESS_PROVIDER() external view returns (address);
-  function GSM() external view returns (address);
-  function getCanUnfreeze() external view returns (bool);
-  function getFreezeBound() external view returns (uint128, uint128);
-  function getUnfreezeBound() external view returns (uint128, uint128);
-  function checkUpkeep(bytes calldata) external view returns (bool, bytes memory);
-  function performUpkeep(bytes calldata) external;
-}
-
-interface IFixedPriceStrategy4626 {
-  function getAssetPriceInGho(uint256 assetAmount, bool roundUp) external view returns (uint256);
-  function getGhoPriceInAsset(uint256 ghoAmount, bool roundUp) external view returns (uint256);
 }
