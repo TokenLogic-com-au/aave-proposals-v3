@@ -17,7 +17,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
   AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('mainnet'), 25080976);
+    vm.createSelectFork(vm.rpcUrl('mainnet'), 25080900);
     proposal = new AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1();
   }
 
@@ -35,7 +35,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
   function test_bridgeLimit() public {
     uint256 bridgeLimitBefore = IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
       .getBridgeLimit();
-    assertTrue(bridgeLimitBefore != proposal.NEW_BRIDGE_LIMIT());
+    assertNotEq(bridgeLimitBefore, proposal.NEW_BRIDGE_LIMIT());
 
     executePayload(vm, address(proposal));
 
@@ -46,6 +46,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
   }
 
   function test_rateLimiter() public {
+    // Start with default values.
     IRateLimiter.TokenBucket memory bucket = IUpgradeableLockReleaseTokenPool(
       GhoEthereum.GHO_CCIP_TOKEN_POOL
     ).getCurrentOutboundRateLimiterState(CCIPChainSelectors.ARBITRUM);
@@ -53,18 +54,22 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
     assertEq(bucket.capacity, proposal.DEFAULT_RATE_LIMITER_CAPACITY());
     assertEq(bucket.rate, proposal.DEFAULT_RATE_LIMITER_RATE());
     assertTrue(bucket.isEnabled);
+    assertEq(bucket.tokens, proposal.DEFAULT_RATE_LIMITER_CAPACITY());
 
     executePayload(vm, address(proposal));
 
+    // State moves to new temporary capacity after proposal, but tokens do not change instantly.
     bucket = IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
       .getCurrentOutboundRateLimiterState(CCIPChainSelectors.ARBITRUM);
 
     assertEq(bucket.capacity, proposal.TEMP_BRIDGE_CAPACITY());
     assertEq(bucket.rate, proposal.TEMP_BRIDGE_CAPACITY() - 1);
     assertTrue(bucket.isEnabled);
+    assertEq(bucket.tokens, proposal.DEFAULT_RATE_LIMITER_CAPACITY());
 
     vm.warp(block.timestamp + 1);
 
+    // 1 second after execution, we have temporary token capacity as well.
     bucket = IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
       .getCurrentOutboundRateLimiterState(CCIPChainSelectors.ARBITRUM);
 

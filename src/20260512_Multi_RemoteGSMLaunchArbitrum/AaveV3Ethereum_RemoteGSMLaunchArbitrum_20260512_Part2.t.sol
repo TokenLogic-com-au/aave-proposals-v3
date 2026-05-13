@@ -36,7 +36,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
   AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('mainnet'), 25080976);
+    vm.createSelectFork(vm.rpcUrl('mainnet'), 25080900);
     proposal = new AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2();
   }
 
@@ -44,6 +44,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
    * @dev executes the generic test suite including e2e and config snapshots
    */
   function test_defaultProposalExecution() public {
+    // TODO: remove when placeholders are in place.
     vm.skip(proposal.DIRECT_FACILITATOR() == address(0) || proposal.CCIP_BRIDGE() == address(0));
     defaultTest(
       'AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2',
@@ -71,6 +72,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     vm.stopPrank();
     vm.warp(block.timestamp + 1);
 
+    // The state starts at default values before executing the proposal.
     IRateLimiter.TokenBucket memory bucket = IUpgradeableBurnMintTokenPool(
       GhoEthereum.GHO_CCIP_TOKEN_POOL
     ).getCurrentOutboundRateLimiterState(CCIPChainSelectors.ARBITRUM);
@@ -80,12 +82,14 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     assertTrue(bucket.isEnabled);
     assertGt(bucket.tokens, proposal.DEFAULT_RATE_LIMITER_CAPACITY());
 
+    // TODO: remove when placeholders are in place.
     // We can't run the full payload until the facilitator + bridge are deployed,
     // because `execute()` calls `addFacilitator(address(0), ...)` and the CCIP send.
     vm.skip(proposal.DIRECT_FACILITATOR() == address(0) || proposal.CCIP_BRIDGE() == address(0));
 
     executePayload(vm, address(proposal));
 
+    // The state finishes at default values after executing the proposal.
     bucket = IUpgradeableBurnMintTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
       .getCurrentOutboundRateLimiterState(CCIPChainSelectors.ARBITRUM);
 
@@ -96,6 +100,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
   }
 
   function test_bridge() public {
+    // TODO: remove when placeholders are in place.
     vm.skip(proposal.DIRECT_FACILITATOR() == address(0) || proposal.CCIP_BRIDGE() == address(0));
 
     vm.startPrank(GovernanceV3Ethereum.EXECUTOR_LVL_1);

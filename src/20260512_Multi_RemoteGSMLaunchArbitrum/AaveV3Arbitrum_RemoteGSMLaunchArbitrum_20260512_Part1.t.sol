@@ -17,7 +17,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
   AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('arbitrum'), 462142794);
+    vm.createSelectFork(vm.rpcUrl('arbitrum'), 462142700);
     proposal = new AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1();
   }
 

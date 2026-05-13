@@ -31,7 +31,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
   AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('arbitrum'), 462142794);
+    vm.createSelectFork(vm.rpcUrl('arbitrum'), 462142700);
     part1 = new AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1();
     proposal = new AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2();
 
@@ -71,6 +71,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
       GhoArbitrum.GHO_CCIP_TOKEN_POOL
     ).getCurrentInboundRateLimiterState(CCIPChainSelectors.ETHEREUM);
 
+    // Before Part 2 execution, the limits should be larger than defaults.
     assertGt(bucket.capacity, proposal.DEFAULT_RATE_LIMITER_CAPACITY());
     assertGt(bucket.rate, proposal.DEFAULT_RATE_LIMITER_RATE());
     assertTrue(bucket.isEnabled);
@@ -81,6 +82,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     bucket = IUpgradeableBurnMintTokenPool(GhoArbitrum.GHO_CCIP_TOKEN_POOL)
       .getCurrentInboundRateLimiterState(CCIPChainSelectors.ETHEREUM);
 
+    // Limits are restored to defaults after Part 2 execution.
     assertEq(bucket.capacity, proposal.DEFAULT_RATE_LIMITER_CAPACITY());
     assertEq(bucket.rate, proposal.DEFAULT_RATE_LIMITER_RATE());
     assertTrue(bucket.isEnabled);
@@ -215,6 +217,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     _testUpdateBuySellFees(IGsm(proposal.GSM_USDC()));
   }
 
+  // TODO: remove this after placeholders are gone
   function _skipIfNotReady() internal {
     vm.skip(
       address(proposal.GHO_RESERVE()) == address(0) ||
