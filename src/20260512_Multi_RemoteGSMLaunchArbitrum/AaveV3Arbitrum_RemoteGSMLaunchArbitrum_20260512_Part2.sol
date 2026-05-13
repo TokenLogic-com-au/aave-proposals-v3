@@ -24,6 +24,19 @@ import {IGsmRegistry} from 'src/interfaces/IGsmRegistry.sol';
  * is intentionally OUT OF SCOPE for this proposal. If a steward is not already
  * empowered on Arbitrum, that grant must be made in a separate proposal before
  * the steward can call updateGhoBorrowCap / updateGhoBorrowRate / updateGhoSupplyCap.
+ *
+ * NOTE (per-GSM reserve limits vs bridged amount): GSM_USDT_RESERVE_LIMIT and
+ * GSM_USDC_RESERVE_LIMIT sum to 100M while BRIDGED_AMOUNT is 50M. This is a
+ * "soft allocation, hard cap by reserve" configuration: each GSM may individually
+ * draw up to 50M, but the total drawable across both is capped at the reserve
+ * balance (50M). If product wants strict per-GSM caps, halve each limit to 25M
+ * (or raise BRIDGED_AMOUNT + facilitator capacity on the Ethereum side).
+ *
+ * NOTE (CCIP receiver assumption): this proposal assumes the CCIP token-pool on
+ * the Arbitrum lane delivers bridged GHO to `AaveV3Arbitrum.COLLECTOR`. The
+ * Collector -> GhoReserve transfer below depends on that. If the CCIP receiver
+ * for this lane is anything other than the Collector, this payload will revert.
+ * Verify on-chain before deploy.
  */
 contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGenericExecutor {
   using SafeERC20 for IERC20;

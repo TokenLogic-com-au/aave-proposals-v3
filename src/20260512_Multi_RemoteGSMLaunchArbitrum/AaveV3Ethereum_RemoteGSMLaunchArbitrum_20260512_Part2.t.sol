@@ -107,6 +107,22 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
       proposal.DEFAULT_RATE_LIMITER_CAPACITY(),
       'post-proposal outbound tokens should equal default capacity'
     );
+
+    // The proposal restores both outbound and inbound configs; assert inbound too.
+    bucket = IUpgradeableBurnMintTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
+      .getCurrentInboundRateLimiterState(CCIPChainSelectors.ARBITRUM);
+
+    assertEq(
+      bucket.capacity,
+      proposal.DEFAULT_RATE_LIMITER_CAPACITY(),
+      'post-proposal inbound capacity should be restored to default'
+    );
+    assertEq(
+      bucket.rate,
+      proposal.DEFAULT_RATE_LIMITER_RATE(),
+      'post-proposal inbound rate should be restored to default'
+    );
+    assertTrue(bucket.isEnabled, 'post-proposal inbound rate limiter should be enabled');
   }
 
   function test_bridge() public {
@@ -147,7 +163,9 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     );
 
     // messageId is unknown ahead of time, so leave the first indexed topic unchecked.
-    vm.expectEmit(false, true, true, true);
+    // NOTE: `from` is expected to equal EXECUTOR_LVL_1 — verify once CCIP_BRIDGE is deployed
+    // and the actual emitter address is known. Mirrors Plasma's test pattern.
+    vm.expectEmit(false, true, true, true, proposal.CCIP_BRIDGE());
     emit IAaveGhoCcipBridge.BridgeMessageInitiated(
       bytes32(0),
       CCIPChainSelectors.ARBITRUM,

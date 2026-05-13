@@ -56,9 +56,16 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
   function test_executionFailsNoFunds() public {
     _skipIfNotReady();
     AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 newProposal = new AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2();
-    // Reset the Collector's balance so the bridged-amount transfer reverts.
+
+    // `setUp` deals BRIDGED_AMOUNT of GHO to the Collector to simulate the CCIP delivery
+    // that every other test in this file relies on. This test is the exception: it asserts
+    // that `execute()` reverts when the Collector has not yet received the bridged GHO,
+    // so we have to zero out the dealt balance.
     deal(GhoArbitrum.GHO_TOKEN, address(AaveV3Arbitrum.COLLECTOR), 0);
 
+    // TODO: bare `vm.expectRevert()` will match the first revert encountered, which is
+    // intended to be the GHO transfer (insufficient balance). Once concrete error selectors
+    // are known, replace with `vm.expectRevert(<selector>)` to pin the source.
     vm.expectRevert();
     vm.prank(GovernanceV3Arbitrum.EXECUTOR_LVL_1);
     newProposal.execute();
@@ -113,6 +120,22 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
       proposal.DEFAULT_RATE_LIMITER_CAPACITY(),
       'post-Part2 inbound tokens should equal default capacity'
     );
+
+    // The proposal restores both inbound and outbound configs; assert outbound too.
+    bucket = IUpgradeableBurnMintTokenPool(GhoArbitrum.GHO_CCIP_TOKEN_POOL)
+      .getCurrentOutboundRateLimiterState(CCIPChainSelectors.ETHEREUM);
+
+    assertEq(
+      bucket.capacity,
+      proposal.DEFAULT_RATE_LIMITER_CAPACITY(),
+      'post-Part2 outbound capacity should be restored to default'
+    );
+    assertEq(
+      bucket.rate,
+      proposal.DEFAULT_RATE_LIMITER_RATE(),
+      'post-Part2 outbound rate should be restored to default'
+    );
+    assertTrue(bucket.isEnabled, 'post-Part2 outbound rate limiter should be enabled');
   }
 
   function test_bothGsmsRegisteredAsEntities() public {
@@ -146,7 +169,8 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
       freezeLowerBound: 0.99e8,
       freezeUpperBound: 1.01e8,
       unfreezeLowerBound: 0.995e8,
-      unfreezeUpperBound: 1.005e8
+      unfreezeUpperBound: 1.005e8,
+      feeStrategy: proposal.GSM_USDT_FEE_STRATEGY()
     });
     _checkGsmConfig(
       IGsm(proposal.GSM_USDT()),
@@ -173,7 +197,8 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
       freezeLowerBound: 0.99e8,
       freezeUpperBound: 1.01e8,
       unfreezeLowerBound: 0.995e8,
-      unfreezeUpperBound: 1.005e8
+      unfreezeUpperBound: 1.005e8,
+      feeStrategy: proposal.GSM_USDC_FEE_STRATEGY()
     });
     _checkGsmConfig(
       IGsm(proposal.GSM_USDC()),
@@ -213,12 +238,12 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     _checkRolesConfig(IGsm(proposal.GSM_USDC()));
   }
 
-  function test_gsmUsdtIsOperational() public {
+  function test_gsmIsOperational_USDT() public {
     _skipIfNotReady();
     _testGsmIsOperational(IGsm(proposal.GSM_USDT()), AaveV3ArbitrumAssets.USDT_STATA_TOKEN);
   }
 
-  function test_gsmUsdcIsOperational() public {
+  function test_gsmIsOperational_USDC() public {
     _skipIfNotReady();
     _testGsmIsOperational(IGsm(proposal.GSM_USDC()), AaveV3ArbitrumAssets.USDC_STATA_TOKEN);
   }
@@ -319,21 +344,32 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
   function _testGsmIsOperational(IGsm gsm, address underlying) internal {
     executePayload(vm, address(proposal));
 
+    // NOTE: `deal(STATA, ...)` writes the balance slot directly but does NOT update the
+    // ERC4626 accounting (`totalAssets`, `totalSupply`). For pure GSM-path arithmetic this
+    // is usually fine, but once real GSMs are deployed verify that `sellAsset` / `buyAsset`
+    // produce the expected GHO amounts. If not, switch to dealing the underlying USDT/USDC
+    // and wrapping via `IERC4626.deposit(...)` to keep 4626 accounting consistent.
     deal(underlying, address(this), 1_000e6);
 
     IERC20(underlying).approve(address(gsm), 1_000e6);
     IERC20(GhoArbitrum.GHO_TOKEN).approve(address(gsm), 1_200 ether);
 
     uint256 amountUnderlying = 1_000e6;
-    uint256 balanceBeforeUnderlying = IERC20(underlying).balanceOf(address(gsm));
+    uint256 gsmBalanceBefore = IERC20(underlying).balanceOf(address(gsm));
+    uint256 userUnderlyingBefore = IERC20(underlying).balanceOf(address(this));
     uint256 balanceGhoBefore = IGhoToken(GhoArbitrum.GHO_TOKEN).balanceOf(address(this));
 
     (, uint256 ghoBought) = gsm.sellAsset(amountUnderlying, address(this));
 
     assertEq(
       IERC20(underlying).balanceOf(address(gsm)),
-      balanceBeforeUnderlying + amountUnderlying,
+      gsmBalanceBefore + amountUnderlying,
       'underlying balance in GSM after sellAsset is wrong'
+    );
+    assertEq(
+      IERC20(underlying).balanceOf(address(this)),
+      userUnderlyingBefore - amountUnderlying,
+      'user underlying balance after sellAsset is wrong'
     );
     assertEq(
       IGhoToken(GhoArbitrum.GHO_TOKEN).balanceOf(address(this)),
@@ -345,8 +381,13 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
 
     assertEq(
       IERC20(underlying).balanceOf(address(gsm)),
-      balanceBeforeUnderlying + amountUnderlying - 500e6,
+      gsmBalanceBefore + amountUnderlying - 500e6,
       'underlying balance in GSM after buyAsset is wrong'
+    );
+    assertEq(
+      IERC20(underlying).balanceOf(address(this)),
+      userUnderlyingBefore - amountUnderlying + 500e6,
+      'user underlying balance after buyAsset is wrong'
     );
     assertEq(
       IGhoToken(GhoArbitrum.GHO_TOKEN).balanceOf(address(this)),
@@ -361,7 +402,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     uint128 oldExposureCap = gsm.getExposureCap();
     uint128 newExposureCap = oldExposureCap + 1;
 
-    vm.startPrank(GhoArbitrum.RISK_COUNCIL);
+    vm.prank(GhoArbitrum.RISK_COUNCIL);
     IGsmSteward(proposal.GHO_GSM_STEWARD()).updateGsmExposureCap(address(gsm), newExposureCap);
     assertEq(gsm.getExposureCap(), newExposureCap, 'exposure cap not updated by GhoGsmSteward');
   }
@@ -373,7 +414,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     uint256 buyFee = IGsmFeeStrategy(feeStrategy).getBuyFee(1e4);
     uint256 sellFee = IGsmFeeStrategy(feeStrategy).getSellFee(1e4);
 
-    vm.startPrank(GhoArbitrum.RISK_COUNCIL);
+    vm.prank(GhoArbitrum.RISK_COUNCIL);
     IGsmSteward(proposal.GHO_GSM_STEWARD()).updateGsmBuySellFees(address(gsm), buyFee + 1, sellFee);
     address newStrategy = gsm.getFeeStrategy();
     uint256 newBuyFee = IGsmFeeStrategy(newStrategy).getBuyFee(1e4);
@@ -439,6 +480,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     uint256 freezeUpperBound;
     uint256 unfreezeLowerBound;
     uint256 unfreezeUpperBound;
+    address feeStrategy;
   }
 
   function _checkGsmConfig(
@@ -453,6 +495,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     assertEq(gsm.getIsSeized(), config.isSeized, 'wrong seized state');
 
     // Fee Strategy
+    assertEq(gsm.getFeeStrategy(), config.feeStrategy, 'wrong fee strategy address');
     IGsmFeeStrategy feeStrategy = IGsmFeeStrategy(gsm.getFeeStrategy());
     assertEq(feeStrategy.getSellFee(10000), config.sellFee, 'wrong sell fee');
     assertEq(feeStrategy.getBuyFee(10000), config.buyFee, 'wrong buy fee');
