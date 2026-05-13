@@ -2,9 +2,11 @@
 pragma solidity ^0.8.0;
 
 import {AaveV3Arbitrum} from 'aave-address-book/AaveV3Arbitrum.sol';
+import {GhoArbitrum} from 'aave-address-book/GhoArbitrum.sol';
+import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
+import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
+import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
 
-import 'forge-std/Test.sol';
-import {ProtocolV3TestBase, ReserveConfig} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1} from './AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1.sol';
 
 /**
@@ -28,5 +30,27 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
       AaveV3Arbitrum.POOL,
       address(proposal)
     );
+  }
+
+  function test_bridgeLimitIncrease() public {
+    IRateLimiter.TokenBucket memory bucket = IUpgradeableBurnMintTokenPool(
+      GhoArbitrum.GHO_CCIP_TOKEN_POOL
+    ).getCurrentInboundRateLimiterState(CCIPChainSelectors.ETHEREUM);
+
+    assertEq(bucket.capacity, proposal.DEFAULT_RATE_LIMITER_CAPACITY());
+    assertEq(bucket.rate, proposal.DEFAULT_RATE_LIMITER_RATE());
+    assertTrue(bucket.isEnabled);
+
+    executePayload(vm, address(proposal));
+
+    vm.warp(block.timestamp + 1);
+
+    bucket = IUpgradeableBurnMintTokenPool(GhoArbitrum.GHO_CCIP_TOKEN_POOL)
+      .getCurrentInboundRateLimiterState(CCIPChainSelectors.ETHEREUM);
+
+    assertEq(bucket.capacity, proposal.TEMP_BRIDGE_CAPACITY());
+    assertEq(bucket.rate, proposal.TEMP_BRIDGE_CAPACITY() - 1);
+    assertTrue(bucket.isEnabled);
+    assertEq(bucket.tokens, proposal.TEMP_BRIDGE_CAPACITY());
   }
 }
