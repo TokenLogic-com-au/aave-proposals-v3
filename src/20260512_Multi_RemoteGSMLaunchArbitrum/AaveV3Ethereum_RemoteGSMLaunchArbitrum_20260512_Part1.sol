@@ -14,6 +14,7 @@ import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelec
  * - Discussion: https://governance.aave.com/t/remotegsm-upgrade-enabling-l2-gsms-for-gho/24240
  */
 contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1 is IProposalGenericExecutor {
+  // TODO: define amount to bridge; temporary numbers taken from Plasma's proposal
   // 50M GHO bridge amount + 10% leeway in case of other bridges
   uint256 public constant TEMP_BRIDGE_CAPACITY = 55_000_000 ether;
   uint256 public constant NEW_BRIDGE_LIMIT = 100_000_000 ether;
@@ -26,7 +27,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1 is IProposalGener
       NEW_BRIDGE_LIMIT
     );
 
-    // Temporarily increase the maximum bridge limit
+    // Temporarily increase the maximum bridge limit (outbound capacity)
     IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
       CCIPChainSelectors.ARBITRUM,
       IRateLimiter.Config({

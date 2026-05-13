@@ -25,6 +25,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
   // TODO: deployed Arbitrum-specific GhoDirectFacilitator on Ethereum
   address public constant DIRECT_FACILITATOR = address(0);
   string public constant DIRECT_FACILITATOR_NAME = 'GhoDirectFacilitator Arbitrum';
+  // TODO: define amount to bridge; temporary numbers taken from Plasma's proposal
   uint128 public constant DIRECT_FACILITATOR_CAPACITY = 50_000_000 ether;
 
   // TODO: confirm whether to reuse Plasma's AaveGhoCcipBridge (0x7F2f96fcdC3A29Be75938d2aC3D92E7006919fe6)
@@ -33,6 +34,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
 
   uint128 public constant DEFAULT_RATE_LIMITER_CAPACITY = 1_500_000 ether;
   uint128 public constant DEFAULT_RATE_LIMITER_RATE = 300 ether;
+  // TODO: define amount to bridge; temporary numbers taken from Plasma's proposal
   uint256 public constant ARBITRUM_BRIDGE_AMOUNT = 50_000_000 ether;
 
   function execute() external {
@@ -46,7 +48,8 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
 
     IERC20(AaveV3EthereumAssets.GHO_UNDERLYING).approve(CCIP_BRIDGE, ARBITRUM_BRIDGE_AMOUNT);
 
-    // Bridge already has LINK to bridge, no need to send for fee
+    // Bridge already has LINK to bridge, no need to send for fee.
+    // This step will fail if Part 1 is not executed first to set the augmented bridge limit (RateLimitExceeded error).
     IAaveGhoCcipBridge(CCIP_BRIDGE).send(
       CCIPChainSelectors.ARBITRUM,
       ARBITRUM_BRIDGE_AMOUNT,

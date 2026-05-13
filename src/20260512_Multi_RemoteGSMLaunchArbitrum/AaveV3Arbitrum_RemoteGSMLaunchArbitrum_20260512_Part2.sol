@@ -32,14 +32,9 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
   uint128 public constant DEFAULT_RATE_LIMITER_RATE = 300 ether;
 
   // GhoReserve
-  // TODO: deployed GhoReserve on Arbitrum
-  address public constant GHO_RESERVE = address(0);
+  // TODO: deployed GhoReserve on Arbitrum (assuming single reserve for all GSMs)
+  IGhoReserve public constant GHO_RESERVE = IGhoReserve(address(0));
   uint256 public constant BRIDGED_AMOUNT = 50_000_000 ether;
-
-  // Capacities
-  uint128 public constant RESERVE_LIMIT_GSM_USDT = 50_000_000 ether;
-  // TODO: confirm collateral asset's decimals (6 assumed, mirroring Plasma stataUSDT)
-  uint128 public constant INITIAL_EXPOSURE_CAP = 10_000_000e6;
 
   // TODO: deployed GhoGsmSteward on Arbitrum
   address public constant GHO_GSM_STEWARD = address(0);
@@ -47,20 +42,57 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
   // TODO: deployed GsmRegistry on Arbitrum
   address public constant GSM_REGISTRY = address(0);
 
+  // GSM USDT
+  uint128 public constant GSM_USDT_RESERVE_LIMIT = 50_000_000 ether;
+
+  uint128 public constant GSM_USDT_INITIAL_EXPOSURE_CAP = 10_000_000e6; // 10M, 6 decimals
+
   // TODO: deployed stataUSDT Remote GSM on Arbitrum
-  address public constant NEW_GSM_USDT = address(0);
+  address public constant GSM_USDT = address(0);
 
   // TODO: deployed USDT OracleSwapFreezer on Arbitrum
   address public constant USDT_ORACLE_SWAP_FREEZER = address(0);
 
   // TODO: deployed FeeStrategy on Arbitrum (mint 0% / burn 0.10%)
-  address public constant FEE_STRATEGY = address(0);
+  address public constant GSM_USDT_FEE_STRATEGY = address(0);
+
+  // GSM USDC
+  uint128 public constant GSM_USDC_RESERVE_LIMIT = 50_000_000 ether;
+
+  uint128 public constant GSM_USDC_INITIAL_EXPOSURE_CAP = 10_000_000e6; // 10M, 6 decimals
+
+  // TODO: deployed stataUSDC Remote GSM on Arbitrum
+  address public constant GSM_USDC = address(0);
+
+  // TODO: deployed USDC OracleSwapFreezer on Arbitrum
+  address public constant USDC_ORACLE_SWAP_FREEZER = address(0);
+
+  // TODO: deployed FeeStrategy on Arbitrum (mint 0% / burn 0.10%)
+  address public constant GSM_USDC_FEE_STRATEGY = address(0);
 
   function execute() external {
-    _grantAccess();
-    IGsm(NEW_GSM_USDT).updateFeeStrategy(FEE_STRATEGY);
+    GHO_RESERVE.grantRole(GHO_RESERVE.LIMIT_MANAGER_ROLE(), GhoArbitrum.RISK_COUNCIL);
 
-    AaveV3Arbitrum.COLLECTOR.transfer(IERC20(GhoArbitrum.GHO_TOKEN), GHO_RESERVE, BRIDGED_AMOUNT);
+    _wireGsm(
+      IGsm(GSM_USDT),
+      USDT_ORACLE_SWAP_FREEZER,
+      GSM_USDT_INITIAL_EXPOSURE_CAP,
+      GSM_USDT_FEE_STRATEGY,
+      GSM_USDT_RESERVE_LIMIT
+    );
+    _wireGsm(
+      IGsm(GSM_USDC),
+      USDC_ORACLE_SWAP_FREEZER,
+      GSM_USDC_INITIAL_EXPOSURE_CAP,
+      GSM_USDC_FEE_STRATEGY,
+      GSM_USDC_RESERVE_LIMIT
+    );
+
+    AaveV3Arbitrum.COLLECTOR.transfer(
+      IERC20(GhoArbitrum.GHO_TOKEN),
+      address(GHO_RESERVE),
+      BRIDGED_AMOUNT
+    );
 
     // Restore bridge limits after GHO bridging
     IUpgradeableBurnMintTokenPool(GhoArbitrum.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
@@ -78,29 +110,33 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
     );
   }
 
-  function _grantAccess() internal {
-    IGsm(NEW_GSM_USDT).updateGhoReserve(GHO_RESERVE);
+  function _wireGsm(
+    IGsm gsm,
+    uint128 reserveLimit,
+    address oracleSwapFreezer,
+    uint128 initialExposureCap,
+    address feeStrategy
+  ) internal {
+    gsm.updateGhoReserve(address(GHO_RESERVE));
 
     // Enroll GSMs as entities and set limit
-    IGhoReserve(GHO_RESERVE).grantRole(
-      IGhoReserve(GHO_RESERVE).LIMIT_MANAGER_ROLE(),
-      GhoArbitrum.RISK_COUNCIL
-    );
-    IGhoReserve(GHO_RESERVE).addEntity(NEW_GSM_USDT);
-    IGhoReserve(GHO_RESERVE).setLimit(NEW_GSM_USDT, RESERVE_LIMIT_GSM_USDT);
+    GHO_RESERVE.addEntity(address(gsm));
+    GHO_RESERVE.setLimit(address(gsm), reserveLimit);
 
     // Add GSM Swap Freezer role to OracleSwapFreezers
-    bytes32 swapFreezerRole = IGsm(NEW_GSM_USDT).SWAP_FREEZER_ROLE();
-    IGsm(NEW_GSM_USDT).grantRole(swapFreezerRole, USDT_ORACLE_SWAP_FREEZER);
-    IGsm(NEW_GSM_USDT).grantRole(swapFreezerRole, GovernanceV3Arbitrum.EXECUTOR_LVL_1);
+    bytes32 swapFreezerRole = gsm.SWAP_FREEZER_ROLE();
+    gsm.grantRole(swapFreezerRole, oracleSwapFreezer);
+    gsm.grantRole(swapFreezerRole, GovernanceV3Arbitrum.EXECUTOR_LVL_1);
 
     // Add GSMs to GSM Registry
-    IGsmRegistry(GSM_REGISTRY).addGsm(NEW_GSM_USDT);
+    IGsmRegistry(GSM_REGISTRY).addGsm(address(gsm));
 
     // GHO GSM Steward
-    IGsm(NEW_GSM_USDT).grantRole(IGsm(NEW_GSM_USDT).CONFIGURATOR_ROLE(), GHO_GSM_STEWARD);
+    gsm.grantRole(gsm.CONFIGURATOR_ROLE(), GHO_GSM_STEWARD);
 
-    // Update deployed exposure cap to initial
-    IGsm(NEW_GSM_USDT).updateExposureCap(INITIAL_EXPOSURE_CAP);
+    // Update deployed exposure cap to initial value
+    gsm.updateExposureCap(initialExposureCap);
+
+    gsm.updateFeeStrategy(feeStrategy);
   }
 }
