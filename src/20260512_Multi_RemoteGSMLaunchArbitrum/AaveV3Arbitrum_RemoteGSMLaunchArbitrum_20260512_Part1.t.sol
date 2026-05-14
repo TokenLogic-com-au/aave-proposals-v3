@@ -5,6 +5,7 @@ import {AaveV3Arbitrum} from 'aave-address-book/AaveV3Arbitrum.sol';
 import {GhoArbitrum} from 'aave-address-book/GhoArbitrum.sol';
 import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
+import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
 
 import {AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1} from './AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1.sol';
@@ -71,6 +72,41 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
       bucket.tokens,
       proposal.TEMP_BRIDGE_CAPACITY(),
       'inbound tokens should refill to TEMP_BRIDGE_CAPACITY after 1s'
+    );
+  }
+
+  function test_facilitatorBucketCapacityIncrease() public {
+    // CCIP mints GHO on the destination chain via the token pool facilitator. For the
+    // bridged amount to land on Arbitrum, that facilitator's bucket capacity must be
+    // raised to at least TEMP_BRIDGE_CAPACITY before the bridge runs.
+    IGhoToken gho = IGhoToken(GhoArbitrum.GHO_TOKEN);
+
+    IGhoToken.Facilitator memory preFacilitator = gho.getFacilitator(
+      GhoArbitrum.GHO_CCIP_TOKEN_POOL
+    );
+    uint128 preBucketLevel = preFacilitator.bucketLevel;
+
+    assertLt(
+      preFacilitator.bucketCapacity,
+      proposal.TEMP_BRIDGE_CAPACITY(),
+      'pre-proposal facilitator capacity should be below TEMP_BRIDGE_CAPACITY'
+    );
+
+    executePayload(vm, address(proposal));
+
+    IGhoToken.Facilitator memory postFacilitator = gho.getFacilitator(
+      GhoArbitrum.GHO_CCIP_TOKEN_POOL
+    );
+
+    assertEq(
+      postFacilitator.bucketCapacity,
+      proposal.TEMP_BRIDGE_CAPACITY(),
+      'post-proposal facilitator capacity should equal TEMP_BRIDGE_CAPACITY'
+    );
+    assertEq(
+      postFacilitator.bucketLevel,
+      preBucketLevel,
+      'facilitator bucket level should be unchanged by the capacity update'
     );
   }
 }
