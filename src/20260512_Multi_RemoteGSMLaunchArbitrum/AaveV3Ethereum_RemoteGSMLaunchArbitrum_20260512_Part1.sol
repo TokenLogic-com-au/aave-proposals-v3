@@ -17,14 +17,16 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1 is IProposalGener
   // TODO: define amount to bridge; temporary numbers taken from Plasma's proposal
   // 50M GHO bridge amount + 10% leeway in case of other bridges
   uint256 public constant TEMP_BRIDGE_CAPACITY = 55_000_000 ether;
-  uint256 public constant NEW_BRIDGE_LIMIT = 100_000_000 ether;
 
   uint128 public constant DEFAULT_RATE_LIMITER_CAPACITY = 1_500_000 ether;
   uint128 public constant DEFAULT_RATE_LIMITER_RATE = 300 ether;
 
   function execute() external {
+    // Increment bridge limit to accommodate the amount to bridge.
+    uint256 currentBridgeLimit = IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
+      .getBridgeLimit();
     IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setBridgeLimit(
-      NEW_BRIDGE_LIMIT
+      currentBridgeLimit + TEMP_BRIDGE_CAPACITY
     );
 
     // Temporarily increase the maximum bridge limit (outbound capacity)

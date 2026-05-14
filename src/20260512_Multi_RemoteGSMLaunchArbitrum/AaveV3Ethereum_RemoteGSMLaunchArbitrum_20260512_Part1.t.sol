@@ -35,18 +35,13 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
   function test_bridgeLimit() public {
     uint256 bridgeLimitBefore = IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
       .getBridgeLimit();
-    assertNotEq(
-      bridgeLimitBefore,
-      proposal.NEW_BRIDGE_LIMIT(),
-      'bridge limit should differ from NEW_BRIDGE_LIMIT before proposal'
-    );
 
     executePayload(vm, address(proposal));
 
     assertEq(
       IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).getBridgeLimit(),
-      proposal.NEW_BRIDGE_LIMIT(),
-      'bridge limit not raised to NEW_BRIDGE_LIMIT after proposal'
+      bridgeLimitBefore + proposal.TEMP_BRIDGE_CAPACITY(),
+      'bridge limit not raised by TEMP_BRIDGE_CAPACITY after proposal'
     );
   }
 

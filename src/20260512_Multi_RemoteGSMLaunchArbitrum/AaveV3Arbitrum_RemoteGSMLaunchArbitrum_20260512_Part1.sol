@@ -2,10 +2,11 @@
 pragma solidity ^0.8.0;
 
 import {GhoArbitrum} from 'aave-address-book/GhoArbitrum.sol';
-import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
-import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
+import {SafeCast} from 'openzeppelin-contracts/contracts/utils/math/SafeCast.sol';
 import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGenericExecutor.sol';
+import {CCIPChainSelectors} from 'src/helpers/gho-launch/constants/CCIPChainSelectors.sol';
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
+import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
 
 /**
  * @title Remote GSM Launch: Arbitrum
@@ -14,6 +15,8 @@ import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
  * - Discussion: https://governance.aave.com/t/remotegsm-upgrade-enabling-l2-gsms-for-gho/24240
  */
 contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1 is IProposalGenericExecutor {
+  using SafeCast for uint256;
+
   uint128 public constant DEFAULT_RATE_LIMITER_CAPACITY = 1_500_000 ether;
   uint128 public constant DEFAULT_RATE_LIMITER_RATE = 300 ether;
 
@@ -23,10 +26,12 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1 is IProposalGener
 
   function execute() external {
     // Increase bucket capacity to allow minting the bridged GHO on Arbitrum.
-    // TODO: This capacity is enough for the initial bridge. Double check whether more of it is needed.
+    (uint256 currentFacilitatorBucketCapacity, ) = IGhoToken(GhoArbitrum.GHO_TOKEN)
+      .getFacilitatorBucket(GhoArbitrum.GHO_CCIP_TOKEN_POOL);
+
     IGhoToken(GhoArbitrum.GHO_TOKEN).setFacilitatorBucketCapacity(
       GhoArbitrum.GHO_CCIP_TOKEN_POOL,
-      TEMP_BRIDGE_CAPACITY
+      currentFacilitatorBucketCapacity.toUint128() + TEMP_BRIDGE_CAPACITY
     );
 
     // Temporarily increase the maximum bridge limit (inbound capacity; counterpart to Ethereum / Part 1 step)

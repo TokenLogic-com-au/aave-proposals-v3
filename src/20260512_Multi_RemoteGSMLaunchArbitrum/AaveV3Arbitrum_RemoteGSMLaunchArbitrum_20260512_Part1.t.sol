@@ -86,12 +86,6 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
     );
     uint128 preBucketLevel = preFacilitator.bucketLevel;
 
-    assertLt(
-      preFacilitator.bucketCapacity,
-      proposal.TEMP_BRIDGE_CAPACITY(),
-      'pre-proposal facilitator capacity should be below TEMP_BRIDGE_CAPACITY'
-    );
-
     executePayload(vm, address(proposal));
 
     IGhoToken.Facilitator memory postFacilitator = gho.getFacilitator(
@@ -100,8 +94,8 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
 
     assertEq(
       postFacilitator.bucketCapacity,
-      proposal.TEMP_BRIDGE_CAPACITY(),
-      'post-proposal facilitator capacity should equal TEMP_BRIDGE_CAPACITY'
+      preFacilitator.bucketCapacity + proposal.TEMP_BRIDGE_CAPACITY(),
+      'post-proposal facilitator capacity should have incremented by TEMP_BRIDGE_CAPACITY'
     );
     assertEq(
       postFacilitator.bucketLevel,
