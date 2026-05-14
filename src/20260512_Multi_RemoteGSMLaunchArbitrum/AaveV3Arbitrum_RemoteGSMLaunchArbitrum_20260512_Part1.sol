@@ -5,6 +5,7 @@ import {GhoArbitrum} from 'aave-address-book/GhoArbitrum.sol';
 import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
 import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
 import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGenericExecutor.sol';
+import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 
 /**
  * @title Remote GSM Launch: Arbitrum
@@ -18,9 +19,16 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1 is IProposalGener
 
   // 50M GHO bridge amount + 10% leeway in case of other bridges
   // TODO: define amount to bridge; temporary numbers taken from Plasma's proposal. Must match Ethereum / Part 1
-  uint256 public constant TEMP_BRIDGE_CAPACITY = 55_000_000 ether;
+  uint128 public constant TEMP_BRIDGE_CAPACITY = 55_000_000 ether;
 
   function execute() external {
+    // Increase bucket capacity to allow minting the bridged GHO on Arbitrum.
+    // TODO: This capacity is enough for the initial bridge. Double check whether more of it is needed.
+    IGhoToken(GhoArbitrum.GHO_TOKEN).setFacilitatorBucketCapacity(
+      GhoArbitrum.GHO_CCIP_TOKEN_POOL,
+      TEMP_BRIDGE_CAPACITY
+    );
+
     // Temporarily increase the maximum bridge limit (inbound capacity; counterpart to Ethereum / Part 1 step)
     IUpgradeableBurnMintTokenPool(GhoArbitrum.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
       CCIPChainSelectors.ETHEREUM,
@@ -31,8 +39,8 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1 is IProposalGener
       }),
       IRateLimiter.Config({
         isEnabled: true,
-        capacity: uint128(TEMP_BRIDGE_CAPACITY),
-        rate: uint128(TEMP_BRIDGE_CAPACITY) - 1 // Set rate to capacity so it fills to limit right away (-1 because they cannot be the same)
+        capacity: TEMP_BRIDGE_CAPACITY,
+        rate: TEMP_BRIDGE_CAPACITY - 1 // Set rate to capacity so it fills to limit right away (-1 because they cannot be the same)
       })
     );
   }

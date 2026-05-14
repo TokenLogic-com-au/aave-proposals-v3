@@ -109,7 +109,8 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
       BRIDGED_AMOUNT
     );
 
-    // Restore bridge limits after GHO bridging
+    // Restore bridge limits after GHO bridging.
+    // Facilitator Bucket Capacity does not need to change.
     IUpgradeableBurnMintTokenPool(GhoArbitrum.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
       CCIPChainSelectors.ETHEREUM,
       IRateLimiter.Config({
