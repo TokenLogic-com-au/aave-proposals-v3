@@ -56,10 +56,10 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
   address public constant GSM_REGISTRY = address(0);
 
   // GSM USDT
-  // TODO: check amount (whole bridged amount, or half of it per GSM?)
-  uint128 public constant GSM_USDT_RESERVE_LIMIT = 50_000_000 ether;
+  // TODO: check amount (should be <= bridged amount, can be changed by steward later)
+  uint128 public constant GSM_USDT_RESERVE_LIMIT = 15_000_000 ether;
 
-  uint128 public constant GSM_USDT_INITIAL_EXPOSURE_CAP = 10_000_000e6; // 10M, 6 decimals
+  uint128 public constant GSM_USDT_INITIAL_EXPOSURE_CAP = 15_000_000e6; // 10M, 6 decimals
 
   // TODO: deployed stataUSDT Remote GSM on Arbitrum
   address public constant GSM_USDT = address(0);
@@ -71,10 +71,10 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
   address public constant GSM_USDT_FEE_STRATEGY = address(0);
 
   // GSM USDC
-  // TODO: check amount (whole bridged amount, or half of it per GSM?)
-  uint128 public constant GSM_USDC_RESERVE_LIMIT = 50_000_000 ether;
+  // TODO: check amount (should be <= bridged amount, can be changed by steward later)
+  uint128 public constant GSM_USDC_RESERVE_LIMIT = 15_000_000 ether;
 
-  uint128 public constant GSM_USDC_INITIAL_EXPOSURE_CAP = 10_000_000e6; // 10M, 6 decimals
+  uint128 public constant GSM_USDC_INITIAL_EXPOSURE_CAP = 15_000_000e6; // 10M, 6 decimals
 
   // TODO: deployed stataUSDC Remote GSM on Arbitrum
   address public constant GSM_USDC = address(0);
