@@ -16,12 +16,12 @@ import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
  */
 contract AaveV3Ethereum_ExtendStkAAVEEmissions_20260505 is IProposalGenericExecutor {
   function execute() external override {
-    (uint128 emissionPerSecond, , ) = IStakeToken(AaveSafetyModule.STK_AAVE).assets(
+    uint256 currentAllowance = IERC20(AaveV3EthereumAssets.AAVE_UNDERLYING).allowance(
+      MiscEthereum.ECOSYSTEM_RESERVE,
       AaveSafetyModule.STK_AAVE
     );
 
-    uint256 currentAllowance = IERC20(AaveV3EthereumAssets.AAVE_UNDERLYING).allowance(
-      MiscEthereum.ECOSYSTEM_RESERVE,
+    (uint128 emissionPerSecond, , ) = IStakeToken(AaveSafetyModule.STK_AAVE).assets(
       AaveSafetyModule.STK_AAVE
     );
 
