@@ -9,9 +9,9 @@ import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {IAaveGhoCcipBridge} from 'aave-helpers/src/bridges/ccip/interfaces/IAaveGhoCcipBridge.sol';
 import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
 import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
-import {IUpgradeableLockReleaseTokenPool} from 'src/interfaces/ccip/IUpgradeableLockReleaseTokenPool.sol';
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 
+import {AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1} from './AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1.sol';
 import {AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2} from './AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2.sol';
 
 /**
@@ -19,11 +19,19 @@ import {AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2} from './AaveV3Eth
  * command: FOUNDRY_PROFILE=test forge test --match-path=src/20260512_Multi_RemoteGSMLaunchArbitrum/AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2.t.sol -vv
  */
 contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV3TestBase {
+  AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1 internal part1;
   AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2 internal proposal;
 
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('mainnet'), 25080900);
+    part1 = new AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1();
     proposal = new AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2();
+
+    // Run Part 1 so the GHO_CCIP_TOKEN_POOL bridge limit and outbound rate limiter are
+    // raised before any Part 2 test runs. Without this, Part 2's `IAaveGhoCcipBridge.send`
+    // would revert (rate-limit exceeded). Mirrors the real on-chain sequencing.
+    executePayload(vm, address(part1));
+    vm.warp(block.timestamp + 1); // let the outbound rate limiter refill to capacity
   }
 
   /**
@@ -40,25 +48,10 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
   }
 
   function test_bridgeLimitRestore() public {
-    // Mock the update from Part 1
-    vm.startPrank(GovernanceV3Ethereum.EXECUTOR_LVL_1);
-    IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setBridgeLimit(
-      proposal.DIRECT_FACILITATOR_CAPACITY() * 2
-    );
+    // setUp already executed Part 1, which raised the outbound rate limiter for the
+    // Arbitrum lane to (capacity = TEMP_BRIDGE_CAPACITY, rate = TEMP_BRIDGE_CAPACITY - 1)
+    // and warped 1 second so the bucket has refilled to capacity.
 
-    IUpgradeableBurnMintTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
-      CCIPChainSelectors.ARBITRUM,
-      IRateLimiter.Config({isEnabled: true, capacity: 55_000_000 ether, rate: 54_999_999 ether}),
-      IRateLimiter.Config({
-        isEnabled: true,
-        capacity: proposal.DEFAULT_RATE_LIMITER_CAPACITY(),
-        rate: proposal.DEFAULT_RATE_LIMITER_RATE()
-      })
-    );
-    vm.stopPrank();
-    vm.warp(block.timestamp + 1);
-
-    // The state starts at default values before executing the proposal.
     IRateLimiter.TokenBucket memory bucket = IUpgradeableBurnMintTokenPool(
       GhoEthereum.GHO_CCIP_TOKEN_POOL
     ).getCurrentOutboundRateLimiterState(CCIPChainSelectors.ARBITRUM);
@@ -129,25 +122,10 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     // TODO: remove when placeholders are in place.
     vm.skip(proposal.DIRECT_FACILITATOR() == address(0) || proposal.CCIP_BRIDGE() == address(0));
 
-    vm.startPrank(GovernanceV3Ethereum.EXECUTOR_LVL_1);
+    // setUp already executed Part 1, raising the bridge limit and outbound rate limiter
+    // on the GHO_CCIP_TOKEN_POOL so Part 2's bridge step has the headroom it needs.
     IGhoToken.Facilitator memory facilitator = IGhoToken(AaveV3EthereumAssets.GHO_UNDERLYING)
       .getFacilitator(proposal.DIRECT_FACILITATOR());
-
-    IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setBridgeLimit(
-      proposal.DIRECT_FACILITATOR_CAPACITY() * 2
-    );
-
-    IUpgradeableBurnMintTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
-      CCIPChainSelectors.ARBITRUM,
-      IRateLimiter.Config({isEnabled: true, capacity: 55_000_000 ether, rate: 54_999_999 ether}),
-      IRateLimiter.Config({
-        isEnabled: true,
-        capacity: proposal.DEFAULT_RATE_LIMITER_CAPACITY(),
-        rate: proposal.DEFAULT_RATE_LIMITER_RATE()
-      })
-    );
-    vm.stopPrank();
-    vm.warp(block.timestamp + 1);
 
     assertEq(facilitator.bucketCapacity, 0, 'facilitator should not be registered before proposal');
     assertEq(facilitator.bucketLevel, 0, 'facilitator bucket level should be 0 before proposal');
