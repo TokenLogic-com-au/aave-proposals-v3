@@ -34,6 +34,12 @@ import {IFixedPriceStrategy4626} from './utils/IFixedPriceStrategy4626.sol';
  * the GSM/Reserve/Steward/Registry/FeeStrategy/Freezer contracts are deployed on Arbitrum.
  */
 contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV3TestBase {
+  // Ethereum -> Arbitrum CCIP v1.5 OffRamp on the Arbitrum router at block 462142700.
+  // `IRouter(CCIPChainRouters.ARBITRUM).isOffRamp(CCIPChainSelectors.ETHEREUM, this)`
+  // returns true at the pinned block; `test_ccipOffRampIsRegistered` re-checks that and
+  // fails with a clear diagnostic if CCIP rotates the OffRamp at a future block.
+  address internal constant CCIP_ETH_OFFRAMP = 0x542ba1902044069330e8c5b36A84EC503863722f;
+
   AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1 internal part1;
   AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 internal proposal;
 
@@ -98,6 +104,16 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     vm.expectRevert();
     vm.prank(GovernanceV3Arbitrum.EXECUTOR_LVL_1);
     newProposal.execute();
+  }
+
+  function test_ccipOffRampIsRegistered() public view {
+    // Guard: if CCIP rotates the Eth -> Arb OffRamp at a future block, this test fails
+    // with a clear signal before the more-opaque `releaseOrMint` revert in setUp shows up
+    // elsewhere in the suite.
+    assertTrue(
+      IRouter(CCIPChainRouters.ARBITRUM).isOffRamp(CCIPChainSelectors.ETHEREUM, CCIP_ETH_OFFRAMP),
+      'CCIP_ETH_OFFRAMP is no longer a registered Eth->Arb OffRamp on Arbitrum CCIP router'
+    );
   }
 
   function test_ccipDeliveryMintsToCollector() public view {
@@ -329,10 +345,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
    * signature (see `src/interfaces/ccip/tokenPool/IUpgradeableBurnMintTokenPool.sol`).
    */
   function _simulateCcipDeliveryToCollector(uint256 amount) internal {
-    address offRamp = _findEthToArbOffRamp();
-    require(offRamp != address(0), 'no Eth->Arb OffRamp on Arbitrum CCIP router');
-
-    vm.prank(offRamp);
+    vm.prank(CCIP_ETH_OFFRAMP);
     IUpgradeableBurnMintTokenPool_1_5_1(GhoArbitrum.GHO_CCIP_TOKEN_POOL).releaseOrMint(
       IPool_CCIP.ReleaseOrMintInV1({
         originalSender: abi.encode(GovernanceV3Arbitrum.EXECUTOR_LVL_1),
@@ -346,16 +359,6 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
         offchainTokenData: new bytes(0)
       })
     );
-  }
-
-  function _findEthToArbOffRamp() internal view returns (address) {
-    IRouter.OffRamp[] memory offRamps = IRouter(CCIPChainRouters.ARBITRUM).getOffRamps();
-    for (uint256 i = 0; i < offRamps.length; i++) {
-      if (offRamps[i].sourceChainSelector == CCIPChainSelectors.ETHEREUM) {
-        return offRamps[i].offRamp;
-      }
-    }
-    return address(0);
   }
 
   // TODO: remove this after placeholders are gone
