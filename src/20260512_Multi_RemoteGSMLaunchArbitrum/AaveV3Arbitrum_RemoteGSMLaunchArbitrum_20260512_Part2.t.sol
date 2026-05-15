@@ -6,9 +6,14 @@ import {IERC4626} from 'openzeppelin-contracts/contracts/interfaces/IERC4626.sol
 import {AaveV3Arbitrum, AaveV3ArbitrumAssets} from 'aave-address-book/AaveV3Arbitrum.sol';
 import {GovernanceV3Arbitrum} from 'aave-address-book/GovernanceV3Arbitrum.sol';
 import {GhoArbitrum} from 'aave-address-book/GhoArbitrum.sol';
+import {GhoEthereum} from 'aave-address-book/GhoEthereum.sol';
 import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
+import {IUpgradeableBurnMintTokenPool_1_5_1} from 'src/interfaces/ccip/tokenPool/IUpgradeableBurnMintTokenPool.sol';
+import {IPool as IPool_CCIP} from 'src/interfaces/ccip/tokenPool/IPool.sol';
+import {IRouter} from 'src/interfaces/ccip/IRouter.sol';
 import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
+import {CCIPChainRouters} from '../helpers/gho-launch/constants/CCIPChainRouters.sol';
 import {IAaveOracle} from 'aave-address-book/AaveV2.sol';
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 import {IGsm} from 'src/interfaces/IGsm.sol';
@@ -32,13 +37,36 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
   AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1 internal part1;
   AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 internal proposal;
 
+  // Captured immediately before the simulated CCIP mint in setUp so tests can assert deltas
+  // (the Collector and the CCIP token pool facilitator both have non-zero state at the
+  // fork block).
+  uint256 internal collectorGhoBalanceBeforeCcipDelivery;
+  uint128 internal ccipPoolFacilitatorBucketLevelBeforeCcipDelivery;
+
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('arbitrum'), 462142700);
     part1 = new AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1();
     proposal = new AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2();
 
-    // Simulate the bridged GHO arriving at the Collector via CCIP before Part 2 runs.
-    deal(GhoArbitrum.GHO_TOKEN, address(AaveV3Arbitrum.COLLECTOR), proposal.BRIDGED_AMOUNT());
+    // Run Part 1 so the GHO_CCIP_TOKEN_POOL facilitator bucket capacity is raised and the
+    // Eth->Arb inbound rate limiter is widened, mirroring the real sequencing on-chain.
+    executePayload(vm, address(part1));
+    vm.warp(block.timestamp + 1); // let the inbound rate limiter refill to capacity
+
+    collectorGhoBalanceBeforeCcipDelivery = IERC20(GhoArbitrum.GHO_TOKEN).balanceOf(
+      address(AaveV3Arbitrum.COLLECTOR)
+    );
+    ccipPoolFacilitatorBucketLevelBeforeCcipDelivery = IGhoToken(GhoArbitrum.GHO_TOKEN)
+      .getFacilitator(GhoArbitrum.GHO_CCIP_TOKEN_POOL)
+      .bucketLevel;
+
+    // Simulate CCIP delivery end-to-end: prank as the Eth->Arb OffRamp and call
+    // `releaseOrMint` on the GHO CCIP token pool. The pool acts as a GHO facilitator, so
+    // this routes through `IGhoToken.mint` and exercises the facilitator bucket check that
+    // Part 1 just configured. If the bucket capacity were misconfigured, the mint would
+    // revert here and every test that depends on the bridged funds would fail loudly, which
+    // would not happen if we mocked the transfer using `vm.deal`.
+    _simulateCcipDeliveryToCollector(proposal.BRIDGED_AMOUNT());
   }
 
   /**
@@ -57,10 +85,11 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     _skipIfNotReady();
     AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 newProposal = new AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2();
 
-    // `setUp` deals BRIDGED_AMOUNT of GHO to the Collector to simulate the CCIP delivery
-    // that every other test in this file relies on. This test is the exception: it asserts
-    // that `execute()` reverts when the Collector has not yet received the bridged GHO,
-    // so we have to zero out the dealt balance.
+    // `setUp` executes Part 1 and simulates a CCIP delivery that mints BRIDGED_AMOUNT of
+    // GHO to the Collector. This test is the exception: it asserts `execute()` reverts
+    // when the Collector hasn't received the bridged GHO, so we zero the Collector's
+    // GHO balance via `deal`. `deal` is appropriate here because we want behavior with no
+    // funds — we're not trying to exercise the CCIP mint path.
     deal(GhoArbitrum.GHO_TOKEN, address(AaveV3Arbitrum.COLLECTOR), 0);
 
     // TODO: bare `vm.expectRevert()` will match the first revert encountered, which is
@@ -71,10 +100,32 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     newProposal.execute();
   }
 
+  function test_ccipDeliveryMintsToCollector() public view {
+    // setUp ran Part 1 then simulated a CCIP delivery via releaseOrMint. Assert the
+    // Collector and the GHO_CCIP_TOKEN_POOL facilitator both moved by BRIDGED_AMOUNT.
+    // If Part 1's facilitator-capacity update is misconfigured (e.g. capacity below
+    // BRIDGED_AMOUNT), setUp's `releaseOrMint` reverts and the whole suite fails at setUp.
+    assertEq(
+      IERC20(GhoArbitrum.GHO_TOKEN).balanceOf(address(AaveV3Arbitrum.COLLECTOR)) -
+        collectorGhoBalanceBeforeCcipDelivery,
+      proposal.BRIDGED_AMOUNT(),
+      'Collector GHO balance should increase by exactly BRIDGED_AMOUNT'
+    );
+
+    IGhoToken.Facilitator memory facilitator = IGhoToken(GhoArbitrum.GHO_TOKEN).getFacilitator(
+      GhoArbitrum.GHO_CCIP_TOKEN_POOL
+    );
+    assertEq(
+      facilitator.bucketLevel - ccipPoolFacilitatorBucketLevelBeforeCcipDelivery,
+      uint128(proposal.BRIDGED_AMOUNT()),
+      'CCIP token pool facilitator bucketLevel should increase by exactly BRIDGED_AMOUNT'
+    );
+  }
+
   function test_bridgeLimitRestore() public {
     _skipIfNotReady();
-    executePayload(vm, address(part1));
-    vm.warp(block.timestamp + 1);
+    // setUp() already executes Part 1 and warps 1 second; the inbound rate limiter is
+    // already widened by this point.
 
     IRateLimiter.TokenBucket memory bucket = IUpgradeableBurnMintTokenPool(
       GhoArbitrum.GHO_CCIP_TOKEN_POOL
@@ -266,6 +317,45 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
   function test_ghoGsmSteward_updateGsmBuySellFees_USDC() public {
     _skipIfNotReady();
     _testUpdateBuySellFees(IGsm(proposal.GSM_USDC()));
+  }
+
+  /**
+   * @dev Simulates the destination-chain CCIP mint that delivers bridged GHO to the
+   * Collector. Pranks as the Eth->Arb OffRamp registered on the Arbitrum CCIP router and
+   * invokes `releaseOrMint` on the GHO token pool, which routes through `IGhoToken.mint`
+   * and exercises the facilitator bucket capacity raised by Part 1.
+   *
+   * The pool is v1.5.1, which uses the struct-based `releaseOrMint(ReleaseOrMintInV1)`
+   * signature (see `src/interfaces/ccip/tokenPool/IUpgradeableBurnMintTokenPool.sol`).
+   */
+  function _simulateCcipDeliveryToCollector(uint256 amount) internal {
+    address offRamp = _findEthToArbOffRamp();
+    require(offRamp != address(0), 'no Eth->Arb OffRamp on Arbitrum CCIP router');
+
+    vm.prank(offRamp);
+    IUpgradeableBurnMintTokenPool_1_5_1(GhoArbitrum.GHO_CCIP_TOKEN_POOL).releaseOrMint(
+      IPool_CCIP.ReleaseOrMintInV1({
+        originalSender: abi.encode(GovernanceV3Arbitrum.EXECUTOR_LVL_1),
+        remoteChainSelector: CCIPChainSelectors.ETHEREUM,
+        receiver: address(AaveV3Arbitrum.COLLECTOR),
+        amount: amount,
+        localToken: GhoArbitrum.GHO_TOKEN,
+        // Informational on the destination side; using the real Eth pool keeps it realistic.
+        sourcePoolAddress: abi.encode(GhoEthereum.GHO_CCIP_TOKEN_POOL),
+        sourcePoolData: new bytes(0),
+        offchainTokenData: new bytes(0)
+      })
+    );
+  }
+
+  function _findEthToArbOffRamp() internal view returns (address) {
+    IRouter.OffRamp[] memory offRamps = IRouter(CCIPChainRouters.ARBITRUM).getOffRamps();
+    for (uint256 i = 0; i < offRamps.length; i++) {
+      if (offRamps[i].sourceChainSelector == CCIPChainSelectors.ETHEREUM) {
+        return offRamps[i].offRamp;
+      }
+    }
+    return address(0);
   }
 
   // TODO: remove this after placeholders are gone
