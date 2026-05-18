@@ -4,30 +4,31 @@ pragma solidity ^0.8.0;
 import {AaveV3GHORemoteLaneTest_PreExecution, AaveV3GHORemoteLane_1_6_Test_PostExecution} from '../../../helpers/gho-launch/tests/AaveV3GHORemoteLaneTest.sol';
 import {GhoCCIPChains} from '../../../helpers/gho-launch/constants/GhoCCIPChains.sol';
 import {AaveV3GHOLane} from '../../../helpers/gho-launch/AaveV3GHOLane.sol';
-import {AaveV3Arbitrum_GhoXLayerActivation_20260203} from '../../remote-lanes/AaveV3Arbitrum_GhoXLayerActivation_20260203.sol';
+import {AaveV3Arbitrum_GhoMonadActivation_20260518} from '../../remote-lanes/AaveV3Arbitrum_GhoMonadActivation_20260518.sol';
 import {AaveV3Arbitrum} from 'aave-address-book/AaveV3Arbitrum.sol';
 
-uint256 constant ARBITRUM_BLOCK_NUMBER = 439062760;
+// TODO
+uint256 constant ARBITRUM_BLOCK_NUMBER = 00;
 
-contract Arbitrum_XLayer_AaveV3GHOLane_20260105_Test_PreExecution is
+contract Arbitrum_Monad_AaveV3GHOLane_20260105_Test_PreExecution is
   AaveV3GHORemoteLaneTest_PreExecution
 {
   constructor()
     AaveV3GHORemoteLaneTest_PreExecution(
       GhoCCIPChains.ARBITRUM(),
-      GhoCCIPChains.XLAYER(),
+      GhoCCIPChains.MONAD(),
       'arbitrum',
       ARBITRUM_BLOCK_NUMBER
     )
   {}
 
   function _deployAaveV3GHOLaneProposal() internal virtual override returns (AaveV3GHOLane) {
-    return new AaveV3Arbitrum_GhoXLayerActivation_20260203();
+    return new AaveV3Arbitrum_GhoMonadActivation_20260518();
   }
 
   function test_defaultProposalExecution() public virtual {
     defaultTest(
-      'AaveV3Arbitrum_GhoXLayerActivation_20260203',
+      'AaveV3Arbitrum_GhoMonadActivation_20260518',
       AaveV3Arbitrum.POOL,
       address(proposal)
     );
@@ -81,13 +82,13 @@ contract Arbitrum_XLayer_AaveV3GHOLane_20260105_Test_PreExecution is
   }
 }
 
-contract Arbitrum_XLayer_AaveV3GHOLane_20260105_Test_PostExecution is
+contract Arbitrum_Monad_AaveV3GHOLane_20260105_Test_PostExecution is
   AaveV3GHORemoteLane_1_6_Test_PostExecution
 {
   constructor()
     AaveV3GHORemoteLane_1_6_Test_PostExecution(
       GhoCCIPChains.ARBITRUM(),
-      GhoCCIPChains.XLAYER(),
+      GhoCCIPChains.MONAD(),
       'arbitrum',
       ARBITRUM_BLOCK_NUMBER
     )
@@ -119,7 +120,7 @@ contract Arbitrum_XLayer_AaveV3GHOLane_20260105_Test_PostExecution is
   }
 
   function _deployAaveV3GHOLaneProposal() internal virtual override returns (AaveV3GHOLane) {
-    return new AaveV3Arbitrum_GhoXLayerActivation_20260203();
+    return new AaveV3Arbitrum_GhoMonadActivation_20260518();
   }
 
   function _assertOnAndOffRamps() internal view override {

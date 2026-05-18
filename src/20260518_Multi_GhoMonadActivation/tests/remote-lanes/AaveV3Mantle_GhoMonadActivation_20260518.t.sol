@@ -4,34 +4,41 @@ pragma solidity ^0.8.0;
 import {AaveV3GHORemoteLaneTest_PreExecution, AaveV3GHORemoteLane_1_6_Test_PostExecution} from '../../../helpers/gho-launch/tests/AaveV3GHORemoteLaneTest.sol';
 import {GhoCCIPChains} from '../../../helpers/gho-launch/constants/GhoCCIPChains.sol';
 import {AaveV3GHOLane} from '../../../helpers/gho-launch/AaveV3GHOLane.sol';
-import {AaveV3Ink_GhoXLayerActivation_20260203} from '../../remote-lanes/AaveV3Ink_GhoXLayerActivation_20260203.sol';
-import {AaveV3InkWhitelabel} from 'aave-address-book/AaveV3InkWhitelabel.sol';
+import {AaveV3Mantle_GhoMonadActivation_20260518} from '../../remote-lanes/AaveV3Mantle_GhoMonadActivation_20260518.sol';
+import {AaveV3Mantle} from 'aave-address-book/AaveV3Mantle.sol';
 
-uint256 constant INK_BLOCK_NUMBER = 39580201;
+// TODO
+uint256 constant MANTLE_BLOCK_NUMBER = 00;
 
-contract Ink_XLayer_AaveV3GHOLane_20260105_Test_PreExecution is
+contract Mantle_Monad_AaveV3GHOLane_20260105_Test_PreExecution is
   AaveV3GHORemoteLaneTest_PreExecution
 {
   constructor()
     AaveV3GHORemoteLaneTest_PreExecution(
-      GhoCCIPChains.INK(),
-      GhoCCIPChains.XLAYER(),
-      'ink',
-      INK_BLOCK_NUMBER
+      GhoCCIPChains.MANTLE(),
+      GhoCCIPChains.MONAD(),
+      'mantle',
+      MANTLE_BLOCK_NUMBER
     )
   {}
 
   function _deployAaveV3GHOLaneProposal() internal virtual override returns (AaveV3GHOLane) {
-    return new AaveV3Ink_GhoXLayerActivation_20260203();
+    return new AaveV3Mantle_GhoMonadActivation_20260518();
   }
 
   function test_defaultProposalExecution() public virtual {
-    executePayload(vm, address(proposal));
+    defaultTest(
+      'AaveV3Mantle_GhoMonadActivation_20260518',
+      AaveV3Mantle.POOL,
+      address(proposal),
+      false,
+      false
+    );
   }
 
   function _assertOnAndOffRamps() internal view override {
-    _assertOnRamp(
-      _localOutboundLaneToEth(),
+    _assertOnRamp_1_6(
+      _localOutboundLaneToEth_1_6(),
       LOCAL_CHAIN_SELECTOR,
       ETH_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
@@ -42,8 +49,8 @@ contract Ink_XLayer_AaveV3GHOLane_20260105_Test_PreExecution is
       REMOTE_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
     );
-    _assertOffRamp(
-      _localInboundLaneFromEth(),
+    _assertOffRamp_1_6(
+      _localInboundLaneFromEth_1_6(),
       ETH_CHAIN_SELECTOR,
       LOCAL_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
@@ -57,23 +64,25 @@ contract Ink_XLayer_AaveV3GHOLane_20260105_Test_PreExecution is
   }
 }
 
-contract Ink_XLayer_AaveV3GHOLane_20260105_Test is AaveV3GHORemoteLane_1_6_Test_PostExecution {
+contract Mantle_Monad_AaveV3GHOLane_20260105_Test_PostExecution is
+  AaveV3GHORemoteLane_1_6_Test_PostExecution
+{
   constructor()
     AaveV3GHORemoteLane_1_6_Test_PostExecution(
-      GhoCCIPChains.INK(),
-      GhoCCIPChains.XLAYER(),
-      'ink',
-      INK_BLOCK_NUMBER
+      GhoCCIPChains.MANTLE(),
+      GhoCCIPChains.MONAD(),
+      'mantle',
+      MANTLE_BLOCK_NUMBER
     )
   {}
 
   function _deployAaveV3GHOLaneProposal() internal virtual override returns (AaveV3GHOLane) {
-    return new AaveV3Ink_GhoXLayerActivation_20260203();
+    return new AaveV3Mantle_GhoMonadActivation_20260518();
   }
 
   function _assertOnAndOffRamps() internal view override {
-    _assertOnRamp(
-      _localOutboundLaneToEth(),
+    _assertOnRamp_1_6(
+      _localOutboundLaneToEth_1_6(),
       LOCAL_CHAIN_SELECTOR,
       ETH_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
@@ -84,8 +93,8 @@ contract Ink_XLayer_AaveV3GHOLane_20260105_Test is AaveV3GHORemoteLane_1_6_Test_
       REMOTE_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
     );
-    _assertOffRamp(
-      _localInboundLaneFromEth(),
+    _assertOffRamp_1_6(
+      _localInboundLaneFromEth_1_6(),
       ETH_CHAIN_SELECTOR,
       LOCAL_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER

@@ -39,6 +39,10 @@ import {GovernanceV3Mantle} from 'aave-address-book/GovernanceV3Mantle.sol';
 import {AaveV3XLayer} from 'aave-address-book/AaveV3XLayer.sol';
 import {GovernanceV3XLayer} from 'aave-address-book/GovernanceV3XLayer.sol';
 
+// TODO
+import {AaveV3Monad} from 'aave-address-book/AaveV3Monad.sol';
+import {GovernanceV3Monad} from 'aave-address-book/GovernanceV3Monad.sol';
+
 /**
  * @title GhoCCIPChains
  * @author Aave Labs
@@ -89,6 +93,7 @@ library GhoCCIPChains {
     allChains[6] = PLASMA();
     allChains[7] = MANTLE();
     allChains[8] = XLAYER();
+    allChains[9] = MONAD();
     return allChains;
   }
 
@@ -373,6 +378,28 @@ library GhoCCIPChains {
         owner: GovernanceV3XLayer.EXECUTOR_LVL_1,
         ccipRouter: CCIPChainRouters.XLAYER,
         linkToken: 0x8aF9711B44695a5A081F25AB9903DDB73aCf8FA9,
+        isVersion_1_6: true
+      });
+  }
+
+  /**
+   * @notice TODO Returns the ChainInfo constant for Monad
+   * @return The ChainInfo constant for Monad
+   */
+  function MONAD() public pure returns (ChainInfo memory) {
+    return
+      ChainInfo({
+        chainSelector: CCIPChainSelectors.MONAD,
+        ghoToken: address(0x70D0),
+        ghoCCIPTokenPool: address(0x70D0),
+        ghoBucketSteward: address(0x70D0),
+        ghoAaveCoreSteward: address(0x70D0),
+        ghoCCIPSteward: address(0x70D0),
+        aclManager: address(AaveV3Monad.ACL_MANAGER),
+        tokenAdminRegistry: CCIPChainTokenAdminRegistries.MONAD,
+        owner: GovernanceV3Monad.EXECUTOR_LVL_1,
+        ccipRouter: CCIPChainRouters.MONAD,
+        linkToken: address(0x70D0),
         isVersion_1_6: true
       });
   }

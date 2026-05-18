@@ -4,33 +4,30 @@ pragma solidity ^0.8.0;
 import {AaveV3GHORemoteLaneTest_PreExecution, AaveV3GHORemoteLane_1_6_Test_PostExecution} from '../../../helpers/gho-launch/tests/AaveV3GHORemoteLaneTest.sol';
 import {GhoCCIPChains} from '../../../helpers/gho-launch/constants/GhoCCIPChains.sol';
 import {AaveV3GHOLane} from '../../../helpers/gho-launch/AaveV3GHOLane.sol';
-import {AaveV3Avalanche_GhoXLayerActivation_20260203} from '../../remote-lanes/AaveV3Avalanche_GhoXLayerActivation_20260203.sol';
-import {AaveV3Avalanche} from 'aave-address-book/AaveV3Avalanche.sol';
+import {AaveV3Base_GhoMonadActivation_20260518} from '../../remote-lanes/AaveV3Base_GhoMonadActivation_20260518.sol';
+import {AaveV3Base} from 'aave-address-book/AaveV3Base.sol';
 
-uint256 constant AVALANCHE_BLOCK_NUMBER = 79742860;
+// TODO
+uint256 constant BASE_BLOCK_NUMBER = 00;
 
-contract Avalanche_XLayer_AaveV3GHOLane_20260105_Test_PreExecution is
+contract Base_Monad_AaveV3GHOLane_20260105_Test_PreExecution is
   AaveV3GHORemoteLaneTest_PreExecution
 {
   constructor()
     AaveV3GHORemoteLaneTest_PreExecution(
-      GhoCCIPChains.AVALANCHE(),
-      GhoCCIPChains.XLAYER(),
-      'avalanche',
-      AVALANCHE_BLOCK_NUMBER
+      GhoCCIPChains.BASE(),
+      GhoCCIPChains.MONAD(),
+      'base',
+      BASE_BLOCK_NUMBER
     )
   {}
 
   function _deployAaveV3GHOLaneProposal() internal virtual override returns (AaveV3GHOLane) {
-    return new AaveV3Avalanche_GhoXLayerActivation_20260203();
+    return new AaveV3Base_GhoMonadActivation_20260518();
   }
 
   function test_defaultProposalExecution() public virtual {
-    defaultTest(
-      'AaveV3Avalanche_GhoXLayerActivation_20260203',
-      AaveV3Avalanche.POOL,
-      address(proposal)
-    );
+    defaultTest('AaveV3Base_GhoMonadActivation_20260518', AaveV3Base.POOL, address(proposal));
   }
 
   function _assertOnAndOffRamps() internal view override {
@@ -61,20 +58,20 @@ contract Avalanche_XLayer_AaveV3GHOLane_20260105_Test_PreExecution is
   }
 }
 
-contract Avalanche_XLayer_AaveV3GHOLane_20260105_Test_PostExecution is
+contract Base_Monad_AaveV3GHOLane_20260105_Test_PostExecution is
   AaveV3GHORemoteLane_1_6_Test_PostExecution
 {
   constructor()
     AaveV3GHORemoteLane_1_6_Test_PostExecution(
-      GhoCCIPChains.AVALANCHE(),
-      GhoCCIPChains.XLAYER(),
-      'avalanche',
-      AVALANCHE_BLOCK_NUMBER
+      GhoCCIPChains.BASE(),
+      GhoCCIPChains.MONAD(),
+      'base',
+      BASE_BLOCK_NUMBER
     )
   {}
 
   function _deployAaveV3GHOLaneProposal() internal virtual override returns (AaveV3GHOLane) {
-    return new AaveV3Avalanche_GhoXLayerActivation_20260203();
+    return new AaveV3Base_GhoMonadActivation_20260518();
   }
 
   function _assertOnAndOffRamps() internal view override {

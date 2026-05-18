@@ -4,34 +4,35 @@ pragma solidity ^0.8.0;
 import {AaveV3GHORemoteLaneTest_PreExecution, AaveV3GHORemoteLane_1_6_Test_PostExecution} from '../../../helpers/gho-launch/tests/AaveV3GHORemoteLaneTest.sol';
 import {GhoCCIPChains} from '../../../helpers/gho-launch/constants/GhoCCIPChains.sol';
 import {AaveV3GHOLane} from '../../../helpers/gho-launch/AaveV3GHOLane.sol';
-import {AaveV3Gnosis_GhoXLayerActivation_20260203} from '../../remote-lanes/AaveV3Gnosis_GhoXLayerActivation_20260203.sol';
-import {AaveV3Gnosis} from 'aave-address-book/AaveV3Gnosis.sol';
+import {AaveV3XLayer_GhoMonadActivation_20260518} from '../../remote-lanes/AaveV3XLayer_GhoMonadActivation_20260518.sol';
+import {AaveV3XLayer} from 'aave-address-book/AaveV3XLayer.sol';
 
-uint256 constant GNOSIS_BLOCK_NUMBER = 45066125;
+// TODO
+uint256 constant XLAYER_BLOCK_NUMBER = 000;
 
-contract Gnosis_XLayer_AaveV3GHOLane_20260105_Test_PreExecution is
+contract XLayer_Monad_AaveV3GHOLane_20260105_Test_PreExecution is
   AaveV3GHORemoteLaneTest_PreExecution
 {
   constructor()
     AaveV3GHORemoteLaneTest_PreExecution(
-      GhoCCIPChains.GNOSIS(),
       GhoCCIPChains.XLAYER(),
-      'gnosis',
-      GNOSIS_BLOCK_NUMBER
+      GhoCCIPChains.MONAD(),
+      'xlayer',
+      XLAYER_BLOCK_NUMBER
     )
   {}
 
   function _deployAaveV3GHOLaneProposal() internal virtual override returns (AaveV3GHOLane) {
-    return new AaveV3Gnosis_GhoXLayerActivation_20260203();
+    return new AaveV3XLayer_GhoMonadActivation_20260518();
   }
 
   function test_defaultProposalExecution() public virtual {
-    defaultTest('AaveV3Gnosis_GhoXLayerActivation_20260203', AaveV3Gnosis.POOL, address(proposal));
+    defaultTest('AaveV3XLayer_GhoMonadActivation_20260518', AaveV3XLayer.POOL, address(proposal));
   }
 
   function _assertOnAndOffRamps() internal view override {
-    _assertOnRamp(
-      _localOutboundLaneToEth(),
+    _assertOnRamp_1_6(
+      _localOutboundLaneToEth_1_6(),
       LOCAL_CHAIN_SELECTOR,
       ETH_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
@@ -42,8 +43,8 @@ contract Gnosis_XLayer_AaveV3GHOLane_20260105_Test_PreExecution is
       REMOTE_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
     );
-    _assertOffRamp(
-      _localInboundLaneFromEth(),
+    _assertOffRamp_1_6(
+      _localInboundLaneFromEth_1_6(),
       ETH_CHAIN_SELECTOR,
       LOCAL_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
@@ -57,25 +58,25 @@ contract Gnosis_XLayer_AaveV3GHOLane_20260105_Test_PreExecution is
   }
 }
 
-contract Gnosis_XLayer_AaveV3GHOLane_20260105_Test_PostExecution is
+contract XLayer_Monad_AaveV3GHOLane_20260105_Test_PostExecution is
   AaveV3GHORemoteLane_1_6_Test_PostExecution
 {
   constructor()
     AaveV3GHORemoteLane_1_6_Test_PostExecution(
-      GhoCCIPChains.GNOSIS(),
       GhoCCIPChains.XLAYER(),
-      'gnosis',
-      GNOSIS_BLOCK_NUMBER
+      GhoCCIPChains.MONAD(),
+      'xlayer',
+      XLAYER_BLOCK_NUMBER
     )
   {}
 
   function _deployAaveV3GHOLaneProposal() internal virtual override returns (AaveV3GHOLane) {
-    return new AaveV3Gnosis_GhoXLayerActivation_20260203();
+    return new AaveV3XLayer_GhoMonadActivation_20260518();
   }
 
   function _assertOnAndOffRamps() internal view override {
-    _assertOnRamp(
-      _localOutboundLaneToEth(),
+    _assertOnRamp_1_6(
+      _localOutboundLaneToEth_1_6(),
       LOCAL_CHAIN_SELECTOR,
       ETH_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
@@ -86,8 +87,8 @@ contract Gnosis_XLayer_AaveV3GHOLane_20260105_Test_PostExecution is
       REMOTE_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
     );
-    _assertOffRamp(
-      _localInboundLaneFromEth(),
+    _assertOffRamp_1_6(
+      _localInboundLaneFromEth_1_6(),
       ETH_CHAIN_SELECTOR,
       LOCAL_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER

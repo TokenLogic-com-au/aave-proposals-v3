@@ -4,34 +4,35 @@ pragma solidity ^0.8.0;
 import {AaveV3GHORemoteLaneTest_PreExecution, AaveV3GHORemoteLane_1_6_Test_PostExecution} from '../../../helpers/gho-launch/tests/AaveV3GHORemoteLaneTest.sol';
 import {GhoCCIPChains} from '../../../helpers/gho-launch/constants/GhoCCIPChains.sol';
 import {AaveV3GHOLane} from '../../../helpers/gho-launch/AaveV3GHOLane.sol';
-import {AaveV3Base_GhoXLayerActivation_20260203} from '../../remote-lanes/AaveV3Base_GhoXLayerActivation_20260203.sol';
-import {AaveV3Base} from 'aave-address-book/AaveV3Base.sol';
+import {AaveV3Plasma_GhoMonadActivation_20260518} from '../../remote-lanes/AaveV3Plasma_GhoMonadActivation_20260518.sol';
+import {AaveV3Plasma} from 'aave-address-book/AaveV3Plasma.sol';
 
-uint256 constant BASE_BLOCK_NUMBER = 43024117;
+// TODO
+uint256 constant PLASMA_BLOCK_NUMBER = 00;
 
-contract Base_XLayer_AaveV3GHOLane_20260105_Test_PreExecution is
+contract Plasma_Monad_AaveV3GHOLane_20260105_Test_PreExecution is
   AaveV3GHORemoteLaneTest_PreExecution
 {
   constructor()
     AaveV3GHORemoteLaneTest_PreExecution(
-      GhoCCIPChains.BASE(),
-      GhoCCIPChains.XLAYER(),
-      'base',
-      BASE_BLOCK_NUMBER
+      GhoCCIPChains.PLASMA(),
+      GhoCCIPChains.MONAD(),
+      'plasma',
+      PLASMA_BLOCK_NUMBER
     )
   {}
 
   function _deployAaveV3GHOLaneProposal() internal virtual override returns (AaveV3GHOLane) {
-    return new AaveV3Base_GhoXLayerActivation_20260203();
+    return new AaveV3Plasma_GhoMonadActivation_20260518();
   }
 
   function test_defaultProposalExecution() public virtual {
-    defaultTest('AaveV3Base_GhoXLayerActivation_20260203', AaveV3Base.POOL, address(proposal));
+    defaultTest('AaveV3Plasma_GhoMonadActivation_20260518', AaveV3Plasma.POOL, address(proposal));
   }
 
   function _assertOnAndOffRamps() internal view override {
-    _assertOnRamp(
-      _localOutboundLaneToEth(),
+    _assertOnRamp_1_6(
+      _localOutboundLaneToEth_1_6(),
       LOCAL_CHAIN_SELECTOR,
       ETH_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
@@ -42,8 +43,8 @@ contract Base_XLayer_AaveV3GHOLane_20260105_Test_PreExecution is
       REMOTE_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
     );
-    _assertOffRamp(
-      _localInboundLaneFromEth(),
+    _assertOffRamp_1_6(
+      _localInboundLaneFromEth_1_6(),
       ETH_CHAIN_SELECTOR,
       LOCAL_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
@@ -57,25 +58,25 @@ contract Base_XLayer_AaveV3GHOLane_20260105_Test_PreExecution is
   }
 }
 
-contract Base_XLayer_AaveV3GHOLane_20260105_Test_PostExecution is
+contract Plasma_Monad_AaveV3GHOLane_20260105_Test_PostExecution is
   AaveV3GHORemoteLane_1_6_Test_PostExecution
 {
   constructor()
     AaveV3GHORemoteLane_1_6_Test_PostExecution(
-      GhoCCIPChains.BASE(),
-      GhoCCIPChains.XLAYER(),
-      'base',
-      BASE_BLOCK_NUMBER
+      GhoCCIPChains.PLASMA(),
+      GhoCCIPChains.MONAD(),
+      'plasma',
+      PLASMA_BLOCK_NUMBER
     )
   {}
 
   function _deployAaveV3GHOLaneProposal() internal virtual override returns (AaveV3GHOLane) {
-    return new AaveV3Base_GhoXLayerActivation_20260203();
+    return new AaveV3Plasma_GhoMonadActivation_20260518();
   }
 
   function _assertOnAndOffRamps() internal view override {
-    _assertOnRamp(
-      _localOutboundLaneToEth(),
+    _assertOnRamp_1_6(
+      _localOutboundLaneToEth_1_6(),
       LOCAL_CHAIN_SELECTOR,
       ETH_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
@@ -86,8 +87,8 @@ contract Base_XLayer_AaveV3GHOLane_20260105_Test_PostExecution is
       REMOTE_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
     );
-    _assertOffRamp(
-      _localInboundLaneFromEth(),
+    _assertOffRamp_1_6(
+      _localInboundLaneFromEth_1_6(),
       ETH_CHAIN_SELECTOR,
       LOCAL_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER

@@ -4,19 +4,19 @@ import {IUpgradeableBurnMintTokenPool_1_5_1} from 'src/interfaces/ccip/tokenPool
 import {AaveV3GHOLane} from '../../helpers/gho-launch/AaveV3GHOLane.sol';
 import {GhoCCIPChains} from '../../helpers/gho-launch/constants/GhoCCIPChains.sol';
 /**
- * @title Base<>X-Layer GHO CCIP Lane
+ * @title Plasma<>Monad GHO CCIP Lane
  * @author TokenLogic
- * - Snapshot: https://snapshot.box/#/s:aavedao.eth/proposal/0x251c520f1f1da8287168420fa2d2a73a2eb5342c3c62508553123129dec059b0
- * - Discussion: https://governance.aave.com/t/arfc-launch-gho-on-x-layer-set-aci-as-emissions-manager-for-rewards/23178
+ * - Snapshot: TODO
+ * - Discussion: TODO
  */
-contract AaveV3Base_GhoXLayerActivation_20260203 is AaveV3GHOLane {
-  constructor() AaveV3GHOLane(GhoCCIPChains.BASE()) {}
+contract AaveV3Plasma_GhoMonadActivation_20260518 is AaveV3GHOLane {
+  constructor() AaveV3GHOLane(GhoCCIPChains.PLASMA()) {}
   function lanesToAdd()
     public
     pure
     override
     returns (IUpgradeableBurnMintTokenPool_1_5_1.ChainUpdate[] memory)
   {
-    return _asArray(_asChainUpdateWithDefaultRateLimiterConfig(GhoCCIPChains.XLAYER()));
+    return _asArray(_asChainUpdateWithDefaultRateLimiterConfig(GhoCCIPChains.MONAD()));
   }
 }
