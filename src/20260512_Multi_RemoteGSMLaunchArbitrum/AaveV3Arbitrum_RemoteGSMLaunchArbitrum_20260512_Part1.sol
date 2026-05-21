@@ -27,7 +27,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1 is IProposalGener
     IGhoToken(GhoArbitrum.GHO_TOKEN).setFacilitatorBucketCapacity(
       GhoArbitrum.GHO_CCIP_TOKEN_POOL,
       currentFacilitatorBucketCapacity.toUint128() +
-        RemoteGSMLaunchArbitrumConstants.TEMP_BRIDGE_CAPACITY
+        RemoteGSMLaunchArbitrumConstants.ARBITRUM_BRIDGE_AMOUNT.toUint128()
     );
 
     // Temporarily increase the maximum bridge limit (inbound capacity; counterpart to Ethereum / Part 1 step)
