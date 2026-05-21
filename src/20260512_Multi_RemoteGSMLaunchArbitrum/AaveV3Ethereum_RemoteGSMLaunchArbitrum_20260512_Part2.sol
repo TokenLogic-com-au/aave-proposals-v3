@@ -76,19 +76,26 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
       AaveV3EthereumAssets.LINK_UNDERLYING
     );
 
-    // Restore bridge limit
+    // Restore the Arbitrum lane bridge limit; normalize the other GHO CCIP lanes
+    // touched by this proposal so all end up at the canonical default config.
+    _restoreDefaultRateLimit(CCIPChainSelectors.ARBITRUM);
+    _restoreDefaultRateLimit(CCIPChainSelectors.AVALANCHE);
+    _restoreDefaultRateLimit(CCIPChainSelectors.BASE);
+    _restoreDefaultRateLimit(CCIPChainSelectors.GNOSIS);
+    _restoreDefaultRateLimit(CCIPChainSelectors.MANTLE);
+    _restoreDefaultRateLimit(CCIPChainSelectors.PLASMA);
+  }
+
+  function _restoreDefaultRateLimit(uint64 remoteChainSelector) internal {
+    IRateLimiter.Config memory defaultConfig = IRateLimiter.Config({
+      isEnabled: true,
+      capacity: RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
+      rate: RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_RATE
+    });
     IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
-      CCIPChainSelectors.ARBITRUM,
-      IRateLimiter.Config({
-        isEnabled: true,
-        capacity: RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
-        rate: RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_RATE
-      }),
-      IRateLimiter.Config({
-        isEnabled: true,
-        capacity: RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
-        rate: RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_RATE
-      })
+      remoteChainSelector,
+      defaultConfig,
+      defaultConfig
     );
   }
 }

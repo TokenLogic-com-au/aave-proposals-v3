@@ -175,4 +175,55 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
       'bridge LINK balance should decrease by CCIP fee'
     );
   }
+
+  function test_otherLaneRateLimitsRestored() public {
+    // TODO: remove when placeholders are in place.
+    // Same gate as test_bridgeLimitRestore — executing the payload requires the bridge
+    // and direct facilitator addresses to be filled in.
+    vm.skip(proposal.DIRECT_FACILITATOR() == address(0) || proposal.CCIP_BRIDGE() == address(0));
+
+    uint64[5] memory selectors = [
+      CCIPChainSelectors.AVALANCHE,
+      CCIPChainSelectors.BASE,
+      CCIPChainSelectors.GNOSIS,
+      CCIPChainSelectors.MANTLE,
+      CCIPChainSelectors.PLASMA
+    ];
+
+    executePayload(vm, address(proposal));
+
+    for (uint256 i = 0; i < selectors.length; i++) {
+      IRateLimiter.TokenBucket memory inbound = IUpgradeableBurnMintTokenPool(
+        GhoEthereum.GHO_CCIP_TOKEN_POOL
+      ).getCurrentInboundRateLimiterState(selectors[i]);
+
+      assertEq(
+        inbound.capacity,
+        RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
+        'post-proposal inbound capacity should be default'
+      );
+      assertEq(
+        inbound.rate,
+        RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_RATE,
+        'post-proposal inbound rate should be default'
+      );
+      assertTrue(inbound.isEnabled, 'post-proposal inbound rate limiter should be enabled');
+
+      IRateLimiter.TokenBucket memory outbound = IUpgradeableBurnMintTokenPool(
+        GhoEthereum.GHO_CCIP_TOKEN_POOL
+      ).getCurrentOutboundRateLimiterState(selectors[i]);
+
+      assertEq(
+        outbound.capacity,
+        RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
+        'post-proposal outbound capacity should be default'
+      );
+      assertEq(
+        outbound.rate,
+        RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_RATE,
+        'post-proposal outbound rate should be default'
+      );
+      assertTrue(outbound.isEnabled, 'post-proposal outbound rate limiter should be enabled');
+    }
+  }
 }
