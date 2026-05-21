@@ -20,11 +20,11 @@ import {IGsm} from 'src/interfaces/IGsm.sol';
 import {IGsmFeeStrategy} from 'src/interfaces/IGsmFeeStrategy.sol';
 import {IGsmSteward} from 'src/interfaces/IGsmSteward.sol';
 import {IGhoReserve} from 'src/interfaces/IGhoReserve.sol';
+import {IOracleSwapFreezer} from 'src/interfaces/IOracleSwapFreezer.sol';
+import {IFixedPriceStrategy4626} from 'src/interfaces/IFixedPriceStrategy4626.sol';
 
 import {AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1} from './AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1.sol';
 import {AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2} from './AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2.sol';
-import {IOracleSwapFreezer} from './utils/IOracleSwapFreezer.sol';
-import {IFixedPriceStrategy4626} from './utils/IFixedPriceStrategy4626.sol';
 
 /**
  * @dev Test for AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2
