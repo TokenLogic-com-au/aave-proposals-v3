@@ -1,7 +1,15 @@
 import {ConfigFile} from '../../generator/types';
 export const config: ConfigFile = {
   rootOptions: {
-    pools: ['AaveV3Ethereum', 'AaveV3Arbitrum'],
+    pools: [
+      'AaveV3Ethereum',
+      'AaveV3Arbitrum',
+      'AaveV3Avalanche',
+      'AaveV3Base',
+      'AaveV3Gnosis',
+      'AaveV3Mantle',
+      'AaveV3Plasma',
+    ],
     title: 'Remote GSM Launch: Arbitrum',
     shortName: 'RemoteGSMLaunchArbitrum',
     date: '20260512',
@@ -13,5 +21,10 @@ export const config: ConfigFile = {
   poolOptions: {
     AaveV3Ethereum: {configs: {}, cache: {blockNumber: 25080900}},
     AaveV3Arbitrum: {configs: {OTHERS: {}}, cache: {blockNumber: 462142700}},
+    AaveV3Avalanche: {configs: {OTHERS: {}}, cache: {blockNumber: 84734234}},
+    AaveV3Base: {configs: {OTHERS: {}}, cache: {blockNumber: 45637639}},
+    AaveV3Gnosis: {configs: {OTHERS: {}}, cache: {blockNumber: 45935000}},
+    AaveV3Mantle: {configs: {OTHERS: {}}, cache: {blockNumber: 95179108}},
+    AaveV3Plasma: {configs: {OTHERS: {}}, cache: {blockNumber: 21132780}},
   },
 };

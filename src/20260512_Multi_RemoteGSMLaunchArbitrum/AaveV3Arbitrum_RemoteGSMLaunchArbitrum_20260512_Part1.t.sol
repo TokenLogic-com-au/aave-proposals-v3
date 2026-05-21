@@ -95,8 +95,8 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
 
     assertEq(
       postFacilitator.bucketCapacity,
-      preFacilitator.bucketCapacity + RemoteGSMLaunchArbitrumConstants.TEMP_BRIDGE_CAPACITY,
-      'post-proposal facilitator capacity should have incremented by TEMP_BRIDGE_CAPACITY'
+      preFacilitator.bucketCapacity + RemoteGSMLaunchArbitrumConstants.GHO_BRIDGE_AMOUNT,
+      'post-proposal facilitator capacity should have incremented by GHO_BRIDGE_AMOUNT'
     );
     assertEq(
       postFacilitator.bucketLevel,

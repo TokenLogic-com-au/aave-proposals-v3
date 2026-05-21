@@ -19,12 +19,12 @@ library RemoteGSMLaunchArbitrumConstants {
   uint128 public constant GSM_USDT_RESERVE_LIMIT = 15_000_000 ether;
 
   // TODO: refine amount (stata tokens have a rate with respect to underlying)
-  uint128 public constant GSM_USDT_INITIAL_EXPOSURE_CAP = 15_000_000e6; // 10M, 6 decimals
+  uint128 public constant GSM_USDT_INITIAL_EXPOSURE_CAP = 15_000_000e6; // 15M, 6 decimals
 
   // GSM USDC
   // TODO: check amount (should be <= bridged amount, can be changed by steward later)
   uint128 public constant GSM_USDC_RESERVE_LIMIT = 15_000_000 ether;
 
   // TODO: refine amount (stata tokens have a rate with respect to underlying)
-  uint128 public constant GSM_USDC_INITIAL_EXPOSURE_CAP = 15_000_000e6; // 10M, 6 decimals
+  uint128 public constant GSM_USDC_INITIAL_EXPOSURE_CAP = 15_000_000e6; // 15M, 6 decimals
 }
