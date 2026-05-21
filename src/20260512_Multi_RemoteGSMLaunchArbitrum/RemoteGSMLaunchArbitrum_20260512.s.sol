@@ -4,11 +4,16 @@ pragma solidity ^0.8.0;
 import {GovV3Helpers, IPayloadsControllerCore, PayloadsControllerUtils} from 'aave-helpers/src/GovV3Helpers.sol';
 import {GovernanceV3Ethereum} from 'aave-address-book/GovernanceV3Ethereum.sol';
 
-import {EthereumScript, ArbitrumScript} from 'solidity-utils/contracts/utils/ScriptUtils.sol';
+import {EthereumScript, ArbitrumScript, AvalancheScript, BaseScript, GnosisScript, MantleScript, PlasmaScript} from 'solidity-utils/contracts/utils/ScriptUtils.sol';
 import {AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1} from './AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1.sol';
 import {AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2} from './AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2.sol';
 import {AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1} from './AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1.sol';
 import {AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2} from './AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2.sol';
+import {AaveV3Avalanche_RemoteGSMLaunchArbitrum_20260512} from './AaveV3Avalanche_RemoteGSMLaunchArbitrum_20260512.sol';
+import {AaveV3Base_RemoteGSMLaunchArbitrum_20260512} from './AaveV3Base_RemoteGSMLaunchArbitrum_20260512.sol';
+import {AaveV3Gnosis_RemoteGSMLaunchArbitrum_20260512} from './AaveV3Gnosis_RemoteGSMLaunchArbitrum_20260512.sol';
+import {AaveV3Mantle_RemoteGSMLaunchArbitrum_20260512} from './AaveV3Mantle_RemoteGSMLaunchArbitrum_20260512.sol';
+import {AaveV3Plasma_RemoteGSMLaunchArbitrum_20260512} from './AaveV3Plasma_RemoteGSMLaunchArbitrum_20260512.sol';
 
 /**
  * @dev Deploy Ethereum
@@ -53,13 +58,88 @@ contract DeployArbitrum is ArbitrumScript {
 }
 
 /**
+ * @dev Deploy Avalanche
+ * deploy-command: make deploy-ledger contract=src/20260512_Multi_RemoteGSMLaunchArbitrum/RemoteGSMLaunchArbitrum_20260512.s.sol:DeployAvalanche chain=avalanche
+ * verify-command: FOUNDRY_PROFILE=deploy npx catapulta-verify -b broadcast/RemoteGSMLaunchArbitrum_20260512.s.sol/43114/run-latest.json
+ */
+contract DeployAvalanche is AvalancheScript {
+  function run() external broadcast {
+    address payload0 = GovV3Helpers.deployDeterministic(
+      type(AaveV3Avalanche_RemoteGSMLaunchArbitrum_20260512).creationCode
+    );
+
+    GovV3Helpers.createPayload(GovV3Helpers.buildAction(payload0));
+  }
+}
+
+/**
+ * @dev Deploy Base
+ * deploy-command: make deploy-ledger contract=src/20260512_Multi_RemoteGSMLaunchArbitrum/RemoteGSMLaunchArbitrum_20260512.s.sol:DeployBase chain=base
+ * verify-command: FOUNDRY_PROFILE=deploy npx catapulta-verify -b broadcast/RemoteGSMLaunchArbitrum_20260512.s.sol/8453/run-latest.json
+ */
+contract DeployBase is BaseScript {
+  function run() external broadcast {
+    address payload0 = GovV3Helpers.deployDeterministic(
+      type(AaveV3Base_RemoteGSMLaunchArbitrum_20260512).creationCode
+    );
+
+    GovV3Helpers.createPayload(GovV3Helpers.buildAction(payload0));
+  }
+}
+
+/**
+ * @dev Deploy Gnosis
+ * deploy-command: make deploy-ledger contract=src/20260512_Multi_RemoteGSMLaunchArbitrum/RemoteGSMLaunchArbitrum_20260512.s.sol:DeployGnosis chain=gnosis
+ * verify-command: FOUNDRY_PROFILE=deploy npx catapulta-verify -b broadcast/RemoteGSMLaunchArbitrum_20260512.s.sol/100/run-latest.json
+ */
+contract DeployGnosis is GnosisScript {
+  function run() external broadcast {
+    address payload0 = GovV3Helpers.deployDeterministic(
+      type(AaveV3Gnosis_RemoteGSMLaunchArbitrum_20260512).creationCode
+    );
+
+    GovV3Helpers.createPayload(GovV3Helpers.buildAction(payload0));
+  }
+}
+
+/**
+ * @dev Deploy Mantle
+ * deploy-command: make deploy-ledger contract=src/20260512_Multi_RemoteGSMLaunchArbitrum/RemoteGSMLaunchArbitrum_20260512.s.sol:DeployMantle chain=mantle
+ * verify-command: FOUNDRY_PROFILE=deploy npx catapulta-verify -b broadcast/RemoteGSMLaunchArbitrum_20260512.s.sol/5000/run-latest.json
+ */
+contract DeployMantle is MantleScript {
+  function run() external broadcast {
+    address payload0 = GovV3Helpers.deployDeterministic(
+      type(AaveV3Mantle_RemoteGSMLaunchArbitrum_20260512).creationCode
+    );
+
+    GovV3Helpers.createPayload(GovV3Helpers.buildAction(payload0));
+  }
+}
+
+/**
+ * @dev Deploy Plasma
+ * deploy-command: make deploy-ledger contract=src/20260512_Multi_RemoteGSMLaunchArbitrum/RemoteGSMLaunchArbitrum_20260512.s.sol:DeployPlasma chain=plasma
+ * verify-command: FOUNDRY_PROFILE=deploy npx catapulta-verify -b broadcast/RemoteGSMLaunchArbitrum_20260512.s.sol/9745/run-latest.json
+ */
+contract DeployPlasma is PlasmaScript {
+  function run() external broadcast {
+    address payload0 = GovV3Helpers.deployDeterministic(
+      type(AaveV3Plasma_RemoteGSMLaunchArbitrum_20260512).creationCode
+    );
+
+    GovV3Helpers.createPayload(GovV3Helpers.buildAction(payload0));
+  }
+}
+
+/**
  * @dev Create Proposal
  * command: make deploy-ledger contract=src/20260512_Multi_RemoteGSMLaunchArbitrum/RemoteGSMLaunchArbitrum_20260512.s.sol:CreateProposal chain=mainnet
  */
 contract CreateProposal is EthereumScript {
   function run() external {
     // create payloads
-    PayloadsControllerUtils.Payload[] memory payloads = new PayloadsControllerUtils.Payload[](4);
+    PayloadsControllerUtils.Payload[] memory payloads = new PayloadsControllerUtils.Payload[](9);
 
     // compose actions for validation
     {
@@ -96,6 +176,51 @@ contract CreateProposal is EthereumScript {
         type(AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2).creationCode
       );
       payloads[3] = GovV3Helpers.buildArbitrumPayload(vm, actionsArbitrum);
+    }
+
+    {
+      IPayloadsControllerCore.ExecutionAction[]
+        memory actionsAvalanche = new IPayloadsControllerCore.ExecutionAction[](1);
+      actionsAvalanche[0] = GovV3Helpers.buildAction(
+        type(AaveV3Avalanche_RemoteGSMLaunchArbitrum_20260512).creationCode
+      );
+      payloads[4] = GovV3Helpers.buildAvalanchePayload(vm, actionsAvalanche);
+    }
+
+    {
+      IPayloadsControllerCore.ExecutionAction[]
+        memory actionsBase = new IPayloadsControllerCore.ExecutionAction[](1);
+      actionsBase[0] = GovV3Helpers.buildAction(
+        type(AaveV3Base_RemoteGSMLaunchArbitrum_20260512).creationCode
+      );
+      payloads[5] = GovV3Helpers.buildBasePayload(vm, actionsBase);
+    }
+
+    {
+      IPayloadsControllerCore.ExecutionAction[]
+        memory actionsGnosis = new IPayloadsControllerCore.ExecutionAction[](1);
+      actionsGnosis[0] = GovV3Helpers.buildAction(
+        type(AaveV3Gnosis_RemoteGSMLaunchArbitrum_20260512).creationCode
+      );
+      payloads[6] = GovV3Helpers.buildGnosisPayload(vm, actionsGnosis);
+    }
+
+    {
+      IPayloadsControllerCore.ExecutionAction[]
+        memory actionsMantle = new IPayloadsControllerCore.ExecutionAction[](1);
+      actionsMantle[0] = GovV3Helpers.buildAction(
+        type(AaveV3Mantle_RemoteGSMLaunchArbitrum_20260512).creationCode
+      );
+      payloads[7] = GovV3Helpers.buildMantlePayload(vm, actionsMantle);
+    }
+
+    {
+      IPayloadsControllerCore.ExecutionAction[]
+        memory actionsPlasma = new IPayloadsControllerCore.ExecutionAction[](1);
+      actionsPlasma[0] = GovV3Helpers.buildAction(
+        type(AaveV3Plasma_RemoteGSMLaunchArbitrum_20260512).creationCode
+      );
+      payloads[8] = GovV3Helpers.buildPlasmaPayload(vm, actionsPlasma);
     }
 
     // create proposal
