@@ -9,6 +9,7 @@ import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
 
 import {AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1} from './AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1.sol';
+import {RemoteGSMLaunchArbitrumConstants} from './setup/RemoteGSMLaunchArbitrumConstants.sol';
 
 /**
  * @dev Test for AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1
@@ -40,12 +41,12 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
 
     assertEq(
       bucket.capacity,
-      proposal.DEFAULT_RATE_LIMITER_CAPACITY(),
+      RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
       'pre-proposal inbound capacity should be default'
     );
     assertEq(
       bucket.rate,
-      proposal.DEFAULT_RATE_LIMITER_RATE(),
+      RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_RATE,
       'pre-proposal inbound rate should be default'
     );
     assertTrue(bucket.isEnabled, 'pre-proposal inbound rate limiter should be enabled');
@@ -59,18 +60,18 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
 
     assertEq(
       bucket.capacity,
-      proposal.TEMP_BRIDGE_CAPACITY(),
+      RemoteGSMLaunchArbitrumConstants.TEMP_BRIDGE_CAPACITY,
       'post-proposal inbound capacity should be TEMP_BRIDGE_CAPACITY'
     );
     assertEq(
       bucket.rate,
-      proposal.TEMP_BRIDGE_CAPACITY() - 1,
+      RemoteGSMLaunchArbitrumConstants.TEMP_BRIDGE_CAPACITY - 1,
       'post-proposal inbound rate should be TEMP_BRIDGE_CAPACITY - 1'
     );
     assertTrue(bucket.isEnabled, 'post-proposal inbound rate limiter should be enabled');
     assertEq(
       bucket.tokens,
-      proposal.TEMP_BRIDGE_CAPACITY(),
+      RemoteGSMLaunchArbitrumConstants.TEMP_BRIDGE_CAPACITY,
       'inbound tokens should refill to TEMP_BRIDGE_CAPACITY after 1s'
     );
   }
@@ -94,7 +95,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
 
     assertEq(
       postFacilitator.bucketCapacity,
-      preFacilitator.bucketCapacity + proposal.TEMP_BRIDGE_CAPACITY(),
+      preFacilitator.bucketCapacity + RemoteGSMLaunchArbitrumConstants.TEMP_BRIDGE_CAPACITY,
       'post-proposal facilitator capacity should have incremented by TEMP_BRIDGE_CAPACITY'
     );
     assertEq(

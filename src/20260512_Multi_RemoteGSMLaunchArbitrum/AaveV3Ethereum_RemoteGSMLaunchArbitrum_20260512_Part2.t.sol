@@ -14,6 +14,8 @@ import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 import {AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1} from './AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1.sol';
 import {AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2} from './AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2.sol';
 
+import {RemoteGSMLaunchArbitrumConstants} from './setup/RemoteGSMLaunchArbitrumConstants.sol';
+
 /**
  * @dev Test for AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2
  * command: FOUNDRY_PROFILE=test forge test --match-path=src/20260512_Multi_RemoteGSMLaunchArbitrum/AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2.t.sol -vv
@@ -58,18 +60,18 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
 
     assertGt(
       bucket.capacity,
-      proposal.DEFAULT_RATE_LIMITER_CAPACITY(),
+      RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
       'pre-proposal outbound capacity should be raised'
     );
     assertGt(
       bucket.rate,
-      proposal.DEFAULT_RATE_LIMITER_RATE(),
+      RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_RATE,
       'pre-proposal outbound rate should be raised'
     );
     assertTrue(bucket.isEnabled, 'pre-proposal outbound rate limiter should be enabled');
     assertGt(
       bucket.tokens,
-      proposal.DEFAULT_RATE_LIMITER_CAPACITY(),
+      RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
       'pre-proposal outbound tokens should exceed default'
     );
 
@@ -86,18 +88,18 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
 
     assertEq(
       bucket.capacity,
-      proposal.DEFAULT_RATE_LIMITER_CAPACITY(),
+      RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
       'post-proposal outbound capacity should be restored to default'
     );
     assertEq(
       bucket.rate,
-      proposal.DEFAULT_RATE_LIMITER_RATE(),
+      RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_RATE,
       'post-proposal outbound rate should be restored to default'
     );
     assertTrue(bucket.isEnabled, 'post-proposal outbound rate limiter should be enabled');
     assertEq(
       bucket.tokens,
-      proposal.DEFAULT_RATE_LIMITER_CAPACITY(),
+      RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
       'post-proposal outbound tokens should equal default capacity'
     );
 
@@ -107,12 +109,12 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
 
     assertEq(
       bucket.capacity,
-      proposal.DEFAULT_RATE_LIMITER_CAPACITY(),
+      RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
       'post-proposal inbound capacity should be restored to default'
     );
     assertEq(
       bucket.rate,
-      proposal.DEFAULT_RATE_LIMITER_RATE(),
+      RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_RATE,
       'post-proposal inbound rate should be restored to default'
     );
     assertTrue(bucket.isEnabled, 'post-proposal inbound rate limiter should be enabled');
@@ -132,7 +134,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
 
     uint256 fee = IAaveGhoCcipBridge(proposal.CCIP_BRIDGE()).quoteBridge(
       CCIPChainSelectors.ARBITRUM,
-      proposal.ARBITRUM_BRIDGE_AMOUNT(),
+      RemoteGSMLaunchArbitrumConstants.ARBITRUM_BRIDGE_AMOUNT,
       AaveV3EthereumAssets.LINK_UNDERLYING
     );
 
@@ -148,7 +150,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
       bytes32(0),
       CCIPChainSelectors.ARBITRUM,
       GovernanceV3Ethereum.EXECUTOR_LVL_1,
-      proposal.ARBITRUM_BRIDGE_AMOUNT()
+      RemoteGSMLaunchArbitrumConstants.ARBITRUM_BRIDGE_AMOUNT
     );
 
     executePayload(vm, address(proposal));
@@ -159,12 +161,12 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
 
     assertEq(
       facilitator.bucketCapacity,
-      proposal.DIRECT_FACILITATOR_CAPACITY(),
+      RemoteGSMLaunchArbitrumConstants.DIRECT_FACILITATOR_CAPACITY,
       'facilitator capacity not set to DIRECT_FACILITATOR_CAPACITY'
     );
     assertEq(
       facilitator.bucketLevel,
-      proposal.ARBITRUM_BRIDGE_AMOUNT(),
+      RemoteGSMLaunchArbitrumConstants.ARBITRUM_BRIDGE_AMOUNT,
       'facilitator bucket level should match bridged amount'
     );
     assertEq(

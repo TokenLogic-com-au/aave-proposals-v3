@@ -8,6 +8,7 @@ import {IUpgradeableLockReleaseTokenPool, IRateLimiter} from 'src/interfaces/cci
 import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
 
 import {AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1} from './AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1.sol';
+import {RemoteGSMLaunchArbitrumConstants} from './setup/RemoteGSMLaunchArbitrumConstants.sol';
 
 /**
  * @dev Test for AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1
@@ -40,7 +41,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
 
     assertEq(
       IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).getBridgeLimit(),
-      bridgeLimitBefore + proposal.TEMP_BRIDGE_CAPACITY(),
+      bridgeLimitBefore + RemoteGSMLaunchArbitrumConstants.TEMP_BRIDGE_CAPACITY,
       'bridge limit not raised by TEMP_BRIDGE_CAPACITY after proposal'
     );
   }
@@ -53,18 +54,18 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
 
     assertEq(
       bucket.capacity,
-      proposal.DEFAULT_RATE_LIMITER_CAPACITY(),
+      RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
       'pre-proposal outbound capacity should be default'
     );
     assertEq(
       bucket.rate,
-      proposal.DEFAULT_RATE_LIMITER_RATE(),
+      RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_RATE,
       'pre-proposal outbound rate should be default'
     );
     assertTrue(bucket.isEnabled, 'pre-proposal outbound rate limiter should be enabled');
     assertEq(
       bucket.tokens,
-      proposal.DEFAULT_RATE_LIMITER_CAPACITY(),
+      RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
       'pre-proposal outbound tokens should equal default capacity'
     );
 
@@ -76,18 +77,18 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
 
     assertEq(
       bucket.capacity,
-      proposal.TEMP_BRIDGE_CAPACITY(),
+      RemoteGSMLaunchArbitrumConstants.TEMP_BRIDGE_CAPACITY,
       'post-proposal outbound capacity should be TEMP_BRIDGE_CAPACITY'
     );
     assertEq(
       bucket.rate,
-      proposal.TEMP_BRIDGE_CAPACITY() - 1,
+      RemoteGSMLaunchArbitrumConstants.TEMP_BRIDGE_CAPACITY - 1,
       'post-proposal outbound rate should be TEMP_BRIDGE_CAPACITY - 1'
     );
     assertTrue(bucket.isEnabled, 'post-proposal outbound rate limiter should be enabled');
     assertEq(
       bucket.tokens,
-      proposal.DEFAULT_RATE_LIMITER_CAPACITY(),
+      RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
       'tokens should not refill instantly after proposal'
     );
 
@@ -99,18 +100,18 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
 
     assertEq(
       bucket.capacity,
-      proposal.TEMP_BRIDGE_CAPACITY(),
+      RemoteGSMLaunchArbitrumConstants.TEMP_BRIDGE_CAPACITY,
       'outbound capacity should remain TEMP_BRIDGE_CAPACITY after 1s'
     );
     assertEq(
       bucket.rate,
-      proposal.TEMP_BRIDGE_CAPACITY() - 1,
+      RemoteGSMLaunchArbitrumConstants.TEMP_BRIDGE_CAPACITY - 1,
       'outbound rate should remain TEMP_BRIDGE_CAPACITY - 1 after 1s'
     );
     assertTrue(bucket.isEnabled, 'outbound rate limiter should remain enabled after 1s');
     assertEq(
       bucket.tokens,
-      proposal.TEMP_BRIDGE_CAPACITY(),
+      RemoteGSMLaunchArbitrumConstants.TEMP_BRIDGE_CAPACITY,
       'tokens should refill to TEMP_BRIDGE_CAPACITY after 1s'
     );
   }

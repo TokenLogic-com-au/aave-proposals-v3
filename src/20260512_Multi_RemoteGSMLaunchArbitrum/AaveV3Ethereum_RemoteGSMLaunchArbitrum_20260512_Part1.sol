@@ -5,7 +5,9 @@ import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGen
 import {GhoEthereum} from 'aave-address-book/GhoEthereum.sol';
 
 import {IUpgradeableLockReleaseTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableLockReleaseTokenPool.sol';
-import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
+import {CCIPChainSelectors} from 'src/helpers/gho-launch/constants/CCIPChainSelectors.sol';
+
+import {RemoteGSMLaunchArbitrumConstants} from './setup/RemoteGSMLaunchArbitrumConstants.sol';
 
 /**
  * @title Remote GSM Launch: Arbitrum
@@ -14,19 +16,12 @@ import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelec
  * - Discussion: https://governance.aave.com/t/remotegsm-upgrade-enabling-l2-gsms-for-gho/24240
  */
 contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1 is IProposalGenericExecutor {
-  // TODO: define amount to bridge; temporary numbers taken from Plasma's proposal
-  // 50M GHO bridge amount + 10% leeway in case of other bridges
-  uint256 public constant TEMP_BRIDGE_CAPACITY = 55_000_000 ether;
-
-  uint128 public constant DEFAULT_RATE_LIMITER_CAPACITY = 1_500_000 ether;
-  uint128 public constant DEFAULT_RATE_LIMITER_RATE = 300 ether;
-
   function execute() external {
     // Increment bridge limit to accommodate the amount to bridge.
     uint256 currentBridgeLimit = IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
       .getBridgeLimit();
     IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setBridgeLimit(
-      currentBridgeLimit + TEMP_BRIDGE_CAPACITY
+      currentBridgeLimit + RemoteGSMLaunchArbitrumConstants.TEMP_BRIDGE_CAPACITY
     );
 
     // Temporarily increase the maximum bridge limit (outbound capacity)
@@ -34,13 +29,13 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1 is IProposalGener
       CCIPChainSelectors.ARBITRUM,
       IRateLimiter.Config({
         isEnabled: true,
-        capacity: uint128(TEMP_BRIDGE_CAPACITY),
-        rate: uint128(TEMP_BRIDGE_CAPACITY) - 1 // Set rate to new capacity so it refills immediately
+        capacity: uint128(RemoteGSMLaunchArbitrumConstants.TEMP_BRIDGE_CAPACITY),
+        rate: uint128(RemoteGSMLaunchArbitrumConstants.TEMP_BRIDGE_CAPACITY) - 1 // Set rate to new capacity so it refills immediately
       }),
       IRateLimiter.Config({
         isEnabled: true,
-        capacity: DEFAULT_RATE_LIMITER_CAPACITY,
-        rate: DEFAULT_RATE_LIMITER_RATE
+        capacity: RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
+        rate: RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_RATE
       })
     );
   }
