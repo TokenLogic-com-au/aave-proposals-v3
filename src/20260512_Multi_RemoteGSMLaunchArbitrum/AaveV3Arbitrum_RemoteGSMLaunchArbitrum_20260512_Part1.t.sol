@@ -16,6 +16,12 @@ import {RemoteGSMLaunchArbitrumConstants} from './setup/RemoteGSMLaunchArbitrumC
  * command: FOUNDRY_PROFILE=test forge test --match-path=src/20260512_Multi_RemoteGSMLaunchArbitrum/AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1.t.sol -vv
  */
 contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV3TestBase {
+  // Existing on-chain rate-limiter values for the Eth->Arb GHO lane.
+  // The proposal intentionally raises these to the new defaults
+  // (DEFAULT_RATE_LIMITER_CAPACITY / DEFAULT_RATE_LIMITER_RATE in the constants file).
+  uint128 internal constant EXISTING_RATE_LIMITER_CAPACITY = 1_500_000 ether;
+  uint128 internal constant EXISTING_RATE_LIMITER_RATE = 300 ether;
+
   AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1 internal proposal;
 
   function setUp() public {
@@ -41,13 +47,13 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
 
     assertEq(
       bucket.capacity,
-      RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
-      'pre-proposal inbound capacity should be default'
+      EXISTING_RATE_LIMITER_CAPACITY,
+      'pre-proposal inbound capacity should match existing on-chain value'
     );
     assertEq(
       bucket.rate,
-      RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_RATE,
-      'pre-proposal inbound rate should be default'
+      EXISTING_RATE_LIMITER_RATE,
+      'pre-proposal inbound rate should match existing on-chain value'
     );
     assertTrue(bucket.isEnabled, 'pre-proposal inbound rate limiter should be enabled');
 
