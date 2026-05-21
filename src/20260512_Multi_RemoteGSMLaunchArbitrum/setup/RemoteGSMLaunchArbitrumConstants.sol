@@ -8,8 +8,8 @@ library RemoteGSMLaunchArbitrumConstants {
   // 50M GHO bridge amount + 10% leeway in case of other bridges
   uint128 public constant TEMP_BRIDGE_CAPACITY = 55_000_000 ether;
 
-  uint128 public constant DEFAULT_RATE_LIMITER_CAPACITY = 1_500_000 ether;
-  uint128 public constant DEFAULT_RATE_LIMITER_RATE = 300 ether;
+  uint128 public constant DEFAULT_RATE_LIMITER_CAPACITY = 5_000_000 ether;
+  uint128 public constant DEFAULT_RATE_LIMITER_RATE = 1_000 ether;
 
   // Facilitator capacity matches bridge amount (as uint128)
   uint128 public constant DIRECT_FACILITATOR_CAPACITY = uint128(GHO_BRIDGE_AMOUNT);
