@@ -28,9 +28,8 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
   address public constant DIRECT_FACILITATOR = address(0);
   string public constant DIRECT_FACILITATOR_NAME = 'GhoDirectFacilitator Arbitrum';
 
-  // TODO: confirm whether to reuse Plasma's AaveGhoCcipBridge (0x7F2f96fcdC3A29Be75938d2aC3D92E7006919fe6)
-  // or use a different bridge for Arbitrum
-  address public constant CCIP_BRIDGE = address(0);
+  // https://etherscan.io/address/0x7F2f96fcdC3A29Be75938d2aC3D92E7006919fe6
+  address public constant CCIP_BRIDGE = address(0x7F2f96fcdC3A29Be75938d2aC3D92E7006919fe6);
 
   function execute() external {
     IGhoToken(AaveV3EthereumAssets.GHO_UNDERLYING).addFacilitator(
@@ -48,6 +47,8 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
       CCIP_BRIDGE,
       RemoteGSMLaunchArbitrumConstants.GHO_BRIDGE_AMOUNT
     );
+
+    // TODO: Call `setDestinationChain` to configure the recipient on Arbitrum.
 
     // Bridge already has LINK to bridge, no need to send for fee.
     // This step will fail if Part 1 is not executed first to set the augmented bridge limit (RateLimitExceeded error).

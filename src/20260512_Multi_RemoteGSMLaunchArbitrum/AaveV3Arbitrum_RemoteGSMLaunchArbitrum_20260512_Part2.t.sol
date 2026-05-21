@@ -447,12 +447,12 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
   function _testGsmIsOperational(IGsm gsm, address underlying) internal {
     executePayload(vm, address(proposal));
 
-    // NOTE: `deal(STATA, ...)` writes the balance slot directly but does NOT update the
+    // NOTE: `deal(STATA, true)` writes the balance slot directly *and* updates the
     // ERC4626 accounting (`totalAssets`, `totalSupply`). For pure GSM-path arithmetic this
-    // is usually fine, but once real GSMs are deployed verify that `sellAsset` / `buyAsset`
+    // is not strictly required, but once real GSMs are deployed verify that `sellAsset` / `buyAsset`
     // produce the expected GHO amounts. If not, switch to dealing the underlying USDT/USDC
     // and wrapping via `IERC4626.deposit(...)` to keep 4626 accounting consistent.
-    deal(underlying, address(this), 1_000e6);
+    deal(underlying, address(this), 1_000e6, true);
 
     IERC20(underlying).approve(address(gsm), 1_000e6);
     IERC20(GhoArbitrum.GHO_TOKEN).approve(address(gsm), 1_200 ether);
