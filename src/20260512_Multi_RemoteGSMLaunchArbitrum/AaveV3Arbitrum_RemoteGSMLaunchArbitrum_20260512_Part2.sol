@@ -87,7 +87,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
     AaveV3Arbitrum.COLLECTOR.transfer(
       IERC20(GhoArbitrum.GHO_TOKEN),
       address(GHO_RESERVE),
-      RemoteGSMLaunchArbitrumConstants.ARBITRUM_BRIDGE_AMOUNT
+      RemoteGSMLaunchArbitrumConstants.GHO_BRIDGE_AMOUNT
     );
 
     // Restore bridge limits after GHO bridging.

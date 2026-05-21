@@ -41,19 +41,19 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
 
     IGhoDirectFacilitator(DIRECT_FACILITATOR).mint(
       address(this),
-      RemoteGSMLaunchArbitrumConstants.ARBITRUM_BRIDGE_AMOUNT
+      RemoteGSMLaunchArbitrumConstants.GHO_BRIDGE_AMOUNT
     );
 
     IERC20(AaveV3EthereumAssets.GHO_UNDERLYING).approve(
       CCIP_BRIDGE,
-      RemoteGSMLaunchArbitrumConstants.ARBITRUM_BRIDGE_AMOUNT
+      RemoteGSMLaunchArbitrumConstants.GHO_BRIDGE_AMOUNT
     );
 
     // Bridge already has LINK to bridge, no need to send for fee.
     // This step will fail if Part 1 is not executed first to set the augmented bridge limit (RateLimitExceeded error).
     IAaveGhoCcipBridge(CCIP_BRIDGE).send(
       CCIPChainSelectors.ARBITRUM,
-      RemoteGSMLaunchArbitrumConstants.ARBITRUM_BRIDGE_AMOUNT,
+      RemoteGSMLaunchArbitrumConstants.GHO_BRIDGE_AMOUNT,
       AaveV3EthereumAssets.LINK_UNDERLYING
     );
 

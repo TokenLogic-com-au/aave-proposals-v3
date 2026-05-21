@@ -74,7 +74,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     // Part 1 just configured. If the bucket capacity were misconfigured, the mint would
     // revert here and every test that depends on the bridged funds would fail loudly, which
     // would not happen if we mocked the transfer using `vm.deal`.
-    _simulateCcipDeliveryToCollector(RemoteGSMLaunchArbitrumConstants.ARBITRUM_BRIDGE_AMOUNT);
+    _simulateCcipDeliveryToCollector(RemoteGSMLaunchArbitrumConstants.GHO_BRIDGE_AMOUNT);
   }
 
   /**
@@ -126,7 +126,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     assertEq(
       IERC20(GhoArbitrum.GHO_TOKEN).balanceOf(address(AaveV3Arbitrum.COLLECTOR)) -
         collectorGhoBalanceBeforeCcipDelivery,
-      RemoteGSMLaunchArbitrumConstants.ARBITRUM_BRIDGE_AMOUNT,
+      RemoteGSMLaunchArbitrumConstants.GHO_BRIDGE_AMOUNT,
       'Collector GHO balance should increase by exactly BRIDGED_AMOUNT'
     );
 
@@ -135,7 +135,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     );
     assertEq(
       facilitator.bucketLevel - ccipPoolFacilitatorBucketLevelBeforeCcipDelivery,
-      uint128(RemoteGSMLaunchArbitrumConstants.ARBITRUM_BRIDGE_AMOUNT),
+      uint128(RemoteGSMLaunchArbitrumConstants.GHO_BRIDGE_AMOUNT),
       'CCIP token pool facilitator bucketLevel should increase by exactly BRIDGED_AMOUNT'
     );
   }

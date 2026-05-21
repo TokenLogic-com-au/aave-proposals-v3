@@ -134,7 +134,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
 
     uint256 fee = IAaveGhoCcipBridge(proposal.CCIP_BRIDGE()).quoteBridge(
       CCIPChainSelectors.ARBITRUM,
-      RemoteGSMLaunchArbitrumConstants.ARBITRUM_BRIDGE_AMOUNT,
+      RemoteGSMLaunchArbitrumConstants.GHO_BRIDGE_AMOUNT,
       AaveV3EthereumAssets.LINK_UNDERLYING
     );
 
@@ -150,7 +150,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
       bytes32(0),
       CCIPChainSelectors.ARBITRUM,
       GovernanceV3Ethereum.EXECUTOR_LVL_1,
-      RemoteGSMLaunchArbitrumConstants.ARBITRUM_BRIDGE_AMOUNT
+      RemoteGSMLaunchArbitrumConstants.GHO_BRIDGE_AMOUNT
     );
 
     executePayload(vm, address(proposal));
@@ -166,7 +166,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     );
     assertEq(
       facilitator.bucketLevel,
-      RemoteGSMLaunchArbitrumConstants.ARBITRUM_BRIDGE_AMOUNT,
+      RemoteGSMLaunchArbitrumConstants.GHO_BRIDGE_AMOUNT,
       'facilitator bucket level should match bridged amount'
     );
     assertEq(
