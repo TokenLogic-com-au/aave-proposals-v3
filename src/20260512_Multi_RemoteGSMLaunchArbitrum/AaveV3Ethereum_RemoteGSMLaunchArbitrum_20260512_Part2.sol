@@ -31,6 +31,15 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
   // https://etherscan.io/address/0x7F2f96fcdC3A29Be75938d2aC3D92E7006919fe6
   address public constant CCIP_BRIDGE = address(0x7F2f96fcdC3A29Be75938d2aC3D92E7006919fe6);
 
+  // TODO: deployed AaveGhoCcipBridge on Arbitrum (counterpart that will receive the CCIP
+  // message and forward GHO to the Arbitrum Collector).
+  address public constant ARBITRUM_BRIDGE_DESTINATION = address(0);
+
+  // TODO: confirm gas limit needed by AaveGhoCcipBridge.ccipReceive() on Arbitrum.
+  // Typical bridge-receive gas limits sit in the 200k–500k range; pick a value that
+  // covers the receive + Collector forwarding path with comfortable headroom.
+  uint32 public constant ARBITRUM_BRIDGE_GAS_LIMIT = 0;
+
   function execute() external {
     IGhoToken(AaveV3EthereumAssets.GHO_UNDERLYING).addFacilitator(
       DIRECT_FACILITATOR,
@@ -48,7 +57,16 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
       RemoteGSMLaunchArbitrumConstants.GHO_BRIDGE_AMOUNT
     );
 
-    // TODO: Call `setDestinationChain` to configure the recipient on Arbitrum.
+    // Configure the Arbitrum lane on the AaveGhoCcipBridge: maps the Arbitrum chain
+    // selector to the counterpart bridge address on Arbitrum (which forwards the GHO
+    // to AaveV3Arbitrum.COLLECTOR on receipt). `extraArgs` is left empty so the bridge
+    // uses its default CCIP extraArgs encoding with the gas limit below.
+    IAaveGhoCcipBridge(CCIP_BRIDGE).setDestinationChain(
+      CCIPChainSelectors.ARBITRUM,
+      abi.encode(ARBITRUM_BRIDGE_DESTINATION),
+      bytes(''),
+      ARBITRUM_BRIDGE_GAS_LIMIT
+    );
 
     // Bridge already has LINK to bridge, no need to send for fee.
     // This step will fail if Part 1 is not executed first to set the augmented bridge limit (RateLimitExceeded error).
