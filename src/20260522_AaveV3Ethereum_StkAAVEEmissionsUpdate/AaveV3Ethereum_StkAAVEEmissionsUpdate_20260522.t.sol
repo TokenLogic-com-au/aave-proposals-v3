@@ -6,7 +6,7 @@ import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 import {AaveV3Ethereum, AaveV3EthereumAssets} from 'aave-address-book/AaveV3Ethereum.sol';
 import {IStakeToken} from 'aave-address-book/common/IStakeToken.sol';
 import {AaveSafetyModule} from 'aave-address-book/AaveSafetyModule.sol';
-import {ProtocolV3TestBase, ReserveConfig} from 'aave-helpers/src/ProtocolV3TestBase.sol';
+import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 
 import {AaveV3Ethereum_StkAAVEEmissionsUpdate_20260522} from './AaveV3Ethereum_StkAAVEEmissionsUpdate_20260522.sol';
 
@@ -61,6 +61,11 @@ contract AaveV3Ethereum_StkAAVEEmissionsUpdate_20260522_Test is ProtocolV3TestBa
 
     executePayload(vm, address(proposal));
 
+    (uint128 emissionPerSecond, , ) = IStakeToken(AaveSafetyModule.STK_AAVE).assets(
+      AaveSafetyModule.STK_AAVE
+    );
+    uint256 dailyEmissions = uint256(emissionPerSecond) * 1 days;
+
     vm.startPrank(staker);
     IERC20(AaveV3EthereumAssets.AAVE_UNDERLYING).approve(AaveSafetyModule.STK_AAVE, 1 ether);
     IStakeToken(AaveSafetyModule.STK_AAVE).stake(staker, 1 ether);
@@ -70,6 +75,8 @@ contract AaveV3Ethereum_StkAAVEEmissionsUpdate_20260522_Test is ProtocolV3TestBa
 
     uint256 rewardsBalance = IStakeToken(AaveSafetyModule.STK_AAVE).getTotalRewardsBalance(staker);
 
-    assertTrue(rewardsBalance > 0 && rewardsBalance <= 220e18, 'stkAAVE rewards out of range');
+    // 0 < rewardsBalance <= dailyEmissions
+    assertGt(rewardsBalance, 0, 'stkAAVE rewards should be greater than 0');
+    assertLe(rewardsBalance, dailyEmissions, 'stkAAVE rewards should not exceed daily emissions');
   }
 }
