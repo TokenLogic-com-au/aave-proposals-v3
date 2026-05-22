@@ -572,6 +572,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     );
   }
 
+  // Helper struct to bundle parameters and prevent stack-too-deep.
   struct GsmConfig {
     uint256 sellFee;
     uint256 buyFee;

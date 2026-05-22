@@ -8,7 +8,9 @@ library RemoteGSMLaunchArbitrumConstants {
   // 50M GHO bridge amount + 10% leeway in case of other bridges
   uint128 public constant TEMP_BRIDGE_CAPACITY = 55_000_000 ether;
 
+  // Maximum capacity per day to be applied to every lane
   uint128 public constant DEFAULT_RATE_LIMITER_CAPACITY = 5_000_000 ether;
+  // Refill rate per second to be applied to every lane
   uint128 public constant DEFAULT_RATE_LIMITER_RATE = 1_000 ether;
 
   // Facilitator capacity matches bridge amount (as uint128)
