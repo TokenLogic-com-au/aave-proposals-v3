@@ -11,16 +11,17 @@ export const config: ConfigFile = {
       'AaveV3Mantle',
       'AaveV3InkWhitelabel',
       'AaveV3XLayer',
+      'AaveV3Monad',
     ],
     title: 'Gho Monad Activation',
     shortName: 'GhoMonadActivation',
-    date: '20260203',
+    date: '20260518',
     author: '@TokenLogic',
     discussion: 'TODO',
     snapshot: 'TODO',
     votingNetwork: 'AVALANCHE',
   },
-  // TODO: block numbers
+  // TODO: block numbers, add AaveV3Monad to address book.
   poolOptions: {
     AaveV3Ethereum: {configs: {OTHERS: {}}, cache: {blockNumber: 0}},
     AaveV3Avalanche: {configs: {OTHERS: {}}, cache: {blockNumber: 0}},
@@ -31,5 +32,6 @@ export const config: ConfigFile = {
     AaveV3Mantle: {configs: {OTHERS: {}}, cache: {blockNumber: 0}},
     AaveV3InkWhitelabel: {configs: {OTHERS: {}}, cache: {blockNumber: 0}},
     AaveV3XLayer: {configs: {OTHERS: {}}, cache: {blockNumber: 0}},
+    AaveV3Monad: {configs: {OTHERS: {}}, cache: {blockNumber: 0}},
   },
 };
