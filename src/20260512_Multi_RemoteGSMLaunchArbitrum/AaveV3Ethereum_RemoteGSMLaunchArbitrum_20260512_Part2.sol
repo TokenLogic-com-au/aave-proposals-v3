@@ -84,6 +84,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
     _restoreDefaultRateLimit(CCIPChainSelectors.GNOSIS);
     _restoreDefaultRateLimit(CCIPChainSelectors.MANTLE);
     _restoreDefaultRateLimit(CCIPChainSelectors.PLASMA);
+    _restoreDefaultRateLimit(CCIPChainSelectors.XLAYER);
   }
 
   function _restoreDefaultRateLimit(uint64 remoteChainSelector) internal {

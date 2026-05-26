@@ -182,12 +182,13 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     // and direct facilitator addresses to be filled in.
     vm.skip(proposal.DIRECT_FACILITATOR() == address(0) || proposal.CCIP_BRIDGE() == address(0));
 
-    uint64[5] memory selectors = [
+    uint64[6] memory selectors = [
       CCIPChainSelectors.AVALANCHE,
       CCIPChainSelectors.BASE,
       CCIPChainSelectors.GNOSIS,
       CCIPChainSelectors.MANTLE,
-      CCIPChainSelectors.PLASMA
+      CCIPChainSelectors.PLASMA,
+      CCIPChainSelectors.XLAYER
     ];
 
     executePayload(vm, address(proposal));
