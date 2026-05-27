@@ -8,7 +8,7 @@ import {CCIPChainSelectors} from 'src/helpers/gho-launch/constants/CCIPChainSele
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
 
-import {RemoteGSMLaunchArbitrumConstants} from './setup/RemoteGSMLaunchArbitrumConstants.sol';
+import {RemoteGSMLaunchArbitrumSetup} from './setup/RemoteGSMLaunchArbitrumSetup.sol';
 
 /**
  * @title Remote GSM Launch: Arbitrum
@@ -27,7 +27,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1 is IProposalGener
     IGhoToken(GhoArbitrum.GHO_TOKEN).setFacilitatorBucketCapacity(
       GhoArbitrum.GHO_CCIP_TOKEN_POOL,
       currentFacilitatorBucketCapacity.toUint128() +
-        RemoteGSMLaunchArbitrumConstants.GHO_BRIDGE_AMOUNT.toUint128()
+        RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT.toUint128()
     );
 
     // Temporarily increase the maximum bridge limit (inbound capacity; counterpart to Ethereum / Part 1 step)
@@ -35,13 +35,13 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1 is IProposalGener
       CCIPChainSelectors.ETHEREUM,
       IRateLimiter.Config({
         isEnabled: true,
-        capacity: RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
-        rate: RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_RATE
+        capacity: RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_CAPACITY,
+        rate: RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_RATE
       }),
       IRateLimiter.Config({
         isEnabled: true,
-        capacity: RemoteGSMLaunchArbitrumConstants.TEMP_BRIDGE_CAPACITY,
-        rate: RemoteGSMLaunchArbitrumConstants.TEMP_BRIDGE_CAPACITY - 1 // Set rate to capacity so it fills to limit right away (-1 because they cannot be the same)
+        capacity: RemoteGSMLaunchArbitrumSetup.TEMP_BRIDGE_CAPACITY,
+        rate: RemoteGSMLaunchArbitrumSetup.TEMP_BRIDGE_CAPACITY - 1 // Set rate to capacity so it fills to limit right away (-1 because they cannot be the same)
       })
     );
   }

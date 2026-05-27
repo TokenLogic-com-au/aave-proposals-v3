@@ -26,7 +26,7 @@ import {IFixedPriceStrategy4626} from 'src/interfaces/IFixedPriceStrategy4626.so
 import {AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1} from './AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1.sol';
 import {AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2} from './AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2.sol';
 
-import {RemoteGSMLaunchArbitrumConstants} from './setup/RemoteGSMLaunchArbitrumConstants.sol';
+import {RemoteGSMLaunchArbitrumSetup} from './setup/RemoteGSMLaunchArbitrumSetup.sol';
 
 /**
  * @dev Test for AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2
@@ -74,7 +74,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     // Part 1 just configured. If the bucket capacity were misconfigured, the mint would
     // revert here and every test that depends on the bridged funds would fail loudly, which
     // would not happen if we mocked the transfer using `vm.deal`.
-    _simulateCcipDeliveryToCollector(RemoteGSMLaunchArbitrumConstants.GHO_BRIDGE_AMOUNT);
+    _simulateCcipDeliveryToCollector(RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT);
   }
 
   /**
@@ -126,7 +126,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     assertEq(
       IERC20(GhoArbitrum.GHO_TOKEN).balanceOf(address(AaveV3Arbitrum.COLLECTOR)) -
         collectorGhoBalanceBeforeCcipDelivery,
-      RemoteGSMLaunchArbitrumConstants.GHO_BRIDGE_AMOUNT,
+      RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT,
       'Collector GHO balance should increase by exactly BRIDGED_AMOUNT'
     );
 
@@ -135,7 +135,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     );
     assertEq(
       facilitator.bucketLevel - ccipPoolFacilitatorBucketLevelBeforeCcipDelivery,
-      uint128(RemoteGSMLaunchArbitrumConstants.GHO_BRIDGE_AMOUNT),
+      uint128(RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT),
       'CCIP token pool facilitator bucketLevel should increase by exactly BRIDGED_AMOUNT'
     );
   }
@@ -152,18 +152,18 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     // Before Part 2 execution, the limits should be larger than defaults.
     assertGt(
       bucket.capacity,
-      RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
+      RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_CAPACITY,
       'pre-Part2 inbound capacity should be raised'
     );
     assertGt(
       bucket.rate,
-      RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_RATE,
+      RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_RATE,
       'pre-Part2 inbound rate should be raised'
     );
     assertTrue(bucket.isEnabled, 'pre-Part2 inbound rate limiter should be enabled');
     assertGt(
       bucket.tokens,
-      RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
+      RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_CAPACITY,
       'pre-Part2 inbound tokens should exceed default capacity'
     );
 
@@ -175,18 +175,18 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     // Limits are restored to defaults after Part 2 execution.
     assertEq(
       bucket.capacity,
-      RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
+      RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_CAPACITY,
       'post-Part2 inbound capacity should be restored to default'
     );
     assertEq(
       bucket.rate,
-      RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_RATE,
+      RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_RATE,
       'post-Part2 inbound rate should be restored to default'
     );
     assertTrue(bucket.isEnabled, 'post-Part2 inbound rate limiter should be enabled');
     assertEq(
       bucket.tokens,
-      RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
+      RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_CAPACITY,
       'post-Part2 inbound tokens should equal default capacity'
     );
 
@@ -196,12 +196,12 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
 
     assertEq(
       bucket.capacity,
-      RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
+      RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_CAPACITY,
       'post-Part2 outbound capacity should be restored to default'
     );
     assertEq(
       bucket.rate,
-      RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_RATE,
+      RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_RATE,
       'post-Part2 outbound rate should be restored to default'
     );
     assertTrue(bucket.isEnabled, 'post-Part2 outbound rate limiter should be enabled');
@@ -228,14 +228,14 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     uint256 limit = IGhoReserve(address(proposal.GHO_RESERVE())).getLimit(proposal.GSM_USDT());
     assertEq(
       limit,
-      RemoteGSMLaunchArbitrumConstants.GSM_USDT_RESERVE_LIMIT,
+      RemoteGSMLaunchArbitrumSetup.GSM_USDT_RESERVE_LIMIT,
       'USDT GSM reserve limit not set'
     );
 
     GsmConfig memory gsmConfig = GsmConfig({
       sellFee: 0, // 0%
       buyFee: 0.001e4, // 0.1%
-      exposureCap: RemoteGSMLaunchArbitrumConstants.GSM_USDT_INITIAL_EXPOSURE_CAP,
+      exposureCap: RemoteGSMLaunchArbitrumSetup.GSM_USDT_INITIAL_EXPOSURE_CAP,
       isFrozen: false,
       isSeized: false,
       freezerCanUnfreeze: true,
@@ -260,14 +260,14 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     uint256 limit = IGhoReserve(address(proposal.GHO_RESERVE())).getLimit(proposal.GSM_USDC());
     assertEq(
       limit,
-      RemoteGSMLaunchArbitrumConstants.GSM_USDC_RESERVE_LIMIT,
+      RemoteGSMLaunchArbitrumSetup.GSM_USDC_RESERVE_LIMIT,
       'USDC GSM reserve limit not set'
     );
 
     GsmConfig memory gsmConfig = GsmConfig({
       sellFee: 0, // 0%
       buyFee: 0.001e4, // 0.1%
-      exposureCap: RemoteGSMLaunchArbitrumConstants.GSM_USDC_INITIAL_EXPOSURE_CAP,
+      exposureCap: RemoteGSMLaunchArbitrumSetup.GSM_USDC_INITIAL_EXPOSURE_CAP,
       isFrozen: false,
       isSeized: false,
       freezerCanUnfreeze: true,

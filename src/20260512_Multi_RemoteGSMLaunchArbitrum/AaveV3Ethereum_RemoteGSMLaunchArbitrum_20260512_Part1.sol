@@ -7,7 +7,7 @@ import {GhoEthereum} from 'aave-address-book/GhoEthereum.sol';
 import {IUpgradeableLockReleaseTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableLockReleaseTokenPool.sol';
 import {CCIPChainSelectors} from 'src/helpers/gho-launch/constants/CCIPChainSelectors.sol';
 
-import {RemoteGSMLaunchArbitrumConstants} from './setup/RemoteGSMLaunchArbitrumConstants.sol';
+import {RemoteGSMLaunchArbitrumSetup} from './setup/RemoteGSMLaunchArbitrumSetup.sol';
 
 /**
  * @title Remote GSM Launch: Arbitrum
@@ -21,7 +21,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1 is IProposalGener
     uint256 currentBridgeLimit = IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
       .getBridgeLimit();
     IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setBridgeLimit(
-      currentBridgeLimit + RemoteGSMLaunchArbitrumConstants.TEMP_BRIDGE_CAPACITY
+      currentBridgeLimit + RemoteGSMLaunchArbitrumSetup.TEMP_BRIDGE_CAPACITY
     );
 
     // Temporarily increase the maximum bridge limit (outbound capacity)
@@ -29,13 +29,13 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1 is IProposalGener
       CCIPChainSelectors.ARBITRUM,
       IRateLimiter.Config({
         isEnabled: true,
-        capacity: uint128(RemoteGSMLaunchArbitrumConstants.TEMP_BRIDGE_CAPACITY),
-        rate: uint128(RemoteGSMLaunchArbitrumConstants.TEMP_BRIDGE_CAPACITY) - 1 // Set rate to new capacity so it refills immediately
+        capacity: uint128(RemoteGSMLaunchArbitrumSetup.TEMP_BRIDGE_CAPACITY),
+        rate: uint128(RemoteGSMLaunchArbitrumSetup.TEMP_BRIDGE_CAPACITY) - 1 // Set rate to new capacity so it refills immediately
       }),
       IRateLimiter.Config({
         isEnabled: true,
-        capacity: RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
-        rate: RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_RATE
+        capacity: RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_CAPACITY,
+        rate: RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_RATE
       })
     );
   }

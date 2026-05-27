@@ -9,7 +9,7 @@ import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
 
 import {AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1} from './AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1.sol';
-import {RemoteGSMLaunchArbitrumConstants} from './setup/RemoteGSMLaunchArbitrumConstants.sol';
+import {RemoteGSMLaunchArbitrumSetup} from './setup/RemoteGSMLaunchArbitrumSetup.sol';
 
 /**
  * @dev Test for AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1
@@ -66,18 +66,18 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
 
     assertEq(
       bucket.capacity,
-      RemoteGSMLaunchArbitrumConstants.TEMP_BRIDGE_CAPACITY,
+      RemoteGSMLaunchArbitrumSetup.TEMP_BRIDGE_CAPACITY,
       'post-proposal inbound capacity should be TEMP_BRIDGE_CAPACITY'
     );
     assertEq(
       bucket.rate,
-      RemoteGSMLaunchArbitrumConstants.TEMP_BRIDGE_CAPACITY - 1,
+      RemoteGSMLaunchArbitrumSetup.TEMP_BRIDGE_CAPACITY - 1,
       'post-proposal inbound rate should be TEMP_BRIDGE_CAPACITY - 1'
     );
     assertTrue(bucket.isEnabled, 'post-proposal inbound rate limiter should be enabled');
     assertEq(
       bucket.tokens,
-      RemoteGSMLaunchArbitrumConstants.TEMP_BRIDGE_CAPACITY,
+      RemoteGSMLaunchArbitrumSetup.TEMP_BRIDGE_CAPACITY,
       'inbound tokens should refill to TEMP_BRIDGE_CAPACITY after 1s'
     );
   }
@@ -101,7 +101,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
 
     assertEq(
       postFacilitator.bucketCapacity,
-      preFacilitator.bucketCapacity + RemoteGSMLaunchArbitrumConstants.GHO_BRIDGE_AMOUNT,
+      preFacilitator.bucketCapacity + RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT,
       'post-proposal facilitator capacity should have incremented by GHO_BRIDGE_AMOUNT'
     );
     assertEq(

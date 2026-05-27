@@ -8,7 +8,7 @@ import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
 import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
 
-import {RemoteGSMLaunchArbitrumConstants} from './setup/RemoteGSMLaunchArbitrumConstants.sol';
+import {RemoteGSMLaunchArbitrumSetup} from './setup/RemoteGSMLaunchArbitrumSetup.sol';
 
 /**
  * @title Remote GSM Launch: Arbitrum
@@ -28,7 +28,7 @@ contract AaveV3Avalanche_RemoteGSMLaunchArbitrum_20260512 is IProposalGenericExe
     IGhoToken(GhoAvalanche.GHO_TOKEN).setFacilitatorBucketCapacity(
       GhoAvalanche.GHO_CCIP_TOKEN_POOL,
       currentFacilitatorBucketCapacity.toUint128() +
-        RemoteGSMLaunchArbitrumConstants.GHO_BRIDGE_AMOUNT.toUint128()
+        RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT.toUint128()
     );
 
     // Normalize the Ethereum lane CCIP rate-limit config to canonical defaults.
@@ -36,13 +36,13 @@ contract AaveV3Avalanche_RemoteGSMLaunchArbitrum_20260512 is IProposalGenericExe
       CCIPChainSelectors.ETHEREUM,
       IRateLimiter.Config({
         isEnabled: true,
-        capacity: RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
-        rate: RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_RATE
+        capacity: RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_CAPACITY,
+        rate: RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_RATE
       }),
       IRateLimiter.Config({
         isEnabled: true,
-        capacity: RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
-        rate: RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_RATE
+        capacity: RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_CAPACITY,
+        rate: RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_RATE
       })
     );
   }

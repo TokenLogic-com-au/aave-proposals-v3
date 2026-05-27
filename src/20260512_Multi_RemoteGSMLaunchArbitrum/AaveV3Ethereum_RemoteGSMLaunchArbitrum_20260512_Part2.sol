@@ -12,7 +12,7 @@ import {IAaveGhoCcipBridge} from 'aave-helpers/src/bridges/ccip/interfaces/IAave
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 import {IGhoDirectFacilitator} from 'src/interfaces/IGhoDirectFacilitator.sol';
 
-import {RemoteGSMLaunchArbitrumConstants} from './setup/RemoteGSMLaunchArbitrumConstants.sol';
+import {RemoteGSMLaunchArbitrumSetup} from './setup/RemoteGSMLaunchArbitrumSetup.sol';
 
 /**
  * @title Remote GSM Launch: Arbitrum
@@ -44,17 +44,17 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
     IGhoToken(AaveV3EthereumAssets.GHO_UNDERLYING).addFacilitator(
       DIRECT_FACILITATOR,
       DIRECT_FACILITATOR_NAME,
-      RemoteGSMLaunchArbitrumConstants.DIRECT_FACILITATOR_CAPACITY
+      RemoteGSMLaunchArbitrumSetup.DIRECT_FACILITATOR_CAPACITY
     );
 
     IGhoDirectFacilitator(DIRECT_FACILITATOR).mint(
       address(this),
-      RemoteGSMLaunchArbitrumConstants.GHO_BRIDGE_AMOUNT
+      RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT
     );
 
     IERC20(AaveV3EthereumAssets.GHO_UNDERLYING).approve(
       CCIP_BRIDGE,
-      RemoteGSMLaunchArbitrumConstants.GHO_BRIDGE_AMOUNT
+      RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT
     );
 
     // Configure the Arbitrum lane on the AaveGhoCcipBridge: maps the Arbitrum chain
@@ -72,7 +72,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
     // This step will fail if Part 1 is not executed first to set the augmented bridge limit (RateLimitExceeded error).
     IAaveGhoCcipBridge(CCIP_BRIDGE).send(
       CCIPChainSelectors.ARBITRUM,
-      RemoteGSMLaunchArbitrumConstants.GHO_BRIDGE_AMOUNT,
+      RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT,
       AaveV3EthereumAssets.LINK_UNDERLYING
     );
 
@@ -90,8 +90,8 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
   function _restoreDefaultRateLimit(uint64 remoteChainSelector) internal {
     IRateLimiter.Config memory defaultConfig = IRateLimiter.Config({
       isEnabled: true,
-      capacity: RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
-      rate: RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_RATE
+      capacity: RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_CAPACITY,
+      rate: RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_RATE
     });
     IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
       remoteChainSelector,

@@ -14,7 +14,7 @@ import {IGhoReserve} from 'src/interfaces/IGhoReserve.sol';
 import {IGsm} from 'src/interfaces/IGsm.sol';
 import {IGsmRegistry} from 'src/interfaces/IGsmRegistry.sol';
 
-import {RemoteGSMLaunchArbitrumConstants} from './setup/RemoteGSMLaunchArbitrumConstants.sol';
+import {RemoteGSMLaunchArbitrumSetup} from './setup/RemoteGSMLaunchArbitrumSetup.sol';
 
 /**
  * @title Remote GSM Launch: Arbitrum
@@ -71,23 +71,23 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
 
     _wireGsm(
       IGsm(GSM_USDT),
-      RemoteGSMLaunchArbitrumConstants.GSM_USDT_RESERVE_LIMIT,
+      RemoteGSMLaunchArbitrumSetup.GSM_USDT_RESERVE_LIMIT,
       USDT_ORACLE_SWAP_FREEZER,
-      RemoteGSMLaunchArbitrumConstants.GSM_USDT_INITIAL_EXPOSURE_CAP,
+      RemoteGSMLaunchArbitrumSetup.GSM_USDT_INITIAL_EXPOSURE_CAP,
       GSM_USDT_FEE_STRATEGY
     );
     _wireGsm(
       IGsm(GSM_USDC),
-      RemoteGSMLaunchArbitrumConstants.GSM_USDC_RESERVE_LIMIT,
+      RemoteGSMLaunchArbitrumSetup.GSM_USDC_RESERVE_LIMIT,
       USDC_ORACLE_SWAP_FREEZER,
-      RemoteGSMLaunchArbitrumConstants.GSM_USDC_INITIAL_EXPOSURE_CAP,
+      RemoteGSMLaunchArbitrumSetup.GSM_USDC_INITIAL_EXPOSURE_CAP,
       GSM_USDC_FEE_STRATEGY
     );
 
     AaveV3Arbitrum.COLLECTOR.transfer(
       IERC20(GhoArbitrum.GHO_TOKEN),
       address(GHO_RESERVE),
-      RemoteGSMLaunchArbitrumConstants.GHO_BRIDGE_AMOUNT
+      RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT
     );
 
     // Restore bridge limits after GHO bridging.
@@ -96,13 +96,13 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
       CCIPChainSelectors.ETHEREUM,
       IRateLimiter.Config({
         isEnabled: true,
-        capacity: RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
-        rate: RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_RATE
+        capacity: RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_CAPACITY,
+        rate: RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_RATE
       }),
       IRateLimiter.Config({
         isEnabled: true,
-        capacity: RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_CAPACITY,
-        rate: RemoteGSMLaunchArbitrumConstants.DEFAULT_RATE_LIMITER_RATE
+        capacity: RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_CAPACITY,
+        rate: RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_RATE
       })
     );
   }

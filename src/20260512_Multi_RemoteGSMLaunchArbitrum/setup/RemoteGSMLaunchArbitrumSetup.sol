@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-library RemoteGSMLaunchArbitrumConstants {
+library RemoteGSMLaunchArbitrumSetup {
   // TODO: define amount to bridge; temporary numbers taken from Plasma's proposal
   uint256 public constant GHO_BRIDGE_AMOUNT = 50_000_000 ether;
 
