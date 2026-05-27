@@ -5,7 +5,6 @@ import {GhoPlasma} from 'aave-address-book/GhoPlasma.sol';
 import {SafeCast} from 'openzeppelin-contracts/contracts/utils/math/SafeCast.sol';
 import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGenericExecutor.sol';
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
-import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
 import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
 
 import {RemoteGSMLaunchArbitrumSetup} from './setup/RemoteGSMLaunchArbitrumSetup.sol';
@@ -31,19 +30,10 @@ contract AaveV3Plasma_RemoteGSMLaunchArbitrum_20260512 is IProposalGenericExecut
         RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT.toUint128()
     );
 
-    // Normalize the Ethereum lane CCIP rate-limit config to canonical defaults.
-    IUpgradeableBurnMintTokenPool(GhoPlasma.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
-      CCIPChainSelectors.ETHEREUM,
-      IRateLimiter.Config({
-        isEnabled: true,
-        capacity: RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_CAPACITY,
-        rate: RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_RATE
-      }),
-      IRateLimiter.Config({
-        isEnabled: true,
-        capacity: RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_CAPACITY,
-        rate: RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_RATE
-      })
+    // Normalize all GHO lanes rate-limit config to canonical defaults.
+    RemoteGSMLaunchArbitrumSetup.normalizeIORateLimitsForAllNetworks(
+      GhoPlasma.GHO_CCIP_TOKEN_POOL,
+      CCIPChainSelectors.PLASMA
     );
   }
 }

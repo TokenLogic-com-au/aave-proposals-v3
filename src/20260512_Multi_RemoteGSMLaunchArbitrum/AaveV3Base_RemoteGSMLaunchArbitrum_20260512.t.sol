@@ -7,6 +7,7 @@ import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
 import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
+import {GhoCCIPChains} from '../helpers/gho-launch/constants/GhoCCIPChains.sol';
 
 import {AaveV3Base_RemoteGSMLaunchArbitrum_20260512} from './AaveV3Base_RemoteGSMLaunchArbitrum_20260512.sol';
 import {RemoteGSMLaunchArbitrumSetup} from './setup/RemoteGSMLaunchArbitrumSetup.sol';
@@ -50,12 +51,25 @@ contract AaveV3Base_RemoteGSMLaunchArbitrum_20260512_Test is ProtocolV3TestBase 
     );
   }
 
-  function test_ethereumLaneRateLimitNormalized() public {
+  function test_allLaneRateLimitsNormalized() public {
     executePayload(vm, address(proposal));
 
+    // Every lane to every other supported network (itself excluded) is normalized to defaults.
+    GhoCCIPChains.ChainInfo[] memory chains = GhoCCIPChains.getAllChainsExcept(
+      CCIPChainSelectors.BASE,
+      false
+    );
+
+    for (uint256 i = 0; i < chains.length; i++) {
+      _assertLaneNormalized(chains[i].chainSelector);
+    }
+  }
+
+  /// @dev Asserts the inbound and outbound rate limiter for `remoteChainSelector` sit at defaults.
+  function _assertLaneNormalized(uint64 remoteChainSelector) internal view {
     IRateLimiter.TokenBucket memory inbound = IUpgradeableBurnMintTokenPool(
       GhoBase.GHO_CCIP_TOKEN_POOL
-    ).getCurrentInboundRateLimiterState(CCIPChainSelectors.ETHEREUM);
+    ).getCurrentInboundRateLimiterState(remoteChainSelector);
 
     assertEq(
       inbound.capacity,
@@ -71,7 +85,7 @@ contract AaveV3Base_RemoteGSMLaunchArbitrum_20260512_Test is ProtocolV3TestBase 
 
     IRateLimiter.TokenBucket memory outbound = IUpgradeableBurnMintTokenPool(
       GhoBase.GHO_CCIP_TOKEN_POOL
-    ).getCurrentOutboundRateLimiterState(CCIPChainSelectors.ETHEREUM);
+    ).getCurrentOutboundRateLimiterState(remoteChainSelector);
 
     assertEq(
       outbound.capacity,

@@ -6,7 +6,6 @@ import {SafeERC20} from 'openzeppelin-contracts/contracts/token/ERC20/utils/Safe
 import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
 import {AaveV3EthereumAssets} from 'aave-address-book/AaveV3Ethereum.sol';
 import {GhoEthereum} from 'aave-address-book/GhoEthereum.sol';
-import {IUpgradeableLockReleaseTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableLockReleaseTokenPool.sol';
 import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGenericExecutor.sol';
 import {IAaveGhoCcipBridge} from 'aave-helpers/src/bridges/ccip/interfaces/IAaveGhoCcipBridge.sol';
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
@@ -78,25 +77,9 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
 
     // Restore the Arbitrum lane bridge limit; normalize the other GHO CCIP lanes
     // touched by this proposal so all end up at the canonical default config.
-    _restoreDefaultRateLimit(CCIPChainSelectors.ARBITRUM);
-    _restoreDefaultRateLimit(CCIPChainSelectors.AVALANCHE);
-    _restoreDefaultRateLimit(CCIPChainSelectors.BASE);
-    _restoreDefaultRateLimit(CCIPChainSelectors.GNOSIS);
-    _restoreDefaultRateLimit(CCIPChainSelectors.MANTLE);
-    _restoreDefaultRateLimit(CCIPChainSelectors.PLASMA);
-    _restoreDefaultRateLimit(CCIPChainSelectors.XLAYER);
-  }
-
-  function _restoreDefaultRateLimit(uint64 remoteChainSelector) internal {
-    IRateLimiter.Config memory defaultConfig = IRateLimiter.Config({
-      isEnabled: true,
-      capacity: RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_CAPACITY,
-      rate: RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_RATE
-    });
-    IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
-      remoteChainSelector,
-      defaultConfig,
-      defaultConfig
+    RemoteGSMLaunchArbitrumSetup.normalizeIORateLimitsForAllNetworks(
+      GhoEthereum.GHO_CCIP_TOKEN_POOL,
+      CCIPChainSelectors.ETHEREUM
     );
   }
 }

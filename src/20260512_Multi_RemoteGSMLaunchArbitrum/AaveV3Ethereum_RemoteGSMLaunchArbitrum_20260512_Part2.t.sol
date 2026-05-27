@@ -8,6 +8,7 @@ import {GhoEthereum} from 'aave-address-book/GhoEthereum.sol';
 import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {IAaveGhoCcipBridge} from 'aave-helpers/src/bridges/ccip/interfaces/IAaveGhoCcipBridge.sol';
 import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
+import {GhoCCIPChains} from '../helpers/gho-launch/constants/GhoCCIPChains.sol';
 import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 
@@ -182,49 +183,52 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     // and direct facilitator addresses to be filled in.
     vm.skip(proposal.DIRECT_FACILITATOR() == address(0) || proposal.CCIP_BRIDGE() == address(0));
 
-    uint64[6] memory selectors = [
-      CCIPChainSelectors.AVALANCHE,
-      CCIPChainSelectors.BASE,
-      CCIPChainSelectors.GNOSIS,
-      CCIPChainSelectors.MANTLE,
-      CCIPChainSelectors.PLASMA,
-      CCIPChainSelectors.XLAYER
-    ];
-
     executePayload(vm, address(proposal));
 
-    for (uint256 i = 0; i < selectors.length; i++) {
-      IRateLimiter.TokenBucket memory inbound = IUpgradeableBurnMintTokenPool(
-        GhoEthereum.GHO_CCIP_TOKEN_POOL
-      ).getCurrentInboundRateLimiterState(selectors[i]);
+    // Every lane to every other supported network (Ethereum excluded, the Arbitrum lane
+    // raised by Part 1 included) ends up restored to the canonical defaults.
+    GhoCCIPChains.ChainInfo[] memory chains = GhoCCIPChains.getAllChainsExcept(
+      CCIPChainSelectors.ETHEREUM,
+      false
+    );
 
-      assertEq(
-        inbound.capacity,
-        RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_CAPACITY,
-        'post-proposal inbound capacity should be default'
-      );
-      assertEq(
-        inbound.rate,
-        RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_RATE,
-        'post-proposal inbound rate should be default'
-      );
-      assertTrue(inbound.isEnabled, 'post-proposal inbound rate limiter should be enabled');
-
-      IRateLimiter.TokenBucket memory outbound = IUpgradeableBurnMintTokenPool(
-        GhoEthereum.GHO_CCIP_TOKEN_POOL
-      ).getCurrentOutboundRateLimiterState(selectors[i]);
-
-      assertEq(
-        outbound.capacity,
-        RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_CAPACITY,
-        'post-proposal outbound capacity should be default'
-      );
-      assertEq(
-        outbound.rate,
-        RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_RATE,
-        'post-proposal outbound rate should be default'
-      );
-      assertTrue(outbound.isEnabled, 'post-proposal outbound rate limiter should be enabled');
+    for (uint256 i = 0; i < chains.length; i++) {
+      _assertLaneNormalized(chains[i].chainSelector);
     }
+  }
+
+  /// @dev Asserts the inbound and outbound rate limiter for `remoteChainSelector` sit at defaults.
+  function _assertLaneNormalized(uint64 remoteChainSelector) internal view {
+    IRateLimiter.TokenBucket memory inbound = IUpgradeableBurnMintTokenPool(
+      GhoEthereum.GHO_CCIP_TOKEN_POOL
+    ).getCurrentInboundRateLimiterState(remoteChainSelector);
+
+    assertEq(
+      inbound.capacity,
+      RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_CAPACITY,
+      'post-proposal inbound capacity should be default'
+    );
+    assertEq(
+      inbound.rate,
+      RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_RATE,
+      'post-proposal inbound rate should be default'
+    );
+    assertTrue(inbound.isEnabled, 'post-proposal inbound rate limiter should be enabled');
+
+    IRateLimiter.TokenBucket memory outbound = IUpgradeableBurnMintTokenPool(
+      GhoEthereum.GHO_CCIP_TOKEN_POOL
+    ).getCurrentOutboundRateLimiterState(remoteChainSelector);
+
+    assertEq(
+      outbound.capacity,
+      RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_CAPACITY,
+      'post-proposal outbound capacity should be default'
+    );
+    assertEq(
+      outbound.rate,
+      RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_RATE,
+      'post-proposal outbound rate should be default'
+    );
+    assertTrue(outbound.isEnabled, 'post-proposal outbound rate limiter should be enabled');
   }
 }

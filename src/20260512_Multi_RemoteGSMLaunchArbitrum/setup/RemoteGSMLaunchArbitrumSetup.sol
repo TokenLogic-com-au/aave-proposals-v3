@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import {GhoCCIPChains} from 'src/helpers/gho-launch/constants/GhoCCIPChains.sol';
+import {IUpgradeableLockReleaseTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableLockReleaseTokenPool.sol';
+
 library RemoteGSMLaunchArbitrumSetup {
   // TODO: define amount to bridge; temporary numbers taken from Plasma's proposal
   uint256 public constant GHO_BRIDGE_AMOUNT = 50_000_000 ether;
@@ -29,4 +32,42 @@ library RemoteGSMLaunchArbitrumSetup {
 
   // TODO: refine amount (stata tokens have a rate with respect to underlying)
   uint128 public constant GSM_USDC_INITIAL_EXPOSURE_CAP = 15_000_000e6; // 15M, 6 decimals
+
+  /**
+   * @notice Normalizes the inbound and outbound CCIP rate-limit config of a GHO token pool
+   * to the canonical defaults for every supported network other than the pool's own chain.
+   * @dev Iterates over every chain returned by `GhoCCIPChains.getAllChainsExcept` (1.6.0 chains
+   * included) and applies the same default config — `DEFAULT_RATE_LIMITER_CAPACITY` /
+   * `DEFAULT_RATE_LIMITER_RATE`, enabled — on both the inbound and outbound lane to each of them.
+   * TODO: `setChainRateLimiterConfig` reverts for any remote chain selector not already supported
+   * by the pool, so this assumes a lane to every other supported network exists on `tokenPool`.
+   * Tests should catch this once enabled; double check.
+   * @param tokenPool The GHO CCIP token pool whose lanes will be normalized. Typed as
+   * `IUpgradeableLockReleaseTokenPool`, but `setChainRateLimiterConfig` shares the same selector
+   * across the lock-release and burn-mint pools, so a burn-mint pool address may also be passed.
+   * @param currentChainSelector The CCIP selector of the pool's own chain, excluded from the loop.
+   */
+  function normalizeIORateLimitsForAllNetworks(
+    address tokenPool,
+    uint64 currentChainSelector
+  ) internal {
+    GhoCCIPChains.ChainInfo[] memory chains = GhoCCIPChains.getAllChainsExcept(
+      currentChainSelector,
+      false
+    );
+
+    IRateLimiter.Config memory defaultConfig = IRateLimiter.Config({
+      isEnabled: true,
+      capacity: DEFAULT_RATE_LIMITER_CAPACITY,
+      rate: DEFAULT_RATE_LIMITER_RATE
+    });
+
+    for (uint256 i = 0; i < chains.length; i++) {
+      IUpgradeableLockReleaseTokenPool(tokenPool).setChainRateLimiterConfig(
+        chains[i].chainSelector,
+        defaultConfig,
+        defaultConfig
+      );
+    }
+  }
 }

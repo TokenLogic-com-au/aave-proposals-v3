@@ -7,7 +7,6 @@ import {AaveV3Arbitrum} from 'aave-address-book/AaveV3Arbitrum.sol';
 import {GhoArbitrum} from 'aave-address-book/GhoArbitrum.sol';
 import {GovernanceV3Arbitrum} from 'aave-address-book/GovernanceV3Arbitrum.sol';
 import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
-import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
 import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGenericExecutor.sol';
 
 import {IGhoReserve} from 'src/interfaces/IGhoReserve.sol';
@@ -90,20 +89,11 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
       RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT
     );
 
-    // Restore bridge limits after GHO bridging.
+    // Restore bridge limits after GHO bridging, and normalize all GHO lanes rate-limit config to canonical defaults.
     // Facilitator Bucket Capacity does not need to change.
-    IUpgradeableBurnMintTokenPool(GhoArbitrum.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
-      CCIPChainSelectors.ETHEREUM,
-      IRateLimiter.Config({
-        isEnabled: true,
-        capacity: RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_CAPACITY,
-        rate: RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_RATE
-      }),
-      IRateLimiter.Config({
-        isEnabled: true,
-        capacity: RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_CAPACITY,
-        rate: RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_RATE
-      })
+    RemoteGSMLaunchArbitrumSetup.normalizeIORateLimitsForAllNetworks(
+      GhoArbitrum.GHO_CCIP_TOKEN_POOL,
+      CCIPChainSelectors.ARBITRUM
     );
   }
 
