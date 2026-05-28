@@ -45,16 +45,6 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
   // TODO: deployed GsmRegistry on Arbitrum
   address public constant GSM_REGISTRY = address(0);
 
-  // GSM USDT
-  // TODO: deployed stataUSDT Remote GSM on Arbitrum
-  address public constant GSM_USDT = address(0);
-
-  // TODO: deployed USDT OracleSwapFreezer on Arbitrum
-  address public constant USDT_ORACLE_SWAP_FREEZER = address(0);
-
-  // TODO: deployed FeeStrategy on Arbitrum (mint 0% / burn 0.10%)
-  address public constant GSM_USDT_FEE_STRATEGY = address(0);
-
   // GSM USDC
   // TODO: deployed stataUSDC Remote GSM on Arbitrum
   address public constant GSM_USDC = address(0);
@@ -68,13 +58,6 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
   function execute() external {
     GHO_RESERVE.grantRole(GHO_RESERVE.LIMIT_MANAGER_ROLE(), GhoArbitrum.RISK_COUNCIL);
 
-    _wireGsm(
-      IGsm(GSM_USDT),
-      RemoteGSMLaunchArbitrumSetup.GSM_USDT_RESERVE_LIMIT,
-      USDT_ORACLE_SWAP_FREEZER,
-      RemoteGSMLaunchArbitrumSetup.GSM_USDT_INITIAL_EXPOSURE_CAP,
-      GSM_USDT_FEE_STRATEGY
-    );
     _wireGsm(
       IGsm(GSM_USDC),
       RemoteGSMLaunchArbitrumSetup.GSM_USDC_RESERVE_LIMIT,

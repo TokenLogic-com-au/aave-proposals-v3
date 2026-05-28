@@ -7,11 +7,11 @@ snapshot: "TODO"
 
 ## Simple Summary
 
-Launch GHO GSMs on Arbitrum (stataUSDT and stataUSDC) using the new RemoteGSM architecture. The proposal mints 50M GHO via a dedicated `GhoDirectFacilitator` on Ethereum, bridges it to Arbitrum over CCIP to seed the local `GhoReserve`, wires up the two Arbitrum GSMs, and normalizes the GHO CCIP lane capacity across every supported network to a uniform 5M GHO/day with a 1,000 GHO/sec refill rate.
+Launch GHO GSM on Arbitrum (stataUSDC) using the new RemoteGSM architecture. The proposal mints 50M GHO via a dedicated `GhoDirectFacilitator` on Ethereum, bridges it to Arbitrum over CCIP to seed the local `GhoReserve`, wires up the two Arbitrum GSMs, and normalizes the GHO CCIP lane capacity across every supported network to a uniform 5M GHO/day with a 1,000 GHO/sec refill rate.
 
 ## Motivation
 
-The RemoteGSM upgrade refactors GHO's stability mechanism into a three-layer design (`GhoDirectFacilitator` → `GhoReserve` → `GSM`), removing the prior requirement that each GSM be its own GHO facilitator and unlocking GSM deployment on L2s, where GHO cannot be minted directly. Arbitrum is the first L2 target: deploying USDT and USDC GSMs there extends GHO's stability surface to where a large share of L2 stablecoin liquidity sits, while keeping mint and bridge control under DAO governance.
+The RemoteGSM upgrade refactors GHO's stability mechanism into a three-layer design (`GhoDirectFacilitator` → `GhoReserve` → `GSM`), removing the prior requirement that each GSM be its own GHO facilitator and unlocking GSM deployment on L2s, where GHO cannot be minted directly. Arbitrum is the first L2 target: deploying USDC GSM there extends GHO's stability surface to where a large share of L2 stablecoin liquidity sits, while keeping mint and bridge control under DAO governance.
 
 ## Specification
 
@@ -28,7 +28,7 @@ On Arbitrum:
 - Temporarily raise the CCIP token-pool facilitator bucket capacity and the Ethereum-lane inbound rate limiter to receive the 50M GHO.
 - On receipt, the `Collector` forwards the 50M GHO to the `GhoReserve`.
 
-### Wire up Arbitrum GSMs (stataUSDT, stataUSDC)
+### Wire up Arbitrum GSM (stataUSDC)
 
 For each GSM:
 

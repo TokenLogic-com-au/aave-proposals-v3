@@ -265,44 +265,8 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     executePayload(vm, address(proposal));
 
     assertTrue(
-      IGhoReserve(address(proposal.GHO_RESERVE())).isEntity(proposal.GSM_USDT()),
-      'USDT GSM not registered as entity'
-    );
-    assertTrue(
       IGhoReserve(address(proposal.GHO_RESERVE())).isEntity(proposal.GSM_USDC()),
       'USDC GSM not registered as entity'
-    );
-  }
-
-  function test_checkGsmConfig_USDT() public {
-    _skipIfNotReady();
-    executePayload(vm, address(proposal));
-
-    uint256 limit = IGhoReserve(address(proposal.GHO_RESERVE())).getLimit(proposal.GSM_USDT());
-    assertEq(
-      limit,
-      RemoteGSMLaunchArbitrumSetup.GSM_USDT_RESERVE_LIMIT,
-      'USDT GSM reserve limit not set'
-    );
-
-    GsmConfig memory gsmConfig = GsmConfig({
-      sellFee: 0, // 0%
-      buyFee: 0.001e4, // 0.1%
-      exposureCap: RemoteGSMLaunchArbitrumSetup.GSM_USDT_INITIAL_EXPOSURE_CAP,
-      isFrozen: false,
-      isSeized: false,
-      freezerCanUnfreeze: true,
-      freezeLowerBound: 0.99e8,
-      freezeUpperBound: 1.01e8,
-      unfreezeLowerBound: 0.995e8,
-      unfreezeUpperBound: 1.005e8,
-      feeStrategy: proposal.GSM_USDT_FEE_STRATEGY()
-    });
-    _checkGsmConfig(
-      IGsm(proposal.GSM_USDT()),
-      AaveV3ArbitrumAssets.USDT_STATA_TOKEN,
-      IOracleSwapFreezer(proposal.USDT_ORACLE_SWAP_FREEZER()),
-      gsmConfig
     );
   }
 
@@ -338,15 +302,6 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     );
   }
 
-  function test_oracleSwapFreezer_USDT() public {
-    _skipIfNotReady();
-    _testOracleSwapFreezer(
-      IGsm(proposal.GSM_USDT()),
-      IOracleSwapFreezer(proposal.USDT_ORACLE_SWAP_FREEZER()),
-      AaveV3ArbitrumAssets.USDT_UNDERLYING
-    );
-  }
-
   function test_oracleSwapFreezer_USDC() public {
     _skipIfNotReady();
     _testOracleSwapFreezer(
@@ -356,21 +311,10 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     );
   }
 
-  function test_checkRoles_USDT() public {
-    _skipIfNotReady();
-    executePayload(vm, address(proposal));
-    _checkRolesConfig(IGsm(proposal.GSM_USDT()));
-  }
-
   function test_checkRoles_USDC() public {
     _skipIfNotReady();
     executePayload(vm, address(proposal));
     _checkRolesConfig(IGsm(proposal.GSM_USDC()));
-  }
-
-  function test_gsmIsOperational_USDT() public {
-    _skipIfNotReady();
-    _testGsmIsOperational(IGsm(proposal.GSM_USDT()), AaveV3ArbitrumAssets.USDT_STATA_TOKEN);
   }
 
   function test_gsmIsOperational_USDC() public {
@@ -378,19 +322,9 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     _testGsmIsOperational(IGsm(proposal.GSM_USDC()), AaveV3ArbitrumAssets.USDC_STATA_TOKEN);
   }
 
-  function test_ghoGsmSteward_updateExposureCap_USDT() public {
-    _skipIfNotReady();
-    _testUpdateExposureCap(IGsm(proposal.GSM_USDT()));
-  }
-
   function test_ghoGsmSteward_updateExposureCap_USDC() public {
     _skipIfNotReady();
     _testUpdateExposureCap(IGsm(proposal.GSM_USDC()));
-  }
-
-  function test_ghoGsmSteward_updateGsmBuySellFees_USDT() public {
-    _skipIfNotReady();
-    _testUpdateBuySellFees(IGsm(proposal.GSM_USDT()));
   }
 
   function test_ghoGsmSteward_updateGsmBuySellFees_USDC() public {
@@ -428,11 +362,8 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
   function _skipIfNotReady() internal {
     vm.skip(
       address(proposal.GHO_RESERVE()) == address(0) ||
-        proposal.GSM_USDT() == address(0) ||
         proposal.GSM_USDC() == address(0) ||
-        proposal.USDT_ORACLE_SWAP_FREEZER() == address(0) ||
         proposal.USDC_ORACLE_SWAP_FREEZER() == address(0) ||
-        proposal.GSM_USDT_FEE_STRATEGY() == address(0) ||
         proposal.GSM_USDC_FEE_STRATEGY() == address(0) ||
         proposal.GSM_REGISTRY() == address(0) ||
         proposal.GHO_GSM_STEWARD() == address(0)
@@ -503,7 +434,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     // NOTE: `deal(STATA, true)` writes the balance slot directly *and* updates the
     // ERC4626 accounting (`totalAssets`, `totalSupply`). For pure GSM-path arithmetic this
     // is not strictly required, but once real GSMs are deployed verify that `sellAsset` / `buyAsset`
-    // produce the expected GHO amounts. If not, switch to dealing the underlying USDT/USDC
+    // produce the expected GHO amounts. If not, switch to dealing the underlying USDC
     // and wrapping via `IERC4626.deposit(...)` to keep 4626 accounting consistent.
     deal(underlying, address(this), 1_000e6, true);
 
