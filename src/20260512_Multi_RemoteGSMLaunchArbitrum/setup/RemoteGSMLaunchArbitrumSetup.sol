@@ -17,6 +17,7 @@ library RemoteGSMLaunchArbitrumSetup {
 
   // Maximum capacity per day to be applied to every lane
   uint128 public constant DEFAULT_RATE_LIMITER_CAPACITY = 5_000_000 ether;
+
   // Refill rate per second to be applied to every lane
   uint128 public constant DEFAULT_RATE_LIMITER_RATE = 1_000 ether;
 
@@ -24,11 +25,11 @@ library RemoteGSMLaunchArbitrumSetup {
   uint128 public constant DIRECT_FACILITATOR_CAPACITY = uint128(GHO_BRIDGE_AMOUNT);
 
   // GSM USDC
-  // TODO: check amount (should be <= bridged amount, can be changed by steward later)
-  uint128 public constant GSM_USDC_RESERVE_LIMIT = 15_000_000 ether;
+  // Maximum amount that can be withdrawn by GSM (can be changed by steward later)
+  uint128 public constant GSM_USDC_RESERVE_LIMIT = 25_000_000 ether;
 
-  // TODO: refine amount (stata tokens have a rate with respect to underlying)
-  uint128 public constant GSM_USDC_INITIAL_EXPOSURE_CAP = 15_000_000e6; // 15M, 6 decimals
+  // This allows about 23.3M GHO to be issued, considering a rate of ~1.165 for stataUSDC on Arbitrum
+  uint128 public constant GSM_USDC_INITIAL_EXPOSURE_CAP = 20_000_000e6; // 20M, 6 decimals
 
   /**
    * @notice Normalizes the inbound and outbound CCIP rate-limit config of a GHO token pool
