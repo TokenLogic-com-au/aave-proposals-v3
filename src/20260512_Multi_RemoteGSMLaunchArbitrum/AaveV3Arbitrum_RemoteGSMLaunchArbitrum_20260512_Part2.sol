@@ -19,7 +19,7 @@ import {RemoteGSMLaunchArbitrumSetup} from './setup/RemoteGSMLaunchArbitrumSetup
  * @title Remote GSM Launch: Arbitrum
  * @author TokenLogic
  * - Snapshot: TODO
- * - Discussion: https://governance.aave.com/t/remotegsm-upgrade-enabling-l2-gsms-for-gho/24240
+ * - Discussion: https://governance.aave.com/t/arfc-launch-remotegsm-on-arbitrum/24986
  *
  * NOTE: granting RISK_ADMIN_ROLE on AaveV3Arbitrum.ACL_MANAGER to a GhoAaveSteward
  * is intentionally OUT OF SCOPE for this proposal. If a steward is not already

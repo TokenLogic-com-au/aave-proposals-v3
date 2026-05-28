@@ -13,7 +13,7 @@ import {RemoteGSMLaunchArbitrumSetup} from './setup/RemoteGSMLaunchArbitrumSetup
  * @title Remote GSM Launch: Arbitrum
  * @author TokenLogic
  * - Snapshot: TODO
- * - Discussion: https://governance.aave.com/t/remotegsm-upgrade-enabling-l2-gsms-for-gho/24240
+ * - Discussion: https://governance.aave.com/t/arfc-launch-remotegsm-on-arbitrum/24986
  */
 contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1 is IProposalGenericExecutor {
   function execute() external {

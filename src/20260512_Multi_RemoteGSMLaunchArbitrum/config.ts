@@ -15,7 +15,7 @@ export const config: ConfigFile = {
     shortName: 'RemoteGSMLaunchArbitrum',
     date: '20260512',
     author: 'TokenLogic',
-    discussion: 'https://governance.aave.com/t/remotegsm-upgrade-enabling-l2-gsms-for-gho/24240',
+    discussion: 'https://governance.aave.com/t/arfc-launch-remotegsm-on-arbitrum/24986',
     snapshot: 'TODO',
     votingNetwork: 'AVALANCHE',
   },
