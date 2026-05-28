@@ -4,8 +4,12 @@ pragma solidity ^0.8.0;
 import {GhoCCIPChains} from 'src/helpers/gho-launch/constants/GhoCCIPChains.sol';
 import {IUpgradeableLockReleaseTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableLockReleaseTokenPool.sol';
 
+/**
+ * @notice Common setup library containing constants and helper functions used in the proposal.
+ * @dev See forum post for reference: https://governance.aave.com/t/arfc-launch-remotegsm-on-arbitrum/24986
+ */
 library RemoteGSMLaunchArbitrumSetup {
-  // TODO: define amount to bridge; temporary numbers taken from Plasma's proposal
+  // Amount to mint in Mainnet and bridge to Arbitrum
   uint256 public constant GHO_BRIDGE_AMOUNT = 50_000_000 ether;
 
   // 50M GHO bridge amount + 10% leeway in case of other bridges
