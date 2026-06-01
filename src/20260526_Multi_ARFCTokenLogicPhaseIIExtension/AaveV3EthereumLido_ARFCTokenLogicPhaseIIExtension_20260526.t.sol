@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {AaveV3EthereumLido, AaveV3EthereumLidoAssets} from 'aave-address-book/AaveV3EthereumLido.sol';
+import {ICollector} from 'aave-v3-origin/contracts/treasury/ICollector.sol';
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 
 import 'forge-std/Test.sol';
@@ -39,7 +40,7 @@ contract AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526_Test is Prot
 
     executePayload(vm, address(proposal));
 
-    vm.expectRevert();
+    vm.expectRevert(ICollector.StreamDoesNotExist.selector);
     AaveV3EthereumLido.COLLECTOR.getStream(streamId);
   }
 
@@ -90,7 +91,7 @@ contract AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526_Test is Prot
     address receiver = proposal.TOKEN_LOGIC();
     uint256 nextStreamId = AaveV3EthereumLido.COLLECTOR.getNextStreamId();
 
-    vm.expectRevert();
+    vm.expectRevert(ICollector.StreamDoesNotExist.selector);
     AaveV3EthereumLido.COLLECTOR.getStream(nextStreamId);
 
     executePayload(vm, address(proposal));

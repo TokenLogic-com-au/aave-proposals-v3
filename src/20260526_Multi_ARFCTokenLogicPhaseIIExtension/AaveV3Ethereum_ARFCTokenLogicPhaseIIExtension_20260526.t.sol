@@ -40,7 +40,7 @@ contract AaveV3Ethereum_ARFCTokenLogicPhaseIIExtension_20260526_Test is Protocol
     uint256 expectedAmount = (proposal.AAVE_STREAM_AMOUNT() / proposal.STREAM_DURATION()) *
       proposal.STREAM_DURATION();
 
-    vm.expectRevert();
+    vm.expectRevert(bytes('stream does not exist'));
     reserve.getStream(nextStreamId);
 
     executePayload(vm, address(proposal));
