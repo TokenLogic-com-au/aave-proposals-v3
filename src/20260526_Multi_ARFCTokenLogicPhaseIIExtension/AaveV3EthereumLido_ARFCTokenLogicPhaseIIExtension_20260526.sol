@@ -13,6 +13,7 @@ import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
  * - Discussion: https://governance.aave.com/t/arfc-tokenlogic-phase-ii-extension/24846
  */
 contract AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526 is IProposalGenericExecutor {
+  // TODO: verify address before deployment
   address public constant TOKEN_LOGIC = 0xAA088dfF3dcF619664094945028d44E779F19894;
 
   uint256 public constant PREVIOUS_STREAM = 100072;
