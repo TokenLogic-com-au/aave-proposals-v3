@@ -14,7 +14,7 @@ import {AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526} from './Aave
  * command: FOUNDRY_PROFILE=test forge test --match-path=src/20260526_Multi_ARFCTokenLogicPhaseIIExtension/AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526.t.sol -vv
  */
 contract AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526_Test is ProtocolV3TestBase {
-  uint256 internal constant MAX_DELTA_STREAM_BALANCE = 0.00001e18;
+  uint256 internal constant MAX_DELTA_STREAM_BALANCE = 0.00001e18; // 0.001%
 
   AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526 internal proposal;
 
