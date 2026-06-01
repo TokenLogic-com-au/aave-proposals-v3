@@ -13,6 +13,7 @@ import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGen
  */
 contract AaveV3Ethereum_ARFCTokenLogicPhaseIIExtension_20260526 is IProposalGenericExecutor {
   // TODO: verify address before deployment
+  // https://etherscan.io/address/0xAA088dfF3dcF619664094945028d44E779F19894
   address public constant TOKEN_LOGIC = 0xAA088dfF3dcF619664094945028d44E779F19894;
 
   uint256 public constant STREAM_DURATION = 365 days;
