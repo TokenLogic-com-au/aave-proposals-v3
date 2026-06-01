@@ -36,10 +36,10 @@ Wrap the Collector's native ETH to wETH and supply it to the Aave v3 Core instan
 
 To support the continued success of the friendly Tydro deployment, an aEthLidoGHO Allowance will be created to fund an upcoming incentive campaign.
 
-Asset: aEthLidoGHO `0x18eFE565A5373f430e2F809b97De30335B3ad96A`
-Amount: 5,000,000
-Spender: Ahab `0xAA2461f0f0A3dE5fEAF3273eAe16DEF861cf594e`
-Method: `approve()` the above asset on the Aave Collector contract to the Ahab address.
+- Asset: aEthLidoGHO `0x18eFE565A5373f430e2F809b97De30335B3ad96A`
+- Amount: 5,000,000
+- Spender: Ahab `0xAA2461f0f0A3dE5fEAF3273eAe16DEF861cf594e`
+- Method: `approve()` the above asset on the Aave Collector contract to the Ahab address.
 
 ### Token Budget
 
@@ -62,20 +62,24 @@ Reference: [MainnetSwapSteward forum post](https://governance.aave.com/t/arfc-st
 
 Refresh the existing aPlaUSDT0 Allowance down to 3M.
 
-Asset: aPlaUSDT0 `0x5D72a9d9A9510Cd8cBdBA12aC62593A58930a948`
-Amount: 3,000,000
-Spender: AFC `0x22740deBa78d5a0c24C58C740e3715ec29de1bFa`
-Method: `approve()` the above asset on the Aave Collector contract to the AFC address.
+- Asset: aPlaUSDT0 `0x5D72a9d9A9510Cd8cBdBA12aC62593A58930a948`
+- Amount: 3,000,000
+- Spender: AFC `0x22740deBa78d5a0c24C58C740e3715ec29de1bFa`
+- Method: `approve()` the above asset on the Aave Collector contract to the AFC address.
 
 ### Reimbursements
 
 Reimburse 11,655 aEthLidoGHO to TokenLogic for GhoRouter audit expenses incurred.
 
-Asset: aEthLidoGHO `0x18eFE565A5373f430e2F809b97De30335B3ad96A`
-Amount: 11,655
-Recipient: TokenLogic `0xAA088dfF3dcF619664094945028d44E779F19894`
+- Asset: aEthLidoGHO `0x18eFE565A5373f430e2F809b97De30335B3ad96A`
+- Amount: 11,655
+- Recipient: TokenLogic `0xAA088dfF3dcF619664094945028d44E779F19894`
 
-Reference: [sGHO Launch Configuration forum post](https://governance.aave.com/t/arfc-sgho-launch-configuration/24346).
+Reimburse Aave Labs for costs incurred in facilitating the audit of Aave Pro, Aave Kit, Aave App and general protocol services.
+
+- Asset: aEthLidoGHO `0x18eFE565A5373f430e2F809b97De30335B3ad96A`
+- Amount: 392,746.66
+- Spender: Aave Labs `0x1c037b3C22240048807cC9d7111be5d455F640bd`
 
 ### Bug Bounty
 

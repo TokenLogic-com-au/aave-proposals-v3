@@ -20,6 +20,9 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601 is IProposalGenericExe
   address public constant TOKENLOGIC = 0xAA088dfF3dcF619664094945028d44E779F19894;
   uint256 public constant TOKENLOGIC_A_GHO_PAYMENT_AMOUNT = 11_655 ether; // 11,655 aGHO, 18 decimals
 
+  address public constant AAVE_LABS = 0x1c037b3C22240048807cC9d7111be5d455F640bd;
+  uint256 public constant AAVE_LABS_A_GHO_PAYMENT_AMOUNT = 392_746.66 ether; // 392,746.66 aGHO, 18 decimals
+
   address public constant SECURITY_RESEARCHER = 0xcC7383b24631d8BfC8571dbF9c81d6D094688628;
   uint256 public constant SECURITY_RESEARCHER_USDC_PAYMENT_AMOUNT = 7_500e6; // 7,500 USDC, 6 decimals
 
@@ -109,6 +112,12 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601 is IProposalGenericExe
       IERC20(AaveV3EthereumLidoAssets.GHO_A_TOKEN),
       TOKENLOGIC,
       TOKENLOGIC_A_GHO_PAYMENT_AMOUNT
+    );
+
+    AaveV3Ethereum.COLLECTOR.transfer(
+      IERC20(AaveV3EthereumLidoAssets.GHO_A_TOKEN),
+      AAVE_LABS,
+      AAVE_LABS_A_GHO_PAYMENT_AMOUNT
     );
 
     // The USDC payments are made in underlying USDC, but the collector holds aUSDC.

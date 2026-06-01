@@ -126,13 +126,10 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601_Test is ProtocolV3Test
   /// ----------------------------------------------------------------------------
 
   function test_tokenLogicAGhoPayment() public {
-    address collector = address(AaveV3Ethereum.COLLECTOR);
     address aGho = AaveV3EthereumLidoAssets.GHO_A_TOKEN;
     uint256 amount = proposal.TOKENLOGIC_A_GHO_PAYMENT_AMOUNT();
 
     uint256 receiverBefore = IERC20(aGho).balanceOf(proposal.TOKENLOGIC());
-    // The aGHO payment is paid straight out of the collector's aGHO holdings.
-    uint256 collectorBefore = IERC20(aGho).balanceOf(collector);
 
     executePayload(vm, address(proposal));
 
@@ -143,23 +140,99 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601_Test is ProtocolV3Test
       1,
       'receiver balance mismatch'
     );
+  }
+
+  function test_aaveLabsAGhoPayment() public {
+    address aGho = AaveV3EthereumLidoAssets.GHO_A_TOKEN;
+    uint256 amount = proposal.AAVE_LABS_A_GHO_PAYMENT_AMOUNT();
+
+    uint256 receiverBefore = IERC20(aGho).balanceOf(proposal.AAVE_LABS());
+
+    executePayload(vm, address(proposal));
+
+    // aGHO is a rebasing aToken, allow 1 wei of scaled-balance rounding.
+    assertApproxEqAbs(
+      IERC20(aGho).balanceOf(proposal.AAVE_LABS()),
+      receiverBefore + amount,
+      1,
+      'receiver balance mismatch'
+    );
+  }
+
+  function test_collectorTotalAGhoPayment() public {
+    address collector = address(AaveV3Ethereum.COLLECTOR);
+    address aGho = AaveV3EthereumLidoAssets.GHO_A_TOKEN;
+    uint256 totalPayment = proposal.TOKENLOGIC_A_GHO_PAYMENT_AMOUNT() +
+      proposal.AAVE_LABS_A_GHO_PAYMENT_AMOUNT();
+
+    uint256 collectorBefore = IERC20(aGho).balanceOf(collector);
+
+    executePayload(vm, address(proposal));
+
     assertApproxEqAbs(
       IERC20(aGho).balanceOf(collector),
-      collectorBefore - amount,
+      collectorBefore - totalPayment,
       1,
       'collector aGHO did not drop by the payment amount'
     );
   }
 
   function test_securityResearcherUsdcPayment() public {
-    _assertUsdcPayment(
-      proposal.SECURITY_RESEARCHER(),
-      proposal.SECURITY_RESEARCHER_USDC_PAYMENT_AMOUNT()
+    address receiver = proposal.SECURITY_RESEARCHER();
+    uint256 amount = proposal.SECURITY_RESEARCHER_USDC_PAYMENT_AMOUNT();
+    address usdc = AaveV3EthereumAssets.USDC_UNDERLYING;
+
+    uint256 receiverBefore = IERC20(usdc).balanceOf(receiver);
+
+    executePayload(vm, address(proposal));
+
+    assertEq(
+      IERC20(usdc).balanceOf(receiver),
+      receiverBefore + amount,
+      'receiver balance mismatch'
     );
   }
 
   function test_immunefiUsdcPayment() public {
-    _assertUsdcPayment(proposal.IMMUNEFI(), proposal.IMMUNEFI_USDC_PAYMENT_AMOUNT());
+    address receiver = proposal.IMMUNEFI();
+    uint256 amount = proposal.IMMUNEFI_USDC_PAYMENT_AMOUNT();
+    address usdc = AaveV3EthereumAssets.USDC_UNDERLYING;
+
+    uint256 receiverBefore = IERC20(usdc).balanceOf(receiver);
+
+    executePayload(vm, address(proposal));
+
+    assertEq(
+      IERC20(usdc).balanceOf(receiver),
+      receiverBefore + amount,
+      'receiver balance mismatch'
+    );
+  }
+
+  function test_collectorTotalUsdcPayments() public {
+    address collector = address(AaveV3Ethereum.COLLECTOR);
+    address usdc = AaveV3EthereumAssets.USDC_UNDERLYING;
+    address aUsdc = AaveV3EthereumAssets.USDC_A_TOKEN;
+    uint256 totalWithdrawn = proposal.SECURITY_RESEARCHER_USDC_PAYMENT_AMOUNT() +
+      proposal.IMMUNEFI_USDC_PAYMENT_AMOUNT();
+
+    uint256 collectorUsdcBefore = IERC20(usdc).balanceOf(collector);
+    uint256 collectorAUsdcBefore = IERC20(aUsdc).balanceOf(collector);
+
+    executePayload(vm, address(proposal));
+
+    // aUSDC is a rebasing aToken, allow 2 wei of scaled-balance rounding.
+    assertApproxEqAbs(
+      IERC20(aUsdc).balanceOf(collector),
+      collectorAUsdcBefore - totalWithdrawn,
+      2,
+      'collector aUSDC did not drop by the withdrawn amount'
+    );
+    assertEq(
+      IERC20(usdc).balanceOf(collector),
+      collectorUsdcBefore,
+      'native USDC should pass through the collector unchanged'
+    );
   }
 
   /// ----------------------------------------------------------------------------
@@ -178,42 +251,5 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601_Test is ProtocolV3Test
     executePayload(vm, address(proposal));
 
     assertEq(IERC20(token).allowance(collector, spender), amount, 'allowance not set');
-  }
-
-  /**
-   * @dev Asserts a single USDC payment lands on `receiver`, and shows the collector's drop:
-   *      the USDC payments are funded by withdrawing aUSDC, so the collector's aUSDC drops
-   *      by the combined USDC payout while native USDC just passes through unchanged.
-   */
-  function _assertUsdcPayment(address receiver, uint256 amount) internal {
-    address collector = address(AaveV3Ethereum.COLLECTOR);
-    address usdc = AaveV3EthereumAssets.USDC_UNDERLYING;
-    address aUsdc = AaveV3EthereumAssets.USDC_A_TOKEN;
-    uint256 totalWithdrawn = proposal.SECURITY_RESEARCHER_USDC_PAYMENT_AMOUNT() +
-      proposal.IMMUNEFI_USDC_PAYMENT_AMOUNT();
-
-    uint256 receiverBefore = IERC20(usdc).balanceOf(receiver);
-    uint256 collectorUsdcBefore = IERC20(usdc).balanceOf(collector);
-    uint256 collectorAUsdcBefore = IERC20(aUsdc).balanceOf(collector);
-
-    executePayload(vm, address(proposal));
-
-    assertEq(
-      IERC20(usdc).balanceOf(receiver),
-      receiverBefore + amount,
-      'receiver balance mismatch'
-    );
-    // aUSDC is a rebasing aToken, allow 2 wei of scaled-balance rounding.
-    assertApproxEqAbs(
-      IERC20(aUsdc).balanceOf(collector),
-      collectorAUsdcBefore - totalWithdrawn,
-      2,
-      'collector aUSDC did not drop by the withdrawn amount'
-    );
-    assertEq(
-      IERC20(usdc).balanceOf(collector),
-      collectorUsdcBefore,
-      'native USDC should pass through the collector unchanged'
-    );
   }
 }
