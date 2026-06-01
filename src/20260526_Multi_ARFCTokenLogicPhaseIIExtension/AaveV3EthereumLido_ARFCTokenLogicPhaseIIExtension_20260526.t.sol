@@ -131,11 +131,16 @@ contract AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526_Test is Prot
     assertEq(balanceAfter, balanceBefore + 1);
   }
 
-  function test_ghoStreamEndBalance() public {
+  function test_ghoStreamFullRedeem() public {
     address receiver = proposal.TOKEN_LOGIC();
     uint256 nextStreamId = AaveV3EthereumLido.COLLECTOR.getNextStreamId();
 
     executePayload(vm, address(proposal));
+
+    uint256 allowanceAfterPayload = IERC20(AaveV3EthereumLidoAssets.GHO_A_TOKEN).allowance(
+      address(AaveV3EthereumLido.COLLECTOR),
+      receiver
+    );
 
     vm.warp(block.timestamp + proposal.STREAM_DURATION());
 
@@ -152,6 +157,14 @@ contract AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526_Test is Prot
       balanceAfter,
       balanceBefore + proposal.GHO_STREAM_AMOUNT(),
       MAX_DELTA_STREAM_BALANCE
+    );
+
+    assertEq(
+      IERC20(AaveV3EthereumLidoAssets.GHO_A_TOKEN).allowance(
+        address(AaveV3EthereumLido.COLLECTOR),
+        receiver
+      ),
+      allowanceAfterPayload
     );
   }
 }
