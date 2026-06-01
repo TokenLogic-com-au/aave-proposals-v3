@@ -103,5 +103,9 @@ contract AaveV3Ethereum_ARFCTokenLogicPhaseIIExtension_20260526_Test is Protocol
 
     uint256 balanceAfter = IERC20(AaveV3EthereumAssets.AAVE_UNDERLYING).balanceOf(receiver);
     assertEq(balanceAfter, balanceBefore + expectedAmount);
+
+    vm.warp(block.timestamp + 30 days);
+    vm.expectRevert(bytes('stream does not exist'));
+    reserve.balanceOf(nextStreamId, receiver);
   }
 }
