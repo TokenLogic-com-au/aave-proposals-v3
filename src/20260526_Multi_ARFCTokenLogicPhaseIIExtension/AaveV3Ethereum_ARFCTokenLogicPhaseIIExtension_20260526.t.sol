@@ -61,6 +61,7 @@ contract AaveV3Ethereum_ARFCTokenLogicPhaseIIExtension_20260526_Test is Protocol
     assertEq(tokenAddress, AaveV3EthereumAssets.AAVE_UNDERLYING);
     assertEq(stopTime - startTime, proposal.STREAM_DURATION());
     assertEq(deposit, expectedAmount);
+    assertEq(reserve.getNextStreamId(), nextStreamId + 1);
   }
 
   function test_aaveStreamPartialWithdraw() public {
