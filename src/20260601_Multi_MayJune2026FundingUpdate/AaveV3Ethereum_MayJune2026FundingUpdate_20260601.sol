@@ -7,6 +7,7 @@ import {AaveV3EthereumLidoAssets} from 'aave-address-book/AaveV3EthereumLido.sol
 import {MiscEthereum} from 'aave-address-book/MiscEthereum.sol';
 import {CollectorUtils} from 'aave-helpers/src/CollectorUtils.sol';
 import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGenericExecutor.sol';
+import {IWrappedTokenGatewayV3} from 'aave-v3-origin/contracts/helpers/interfaces/IWrappedTokenGatewayV3.sol';
 
 /**
  * @title May/June 2026 Funding Update
@@ -49,19 +50,15 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601 is IProposalGenericExe
 
   function _depositETH() internal {
     uint256 collectorEthBalance = address(AaveV3Ethereum.COLLECTOR).balance;
-    // Wrap ETH by sending it to WETH.
     AaveV3Ethereum.COLLECTOR.transfer(
       IERC20(AaveV3Ethereum.COLLECTOR.ETH_MOCK_ADDRESS()),
-      AaveV3EthereumAssets.WETH_UNDERLYING,
+      address(this),
       collectorEthBalance
     );
-    CollectorUtils.depositToV3(
-      AaveV3Ethereum.COLLECTOR,
-      CollectorUtils.IOInput({
-        pool: address(AaveV3Ethereum.POOL),
-        underlying: AaveV3EthereumAssets.WETH_UNDERLYING,
-        amount: collectorEthBalance
-      })
+    IWrappedTokenGatewayV3(AaveV3Ethereum.WETH_GATEWAY).depositETH{value: collectorEthBalance}(
+      address(AaveV3Ethereum.POOL),
+      address(AaveV3Ethereum.COLLECTOR),
+      0
     );
   }
 
