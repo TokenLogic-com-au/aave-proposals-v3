@@ -5,6 +5,7 @@ import 'forge-std/Test.sol';
 
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 import {AaveV3Plasma, AaveV3PlasmaAssets} from 'aave-address-book/AaveV3Plasma.sol';
+import {MiscPlasma} from 'aave-address-book/MiscPlasma.sol';
 import {ProtocolV3TestBase, ReserveConfig} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 
 import {AaveV3Plasma_MayJune2026FundingUpdate_20260601} from './AaveV3Plasma_MayJune2026FundingUpdate_20260601.sol';
@@ -34,9 +35,9 @@ contract AaveV3Plasma_MayJune2026FundingUpdate_20260601_Test is ProtocolV3TestBa
 
   function test_afcAUsdt0Allowance() public {
     address collector = address(AaveV3Plasma.COLLECTOR);
-    address spender = proposal.AFC();
+    address spender = MiscPlasma.AFC_SAFE;
     IERC20 token = IERC20(AaveV3PlasmaAssets.USDT0_A_TOKEN);
-    uint256 allowance = proposal.AFC_A_USDT0_ALLOWANCE();
+    uint256 allowance = proposal.AFC_SAFE_A_USDT0_ALLOWANCE();
 
     assertEq(token.allowance(collector, spender), 0, 'unexpected allowance before');
 
