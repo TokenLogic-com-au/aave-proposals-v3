@@ -7,11 +7,13 @@ import {AaveV3Ethereum, AaveV3EthereumAssets} from 'aave-address-book/AaveV3Ethe
 import {AaveV3EthereumLidoAssets} from 'aave-address-book/AaveV3EthereumLido.sol';
 import {MiscEthereum} from 'aave-address-book/MiscEthereum.sol';
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
-
 import {ProtocolV3TestBase, ReserveConfig} from 'aave-helpers/src/ProtocolV3TestBase.sol';
-import {AaveV3Ethereum_MayJune2026FundingUpdate_20260601} from './AaveV3Ethereum_MayJune2026FundingUpdate_20260601.sol';
+import {IWithGuardian} from 'solidity-utils/contracts/access-control/UpgradeableOwnableWithGuardian.sol';
 
 import {IMainnetSwapSteward} from 'src/interfaces/IMainnetSwapSteward.sol';
+import {IPoolExposureSteward} from 'src/interfaces/IPoolExposureSteward.sol';
+
+import {AaveV3Ethereum_MayJune2026FundingUpdate_20260601} from './AaveV3Ethereum_MayJune2026FundingUpdate_20260601.sol';
 
 /**
  * @dev Test for AaveV3Ethereum_MayJune2026FundingUpdate_20260601
@@ -23,6 +25,21 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601_Test is ProtocolV3Test
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('mainnet'), 25222489);
     proposal = new AaveV3Ethereum_MayJune2026FundingUpdate_20260601();
+
+    // Withdraw aUSDC to cover USDC payments.
+    // TODO: do this operation in mainnet, update block number, and remove this bit of the setup.
+    IPoolExposureSteward poolExposureSteward = IPoolExposureSteward(
+      AaveV3Ethereum.POOL_EXPOSURE_STEWARD
+    );
+    address guardian = IWithGuardian(address(poolExposureSteward)).guardian();
+    uint256 amount = proposal.SECURITY_RESEARCHER_USDC_PAYMENT_AMOUNT() +
+      proposal.IMMUNEFI_USDC_PAYMENT_AMOUNT();
+    vm.prank(guardian);
+    poolExposureSteward.withdrawV3(
+      address(AaveV3Ethereum.POOL),
+      AaveV3EthereumAssets.USDC_UNDERLYING,
+      amount
+    );
   }
 
   /**
@@ -218,26 +235,17 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601_Test is ProtocolV3Test
   function test_collectorTotalUsdcPayments() public {
     address collector = address(AaveV3Ethereum.COLLECTOR);
     address usdc = AaveV3EthereumAssets.USDC_UNDERLYING;
-    address aUsdc = AaveV3EthereumAssets.USDC_A_TOKEN;
     uint256 totalWithdrawn = proposal.SECURITY_RESEARCHER_USDC_PAYMENT_AMOUNT() +
       proposal.IMMUNEFI_USDC_PAYMENT_AMOUNT();
 
     uint256 collectorUsdcBefore = IERC20(usdc).balanceOf(collector);
-    uint256 collectorAUsdcBefore = IERC20(aUsdc).balanceOf(collector);
 
     executePayload(vm, address(proposal));
 
-    // aUSDC is a rebasing aToken, allow 2 wei of scaled-balance rounding.
-    assertApproxEqAbs(
-      IERC20(aUsdc).balanceOf(collector),
-      collectorAUsdcBefore - totalWithdrawn,
-      2,
-      'collector aUSDC did not drop by the withdrawn amount'
-    );
     assertEq(
       IERC20(usdc).balanceOf(collector),
-      collectorUsdcBefore,
-      'native USDC should pass through the collector unchanged'
+      collectorUsdcBefore - totalWithdrawn,
+      'USDC balance mismatch: the collector should have transferred out USDC payments'
     );
   }
 

@@ -119,18 +119,8 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601 is IProposalGenericExe
       AAVE_LABS_A_GHO_PAYMENT_AMOUNT
     );
 
-    // The USDC payments are made in underlying USDC, but the collector holds aUSDC.
-    // Withdraw the required amount from the V3 pool back to the collector first.
-    CollectorUtils.withdrawFromV3(
-      AaveV3Ethereum.COLLECTOR,
-      CollectorUtils.IOInput({
-        pool: address(AaveV3Ethereum.POOL),
-        underlying: AaveV3EthereumAssets.USDC_UNDERLYING,
-        amount: SECURITY_RESEARCHER_USDC_PAYMENT_AMOUNT + IMMUNEFI_USDC_PAYMENT_AMOUNT
-      }),
-      address(AaveV3Ethereum.COLLECTOR)
-    );
-
+    // The collector holds aUSDC, but it shall be withdrawn to USDC using the `PoolExposureSteward`
+    // before executing the proposal.
     AaveV3Ethereum.COLLECTOR.transfer(
       IERC20(AaveV3EthereumAssets.USDC_UNDERLYING),
       SECURITY_RESEARCHER,
