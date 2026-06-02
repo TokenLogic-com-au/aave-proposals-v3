@@ -86,7 +86,7 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601_Test is ProtocolV3Test
   /// Approvals
   /// ----------------------------------------------------------------------------
 
-  function test_meritAhabAGhoAllowance() public {
+  function test_ahabAGhoAllowance() public {
     IERC20 token = IERC20(AaveV3EthereumLidoAssets.GHO_A_TOKEN);
     address spender = MiscEthereum.AHAB_SAFE;
     address collector = address(AaveV3Ethereum.COLLECTOR);
@@ -264,14 +264,6 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601_Test is ProtocolV3Test
     );
   }
 
-  /// ----------------------------------------------------------------------------
-  /// Helpers
-  /// ----------------------------------------------------------------------------
-
-  /**
-   * @dev Asserts the spender has no allowance before the proposal and exactly `amount`
-   *      of `token` from the collector afterwards.
-   */
   function _assertStewardTokenBudgetIncrease(address token, uint256 amount) internal {
     IMainnetSwapSteward steward = IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD);
 

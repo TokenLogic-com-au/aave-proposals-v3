@@ -5,7 +5,6 @@ import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 import {AaveV3Ethereum, AaveV3EthereumAssets} from 'aave-address-book/AaveV3Ethereum.sol';
 import {AaveV3EthereumLidoAssets} from 'aave-address-book/AaveV3EthereumLido.sol';
 import {MiscEthereum} from 'aave-address-book/MiscEthereum.sol';
-import {CollectorUtils} from 'aave-helpers/src/CollectorUtils.sol';
 import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGenericExecutor.sol';
 import {IWrappedTokenGatewayV3} from 'aave-v3-origin/contracts/helpers/interfaces/IWrappedTokenGatewayV3.sol';
 
@@ -39,8 +38,8 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601 is IProposalGenericExe
   uint256 public constant SWAP_STEWARD_WETH_ALLOWANCE = 5_000 ether;
 
   uint256 public constant SWAP_STEWARD_USDT_ALLOWANCE = 10_000_000e6; // 10M USDT, 6 decimals
-  uint256 public constant SWAP_STEWARD_USDC_ALLOWANCE = 10_000_000e6; // 10M USDC6 decimals
-  uint256 public constant SWAP_STEWARD_USDe_ALLOWANCE = 10_000_000 ether; // 10M USDe,18 decimals
+  uint256 public constant SWAP_STEWARD_USDC_ALLOWANCE = 10_000_000e6; // 10M USDC, 6 decimals
+  uint256 public constant SWAP_STEWARD_USDe_ALLOWANCE = 10_000_000 ether; // 10M USDe, 18 decimals
   uint256 public constant SWAP_STEWARD_USDS_ALLOWANCE = 10_000_000 ether; // 10M USDS, 18 decimals
   uint256 public constant SWAP_STEWARD_DAI_ALLOWANCE = 5_000_000 ether; // 5M DAI, 18 decimals
 
@@ -65,7 +64,6 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601 is IProposalGenericExe
   }
 
   function _approvals() internal {
-    // Merit aEthLidoGHO Approval
     AaveV3Ethereum.COLLECTOR.approve(
       IERC20(AaveV3EthereumLidoAssets.GHO_A_TOKEN),
       MiscEthereum.AHAB_SAFE,
