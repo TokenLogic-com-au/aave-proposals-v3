@@ -9,6 +9,8 @@ import {CollectorUtils} from 'aave-helpers/src/CollectorUtils.sol';
 import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGenericExecutor.sol';
 import {IWrappedTokenGatewayV3} from 'aave-v3-origin/contracts/helpers/interfaces/IWrappedTokenGatewayV3.sol';
 
+import {IMainnetSwapSteward} from 'src/interfaces/IMainnetSwapSteward.sol';
+
 /**
  * @title May/June 2026 Funding Update
  * @author TokenLogic
@@ -70,40 +72,36 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601 is IProposalGenericExe
       AHAB_SAFE_A_GHO_ALLOWANCE
     );
 
+    IMainnetSwapSteward swapSteward = IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD);
+
     // Replenish Mainnet Swap Steward allowances
-    AaveV3Ethereum.COLLECTOR.approve(
-      IERC20(AaveV3EthereumAssets.WETH_UNDERLYING),
-      AaveV3Ethereum.COLLECTOR_SWAP_STEWARD,
+    swapSteward.increaseTokenBudget(
+      AaveV3EthereumAssets.WETH_UNDERLYING,
       SWAP_STEWARD_WETH_ALLOWANCE
     );
 
-    AaveV3Ethereum.COLLECTOR.approve(
-      IERC20(AaveV3EthereumAssets.USDT_UNDERLYING),
-      AaveV3Ethereum.COLLECTOR_SWAP_STEWARD,
+    swapSteward.increaseTokenBudget(
+      AaveV3EthereumAssets.USDT_UNDERLYING,
       SWAP_STEWARD_USDT_ALLOWANCE
     );
 
-    AaveV3Ethereum.COLLECTOR.approve(
-      IERC20(AaveV3EthereumAssets.USDC_UNDERLYING),
-      AaveV3Ethereum.COLLECTOR_SWAP_STEWARD,
+    swapSteward.increaseTokenBudget(
+      AaveV3EthereumAssets.USDC_UNDERLYING,
       SWAP_STEWARD_USDC_ALLOWANCE
     );
 
-    AaveV3Ethereum.COLLECTOR.approve(
-      IERC20(AaveV3EthereumAssets.USDe_UNDERLYING),
-      AaveV3Ethereum.COLLECTOR_SWAP_STEWARD,
+    swapSteward.increaseTokenBudget(
+      AaveV3EthereumAssets.USDe_UNDERLYING,
       SWAP_STEWARD_USDe_ALLOWANCE
     );
 
-    AaveV3Ethereum.COLLECTOR.approve(
-      IERC20(AaveV3EthereumAssets.USDS_UNDERLYING),
-      AaveV3Ethereum.COLLECTOR_SWAP_STEWARD,
+    swapSteward.increaseTokenBudget(
+      AaveV3EthereumAssets.USDS_UNDERLYING,
       SWAP_STEWARD_USDS_ALLOWANCE
     );
 
-    AaveV3Ethereum.COLLECTOR.approve(
-      IERC20(AaveV3EthereumAssets.DAI_UNDERLYING),
-      AaveV3Ethereum.COLLECTOR_SWAP_STEWARD,
+    swapSteward.increaseTokenBudget(
+      AaveV3EthereumAssets.DAI_UNDERLYING,
       SWAP_STEWARD_DAI_ALLOWANCE
     );
   }

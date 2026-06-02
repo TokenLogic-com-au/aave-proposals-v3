@@ -11,6 +11,8 @@ import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 import {ProtocolV3TestBase, ReserveConfig} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {AaveV3Ethereum_MayJune2026FundingUpdate_20260601} from './AaveV3Ethereum_MayJune2026FundingUpdate_20260601.sol';
 
+import {IMainnetSwapSteward} from 'src/interfaces/IMainnetSwapSteward.sol';
+
 /**
  * @dev Test for AaveV3Ethereum_MayJune2026FundingUpdate_20260601
  * command: FOUNDRY_PROFILE=test forge test --match-path=src/20260601_Multi_MayJune2026FundingUpdate/AaveV3Ethereum_MayJune2026FundingUpdate_20260601.t.sol -vv
@@ -68,57 +70,59 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601_Test is ProtocolV3Test
   /// ----------------------------------------------------------------------------
 
   function test_meritAhabAGhoAllowance() public {
-    _assertAllowance(
-      AaveV3EthereumLidoAssets.GHO_A_TOKEN,
-      MiscEthereum.AHAB_SAFE,
-      proposal.AHAB_SAFE_A_GHO_ALLOWANCE()
+    IERC20 token = IERC20(AaveV3EthereumLidoAssets.GHO_A_TOKEN);
+    address spender = MiscEthereum.AHAB_SAFE;
+    address collector = address(AaveV3Ethereum.COLLECTOR);
+
+    assertEq(token.allowance(collector, spender), 0, 'unexpected allowance before');
+
+    executePayload(vm, address(proposal));
+
+    assertEq(
+      token.allowance(collector, spender),
+      proposal.AHAB_SAFE_A_GHO_ALLOWANCE(),
+      'allowance not set'
     );
   }
 
-  function test_swapStewardWethAllowance() public {
-    _assertAllowance(
+  function test_swapStewardWethTokenBudgetIncrease() public {
+    _assertStewardTokenBudgetIncrease(
       AaveV3EthereumAssets.WETH_UNDERLYING,
-      AaveV3Ethereum.COLLECTOR_SWAP_STEWARD,
       proposal.SWAP_STEWARD_WETH_ALLOWANCE()
     );
   }
 
-  function test_swapStewardUsdtAllowance() public {
-    _assertAllowance(
+  function test_swapStewardUsdtTokenBudgetIncrease() public {
+    _assertStewardTokenBudgetIncrease(
       AaveV3EthereumAssets.USDT_UNDERLYING,
-      AaveV3Ethereum.COLLECTOR_SWAP_STEWARD,
       proposal.SWAP_STEWARD_USDT_ALLOWANCE()
     );
   }
 
-  function test_swapStewardUsdcAllowance() public {
-    _assertAllowance(
+  function test_swapStewardUsdcTokenBudgetIncrease() public {
+    _assertStewardTokenBudgetIncrease(
       AaveV3EthereumAssets.USDC_UNDERLYING,
-      AaveV3Ethereum.COLLECTOR_SWAP_STEWARD,
       proposal.SWAP_STEWARD_USDC_ALLOWANCE()
     );
   }
 
-  function test_swapStewardUsdeAllowance() public {
-    _assertAllowance(
+  function test_swapStewardUsdeTokenBudgetIncrease() public {
+    _assertStewardTokenBudgetIncrease(
       AaveV3EthereumAssets.USDe_UNDERLYING,
-      AaveV3Ethereum.COLLECTOR_SWAP_STEWARD,
       proposal.SWAP_STEWARD_USDe_ALLOWANCE()
     );
   }
 
-  function test_swapStewardUsdsAllowance() public {
-    _assertAllowance(
+  function test_swapStewardUsdsTokenBudgetIncrease() public {
+    _assertStewardTokenBudgetIncrease(
       AaveV3EthereumAssets.USDS_UNDERLYING,
-      AaveV3Ethereum.COLLECTOR_SWAP_STEWARD,
       proposal.SWAP_STEWARD_USDS_ALLOWANCE()
     );
   }
 
-  function test_swapStewardDaiAllowance() public {
-    _assertAllowance(
+  function test_swapStewardDaiTokenBudgetIncrease() public {
+    _assertStewardTokenBudgetIncrease(
       AaveV3EthereumAssets.DAI_UNDERLYING,
-      AaveV3Ethereum.COLLECTOR_SWAP_STEWARD,
       proposal.SWAP_STEWARD_DAI_ALLOWANCE()
     );
   }
@@ -245,13 +249,13 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601_Test is ProtocolV3Test
    * @dev Asserts the spender has no allowance before the proposal and exactly `amount`
    *      of `token` from the collector afterwards.
    */
-  function _assertAllowance(address token, address spender, uint256 amount) internal {
-    address collector = address(AaveV3Ethereum.COLLECTOR);
+  function _assertStewardTokenBudgetIncrease(address token, uint256 amount) internal {
+    IMainnetSwapSteward steward = IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD);
 
-    assertEq(IERC20(token).allowance(collector, spender), 0, 'unexpected allowance before');
+    uint256 tokenBudgetBefore = steward.tokenBudget(token);
 
     executePayload(vm, address(proposal));
 
-    assertEq(IERC20(token).allowance(collector, spender), amount, 'allowance not set');
+    assertEq(steward.tokenBudget(token), tokenBudgetBefore + amount, 'budget not increased');
   }
 }
