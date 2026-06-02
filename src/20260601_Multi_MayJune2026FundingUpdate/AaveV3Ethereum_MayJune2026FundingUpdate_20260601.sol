@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 import {AaveV3Ethereum, AaveV3EthereumAssets} from 'aave-address-book/AaveV3Ethereum.sol';
 import {AaveV3EthereumLidoAssets} from 'aave-address-book/AaveV3EthereumLido.sol';
+import {MiscEthereum} from 'aave-address-book/MiscEthereum.sol';
 import {CollectorUtils} from 'aave-helpers/src/CollectorUtils.sol';
 import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGenericExecutor.sol';
 
@@ -14,9 +15,7 @@ import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGen
  * - Discussion: https://governance.aave.com/t/direct-to-aip-may-june-2026-funding-update/25000
  */
 contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601 is IProposalGenericExecutor {
-  // https://etherscan.io/address/0xAA2461f0f0A3dE5fEAF3273eAe16DEF861cf594e
-  address public constant MERIT_AHAB = 0xAA2461f0f0A3dE5fEAF3273eAe16DEF861cf594e;
-  uint256 public constant MERIT_AHAB_A_GHO_ALLOWANCE = 5_000_000 ether; // 5M aGHO, 18 decimals
+  uint256 public constant AHAB_SAFE_A_GHO_ALLOWANCE = 5_000_000 ether; // 5M aGHO, 18 decimals
 
   // https://etherscan.io/address/0xAA088dfF3dcF619664094945028d44E779F19894
   address public constant TOKENLOGIC = 0xAA088dfF3dcF619664094945028d44E779F19894;
@@ -70,8 +69,8 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601 is IProposalGenericExe
     // Merit aEthLidoGHO Approval
     AaveV3Ethereum.COLLECTOR.approve(
       IERC20(AaveV3EthereumLidoAssets.GHO_A_TOKEN),
-      MERIT_AHAB,
-      MERIT_AHAB_A_GHO_ALLOWANCE
+      MiscEthereum.AHAB_SAFE,
+      AHAB_SAFE_A_GHO_ALLOWANCE
     );
 
     // Replenish Mainnet Swap Steward allowances

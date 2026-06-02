@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import 'forge-std/Test.sol';
+
 import {AaveV3Ethereum, AaveV3EthereumAssets} from 'aave-address-book/AaveV3Ethereum.sol';
 import {AaveV3EthereumLidoAssets} from 'aave-address-book/AaveV3EthereumLido.sol';
+import {MiscEthereum} from 'aave-address-book/MiscEthereum.sol';
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 
-import 'forge-std/Test.sol';
 import {ProtocolV3TestBase, ReserveConfig} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {AaveV3Ethereum_MayJune2026FundingUpdate_20260601} from './AaveV3Ethereum_MayJune2026FundingUpdate_20260601.sol';
 
@@ -68,8 +70,8 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601_Test is ProtocolV3Test
   function test_meritAhabAGhoAllowance() public {
     _assertAllowance(
       AaveV3EthereumLidoAssets.GHO_A_TOKEN,
-      proposal.MERIT_AHAB(),
-      proposal.MERIT_AHAB_A_GHO_ALLOWANCE()
+      MiscEthereum.AHAB_SAFE,
+      proposal.AHAB_SAFE_A_GHO_ALLOWANCE()
     );
   }
 
