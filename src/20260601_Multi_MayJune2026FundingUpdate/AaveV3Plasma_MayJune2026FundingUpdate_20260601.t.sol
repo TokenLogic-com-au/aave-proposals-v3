@@ -37,14 +37,32 @@ contract AaveV3Plasma_MayJune2026FundingUpdate_20260601_Test is ProtocolV3TestBa
    */
   function test_afcAUsdt0Allowance() public {
     address collector = address(AaveV3Plasma.COLLECTOR);
-    address afc = proposal.AFC();
-    address token = AaveV3PlasmaAssets.USDT0_A_TOKEN;
-    uint256 amount = proposal.AFC_A_USDT0_ALLOWANCE();
+    address spender = proposal.AFC();
+    IERC20 token = IERC20(AaveV3PlasmaAssets.USDT0_A_TOKEN);
+    uint256 allowance = proposal.AFC_A_USDT0_ALLOWANCE();
 
-    assertEq(IERC20(token).allowance(collector, afc), 0, 'unexpected allowance before');
+    assertEq(token.allowance(collector, spender), 0, 'unexpected allowance before');
 
     executePayload(vm, address(proposal));
 
-    assertEq(IERC20(token).allowance(collector, afc), amount, 'allowance not set');
+    assertEq(token.allowance(collector, spender), allowance, 'allowance not set');
+
+    // Verify that funds can be pulled by the spender now.
+    // Using a partial transfer because the collector does not have enough funds at the current block.
+    uint256 spenderBalanceBefore = token.balanceOf(spender);
+    uint256 transferAmount = allowance / 100;
+    vm.prank(spender);
+    token.transferFrom(collector, spender, transferAmount);
+
+    assertEq(
+      token.allowance(collector, spender),
+      allowance - transferAmount,
+      'allowance did not decrease'
+    );
+    assertEq(
+      token.balanceOf(spender),
+      spenderBalanceBefore + transferAmount,
+      'spender did not receive tokens'
+    );
   }
 }

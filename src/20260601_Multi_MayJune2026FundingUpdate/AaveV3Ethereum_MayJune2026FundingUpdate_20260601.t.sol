@@ -90,15 +90,30 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601_Test is ProtocolV3Test
     IERC20 token = IERC20(AaveV3EthereumLidoAssets.GHO_A_TOKEN);
     address spender = MiscEthereum.AHAB_SAFE;
     address collector = address(AaveV3Ethereum.COLLECTOR);
+    uint256 allowance = proposal.AHAB_SAFE_A_GHO_ALLOWANCE();
 
     assertEq(token.allowance(collector, spender), 0, 'unexpected allowance before');
 
     executePayload(vm, address(proposal));
 
+    assertEq(token.allowance(collector, spender), allowance, 'allowance not set');
+
+    // Verify that funds can be pulled by the spender now.
+    // Using a partial transfer because the collector does not have enough funds at the current block.
+    uint256 spenderBalanceBefore = token.balanceOf(spender);
+    uint256 transferAmount = allowance / 2;
+    vm.prank(spender);
+    token.transferFrom(collector, spender, transferAmount);
+
     assertEq(
       token.allowance(collector, spender),
-      proposal.AHAB_SAFE_A_GHO_ALLOWANCE(),
-      'allowance not set'
+      allowance - transferAmount,
+      'allowance did not decrease'
+    );
+    assertEq(
+      token.balanceOf(spender),
+      spenderBalanceBefore + transferAmount,
+      'spender did not receive tokens'
     );
   }
 
