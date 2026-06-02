@@ -18,7 +18,7 @@ This publication presents the May/June Funding Update, consisting of the followi
 
 This publication addresses near-term operational requirements and refreshes the Allowances that support the buyback and runway initiatives.
 
-The MainnetSwapSteward continues executing a rolling GHO acquisition strategy to maintain adequate runway and support AAVE buybacks. 3.7M GHO was acquired during May 2026 and a further 4M GHO during June 2026, to be deposited into the Prime instance. These swaps are executed through the MainnetSwapSteward and are not part of this proposal's payload; the proposal only replenishes the Allowances that fund them.
+The MainnetSwapSteward continues executing a rolling GHO acquisition strategy to maintain adequate runway and support AAVE buybacks. 3.7M GHO was acquired during May 2026, and 4M GHO shall be acquired during June 2026, to be deposited into the Prime instance. These swaps are executed through the MainnetSwapSteward and are not part of this proposal's payload; the proposal only replenishes the Allowances that fund them.
 
 TokenLogic is reimbursed for costs incurred in facilitating the audit of the GhoRouter PR intended to streamline the UX for moving from USDC or USDT to GHO or sGHO.
 
@@ -29,8 +29,6 @@ This update also includes a bug bounty payment to a security researcher, along w
 ### Runway
 
 Deposit idle ETH on the Collector into the Aave v3 Core instance.
-
-Wrap the Collector's native ETH to wETH and supply it to the Aave v3 Core instance.
 
 ### Tydro Incentive Campaign
 
@@ -54,7 +52,7 @@ To support the acquisition of GHO, replenish the Allowances on the MainnetSwapSt
 | USDS  | 10M    |
 | DAI   | 5M     |
 
-Method: `approve()` the above assets on the Aave Collector contract to the MainnetSwapSteward address.
+Method: `increaseTokenBudget(token, amount)` the above assets on the MainnetSwapSteward address.
 
 Reference: [MainnetSwapSteward forum post](https://governance.aave.com/t/arfc-steward-deployment-mainnetswapsteward-and-rewardssteward/23070).
 
