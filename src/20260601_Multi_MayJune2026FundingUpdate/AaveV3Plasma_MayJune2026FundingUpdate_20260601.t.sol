@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {AaveV3Plasma, AaveV3PlasmaAssets} from 'aave-address-book/AaveV3Plasma.sol';
-import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
-
 import 'forge-std/Test.sol';
+
+import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
+import {AaveV3Plasma, AaveV3PlasmaAssets} from 'aave-address-book/AaveV3Plasma.sol';
 import {ProtocolV3TestBase, ReserveConfig} from 'aave-helpers/src/ProtocolV3TestBase.sol';
+
 import {AaveV3Plasma_MayJune2026FundingUpdate_20260601} from './AaveV3Plasma_MayJune2026FundingUpdate_20260601.sol';
 
 /**
@@ -31,10 +32,6 @@ contract AaveV3Plasma_MayJune2026FundingUpdate_20260601_Test is ProtocolV3TestBa
     );
   }
 
-  /**
-   * @dev The AFC has no aUSDT0 allowance before the proposal and exactly the configured
-   *      allowance from the collector afterwards.
-   */
   function test_afcAUsdt0Allowance() public {
     address collector = address(AaveV3Plasma.COLLECTOR);
     address spender = proposal.AFC();
