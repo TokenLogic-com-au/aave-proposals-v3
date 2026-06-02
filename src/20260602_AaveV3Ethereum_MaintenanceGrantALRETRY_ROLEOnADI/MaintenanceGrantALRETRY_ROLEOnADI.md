@@ -28,8 +28,8 @@ The role will be used by Aave Labs as a technical service provider to support re
 
 ## References
 
-- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260602_AaveV3Ethereum_MaintenanceGrantALRETRY_ROLEOnADI/AaveV3Ethereum_MaintenanceGrantALRETRY_ROLEOnADI_20260602.sol)
-- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260602_AaveV3Ethereum_MaintenanceGrantALRETRY_ROLEOnADI/AaveV3Ethereum_MaintenanceGrantALRETRY_ROLEOnADI_20260602.t.sol)
+- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/054088a94887aace379859dd7e4cdf985e1dddbf/src/20260602_AaveV3Ethereum_MaintenanceGrantALRETRY_ROLEOnADI/AaveV3Ethereum_MaintenanceGrantALRETRY_ROLEOnADI_20260602.sol)
+- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/054088a94887aace379859dd7e4cdf985e1dddbf/src/20260602_AaveV3Ethereum_MaintenanceGrantALRETRY_ROLEOnADI/AaveV3Ethereum_MaintenanceGrantALRETRY_ROLEOnADI_20260602.t.sol)
 - [Discussion](https://governance.aave.com/t/direct-to-aip-grant-aave-labs-retry-role-on-a-di/25020)
 
 ## Copyright
