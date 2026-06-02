@@ -14,18 +14,23 @@ import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGen
  * - Discussion: https://governance.aave.com/t/direct-to-aip-may-june-2026-funding-update/25000
  */
 contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601 is IProposalGenericExecutor {
+  // https://etherscan.io/address/0xAA2461f0f0A3dE5fEAF3273eAe16DEF861cf594e
   address public constant MERIT_AHAB = 0xAA2461f0f0A3dE5fEAF3273eAe16DEF861cf594e;
   uint256 public constant MERIT_AHAB_A_GHO_ALLOWANCE = 5_000_000 ether; // 5M aGHO, 18 decimals
 
+  // https://etherscan.io/address/0xAA088dfF3dcF619664094945028d44E779F19894
   address public constant TOKENLOGIC = 0xAA088dfF3dcF619664094945028d44E779F19894;
   uint256 public constant TOKENLOGIC_A_GHO_PAYMENT_AMOUNT = 11_655 ether; // 11,655 aGHO, 18 decimals
 
+  // https://etherscan.io/address/0x1c037b3C22240048807cC9d7111be5d455F640bd
   address public constant AAVE_LABS = 0x1c037b3C22240048807cC9d7111be5d455F640bd;
   uint256 public constant AAVE_LABS_A_GHO_PAYMENT_AMOUNT = 392_746.66 ether; // 392,746.66 aGHO, 18 decimals
 
+  // https://etherscan.io/address/0xcC7383b24631d8BfC8571dbF9c81d6D094688628
   address public constant SECURITY_RESEARCHER = 0xcC7383b24631d8BfC8571dbF9c81d6D094688628;
   uint256 public constant SECURITY_RESEARCHER_USDC_PAYMENT_AMOUNT = 7_500e6; // 7,500 USDC, 6 decimals
 
+  // https://etherscan.io/address/0x7119f398b6C06095c6E8964C1f58e7C1BAa79E18
   address public constant IMMUNEFI = 0x7119f398b6C06095c6E8964C1f58e7C1BAa79E18;
   uint256 public constant IMMUNEFI_USDC_PAYMENT_AMOUNT = 750e6; // 750 USDC, 6 decimals
 
