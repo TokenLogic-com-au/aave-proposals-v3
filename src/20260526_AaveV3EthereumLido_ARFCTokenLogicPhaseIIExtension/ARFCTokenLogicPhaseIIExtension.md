@@ -50,8 +50,8 @@ The payload performs the following actions on Ethereum mainnet:
 
 ## References
 
-- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260526_Multi_ARFCTokenLogicPhaseIIExtension/AaveV3Ethereum_ARFCTokenLogicPhaseIIExtension_20260526.sol), [AaveV3EthereumLido](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260526_Multi_ARFCTokenLogicPhaseIIExtension/AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526.sol)
-- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260526_Multi_ARFCTokenLogicPhaseIIExtension/AaveV3Ethereum_ARFCTokenLogicPhaseIIExtension_20260526.t.sol), [AaveV3EthereumLido](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260526_Multi_ARFCTokenLogicPhaseIIExtension/AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526.t.sol)
+- Implementation: [AaveV3EthereumLido](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260526_AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension/AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526.sol)
+- Tests: [AaveV3EthereumLido](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260526_AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension/AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526.t.sol)
 - [Snapshot](https://snapshot.org/#/s:aavedao.eth/proposal/0x6c2814dc5da68698105894f1c450c80aa2296243ff737843cf9e869eecd8fa69)
 - [Discussion](https://governance.aave.com/t/arfc-tokenlogic-phase-ii-extension/24846)
 

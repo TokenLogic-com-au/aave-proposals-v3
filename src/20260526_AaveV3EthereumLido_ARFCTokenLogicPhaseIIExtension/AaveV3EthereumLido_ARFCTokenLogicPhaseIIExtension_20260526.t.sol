@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import {AaveV3EthereumAssets} from 'aave-address-book/AaveV3Ethereum.sol';
 import {AaveV3EthereumLido, AaveV3EthereumLidoAssets} from 'aave-address-book/AaveV3EthereumLido.sol';
+import {MiscEthereum} from 'aave-address-book/MiscEthereum.sol';
+import {IStreamable} from 'aave-address-book/common/IStreamable.sol';
 import {ICollector} from 'aave-v3-origin/contracts/treasury/ICollector.sol';
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 
@@ -11,7 +14,7 @@ import {AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526} from './Aave
 
 /**
  * @dev Test for AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526
- * command: FOUNDRY_PROFILE=test forge test --match-path=src/20260526_Multi_ARFCTokenLogicPhaseIIExtension/AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526.t.sol -vv
+ * command: FOUNDRY_PROFILE=test forge test --match-path=src/20260526_AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension/AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526.t.sol -vv
  */
 contract AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526_Test is ProtocolV3TestBase {
   uint256 internal constant MAX_DELTA_STREAM_BALANCE = 0.00001e18; // 0.001%
@@ -166,5 +169,81 @@ contract AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526_Test is Prot
       ),
       allowanceAfterPayload
     );
+  }
+
+  function test_aaveStreamCreated() public {
+    IStreamable reserve = IStreamable(MiscEthereum.ECOSYSTEM_RESERVE);
+    address receiver = proposal.TOKEN_LOGIC();
+    uint256 nextStreamId = reserve.getNextStreamId();
+    uint256 expectedAmount = (proposal.AAVE_STREAM_AMOUNT() / proposal.STREAM_DURATION()) *
+      proposal.STREAM_DURATION();
+
+    vm.expectRevert(bytes('stream does not exist'));
+    reserve.getStream(nextStreamId);
+
+    executePayload(vm, address(proposal));
+
+    (
+      address sender,
+      address streamReceiver,
+      uint256 deposit,
+      address tokenAddress,
+      uint256 startTime,
+      uint256 stopTime,
+      ,
+
+    ) = reserve.getStream(nextStreamId);
+
+    assertEq(sender, MiscEthereum.ECOSYSTEM_RESERVE);
+    assertEq(streamReceiver, receiver);
+    assertEq(tokenAddress, AaveV3EthereumAssets.AAVE_UNDERLYING);
+    assertEq(stopTime - startTime, proposal.STREAM_DURATION());
+    assertEq(deposit, expectedAmount);
+    assertEq(reserve.getNextStreamId(), nextStreamId + 1);
+  }
+
+  function test_aaveStreamPartialWithdraw() public {
+    IStreamable reserve = IStreamable(MiscEthereum.ECOSYSTEM_RESERVE);
+    address receiver = proposal.TOKEN_LOGIC();
+    uint256 nextStreamId = reserve.getNextStreamId();
+
+    executePayload(vm, address(proposal));
+
+    vm.warp(block.timestamp + 1 days);
+
+    uint256 balanceBefore = IERC20(AaveV3EthereumAssets.AAVE_UNDERLYING).balanceOf(receiver);
+
+    vm.prank(receiver);
+    reserve.withdrawFromStream(nextStreamId, 1);
+
+    uint256 balanceAfter = IERC20(AaveV3EthereumAssets.AAVE_UNDERLYING).balanceOf(receiver);
+    assertEq(balanceAfter, balanceBefore + 1);
+  }
+
+  function test_aaveStreamEndBalance() public {
+    IStreamable reserve = IStreamable(MiscEthereum.ECOSYSTEM_RESERVE);
+    address receiver = proposal.TOKEN_LOGIC();
+    uint256 nextStreamId = reserve.getNextStreamId();
+    uint256 expectedAmount = (proposal.AAVE_STREAM_AMOUNT() / proposal.STREAM_DURATION()) *
+      proposal.STREAM_DURATION();
+
+    executePayload(vm, address(proposal));
+
+    vm.warp(block.timestamp + proposal.STREAM_DURATION());
+
+    uint256 streamable = reserve.balanceOf(nextStreamId, receiver);
+    assertEq(streamable, expectedAmount);
+
+    uint256 balanceBefore = IERC20(AaveV3EthereumAssets.AAVE_UNDERLYING).balanceOf(receiver);
+
+    vm.prank(receiver);
+    reserve.withdrawFromStream(nextStreamId, streamable);
+
+    uint256 balanceAfter = IERC20(AaveV3EthereumAssets.AAVE_UNDERLYING).balanceOf(receiver);
+    assertEq(balanceAfter, balanceBefore + expectedAmount);
+
+    vm.warp(block.timestamp + 30 days);
+    vm.expectRevert(bytes('stream does not exist'));
+    reserve.balanceOf(nextStreamId, receiver);
   }
 }

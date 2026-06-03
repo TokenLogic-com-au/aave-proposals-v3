@@ -1,7 +1,7 @@
 import {ConfigFile} from '../../generator/types';
 export const config: ConfigFile = {
   rootOptions: {
-    pools: ['AaveV3Ethereum', 'AaveV3EthereumLido'],
+    pools: ['AaveV3EthereumLido'],
     title: '[ARFC] TokenLogic Phase II - Extension',
     shortName: 'ARFCTokenLogicPhaseIIExtension',
     date: '20260526',
@@ -12,7 +12,6 @@ export const config: ConfigFile = {
     votingNetwork: 'AVALANCHE',
   },
   poolOptions: {
-    AaveV3Ethereum: {configs: {OTHERS: {}}, cache: {blockNumber: 25177100}},
     AaveV3EthereumLido: {configs: {OTHERS: {}}, cache: {blockNumber: 25177110}},
   },
 };
