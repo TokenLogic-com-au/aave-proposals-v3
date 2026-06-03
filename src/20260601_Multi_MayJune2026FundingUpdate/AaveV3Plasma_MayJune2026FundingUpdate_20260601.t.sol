@@ -6,7 +6,7 @@ import 'forge-std/Test.sol';
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 import {AaveV3Plasma, AaveV3PlasmaAssets} from 'aave-address-book/AaveV3Plasma.sol';
 import {MiscPlasma} from 'aave-address-book/MiscPlasma.sol';
-import {ProtocolV3TestBase, ReserveConfig} from 'aave-helpers/src/ProtocolV3TestBase.sol';
+import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 
 import {AaveV3Plasma_MayJune2026FundingUpdate_20260601} from './AaveV3Plasma_MayJune2026FundingUpdate_20260601.sol';
 
