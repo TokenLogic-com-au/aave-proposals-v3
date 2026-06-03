@@ -221,9 +221,12 @@ abstract contract WETHLTVRestorationBaseTest is ProtocolV3TestBase {
     assertEq(wethBefore.interestRateStrategy, wethAfter.interestRateStrategy);
     assertEq(wethBefore.isPaused, wethAfter.isPaused);
     assertEq(wethBefore.isActive, wethAfter.isActive);
+    assertEq(wethBefore.isSiloed, wethAfter.isSiloed);
+    assertEq(wethBefore.isBorrowableInIsolation, wethAfter.isBorrowableInIsolation);
     assertEq(wethBefore.isFlashloanable, wethAfter.isFlashloanable);
     assertEq(wethBefore.supplyCap, wethAfter.supplyCap);
     assertEq(wethBefore.borrowCap, wethAfter.borrowCap);
+    assertEq(wethBefore.debtCeiling, wethAfter.debtCeiling);
   }
 
   function _assertEmodesBefore(EmodeSnapshot[] memory emodesBefore) internal view virtual {

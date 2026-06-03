@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import {AaveV3Mantle, AaveV3MantleAssets} from 'aave-address-book/AaveV3Mantle.sol';
 import {IPool, DataTypes} from 'aave-address-book/AaveV3.sol';
+import {ReserveConfiguration} from 'aave-v3-origin/contracts/protocol/libraries/configuration/ReserveConfiguration.sol';
 
 import 'forge-std/Test.sol';
 import {GovV3Helpers} from 'aave-helpers/src/GovV3Helpers.sol';
@@ -18,7 +19,7 @@ contract AaveV3Mantle_CAPOSnapshotRatioUpdateAcrossAaveV3_20260507_Test is
   ProtocolV3TestBase,
   CAPOUpdateBaseTest
 {
-  using ReserveConfigurationDebtCeiling for DataTypes.ReserveConfigurationMap;
+  using ReserveConfiguration for DataTypes.ReserveConfigurationMap;
 
   AaveV3Mantle_CAPOSnapshotRatioUpdateAcrossAaveV3_20260507 internal proposal;
 
@@ -102,27 +103,5 @@ contract AaveV3Mantle_CAPOSnapshotRatioUpdateAcrossAaveV3_20260507_Test is
       1.23e8,
       PRICE_APPROX_EQ_TOLERANCE
     );
-  }
-}
-
-/// @dev aave-v3-origin v3.7.0 removed isolation mode (and the debt-ceiling get/set helpers)
-///      from `ReserveConfiguration`. This proposal's test forks a pre-v3.7.0 pool that still
-///      stores a debt ceiling, so reproduce the v3.6 bit accessors locally.
-library ReserveConfigurationDebtCeiling {
-  uint256 internal constant DEBT_CEILING_MASK =
-    0x0FFFFFFFFFF00000000000000000000000000000000000000000000000000000;
-  uint256 internal constant DEBT_CEILING_START_BIT_POSITION = 212;
-
-  function getDebtCeiling(
-    DataTypes.ReserveConfigurationMap memory self
-  ) internal pure returns (uint256) {
-    return (self.data & DEBT_CEILING_MASK) >> DEBT_CEILING_START_BIT_POSITION;
-  }
-
-  function setDebtCeiling(
-    DataTypes.ReserveConfigurationMap memory self,
-    uint256 ceiling
-  ) internal pure {
-    self.data = (self.data & ~DEBT_CEILING_MASK) | (ceiling << DEBT_CEILING_START_BIT_POSITION);
   }
 }
