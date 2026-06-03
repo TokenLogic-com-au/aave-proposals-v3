@@ -11,7 +11,6 @@ import {ProtocolV3TestBase, ReserveConfig} from 'aave-helpers/src/ProtocolV3Test
 import {IWithGuardian} from 'solidity-utils/contracts/access-control/UpgradeableOwnableWithGuardian.sol';
 
 import {IMainnetSwapSteward} from 'src/interfaces/IMainnetSwapSteward.sol';
-import {IPoolExposureSteward} from 'src/interfaces/IPoolExposureSteward.sol';
 
 import {AaveV3Ethereum_MayJune2026FundingUpdate_20260601} from './AaveV3Ethereum_MayJune2026FundingUpdate_20260601.sol';
 
