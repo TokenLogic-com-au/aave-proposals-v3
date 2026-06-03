@@ -81,7 +81,7 @@ Reimburse Aave Labs for costs incurred in facilitating the audit of Aave Pro, Aa
 
 ### Bug Bounty
 
-The USDC payments are funded by withdrawing USDC from the Aave v3 Core instance to the Collector before being transferred.
+The USDC payments are funded with USDC withdrawn from AAVE V3 before the proposal execution.
 
 - 7,500 USDC `0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48` to the security researcher `0xcC7383b24631d8BfC8571dbF9c81d6D094688628`.
 - 750 USDC to Immunefi `0x7119f398b6C06095c6E8964C1f58e7C1BAa79E18`. This is the fee corresponding to 10% of the bounty.

@@ -117,8 +117,8 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601 is IProposalGenericExe
       AAVE_LABS_A_GHO_PAYMENT_AMOUNT
     );
 
-    // The collector holds aUSDC, but it shall be withdrawn to USDC using the `PoolExposureSteward`
-    // before executing the proposal.
+    // The collector usually holds aUSDC, but it is assumed that the required USDC amount for these payments is
+    // available before executing the proposal.
     AaveV3Ethereum.COLLECTOR.transfer(
       IERC20(AaveV3EthereumAssets.USDC_UNDERLYING),
       SECURITY_RESEARCHER,

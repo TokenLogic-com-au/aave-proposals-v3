@@ -23,23 +23,8 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601_Test is ProtocolV3Test
   AaveV3Ethereum_MayJune2026FundingUpdate_20260601 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('mainnet'), 25222489);
+    vm.createSelectFork(vm.rpcUrl('mainnet'), 25237141);
     proposal = new AaveV3Ethereum_MayJune2026FundingUpdate_20260601();
-
-    // Withdraw aUSDC to cover USDC payments.
-    // TODO: do this operation in mainnet, update block number, and remove this bit of the setup.
-    IPoolExposureSteward poolExposureSteward = IPoolExposureSteward(
-      AaveV3Ethereum.POOL_EXPOSURE_STEWARD
-    );
-    address guardian = IWithGuardian(address(poolExposureSteward)).guardian();
-    uint256 amount = proposal.SECURITY_RESEARCHER_USDC_PAYMENT_AMOUNT() +
-      proposal.IMMUNEFI_USDC_PAYMENT_AMOUNT();
-    vm.prank(guardian);
-    poolExposureSteward.withdrawV3(
-      address(AaveV3Ethereum.POOL),
-      AaveV3EthereumAssets.USDC_UNDERLYING,
-      amount
-    );
   }
 
   /**
