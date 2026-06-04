@@ -60,8 +60,7 @@ contract AaveV3XLayer_RemoteGSMLaunchXLayer_20260526_Part2_Test is ProtocolV3Tes
   uint128 internal ccipPoolFacilitatorBucketLevelBeforeCcipDelivery;
 
   function setUp() public {
-    // TODO: pick a current X-Layer block number to pin the fork.
-    vm.createSelectFork(vm.rpcUrl('xlayer'));
+    vm.createSelectFork(vm.rpcUrl('xlayer'), 61831240);
     part1 = new AaveV3XLayer_RemoteGSMLaunchXLayer_20260526_Part1();
     proposal = new AaveV3XLayer_RemoteGSMLaunchXLayer_20260526_Part2();
 

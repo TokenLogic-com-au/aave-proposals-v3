@@ -19,10 +19,10 @@ export const config: ConfigFile = {
     snapshot: 'TODO',
     votingNetwork: 'AVALANCHE',
   },
+  // TODO: Review all fork test numbers after they are enabled.
   poolOptions: {
     AaveV3Ethereum: {configs: {}, cache: {blockNumber: 25080900}},
-    // TODO: pick a current X-Layer block number to pin the fork / cache.
-    AaveV3XLayer: {configs: {OTHERS: {}}, cache: {blockNumber: 0}},
+    AaveV3XLayer: {configs: {OTHERS: {}}, cache: {blockNumber: 61831240}},
     AaveV3Arbitrum: {configs: {OTHERS: {}}, cache: {blockNumber: 462142700}},
     AaveV3Avalanche: {configs: {OTHERS: {}}, cache: {blockNumber: 84734234}},
     AaveV3Base: {configs: {OTHERS: {}}, cache: {blockNumber: 45637639}},

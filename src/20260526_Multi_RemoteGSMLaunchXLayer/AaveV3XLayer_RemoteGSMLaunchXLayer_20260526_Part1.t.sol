@@ -25,8 +25,7 @@ contract AaveV3XLayer_RemoteGSMLaunchXLayer_20260526_Part1_Test is ProtocolV3Tes
   AaveV3XLayer_RemoteGSMLaunchXLayer_20260526_Part1 internal proposal;
 
   function setUp() public {
-    // TODO: pick a current X-Layer block number to pin the fork.
-    vm.createSelectFork(vm.rpcUrl('xlayer'));
+    vm.createSelectFork(vm.rpcUrl('xlayer'), 61831240);
     proposal = new AaveV3XLayer_RemoteGSMLaunchXLayer_20260526_Part1();
   }
 
