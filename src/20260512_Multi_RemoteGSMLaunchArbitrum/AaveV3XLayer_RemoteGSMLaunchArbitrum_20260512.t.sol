@@ -20,8 +20,7 @@ contract AaveV3XLayer_RemoteGSMLaunchArbitrum_20260512_Test is ProtocolV3TestBas
   AaveV3XLayer_RemoteGSMLaunchArbitrum_20260512 internal proposal;
 
   function setUp() public {
-    // TODO: pick a current X-Layer block number to pin the fork.
-    vm.createSelectFork(vm.rpcUrl('xlayer'));
+    vm.createSelectFork(vm.rpcUrl('xlayer'), 61831240);
     proposal = new AaveV3XLayer_RemoteGSMLaunchArbitrum_20260512();
   }
 

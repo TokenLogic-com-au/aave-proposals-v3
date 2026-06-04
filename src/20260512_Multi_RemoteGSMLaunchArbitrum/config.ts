@@ -27,6 +27,6 @@ export const config: ConfigFile = {
     AaveV3Gnosis: {configs: {OTHERS: {}}, cache: {blockNumber: 45935000}},
     AaveV3Mantle: {configs: {OTHERS: {}}, cache: {blockNumber: 95179108}},
     AaveV3Plasma: {configs: {OTHERS: {}}, cache: {blockNumber: 21132780}},
-    AaveV3XLayer: {configs: {OTHERS: {}}, cache: {blockNumber: 0}},
+    AaveV3XLayer: {configs: {OTHERS: {}}, cache: {blockNumber: 61831240}},
   },
 };
