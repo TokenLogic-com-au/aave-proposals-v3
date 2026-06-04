@@ -399,7 +399,7 @@ library GhoCCIPChains {
         tokenAdminRegistry: CCIPChainTokenAdminRegistries.MONAD,
         owner: GovernanceV3Monad.EXECUTOR_LVL_1,
         ccipRouter: CCIPChainRouters.MONAD,
-        linkToken: address(0x70D0),
+        linkToken: 0x76f257B1DDA5cC71bee4eF637Fbdde4C801310A9, // https://docs.chain.link/resources/link-token-contracts#monad-mainnet
         isVersion_1_6: true
       });
   }
