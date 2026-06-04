@@ -1,0 +1,94 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
+import {SafeERC20} from 'openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol';
+import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
+import {AaveV3EthereumAssets} from 'aave-address-book/AaveV3Ethereum.sol';
+import {GhoEthereum} from 'aave-address-book/GhoEthereum.sol';
+import {IUpgradeableLockReleaseTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableLockReleaseTokenPool.sol';
+import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGenericExecutor.sol';
+import {IAaveGhoCcipBridge} from 'aave-helpers/src/bridges/ccip/interfaces/IAaveGhoCcipBridge.sol';
+import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
+import {IGhoDirectFacilitator} from 'src/interfaces/IGhoDirectFacilitator.sol';
+
+import {RemoteGSMLaunchXLayerConstants} from './setup/RemoteGSMLaunchXLayerConstants.sol';
+
+/**
+ * @title Remote GSM Launch: X-Layer
+ * @author TokenLogic
+ * - Snapshot: TODO
+ * - Discussion: https://governance.aave.com/t/remotegsm-upgrade-enabling-l2-gsms-for-gho/24240
+ */
+contract AaveV3Ethereum_RemoteGSMLaunchXLayer_20260526_Part2 is IProposalGenericExecutor {
+  using SafeERC20 for IERC20;
+
+  // GhoDirectFacilitator Constants
+  // TODO: deployed X-Layer-specific GhoDirectFacilitator on Ethereum
+  address public constant DIRECT_FACILITATOR = address(0);
+  string public constant DIRECT_FACILITATOR_NAME = 'GhoDirectFacilitator XLayer';
+
+  // https://etherscan.io/address/0x7F2f96fcdC3A29Be75938d2aC3D92E7006919fe6
+  address public constant CCIP_BRIDGE = address(0x7F2f96fcdC3A29Be75938d2aC3D92E7006919fe6);
+
+  // TODO: deployed AaveGhoCcipBridge on X-Layer (counterpart that will receive the CCIP
+  // message and forward GHO to the X-Layer Collector).
+  address public constant XLAYER_BRIDGE_DESTINATION = address(0);
+
+  // TODO: confirm gas limit needed by AaveGhoCcipBridge.ccipReceive() on X-Layer.
+  // Typical bridge-receive gas limits sit in the 200k–500k range; pick a value that
+  // covers the receive + Collector forwarding path with comfortable headroom.
+  uint32 public constant XLAYER_BRIDGE_GAS_LIMIT = 0;
+
+  function execute() external {
+    IGhoToken(AaveV3EthereumAssets.GHO_UNDERLYING).addFacilitator(
+      DIRECT_FACILITATOR,
+      DIRECT_FACILITATOR_NAME,
+      RemoteGSMLaunchXLayerConstants.DIRECT_FACILITATOR_CAPACITY
+    );
+
+    IGhoDirectFacilitator(DIRECT_FACILITATOR).mint(
+      address(this),
+      RemoteGSMLaunchXLayerConstants.GHO_BRIDGE_AMOUNT
+    );
+
+    IERC20(AaveV3EthereumAssets.GHO_UNDERLYING).approve(
+      CCIP_BRIDGE,
+      RemoteGSMLaunchXLayerConstants.GHO_BRIDGE_AMOUNT
+    );
+
+    // Configure the X-Layer lane on the AaveGhoCcipBridge: maps the X-Layer chain
+    // selector to the counterpart bridge address on X-Layer (which forwards the GHO
+    // to AaveV3XLayer.COLLECTOR on receipt). `extraArgs` is left empty so the bridge
+    // uses its default CCIP extraArgs encoding with the gas limit below.
+    IAaveGhoCcipBridge(CCIP_BRIDGE).setDestinationChain(
+      CCIPChainSelectors.XLAYER,
+      abi.encode(XLAYER_BRIDGE_DESTINATION),
+      bytes(''),
+      XLAYER_BRIDGE_GAS_LIMIT
+    );
+
+    // Bridge already has LINK to bridge, no need to send for fee.
+    // This step will fail if Part 1 is not executed first to set the augmented bridge limit (RateLimitExceeded error).
+    IAaveGhoCcipBridge(CCIP_BRIDGE).send(
+      CCIPChainSelectors.XLAYER,
+      RemoteGSMLaunchXLayerConstants.GHO_BRIDGE_AMOUNT,
+      AaveV3EthereumAssets.LINK_UNDERLYING
+    );
+
+    // Restore bridge limit
+    IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
+      CCIPChainSelectors.XLAYER,
+      IRateLimiter.Config({
+        isEnabled: true,
+        capacity: RemoteGSMLaunchXLayerConstants.DEFAULT_RATE_LIMITER_CAPACITY,
+        rate: RemoteGSMLaunchXLayerConstants.DEFAULT_RATE_LIMITER_RATE
+      }),
+      IRateLimiter.Config({
+        isEnabled: true,
+        capacity: RemoteGSMLaunchXLayerConstants.DEFAULT_RATE_LIMITER_CAPACITY,
+        rate: RemoteGSMLaunchXLayerConstants.DEFAULT_RATE_LIMITER_RATE
+      })
+    );
+  }
+}
