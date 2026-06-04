@@ -21,6 +21,7 @@ export const config: ConfigFile = {
   },
   poolOptions: {
     AaveV3Ethereum: {configs: {}, cache: {blockNumber: 25080900}},
+    // TODO: pick a current X-Layer block number to pin the fork / cache.
     AaveV3XLayer: {configs: {OTHERS: {}}, cache: {blockNumber: 0}},
     AaveV3Arbitrum: {configs: {OTHERS: {}}, cache: {blockNumber: 462142700}},
     AaveV3Avalanche: {configs: {OTHERS: {}}, cache: {blockNumber: 84734234}},
