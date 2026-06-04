@@ -9,6 +9,7 @@ export const config: ConfigFile = {
       'AaveV3Base',
       'AaveV3Gnosis',
       'AaveV3Plasma',
+      'AaveV3XLayer',
     ],
     title: 'Remote GSM Launch: Mantle',
     shortName: 'RemoteGSMLaunchMantle',
@@ -26,5 +27,6 @@ export const config: ConfigFile = {
     AaveV3Base: {configs: {OTHERS: {}}, cache: {blockNumber: 45637639}},
     AaveV3Gnosis: {configs: {OTHERS: {}}, cache: {blockNumber: 45935000}},
     AaveV3Plasma: {configs: {OTHERS: {}}, cache: {blockNumber: 21132780}},
+    AaveV3XLayer: {configs: {OTHERS: {}}, cache: {blockNumber: 61831240}},
   },
 };
