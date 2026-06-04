@@ -19,6 +19,7 @@ export const config: ConfigFile = {
     snapshot: 'TODO',
     votingNetwork: 'AVALANCHE',
   },
+  // TODO: review fork test block numbers after they are enabled.
   poolOptions: {
     AaveV3Ethereum: {configs: {}, cache: {blockNumber: 25080900}},
     AaveV3Mantle: {configs: {OTHERS: {}}, cache: {blockNumber: 95179108}},
