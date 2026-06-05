@@ -35,6 +35,10 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601 is IProposalGenericExe
   address public constant IMMUNEFI = 0x7119f398b6C06095c6E8964C1f58e7C1BAa79E18;
   uint256 public constant IMMUNEFI_USDC_PAYMENT_AMOUNT = 750e6; // 750 USDC, 6 decimals
 
+  // https://etherscan.io/address/0x666B8EbFbF4D5f0CE56962a25635CfF563F13161
+  address public constant AAVE_V4_BOUNTY_SHERLOCK = 0x666B8EbFbF4D5f0CE56962a25635CfF563F13161;
+  uint256 public constant AAVE_V4_BOUNTY_SHERLOCK_USDC_PAYMENT_AMOUNT = 1_100e6; // 1,100 USDC, 6 decimals
+
   uint256 public constant SWAP_STEWARD_WETH_ALLOWANCE = 5_000 ether;
 
   uint256 public constant SWAP_STEWARD_USDT_ALLOWANCE = 10_000_000e6; // 10M USDT, 6 decimals
@@ -129,6 +133,12 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601 is IProposalGenericExe
       IERC20(AaveV3EthereumAssets.USDC_UNDERLYING),
       IMMUNEFI,
       IMMUNEFI_USDC_PAYMENT_AMOUNT
+    );
+
+    AaveV3Ethereum.COLLECTOR.transfer(
+      IERC20(AaveV3EthereumAssets.USDC_UNDERLYING),
+      AAVE_V4_BOUNTY_SHERLOCK,
+      AAVE_V4_BOUNTY_SHERLOCK_USDC_PAYMENT_AMOUNT
     );
   }
 }
