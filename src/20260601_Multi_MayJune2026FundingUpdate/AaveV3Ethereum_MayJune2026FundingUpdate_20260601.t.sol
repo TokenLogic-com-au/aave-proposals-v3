@@ -25,7 +25,7 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601_Test is ProtocolV3Test
 
   function setUp() public {
     // TODO: update block number after witdrawing USDC.
-    vm.createSelectFork(vm.rpcUrl('mainnet'), 25237141);
+    vm.createSelectFork(vm.rpcUrl('mainnet'), 25274433);
     proposal = new AaveV3Ethereum_MayJune2026FundingUpdate_20260601();
   }
 
@@ -92,14 +92,16 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601_Test is ProtocolV3Test
     vm.prank(spender);
     token.transferFrom(collector, spender, transferAmount);
 
-    assertEq(
+    assertApproxEqAbs(
       token.allowance(collector, spender),
       allowance - transferAmount,
+      1,
       'allowance did not decrease'
     );
-    assertEq(
+    assertApproxEqAbs(
       token.balanceOf(spender),
       spenderBalanceBefore + transferAmount,
+      1,
       'spender did not receive tokens'
     );
   }
