@@ -71,12 +71,42 @@ contract AaveV3Ethereum_StkAAVEEmissionsUpdate_20260522_Test is ProtocolV3TestBa
     IStakeToken(AaveSafetyModule.STK_AAVE).stake(staker, 1 ether);
     vm.stopPrank();
 
-    vm.warp(block.timestamp + 1 days);
+    skip(1 days);
 
     uint256 rewardsBalance = IStakeToken(AaveSafetyModule.STK_AAVE).getTotalRewardsBalance(staker);
 
     // 0 < rewardsBalance <= dailyEmissions
     assertGt(rewardsBalance, 0, 'stkAAVE rewards should be greater than 0');
     assertLe(rewardsBalance, dailyEmissions, 'stkAAVE rewards should not exceed daily emissions');
+  }
+
+  function test_stkAAVE_rewardsAccrueBeforeAndAfterUpdate() public {
+    address staker = makeAddr('staker');
+    deal(AaveV3EthereumAssets.AAVE_UNDERLYING, staker, 1 ether);
+
+    vm.startPrank(staker);
+    IERC20(AaveV3EthereumAssets.AAVE_UNDERLYING).approve(AaveSafetyModule.STK_AAVE, 1 ether);
+    IStakeToken(AaveSafetyModule.STK_AAVE).stake(staker, 1 ether);
+    vm.stopPrank();
+
+    // Accrual over 1 day BEFORE the update.
+    uint256 rewardsStart = IStakeToken(AaveSafetyModule.STK_AAVE).getTotalRewardsBalance(staker);
+    skip(1 days);
+    uint256 accruedBefore = IStakeToken(AaveSafetyModule.STK_AAVE).getTotalRewardsBalance(staker) -
+      rewardsStart;
+
+    executePayload(vm, address(proposal));
+
+    // Accrual over 1 day AFTER the update.
+    uint256 rewardsAfterUpdate = IStakeToken(AaveSafetyModule.STK_AAVE).getTotalRewardsBalance(
+      staker
+    );
+    skip(1 days);
+    uint256 accruedAfter = IStakeToken(AaveSafetyModule.STK_AAVE).getTotalRewardsBalance(staker) -
+      rewardsAfterUpdate;
+
+    assertGt(accruedBefore, 0, 'stkAAVE rewards should accrue before update');
+    assertGt(accruedAfter, 0, 'stkAAVE rewards should accrue after update');
+    assertLt(accruedAfter, accruedBefore, 'stkAAVE accrued rewards should be lower after update');
   }
 }
