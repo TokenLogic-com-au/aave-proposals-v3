@@ -30,6 +30,8 @@ This update also includes a bug bounty payment to a security researcher, along w
 
 Deposit idle ETH on the Collector into the Aave v3 Core instance.
 
+In addition to the 3.7M GHO acquired during May 2026, use the [MainnetSwapSteward](https://governance.aave.com/t/arfc-steward-deployment-mainnetswapsteward-and-rewardssteward/23070) to acquire 4M of GHO to be deposited into the Prime instance during June 2026.
+
 ### Tydro Incentive Campaign
 
 To support the continued success of the friendly Tydro deployment, an aEthLidoGHO Allowance will be created to fund an upcoming incentive campaign.
@@ -45,7 +47,7 @@ To support the acquisition of GHO, replenish the Allowances on the MainnetSwapSt
 
 | Token | Amount |
 | ----- | ------ |
-| WETH  | 5,000  |
+| WETH  | 5K     |
 | USDC  | 10M    |
 | USDT  | 10M    |
 | USDe  | 10M    |
@@ -85,7 +87,7 @@ The USDC payments are funded with USDC withdrawn from AAVE V3 before the proposa
 
 - 7,500 USDC `0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48` to the security researcher `0xcC7383b24631d8BfC8571dbF9c81d6D094688628`.
 - 750 USDC to Immunefi `0x7119f398b6C06095c6E8964C1f58e7C1BAa79E18`. This is the fee corresponding to 10% of the bounty.
-- 1,100 USDC to `0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48` to the security researcher `0x666B8EbFbF4D5f0CE56962a25635CfF563F13161` (Sherlock).
+- 1,100 GHO to `0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48` to the security researcher `0x666B8EbFbF4D5f0CE56962a25635CfF563F13161` (Sherlock).
 
 ## References
 

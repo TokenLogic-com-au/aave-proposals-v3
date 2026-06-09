@@ -37,7 +37,7 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601 is IProposalGenericExe
 
   // https://etherscan.io/address/0x666B8EbFbF4D5f0CE56962a25635CfF563F13161
   address public constant AAVE_V4_BOUNTY_SHERLOCK = 0x666B8EbFbF4D5f0CE56962a25635CfF563F13161;
-  uint256 public constant AAVE_V4_BOUNTY_SHERLOCK_USDC_PAYMENT_AMOUNT = 1_100e6; // 1,100 USDC, 6 decimals
+  uint256 public constant AAVE_V4_BOUNTY_SHERLOCK_GHO_PAYMENT_AMOUNT = 1_100 ether; // 1,100 GHO, 18 decimals
 
   uint256 public constant SWAP_STEWARD_WETH_ALLOWANCE = 5_000 ether;
 
@@ -136,9 +136,9 @@ contract AaveV3Ethereum_MayJune2026FundingUpdate_20260601 is IProposalGenericExe
     );
 
     AaveV3Ethereum.COLLECTOR.transfer(
-      IERC20(AaveV3EthereumAssets.USDC_UNDERLYING),
+      IERC20(AaveV3EthereumAssets.GHO_UNDERLYING),
       AAVE_V4_BOUNTY_SHERLOCK,
-      AAVE_V4_BOUNTY_SHERLOCK_USDC_PAYMENT_AMOUNT
+      AAVE_V4_BOUNTY_SHERLOCK_GHO_PAYMENT_AMOUNT
     );
   }
 }
