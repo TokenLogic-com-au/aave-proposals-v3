@@ -83,16 +83,14 @@ Reimburse Aave Labs for costs incurred in facilitating the audit of Aave Pro, Aa
 
 ### Bug Bounty
 
-The USDC payments are funded with USDC withdrawn from AAVE V3 before the proposal execution.
-
-- 7,500 USDC `0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48` to the security researcher `0xcC7383b24631d8BfC8571dbF9c81d6D094688628`.
-- 750 USDC to Immunefi `0x7119f398b6C06095c6E8964C1f58e7C1BAa79E18`. This is the fee corresponding to 10% of the bounty.
+- 7,500 GHO `0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48` to the security researcher `0xcC7383b24631d8BfC8571dbF9c81d6D094688628`.
+- 750 GHO to Immunefi `0x7119f398b6C06095c6E8964C1f58e7C1BAa79E18`. This is the fee corresponding to 10% of the bounty.
 - 1,100 GHO to `0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48` to the security researcher `0x666B8EbFbF4D5f0CE56962a25635CfF563F13161` (Sherlock).
 
 ## References
 
-- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/108e1b5e5ec4c7b2708179e4c69f9824d2216472/src/20260601_Multi_MayJune2026FundingUpdate/AaveV3Ethereum_MayJune2026FundingUpdate_20260601.sol), [AaveV3Plasma](https://github.com/aave-dao/aave-proposals-v3/blob/108e1b5e5ec4c7b2708179e4c69f9824d2216472/src/20260601_Multi_MayJune2026FundingUpdate/AaveV3Plasma_MayJune2026FundingUpdate_20260601.sol)
-- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/108e1b5e5ec4c7b2708179e4c69f9824d2216472/src/20260601_Multi_MayJune2026FundingUpdate/AaveV3Ethereum_MayJune2026FundingUpdate_20260601.t.sol), [AaveV3Plasma](https://github.com/aave-dao/aave-proposals-v3/blob/108e1b5e5ec4c7b2708179e4c69f9824d2216472/src/20260601_Multi_MayJune2026FundingUpdate/AaveV3Plasma_MayJune2026FundingUpdate_20260601.t.sol)
+- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/ea917103102b2535cfc7a001e6697b077a88b14e/src/20260601_Multi_MayJune2026FundingUpdate/AaveV3Ethereum_MayJune2026FundingUpdate_20260601.sol), [AaveV3Plasma](https://github.com/aave-dao/aave-proposals-v3/blob/ea917103102b2535cfc7a001e6697b077a88b14e/src/20260601_Multi_MayJune2026FundingUpdate/AaveV3Plasma_MayJune2026FundingUpdate_20260601.sol)
+- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/ea917103102b2535cfc7a001e6697b077a88b14e/src/20260601_Multi_MayJune2026FundingUpdate/AaveV3Ethereum_MayJune2026FundingUpdate_20260601.t.sol), [AaveV3Plasma](https://github.com/aave-dao/aave-proposals-v3/blob/ea917103102b2535cfc7a001e6697b077a88b14e/src/20260601_Multi_MayJune2026FundingUpdate/AaveV3Plasma_MayJune2026FundingUpdate_20260601.t.sol)
 - [Discussion](https://governance.aave.com/t/direct-to-aip-may-june-2026-funding-update/25000)
 
 ## Copyright
