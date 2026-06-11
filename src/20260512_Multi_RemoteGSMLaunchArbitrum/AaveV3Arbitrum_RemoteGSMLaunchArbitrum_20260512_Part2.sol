@@ -18,7 +18,7 @@ import {RemoteGSMLaunchArbitrumSetup} from './setup/RemoteGSMLaunchArbitrumSetup
 /**
  * @title Remote GSM Launch: Arbitrum
  * @author TokenLogic
- * - Snapshot: TODO
+ * - Snapshot: https://snapshot.org/#/s:aavedao.eth/proposal/0xf24321514fb593af9e5082d26a1358819ec0f648db8fdb5c2b083f53ef785793
  * - Discussion: https://governance.aave.com/t/arfc-launch-remotegsm-on-arbitrum/24986
  *
  * NOTE: granting RISK_ADMIN_ROLE on AaveV3Arbitrum.ACL_MANAGER to a GhoAaveSteward
@@ -36,24 +36,24 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
   using SafeERC20 for IERC20;
 
   // GhoReserve
-  // TODO: deployed GhoReserve on Arbitrum (assuming single reserve for all GSMs)
-  IGhoReserve public constant GHO_RESERVE = IGhoReserve(address(0));
+  // https://arbiscan.io/address/0xC912D64F9F649897dC0244da3835869d410d053e
+  IGhoReserve public constant GHO_RESERVE = IGhoReserve(0xC912D64F9F649897dC0244da3835869d410d053e);
 
-  // TODO: deployed GhoGsmSteward on Arbitrum
-  address public constant GHO_GSM_STEWARD = address(0);
+  // https://arbiscan.io/address/0x4DFfA29C526b5CFB419e14E3111516Fbf929797D
+  address public constant GHO_GSM_STEWARD = 0x4DFfA29C526b5CFB419e14E3111516Fbf929797D;
 
-  // TODO: deployed GsmRegistry on Arbitrum
-  address public constant GSM_REGISTRY = address(0);
+  // https://arbiscan.io/address/0x2Be58aD215AA8552CB5BD038a88d0dE39d2427BB
+  address public constant GSM_REGISTRY = 0x2Be58aD215AA8552CB5BD038a88d0dE39d2427BB;
 
   // GSM USDC
-  // TODO: deployed stataUSDC Remote GSM on Arbitrum
-  address public constant GSM_USDC = address(0);
+  // https://arbiscan.io/address/0x53E0cE250d06043414070100458546AaF4e284eD
+  address public constant GSM_USDC = 0x53E0cE250d06043414070100458546AaF4e284eD;
 
-  // TODO: deployed USDC OracleSwapFreezer on Arbitrum
-  address public constant USDC_ORACLE_SWAP_FREEZER = address(0);
+  // https://arbiscan.io/address/0xC5aF63c233eA19cB191b36D16C1e25cDA08409E7
+  address public constant USDC_ORACLE_SWAP_FREEZER = 0xC5aF63c233eA19cB191b36D16C1e25cDA08409E7;
 
-  // TODO: deployed FeeStrategy on Arbitrum (mint 0% / burn 0.10%)
-  address public constant GSM_USDC_FEE_STRATEGY = address(0);
+  // https://arbiscan.io/address/0x2169Bf2084bDb881587b3Cf6B24011E6AA091FdE
+  address public constant GSM_USDC_FEE_STRATEGY = 0x2169Bf2084bDb881587b3Cf6B24011E6AA091FdE;
 
   function execute() external {
     GHO_RESERVE.grantRole(GHO_RESERVE.LIMIT_MANAGER_ROLE(), GhoArbitrum.RISK_COUNCIL);

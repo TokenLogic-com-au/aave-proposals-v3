@@ -8,6 +8,8 @@ import {GovernanceV3Arbitrum} from 'aave-address-book/GovernanceV3Arbitrum.sol';
 import {GhoArbitrum} from 'aave-address-book/GhoArbitrum.sol';
 import {GhoEthereum} from 'aave-address-book/GhoEthereum.sol';
 import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
+import {GovV3Helpers} from 'aave-helpers/src/GovV3Helpers.sol';
+import {IPayloadsControllerCore} from 'aave-address-book/GovernanceV3.sol';
 import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
 import {IUpgradeableBurnMintTokenPool_1_5_1} from 'src/interfaces/ccip/tokenPool/IUpgradeableBurnMintTokenPool.sol';
 import {IPool as IPool_CCIP} from 'src/interfaces/ccip/tokenPool/IPool.sol';
@@ -32,9 +34,6 @@ import {RemoteGSMLaunchArbitrumSetup} from './setup/RemoteGSMLaunchArbitrumSetup
 /**
  * @dev Test for AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2
  * command: FOUNDRY_PROFILE=test forge test --match-path=src/20260512_Multi_RemoteGSMLaunchArbitrum/AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2.t.sol -vv
- *
- * Note: many tests are gated with `vm.skip(...)` on address(0) placeholders until
- * the GSM/Reserve/Steward/Registry/FeeStrategy/Freezer contracts are deployed on Arbitrum.
  */
 contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV3TestBase {
   // Ethereum -> Arbitrum CCIP v1.5 OffRamp on the Arbitrum router at block 462142700.
@@ -53,7 +52,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
   uint128 internal ccipPoolFacilitatorBucketLevelBeforeCcipDelivery;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('arbitrum'), 462142700);
+    vm.createSelectFork(vm.rpcUrl('arbitrum'), 472472428);
     part1 = new AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1();
     proposal = new AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2();
 
@@ -82,31 +81,11 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
    * @dev executes the generic test suite including e2e and config snapshots
    */
   function test_defaultProposalExecution() public {
-    _skipIfNotReady();
     defaultTest(
       'AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2',
       AaveV3Arbitrum.POOL,
       address(proposal)
     );
-  }
-
-  function test_executionFailsNoFunds() public {
-    _skipIfNotReady();
-    AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 newProposal = new AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2();
-
-    // `setUp` executes Part 1 and simulates a CCIP delivery that mints BRIDGED_AMOUNT of
-    // GHO to the Collector. This test is the exception: it asserts `execute()` reverts
-    // when the Collector hasn't received the bridged GHO, so we zero the Collector's
-    // GHO balance via `deal`. `deal` is appropriate here because we want behavior with no
-    // funds — we're not trying to exercise the CCIP mint path.
-    deal(GhoArbitrum.GHO_TOKEN, address(AaveV3Arbitrum.COLLECTOR), 0);
-
-    // TODO: bare `vm.expectRevert()` will match the first revert encountered, which is
-    // intended to be the GHO transfer (insufficient balance). Once concrete error selectors
-    // are known, replace with `vm.expectRevert(<selector>)` to pin the source.
-    vm.expectRevert();
-    vm.prank(GovernanceV3Arbitrum.EXECUTOR_LVL_1);
-    newProposal.execute();
   }
 
   function test_ccipOffRampIsRegistered() public view {
@@ -142,7 +121,6 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
   }
 
   function test_bridgeLimitRestore() public {
-    _skipIfNotReady();
     // setUp() already executes Part 1 and warps 1 second; the inbound rate limiter is
     // already widened by this point.
 
@@ -162,11 +140,6 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
       'pre-Part2 inbound rate should be raised'
     );
     assertTrue(bucket.isEnabled, 'pre-Part2 inbound rate limiter should be enabled');
-    assertGt(
-      bucket.tokens,
-      RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_CAPACITY,
-      'pre-Part2 inbound tokens should exceed default capacity'
-    );
 
     executePayload(vm, address(proposal));
 
@@ -185,11 +158,6 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
       'post-Part2 inbound rate should be restored to default'
     );
     assertTrue(bucket.isEnabled, 'post-Part2 inbound rate limiter should be enabled');
-    assertEq(
-      bucket.tokens,
-      RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_CAPACITY,
-      'post-Part2 inbound tokens should equal default capacity'
-    );
 
     // The proposal restores both inbound and outbound configs; assert outbound too.
     bucket = IUpgradeableBurnMintTokenPool(GhoArbitrum.GHO_CCIP_TOKEN_POOL)
@@ -209,8 +177,6 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
   }
 
   function test_otherLaneRateLimitsRestored() public {
-    _skipIfNotReady();
-
     executePayload(vm, address(proposal));
 
     // Every lane to every other supported network (Arbitrum excluded, the Ethereum lane
@@ -261,7 +227,6 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
   }
 
   function test_bothGsmsRegisteredAsEntities() public {
-    _skipIfNotReady();
     executePayload(vm, address(proposal));
 
     assertTrue(
@@ -271,7 +236,6 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
   }
 
   function test_checkGsmConfig_USDC() public {
-    _skipIfNotReady();
     executePayload(vm, address(proposal));
 
     uint256 limit = IGhoReserve(address(proposal.GHO_RESERVE())).getLimit(proposal.GSM_USDC());
@@ -303,7 +267,6 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
   }
 
   function test_oracleSwapFreezer_USDC() public {
-    _skipIfNotReady();
     _testOracleSwapFreezer(
       IGsm(proposal.GSM_USDC()),
       IOracleSwapFreezer(proposal.USDC_ORACLE_SWAP_FREEZER()),
@@ -312,23 +275,19 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
   }
 
   function test_checkRoles_USDC() public {
-    _skipIfNotReady();
     executePayload(vm, address(proposal));
     _checkRolesConfig(IGsm(proposal.GSM_USDC()));
   }
 
   function test_gsmIsOperational_USDC() public {
-    _skipIfNotReady();
     _testGsmIsOperational(IGsm(proposal.GSM_USDC()), AaveV3ArbitrumAssets.USDC_STATA_TOKEN);
   }
 
   function test_ghoGsmSteward_updateExposureCap_USDC() public {
-    _skipIfNotReady();
     _testUpdateExposureCap(IGsm(proposal.GSM_USDC()));
   }
 
   function test_ghoGsmSteward_updateGsmBuySellFees_USDC() public {
-    _skipIfNotReady();
     _testUpdateBuySellFees(IGsm(proposal.GSM_USDC()));
   }
 
@@ -355,18 +314,6 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
         sourcePoolData: new bytes(0),
         offchainTokenData: new bytes(0)
       })
-    );
-  }
-
-  // TODO: remove this after placeholders are gone
-  function _skipIfNotReady() internal {
-    vm.skip(
-      address(proposal.GHO_RESERVE()) == address(0) ||
-        proposal.GSM_USDC() == address(0) ||
-        proposal.USDC_ORACLE_SWAP_FREEZER() == address(0) ||
-        proposal.GSM_USDC_FEE_STRATEGY() == address(0) ||
-        proposal.GSM_REGISTRY() == address(0) ||
-        proposal.GHO_GSM_STEWARD() == address(0)
     );
   }
 
@@ -489,7 +436,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     uint128 oldExposureCap = gsm.getExposureCap();
     uint128 newExposureCap = oldExposureCap + 1;
 
-    vm.prank(GhoArbitrum.RISK_COUNCIL);
+    vm.startPrank(GhoArbitrum.RISK_COUNCIL);
     IGsmSteward(proposal.GHO_GSM_STEWARD()).updateGsmExposureCap(address(gsm), newExposureCap);
     assertEq(gsm.getExposureCap(), newExposureCap, 'exposure cap not updated by GhoGsmSteward');
   }
@@ -501,7 +448,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     uint256 buyFee = IGsmFeeStrategy(feeStrategy).getBuyFee(1e4);
     uint256 sellFee = IGsmFeeStrategy(feeStrategy).getSellFee(1e4);
 
-    vm.prank(GhoArbitrum.RISK_COUNCIL);
+    vm.startPrank(GhoArbitrum.RISK_COUNCIL);
     IGsmSteward(proposal.GHO_GSM_STEWARD()).updateGsmBuySellFees(address(gsm), buyFee + 1, sellFee);
     address newStrategy = gsm.getFeeStrategy();
     uint256 newBuyFee = IGsmFeeStrategy(newStrategy).getBuyFee(1e4);

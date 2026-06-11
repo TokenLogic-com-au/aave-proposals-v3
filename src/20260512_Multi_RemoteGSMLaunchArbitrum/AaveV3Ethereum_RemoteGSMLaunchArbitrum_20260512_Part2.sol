@@ -16,23 +16,24 @@ import {RemoteGSMLaunchArbitrumSetup} from './setup/RemoteGSMLaunchArbitrumSetup
 /**
  * @title Remote GSM Launch: Arbitrum
  * @author TokenLogic
- * - Snapshot: TODO
+ * - Snapshot: https://snapshot.org/#/s:aavedao.eth/proposal/0xf24321514fb593af9e5082d26a1358819ec0f648db8fdb5c2b083f53ef785793
  * - Discussion: https://governance.aave.com/t/arfc-launch-remotegsm-on-arbitrum/24986
  */
 contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGenericExecutor {
   using SafeERC20 for IERC20;
 
   // GhoDirectFacilitator Constants
-  // TODO: deployed Arbitrum-specific GhoDirectFacilitator on Ethereum
-  address public constant DIRECT_FACILITATOR = address(0);
+  // https://etherscan.io/address/0x436dccc028322afc355f608cf582b7d7f19fdfed
+  address public constant DIRECT_FACILITATOR = 0x436dCCC028322AfC355f608CF582B7d7F19FDfEd;
   string public constant DIRECT_FACILITATOR_NAME = 'GhoDirectFacilitator Arbitrum';
 
   // https://etherscan.io/address/0x7F2f96fcdC3A29Be75938d2aC3D92E7006919fe6
   address public constant CCIP_BRIDGE = address(0x7F2f96fcdC3A29Be75938d2aC3D92E7006919fe6);
 
-  // TODO: deployed AaveGhoCcipBridge on Arbitrum (counterpart that will receive the CCIP
+  // Deployed AaveGhoCcipBridge on Arbitrum (counterpart that will receive the CCIP
   // message and forward GHO to the Arbitrum Collector).
-  address public constant ARBITRUM_BRIDGE_DESTINATION = address(0);
+  // https://etherscan.io/address/0x812fBcd390A3C6c01C65B767413Dea6f6e24FDD0
+  address public constant ARBITRUM_BRIDGE_DESTINATION = 0x812fBcd390A3C6c01C65B767413Dea6f6e24FDD0;
 
   // TODO: confirm gas limit needed by AaveGhoCcipBridge.ccipReceive() on Arbitrum.
   // Typical bridge-receive gas limits sit in the 200k–500k range; pick a value that

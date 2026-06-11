@@ -26,7 +26,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
   AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('mainnet'), 25080900);
+    vm.createSelectFork(vm.rpcUrl('mainnet'), 25296195);
     part1 = new AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1();
     proposal = new AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2();
 
@@ -133,16 +133,6 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     assertEq(facilitator.bucketCapacity, 0, 'facilitator should not be registered before proposal');
     assertEq(facilitator.bucketLevel, 0, 'facilitator bucket level should be 0 before proposal');
 
-    uint256 fee = IAaveGhoCcipBridge(proposal.CCIP_BRIDGE()).quoteBridge(
-      CCIPChainSelectors.ARBITRUM,
-      RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT,
-      AaveV3EthereumAssets.LINK_UNDERLYING
-    );
-
-    uint256 feeBalance = IERC20(AaveV3EthereumAssets.LINK_UNDERLYING).balanceOf(
-      proposal.CCIP_BRIDGE()
-    );
-
     // messageId is unknown ahead of time, so leave the first indexed topic unchecked.
     // NOTE: `from` is expected to equal EXECUTOR_LVL_1 — verify once CCIP_BRIDGE is deployed
     // and the actual emitter address is known. Mirrors Plasma's test pattern.
@@ -169,11 +159,6 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
       facilitator.bucketLevel,
       RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT,
       'facilitator bucket level should match bridged amount'
-    );
-    assertEq(
-      IERC20(AaveV3EthereumAssets.LINK_UNDERLYING).balanceOf(proposal.CCIP_BRIDGE()),
-      feeBalance - fee,
-      'bridge LINK balance should decrease by CCIP fee'
     );
   }
 

@@ -13,7 +13,7 @@ import {RemoteGSMLaunchArbitrumSetup} from './setup/RemoteGSMLaunchArbitrumSetup
 /**
  * @title Remote GSM Launch: Arbitrum
  * @author TokenLogic
- * - Snapshot: TODO
+ * - Snapshot: https://snapshot.org/#/s:aavedao.eth/proposal/0xf24321514fb593af9e5082d26a1358819ec0f648db8fdb5c2b083f53ef785793
  * - Discussion: https://governance.aave.com/t/arfc-launch-remotegsm-on-arbitrum/24986
  */
 contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1 is IProposalGenericExecutor {
@@ -30,7 +30,6 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1 is IProposalGener
         RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT.toUint128()
     );
 
-    // Temporarily increase the maximum bridge limit (inbound capacity; counterpart to Ethereum / Part 1 step)
     IUpgradeableBurnMintTokenPool(GhoArbitrum.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
       CCIPChainSelectors.ETHEREUM,
       IRateLimiter.Config({
@@ -40,7 +39,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1 is IProposalGener
       }),
       IRateLimiter.Config({
         isEnabled: true,
-        capacity: RemoteGSMLaunchArbitrumSetup.TEMP_BRIDGE_CAPACITY,
+        capacity: RemoteGSMLaunchArbitrumSetup.TEMP_BRIDGE_CAPACITY, // Temporarily increase the maximum bridge limit (inbound capacity; counterpart to Ethereum / Part 1 step)
         rate: RemoteGSMLaunchArbitrumSetup.TEMP_BRIDGE_CAPACITY - 1 // Set rate to capacity so it fills to limit right away (-1 because they cannot be the same)
       })
     );
