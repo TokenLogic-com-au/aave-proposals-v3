@@ -1,5 +1,5 @@
 ---
-title: "[ARFC] TokenLogic Phase II - Extension"
+title: "[AIP] TokenLogic Service Provider Renewal"
 author: "@TokenLogic"
 discussions: "https://governance.aave.com/t/arfc-tokenlogic-phase-ii-extension/24846"
 snapshot: "https://snapshot.org/#/s:aavedao.eth/proposal/0x6c2814dc5da68698105894f1c450c80aa2296243ff737843cf9e869eecd8fa69"
@@ -7,37 +7,37 @@ snapshot: "https://snapshot.org/#/s:aavedao.eth/proposal/0x6c2814dc5da6869810589
 
 ## Simple Summary
 
-This AIP extends TokenLogic's engagement with the Aave DAO, recognising TokenLogic as the team responsible for managing Aave's finances and supporting operations across the protocol.
+This proposal renews and expands TokenLogic's mandate as an Aave Service Provider.
 
-In response to the launch of Aave V4 and the recent restructuring of Aave's service provider landscape, TokenLogic's mandate is broadened to cover finance, GHO development, incentive design, tooling maintenance, V4 feature development, and business development.
-
-Upon implementation, TokenLogic will be responsible for:
-
-- **Finances:** Treasury management, budgeting, KPI monitoring, user acquisition cost analysis, and investor relations.
-- **Market Structure:** Capital-efficiency and interest-rate analyses, including Borrow Rate parameter recommendations and incentive campaign design across Aave V3 and V4.
-- **GHO Stablecoin:** GSM upgrades for off-chain yield sources (RWAs), cross-chain sGHO, and GHO growth initiatives.
-- **Tooling:** Maintain Aave Seatbelt, Aave Robot (Chainlink CRE), bridging, and swap tooling for V3 and V4.
-- **Liquidation Engine:** Support Chainlink's SVR rollout, V4 liquidation parameter configuration, and related quantitative analysis.
-- **Aave V4:** Research and develop at least one Spoke unlocking new collateral types or enabling cross-network liquidity via CRE, lead the reinvestment feature strategy, and provide operational support.
-- **Business Development:** Drive institutional adoption, strategic partnerships, and ecosystem growth.
-
-The compensation structure approved through the ARFC and Snapshot process is:
-
-| Component        |                Amount | Payment Method                        |
-| ---------------- | --------------------: | ------------------------------------- |
-| Allowance        | 2,000,000 aEthLidoGHO | Additive top-up to existing allowance |
-| Streamed payment | 2,500,000 aEthLidoGHO | Linear stream over 12 months          |
-| Streamed payment |            5,000 AAVE | Linear stream over 12 months          |
-
-The current `aEthLidoGHO` stream with ID `100072` will be cancelled. The existing KPI program remains unchanged.
+Upon approval, TokenLogic is authorised to perform the services set out in the Scope of Work below. This mandate constitutes a governance-approved authorisation for TokenLogic to execute defined operational, analytical, and development responsibilities across the Aave Protocol, including Aave V3 and Aave V4 systems.
 
 ## Motivation
 
-This proposal renews TokenLogic's engagement with the Aave DAO following community discussion and Snapshot approval.
+TokenLogic has progressively expanded its scope of execution within the Aave ecosystem from treasury operations to responsibilities spanning market structure, incentive systems, GHO infrastructure, protocol tooling, and Aave V4 feature development.
 
-The launch of Aave V4, combined with the recent restructuring of Aave's service provider landscape, has materially expanded the scope of work expected from remaining providers. TokenLogic has consistently delivered across treasury management, GHO development, incentive design, analytics, and business development - in many cases beyond its original mandate. With fewer service providers in place, this proposal ensures TokenLogic is resourced to continue delivering across finance, GHO, tooling, V4 development, and business development at the pace Aave's growth requires.
+This expansion reflects the increasing integration of TokenLogic into the operational layer of the Aave Protocol, where its work directly supports protocol functioning, parameter configuration, and feature delivery.
 
-The full scope, rationale, and budget were discussed through the ARFC process and approved by Snapshot. This AIP implements the approved renewal terms.
+This proposal formalises TokenLogic's role as a Service Provider, with clearly defined responsibilities tied to specific Aave system components and upcoming Aave V4 functionality.
+
+## Scope of Work
+
+Upon approval of this proposal, TokenLogic shall be responsible for the design, analysis, implementation, support, and operational maintenance of the following protocol systems and features.
+
+A high-level overview of TokenLogic's responsibilities is shown below:
+
+- **Finances:** Responsible for managing Aave's finances, budget, reporting, KPI monitoring, user acquisition cost monitoring, popular use case analysis and investor relations insights in alignment with key stakeholders.
+- **Market Structure:** Provide market structure recommendations; perform capital-efficiency and interest-rate analysis, including recommendations for the Borrow Rate parameter; and design all incentive campaigns across Aave V3 and V4 in collaboration with other Service Providers.
+- **GHO Stablecoin:** In conjunction with Aave Labs' oversight, upgrade the GSMs to facilitate allocating to off-chain yield sources such as RWAs, develop cross-chain sGHO, and continue to lead the growth efforts supporting Aave's GHO stablecoin.
+- **Tooling:** Provide and maintain tooling, such as Aave Seatbelt, Aave Robot (using Chainlink's CRE), bridging, and swaps, among others, for Aave V3 and V4.
+- **Liquidation Engine:** Support Chainlink's SVR rollout and upgrades; contribute quantitative analysis; present recommendations; collaborate with other service providers; and support the configuration of Aave V4 liquidation parameters to balance risk and expand revenue.
+- **Aave V4:** Research and develop at least one feature that unlocks a new type of collateral, or that allows liquidity to move between networks using CRE. Responsible for leading efforts to develop the reinvestment feature strategy implementation and provide general operational support with asset onboardings and parameter updates via AIP.
+- **Business Development and Growth:** Focusing on driving institutional adoption, strategic partnerships, and ecosystem growth across Aave Protocol.
+
+The full description of the scope is available on the Snapshot pre-approved ARFC and on the Aave Governance Forum, both linked under References.
+
+### Execution and Coordination
+
+TokenLogic shall execute the above scope in coordination with Aave Labs, the primary protocol development team, and in collaboration with other Service Providers, including, but not limited to, Chainlink, LlamaRisk, Certora, and governance contributors.
 
 ## Specification
 
@@ -47,6 +47,7 @@ The payload performs the following actions on Ethereum mainnet:
 - Increase the `aEthLidoGHO` allowance from `AaveV3EthereumLido.COLLECTOR` to the TokenLogic-controlled multisig at `0xAA088dfF3dcF619664094945028d44E779F19894` by `2,000,000`. The top-up is additive: any existing unclaimed allowance is preserved on top of the new amount.
 - Create a new `aEthLidoGHO` stream of `2,500,000` over `365 days` to the same recipient, via `CollectorUtils.stream()` on `AaveV3EthereumLido.COLLECTOR`.
 - Create a new `AAVE` stream of `5,000` over `365 days` to the same recipient, via `AAVE_ECOSYSTEM_RESERVE_CONTROLLER.createStream()` on `MiscEthereum.ECOSYSTEM_RESERVE`. The stream amount is rounded down to the nearest multiple of the duration to avoid revert in the underlying controller.
+- The existing KPI program remains unchanged.
 
 ## References
 
