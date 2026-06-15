@@ -65,8 +65,8 @@ Pricing PT-sUSDe-22OCT2026 is done with the same dynamic linear discount rate or
 
 ## References
 
-- Implementation: [AaveV3Plasma](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260615_AaveV3Plasma_OnboardPTSUSDe22OCT2026ToAaveV3Plasma/AaveV3Plasma_OnboardPTSUSDe22OCT2026ToAaveV3Plasma_20260615.sol)
-- Tests: [AaveV3Plasma](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260615_AaveV3Plasma_OnboardPTSUSDe22OCT2026ToAaveV3Plasma/AaveV3Plasma_OnboardPTSUSDe22OCT2026ToAaveV3Plasma_20260615.t.sol)
+- Implementation: [AaveV3Plasma](https://github.com/aave-dao/aave-proposals-v3/blob/dec5abfb09b459c15b6f08221895cad99e09129f/src/20260615_AaveV3Plasma_OnboardPTSUSDe22OCT2026ToAaveV3Plasma/AaveV3Plasma_OnboardPTSUSDe22OCT2026ToAaveV3Plasma_20260615.sol)
+- Tests: [AaveV3Plasma](https://github.com/aave-dao/aave-proposals-v3/blob/dec5abfb09b459c15b6f08221895cad99e09129f/src/20260615_AaveV3Plasma_OnboardPTSUSDe22OCT2026ToAaveV3Plasma/AaveV3Plasma_OnboardPTSUSDe22OCT2026ToAaveV3Plasma_20260615.t.sol)
 - [Discussion](https://governance.aave.com/t/direct-to-aip-onboard-pt-susde-22oct2026-to-aave-v3-plasma/25129)
 
 ## Copyright
