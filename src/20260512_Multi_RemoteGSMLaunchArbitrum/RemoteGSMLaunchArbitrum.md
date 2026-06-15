@@ -7,7 +7,7 @@ snapshot: "https://snapshot.org/#/s:aavedao.eth/proposal/0xf24321514fb593af9e508
 
 ## Simple Summary
 
-Launch GHO GSM on Arbitrum (stataUSDC) using the new RemoteGSM architecture. The proposal mints 50M GHO via a dedicated `GhoDirectFacilitator` on Ethereum, bridges it to Arbitrum over CCIP to seed the local `GhoReserve`, wires up the two Arbitrum GSMs, and normalizes the GHO CCIP lane capacity across every supported network to a uniform 5M GHO/day with a 1,000 GHO/sec refill rate.
+Launch GHO GSM on Arbitrum (stataUSDC) using the new RemoteGSM architecture. The proposal mints 50M GHO via a dedicated `GhoDirectFacilitator` on Ethereum, bridges it to Arbitrum over CCIP to seed the local `GhoReserve`, wires up the Arbitrum GSM, and normalizes the GHO CCIP lane capacity across every supported network to a uniform 5M GHO/day with a 1,000 GHO/sec refill rate.
 
 ## Motivation
 
@@ -32,10 +32,10 @@ On Arbitrum:
 
 For each GSM:
 
-- Point it at the `GhoReserve`, enroll it as an entity with a 15M GHO reserve limit.
+- Point it at the `GhoReserve`, enroll it as an entity with a 25M GHO reserve limit.
 - Grant `SWAP_FREEZER_ROLE` to the asset's `OracleSwapFreezer` and to the Arbitrum executor.
 - Register it in the `GsmRegistry` and grant `CONFIGURATOR_ROLE` to the `GhoGsmSteward`.
-- Set the initial exposure cap to 15M of the underlying (6 decimals) and attach the 0% mint / 0.10% burn fee strategy.
+- Set the initial exposure cap to 20M of the underlying (6 decimals) and attach the 0% mint / 0.10% burn fee strategy.
 
 `LIMIT_MANAGER_ROLE` on the Arbitrum `GhoReserve` is granted to the Arbitrum Risk Council.
 

@@ -8,8 +8,6 @@ import {GovernanceV3Arbitrum} from 'aave-address-book/GovernanceV3Arbitrum.sol';
 import {GhoArbitrum} from 'aave-address-book/GhoArbitrum.sol';
 import {GhoEthereum} from 'aave-address-book/GhoEthereum.sol';
 import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
-import {GovV3Helpers} from 'aave-helpers/src/GovV3Helpers.sol';
-import {IPayloadsControllerCore} from 'aave-address-book/GovernanceV3.sol';
 import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
 import {IUpgradeableBurnMintTokenPool_1_5_1} from 'src/interfaces/ccip/tokenPool/IUpgradeableBurnMintTokenPool.sol';
 import {IPool as IPool_CCIP} from 'src/interfaces/ccip/tokenPool/IPool.sol';
@@ -21,6 +19,7 @@ import {IAaveOracle} from 'aave-address-book/AaveV2.sol';
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 import {IGsm} from 'src/interfaces/IGsm.sol';
 import {IGsmFeeStrategy} from 'src/interfaces/IGsmFeeStrategy.sol';
+import {IGsmRegistry} from 'src/interfaces/IGsmRegistry.sol';
 import {IGsmSteward} from 'src/interfaces/IGsmSteward.sol';
 import {IGhoReserve} from 'src/interfaces/IGhoReserve.sol';
 import {IOracleSwapFreezer} from 'src/interfaces/IOracleSwapFreezer.sol';
@@ -86,6 +85,31 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
       AaveV3Arbitrum.POOL,
       address(proposal)
     );
+  }
+
+  function test_ghoReserveIsFunded() public {
+    assertEq(IERC20(GhoArbitrum.GHO_TOKEN).balanceOf(address(proposal.GHO_RESERVE())), 0);
+
+    executePayload(vm, address(proposal));
+
+    assertEq(
+      IERC20(GhoArbitrum.GHO_TOKEN).balanceOf(address(proposal.GHO_RESERVE())),
+      RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT
+    );
+  }
+
+  function test_gsmIsRegisteredUnderGsmRegistry() public {
+    IGsmRegistry registry = IGsmRegistry(proposal.GSM_REGISTRY());
+
+    assertEq(registry.getGsmListLength(), 0);
+
+    vm.expectRevert('INVALID_INDEX');
+    registry.getGsmAtIndex(0);
+
+    executePayload(vm, address(proposal));
+
+    assertEq(registry.getGsmListLength(), 1);
+    assertEq(registry.getGsmAtIndex(0), proposal.GSM_USDC());
   }
 
   function test_ccipOffRampIsRegistered() public view {
@@ -226,7 +250,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     assertTrue(outbound.isEnabled, 'post-proposal outbound rate limiter should be enabled');
   }
 
-  function test_bothGsmsRegisteredAsEntities() public {
+  function test_gsmRegisteredAsEntity() public {
     executePayload(vm, address(proposal));
 
     assertTrue(

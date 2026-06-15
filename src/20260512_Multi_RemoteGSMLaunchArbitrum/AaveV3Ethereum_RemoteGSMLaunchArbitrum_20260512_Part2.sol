@@ -25,20 +25,19 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
   // GhoDirectFacilitator Constants
   // https://etherscan.io/address/0x436dccc028322afc355f608cf582b7d7f19fdfed
   address public constant DIRECT_FACILITATOR = 0x436dCCC028322AfC355f608CF582B7d7F19FDfEd;
-  string public constant DIRECT_FACILITATOR_NAME = 'GhoDirectFacilitator Arbitrum';
+  string public constant DIRECT_FACILITATOR_NAME = 'GhoDirectFacilitator GSM Arbitrum';
 
   // https://etherscan.io/address/0x7F2f96fcdC3A29Be75938d2aC3D92E7006919fe6
   address public constant CCIP_BRIDGE = address(0x7F2f96fcdC3A29Be75938d2aC3D92E7006919fe6);
 
   // Deployed AaveGhoCcipBridge on Arbitrum (counterpart that will receive the CCIP
   // message and forward GHO to the Arbitrum Collector).
-  // https://etherscan.io/address/0x812fBcd390A3C6c01C65B767413Dea6f6e24FDD0
+  // https://arbiscan.io/address/0x812fBcd390A3C6c01C65B767413Dea6f6e24FDD0
   address public constant ARBITRUM_BRIDGE_DESTINATION = 0x812fBcd390A3C6c01C65B767413Dea6f6e24FDD0;
 
-  // TODO: confirm gas limit needed by AaveGhoCcipBridge.ccipReceive() on Arbitrum.
   // Typical bridge-receive gas limits sit in the 200k–500k range; pick a value that
   // covers the receive + Collector forwarding path with comfortable headroom.
-  uint32 public constant ARBITRUM_BRIDGE_GAS_LIMIT = 0;
+  uint32 public constant ARBITRUM_BRIDGE_GAS_LIMIT = 100_000;
 
   function execute() external {
     IGhoToken(AaveV3EthereumAssets.GHO_UNDERLYING).addFacilitator(

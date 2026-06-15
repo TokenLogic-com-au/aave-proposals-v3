@@ -41,13 +41,31 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
    * @dev executes the generic test suite including e2e and config snapshots
    */
   function test_defaultProposalExecution() public {
-    // TODO: remove when placeholders are in place.
-    vm.skip(proposal.DIRECT_FACILITATOR() == address(0) || proposal.CCIP_BRIDGE() == address(0));
     defaultTest(
       'AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2',
       AaveV3Ethereum.POOL,
       address(proposal)
     );
+  }
+
+  function test_ccipBridgeDestinationChainSetUp() public {
+    IAaveGhoCcipBridge bridge = IAaveGhoCcipBridge(proposal.CCIP_BRIDGE());
+
+    IAaveGhoCcipBridge.RemoteChainConfig memory config = bridge.getDestinationRemoteConfig(
+      CCIPChainSelectors.ARBITRUM
+    );
+
+    assertEq(config.destination, new bytes(0));
+    assertEq(config.extraArgsOverride, new bytes(0));
+    assertEq(config.gasLimit, 0);
+
+    executePayload(vm, address(proposal));
+
+    config = bridge.getDestinationRemoteConfig(CCIPChainSelectors.ARBITRUM);
+
+    assertEq(config.destination, abi.encode(proposal.ARBITRUM_BRIDGE_DESTINATION()));
+    assertEq(config.extraArgsOverride, new bytes(0));
+    assertEq(config.gasLimit, proposal.ARBITRUM_BRIDGE_GAS_LIMIT());
   }
 
   function test_bridgeLimitRestore() public {
@@ -75,11 +93,6 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
       RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_CAPACITY,
       'pre-proposal outbound tokens should exceed default'
     );
-
-    // TODO: remove when placeholders are in place.
-    // We can't run the full payload until the facilitator + bridge are deployed,
-    // because `execute()` calls `addFacilitator(address(0), ...)` and the CCIP send.
-    vm.skip(proposal.DIRECT_FACILITATOR() == address(0) || proposal.CCIP_BRIDGE() == address(0));
 
     executePayload(vm, address(proposal));
 
@@ -122,9 +135,6 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
   }
 
   function test_bridge() public {
-    // TODO: remove when placeholders are in place.
-    vm.skip(proposal.DIRECT_FACILITATOR() == address(0) || proposal.CCIP_BRIDGE() == address(0));
-
     // setUp already executed Part 1, raising the bridge limit and outbound rate limiter
     // on the GHO_CCIP_TOKEN_POOL so Part 2's bridge step has the headroom it needs.
     IGhoToken.Facilitator memory facilitator = IGhoToken(AaveV3EthereumAssets.GHO_UNDERLYING)
@@ -163,11 +173,6 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
   }
 
   function test_otherLaneRateLimitsRestored() public {
-    // TODO: remove when placeholders are in place.
-    // Same gate as test_bridgeLimitRestore — executing the payload requires the bridge
-    // and direct facilitator addresses to be filled in.
-    vm.skip(proposal.DIRECT_FACILITATOR() == address(0) || proposal.CCIP_BRIDGE() == address(0));
-
     executePayload(vm, address(proposal));
 
     // Every lane to every other supported network (Ethereum excluded, the Arbitrum lane

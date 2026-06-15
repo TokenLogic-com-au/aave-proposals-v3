@@ -89,7 +89,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
   ) internal {
     gsm.updateGhoReserve(address(GHO_RESERVE));
 
-    // Enroll GSMs as entities and set limit
+    // Enroll GSM as entity and set limit
     GHO_RESERVE.addEntity(address(gsm));
     GHO_RESERVE.setLimit(address(gsm), reserveLimit);
 
