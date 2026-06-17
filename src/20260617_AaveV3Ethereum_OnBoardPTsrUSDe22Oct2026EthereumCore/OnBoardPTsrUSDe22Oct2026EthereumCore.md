@@ -65,8 +65,8 @@ Pricing PT-srUSDe-22OCT2026 is done with a dynamic linear discount rate oracle.
 
 ## References
 
-- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260617_AaveV3Ethereum_OnBoardPTsrUSDe22Oct2026EthereumCore/AaveV3Ethereum_OnBoardPTsrUSDe22Oct2026EthereumCore_20260617.sol)
-- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260617_AaveV3Ethereum_OnBoardPTsrUSDe22Oct2026EthereumCore/AaveV3Ethereum_OnBoardPTsrUSDe22Oct2026EthereumCore_20260617.t.sol)
+- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/34ca81d91f2aed368169132eec4f312b3c4a9d26/src/20260617_AaveV3Ethereum_OnBoardPTsrUSDe22Oct2026EthereumCore/AaveV3Ethereum_OnBoardPTsrUSDe22Oct2026EthereumCore_20260617.sol)
+- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/34ca81d91f2aed368169132eec4f312b3c4a9d26/src/20260617_AaveV3Ethereum_OnBoardPTsrUSDe22Oct2026EthereumCore/AaveV3Ethereum_OnBoardPTsrUSDe22Oct2026EthereumCore_20260617.t.sol)
 - [Discussion](https://governance.aave.com/t/direct-to-aip-onboard-strata-srusde-22oct2026-pt-tokens-to-v3-core-instance/25113)
 
 ## Copyright
