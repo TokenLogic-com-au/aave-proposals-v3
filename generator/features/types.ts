@@ -2,6 +2,8 @@ import {Hex} from 'viem';
 import {NumberInputValues, PercentInputValues} from '../prompts';
 import {BooleanSelectValues} from '../prompts/boolPrompt';
 
+export type VotingNetwork = 'POLYGON' | 'ETHEREUM' | 'AVALANCHE';
+
 export interface AssetSelector {
   asset: string;
 }
@@ -22,8 +24,6 @@ export interface CapsUpdate extends CapsUpdatePartial, AssetSelector {}
 export interface BorrowUpdatePartial {
   enabledToBorrow: BooleanSelectValues;
   flashloanable: BooleanSelectValues;
-  borrowableInIsolation: BooleanSelectValues;
-  withSiloedBorrowing: BooleanSelectValues;
   reserveFactor: PercentInputValues;
 }
 
@@ -33,7 +33,6 @@ export interface CollateralUpdatePartial {
   ltv: PercentInputValues;
   liqThreshold: PercentInputValues;
   liqBonus: PercentInputValues;
-  debtCeiling: NumberInputValues;
   liqProtocolFee: PercentInputValues;
 }
 
@@ -64,11 +63,13 @@ export interface EModeCategoryPartial {
 export interface EModeCategoryUpdate extends EModeCategoryPartial {
   // library accessor or new id
   eModeCategory: string | number;
+  isolated: BooleanSelectValues;
 }
 
 export interface EModeCategoryCreation extends EModeCategoryPartial {
   borrowableAssets: string[];
   collateralAssets: string[];
+  isolated: Exclude<BooleanSelectValues, 'KEEP_CURRENT'>;
 }
 
 export interface RateStrategyParams {

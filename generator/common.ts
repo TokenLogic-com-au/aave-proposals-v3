@@ -7,6 +7,7 @@ import {
   V3_MARKETS,
   V4_MARKETS,
   VOTING_NETWORK,
+  VotingNetwork,
 } from './types';
 import {
   arbitrum,
@@ -31,7 +32,7 @@ import {
   xLayer,
 } from 'viem/chains';
 import {Hex, getAddress} from 'viem';
-import {getClient} from '@bgd-labs/toolbox';
+import {getClient} from '@aave-dao/toolbox';
 
 export const AVAILABLE_CHAINS = [
   'Ethereum',
@@ -127,7 +128,7 @@ export function getDate() {
   return `${years}${months <= 9 ? '0' : ''}${months}${day <= 9 ? '0' : ''}${day}`;
 }
 
-export function getVotingPortal(votingNetwork?: VOTING_NETWORK) {
+export function getVotingPortal(votingNetwork?: VOTING_NETWORK | VotingNetwork) {
   if (votingNetwork == VOTING_NETWORK.ETHEREUM) {
     return 'GovernanceV3Ethereum.VOTING_PORTAL_ETH_ETH';
   } else if (votingNetwork == VOTING_NETWORK.AVALANCHE) {
@@ -162,6 +163,10 @@ export function generateContractName(options: Options, market?: MarketIdentifier
 
 export function getChainAlias(chain) {
   return chain === 'Ethereum' ? 'mainnet' : chain.toLowerCase();
+}
+
+export function toSolidityIdentifier(symbol: string) {
+  return symbol.replace(/[^a-zA-Z0-9_]/g, '_');
 }
 
 export function pascalCase(str: string) {

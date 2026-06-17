@@ -33,8 +33,11 @@ import {
   V4TargetAdminDelayUpdate,
   V4PMSpokeRegistration,
   V4PMRoleRenouncement,
+  VotingNetwork,
 } from './features/types';
 import {FlashBorrower} from './features/flashBorrower';
+
+export type {VotingNetwork};
 
 export const V2_MARKETS = [
   'AaveV2Ethereum',
@@ -86,7 +89,7 @@ export interface Options {
   force?: boolean;
   markets: MarketIdentifier[];
   title: string;
-  votingNetwork?: VOTING_NETWORK;
+  votingNetwork?: VOTING_NETWORK | VotingNetwork;
   // automatically generated shortName from title
   shortName: string;
   author: string;

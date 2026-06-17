@@ -3,16 +3,22 @@ import {EModeCategoryCreation, EModeCategoryPartial} from './types';
 import {confirm} from '@inquirer/prompts';
 import {stringPrompt} from '../prompts/stringPrompt';
 import {percentPrompt, translateJsPercentToSol} from '../prompts/percentPrompt';
+import {boolPrompt, BooleanSelectValues} from '../prompts/boolPrompt';
 import {
   assetsSelectPrompt,
   getNewListingSymbols,
   translateAssetToAssetLibUnderlying,
 } from '../prompts/assetsSelectPrompt';
 import {pascalCase} from '../common';
+import {eModeCreationTests} from './eModesTestHelpers';
 
 export async function fetchEmodeCategoryData<T extends boolean>(
   required?: T,
-): Promise<EModeCategoryPartial> {
+): Promise<
+  EModeCategoryPartial & {
+    isolated: T extends true ? Exclude<BooleanSelectValues, 'KEEP_CURRENT'> : BooleanSelectValues;
+  }
+> {
   return {
     ltv: await percentPrompt({
       message: 'ltv',
@@ -28,6 +34,10 @@ export async function fetchEmodeCategoryData<T extends boolean>(
     }),
     label: await stringPrompt({
       message: 'label',
+      required,
+    }),
+    isolated: await boolPrompt({
+      message: 'isolated',
       required,
     }),
   };
@@ -79,6 +89,10 @@ export const eModeCreations: FeatureModule<EmodeCreations> = {
   },
   build({market, cfg, configs}) {
     const newListings = new Set(getNewListingSymbols(configs));
+    const listings = [
+      ...(configs[FEATURE.ASSET_LISTING] ?? []),
+      ...(configs[FEATURE.ASSET_LISTING_CUSTOM] ?? []).map((l) => l.base),
+    ];
     const response: CodeArtifact = {
       code: {
         fn: [
@@ -111,6 +125,7 @@ export const eModeCreations: FeatureModule<EmodeCreations> = {
                 liqThreshold: ${translateJsPercentToSol(cfg.liqThreshold)},
                 liqBonus: ${translateJsPercentToSol(cfg.liqBonus)},
                 label: '${cfg.label}',
+                isolated: ${cfg.isolated === 'ENABLED'},
                 collaterals: collateralAssets_${pascalCase(cfg.label)},
                 borrowables: borrowableAssets_${pascalCase(cfg.label)}
               });`,
@@ -120,6 +135,9 @@ export const eModeCreations: FeatureModule<EmodeCreations> = {
           return eModeCreations;
         }`,
         ],
+      },
+      test: {
+        fn: eModeCreationTests(market, cfg, newListings, listings),
       },
     };
     return response;
