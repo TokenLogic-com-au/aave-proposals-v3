@@ -1,5 +1,5 @@
 ---
-title: "[AIP] TokenLogic Service Provider Renewal"
+title: "TokenLogic Service Provider Renewal"
 author: "@TokenLogic"
 discussions: "https://governance.aave.com/t/arfc-tokenlogic-phase-ii-extension/24846"
 snapshot: "https://snapshot.org/#/s:aavedao.eth/proposal/0x6c2814dc5da68698105894f1c450c80aa2296243ff737843cf9e869eecd8fa69"

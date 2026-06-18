@@ -123,7 +123,7 @@ contract AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526_Test is Prot
 
     executePayload(vm, address(proposal));
 
-    vm.warp(block.timestamp + 1 days);
+    skip(1 days);
 
     uint256 balanceBefore = IERC20(AaveV3EthereumLidoAssets.GHO_A_TOKEN).balanceOf(receiver);
 
@@ -145,7 +145,7 @@ contract AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526_Test is Prot
       receiver
     );
 
-    vm.warp(block.timestamp + proposal.STREAM_DURATION());
+    skip(proposal.STREAM_DURATION());
 
     uint256 streamable = AaveV3EthereumLido.COLLECTOR.balanceOf(nextStreamId, receiver);
     assertApproxEqRel(streamable, proposal.GHO_STREAM_AMOUNT(), MAX_DELTA_STREAM_BALANCE);
@@ -209,7 +209,7 @@ contract AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526_Test is Prot
 
     executePayload(vm, address(proposal));
 
-    vm.warp(block.timestamp + 1 days);
+    skip(1 days);
 
     uint256 balanceBefore = IERC20(AaveV3EthereumAssets.AAVE_UNDERLYING).balanceOf(receiver);
 
@@ -229,7 +229,7 @@ contract AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526_Test is Prot
 
     executePayload(vm, address(proposal));
 
-    vm.warp(block.timestamp + proposal.STREAM_DURATION());
+    skip(proposal.STREAM_DURATION());
 
     uint256 streamable = reserve.balanceOf(nextStreamId, receiver);
     assertEq(streamable, expectedAmount);
@@ -242,7 +242,7 @@ contract AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526_Test is Prot
     uint256 balanceAfter = IERC20(AaveV3EthereumAssets.AAVE_UNDERLYING).balanceOf(receiver);
     assertEq(balanceAfter, balanceBefore + expectedAmount);
 
-    vm.warp(block.timestamp + 30 days);
+    skip(30 days);
     vm.expectRevert(bytes('stream does not exist'));
     reserve.balanceOf(nextStreamId, receiver);
   }

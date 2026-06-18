@@ -2,7 +2,7 @@ import {ConfigFile} from '../../generator/types';
 export const config: ConfigFile = {
   rootOptions: {
     pools: ['AaveV3EthereumLido'],
-    title: '[AIP] TokenLogic Service Provider Renewal',
+    title: 'TokenLogic Service Provider Renewal',
     shortName: 'ARFCTokenLogicPhaseIIExtension',
     date: '20260526',
     author: '@TokenLogic',

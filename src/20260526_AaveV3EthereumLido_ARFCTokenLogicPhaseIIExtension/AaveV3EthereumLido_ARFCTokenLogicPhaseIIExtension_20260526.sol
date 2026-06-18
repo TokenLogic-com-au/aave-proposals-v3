@@ -9,7 +9,7 @@ import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGen
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 
 /**
- * @title [AIP] TokenLogic Service Provider Renewal
+ * @title TokenLogic Service Provider Renewal
  * @author @TokenLogic
  * - Snapshot: https://snapshot.org/#/s:aavedao.eth/proposal/0x6c2814dc5da68698105894f1c450c80aa2296243ff737843cf9e869eecd8fa69
  * - Discussion: https://governance.aave.com/t/arfc-tokenlogic-phase-ii-extension/24846
