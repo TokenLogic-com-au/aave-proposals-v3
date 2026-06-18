@@ -7,7 +7,7 @@ import {GhoCCIPChains} from '../helpers/gho-launch/constants/GhoCCIPChains.sol';
 /**
  * @title Gho Monad Launch
  * @author @TokenLogic
- * - Snapshot: TODO
+ * - Snapshot: https://snapshot.box/#/s:aavedao.eth/proposal/0x24f105bd023c476a9b85fa87ff795bfeec769fa799ce6ada8e2724c9738049f6
  * - Discussion: TODO
  */
 contract AaveV3Monad_GhoMonadActivation_20260518 is AaveV3GHOLaunch {

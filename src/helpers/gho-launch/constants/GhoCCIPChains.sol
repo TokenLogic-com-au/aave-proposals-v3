@@ -39,7 +39,6 @@ import {GovernanceV3Mantle} from 'aave-address-book/GovernanceV3Mantle.sol';
 import {AaveV3XLayer} from 'aave-address-book/AaveV3XLayer.sol';
 import {GovernanceV3XLayer} from 'aave-address-book/GovernanceV3XLayer.sol';
 
-// TODO
 import {AaveV3Monad} from 'aave-address-book/AaveV3Monad.sol';
 import {GovernanceV3Monad} from 'aave-address-book/GovernanceV3Monad.sol';
 
@@ -383,18 +382,18 @@ library GhoCCIPChains {
   }
 
   /**
-   * @notice TODO Returns the ChainInfo constant for Monad
+   * @notice Returns the ChainInfo constant for Monad
    * @return The ChainInfo constant for Monad
    */
   function MONAD() public pure returns (ChainInfo memory) {
     return
       ChainInfo({
         chainSelector: CCIPChainSelectors.MONAD,
-        ghoToken: address(0x70D0),
-        ghoCCIPTokenPool: address(0x70D0),
-        ghoBucketSteward: address(0x70D0),
+        ghoToken: 0xa5ae05b71c3f170e12e7620fdf7679721aec1ec8,
+        ghoCCIPTokenPool: 0xfc421ad3c883bf9e7c4f42de845c4e4405799e73,
+        ghoBucketSteward: 0xDe6539018B095353A40753Dc54C91C68c9487D4E,
         ghoAaveCoreSteward: address(0x70D0),
-        ghoCCIPSteward: address(0x70D0),
+        ghoCCIPSteward: 0x360d8aa8F6b09B7BC57aF34db2Eb84dD87bf4d12,
         aclManager: address(AaveV3Monad.ACL_MANAGER),
         tokenAdminRegistry: CCIPChainTokenAdminRegistries.MONAD,
         owner: GovernanceV3Monad.EXECUTOR_LVL_1,

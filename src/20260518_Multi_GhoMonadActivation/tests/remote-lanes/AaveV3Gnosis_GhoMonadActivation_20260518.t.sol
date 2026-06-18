@@ -7,8 +7,7 @@ import {AaveV3GHOLane} from '../../../helpers/gho-launch/AaveV3GHOLane.sol';
 import {AaveV3Gnosis_GhoMonadActivation_20260518} from '../../remote-lanes/AaveV3Gnosis_GhoMonadActivation_20260518.sol';
 import {AaveV3Gnosis} from 'aave-address-book/AaveV3Gnosis.sol';
 
-// TODO
-uint256 constant GNOSIS_BLOCK_NUMBER = 00;
+uint256 constant GNOSIS_BLOCK_NUMBER = 46758170;
 
 contract Gnosis_Monad_AaveV3GHOLane_20260105_Test_PreExecution is
   AaveV3GHORemoteLaneTest_PreExecution

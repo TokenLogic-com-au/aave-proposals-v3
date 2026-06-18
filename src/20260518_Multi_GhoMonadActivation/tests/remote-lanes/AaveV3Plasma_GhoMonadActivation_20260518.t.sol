@@ -7,8 +7,7 @@ import {AaveV3GHOLane} from '../../../helpers/gho-launch/AaveV3GHOLane.sol';
 import {AaveV3Plasma_GhoMonadActivation_20260518} from '../../remote-lanes/AaveV3Plasma_GhoMonadActivation_20260518.sol';
 import {AaveV3Plasma} from 'aave-address-book/AaveV3Plasma.sol';
 
-// TODO
-uint256 constant PLASMA_BLOCK_NUMBER = 00;
+uint256 constant PLASMA_BLOCK_NUMBER = 24837240;
 
 contract Plasma_Monad_AaveV3GHOLane_20260105_Test_PreExecution is
   AaveV3GHORemoteLaneTest_PreExecution

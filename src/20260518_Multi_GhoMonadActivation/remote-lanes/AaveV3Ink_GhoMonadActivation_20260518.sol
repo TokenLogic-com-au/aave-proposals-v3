@@ -6,8 +6,8 @@ import {GhoCCIPChains} from '../../helpers/gho-launch/constants/GhoCCIPChains.so
 /**
  * @title Ink<>Monad GHO CCIP Lane
  * @author TokenLogic
- * - Snapshot: TODO
- * - Discussion: TODO
+ * - Snapshot: https://snapshot.box/#/s:aavedao.eth/proposal/0x24f105bd023c476a9b85fa87ff795bfeec769fa799ce6ada8e2724c9738049f6
+ * - Discussion: https://governance.aave.com/t/arfc-deploy-aave-protocol-on-monad/24943
  */
 contract AaveV3Ink_GhoMonadActivation_20260518 is AaveV3GHOLane {
   constructor() AaveV3GHOLane(GhoCCIPChains.INK()) {}

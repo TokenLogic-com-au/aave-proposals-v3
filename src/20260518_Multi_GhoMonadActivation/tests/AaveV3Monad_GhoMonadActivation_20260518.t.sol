@@ -12,8 +12,7 @@ import {AaveV3Monad_GhoMonadActivation_20260518} from '../AaveV3Monad_GhoMonadAc
 contract AaveV3Monad_GhoMonadActivation_20260518_Test is ProtocolV3TestBase {
   AaveV3Monad_GhoMonadActivation_20260518 internal proposal;
   function setUp() public {
-    // TODO: choose block number
-    vm.createSelectFork(vm.rpcUrl('monad'), 000000);
+    vm.createSelectFork(vm.rpcUrl('monad'), 82069090);
     proposal = new AaveV3Monad_GhoMonadActivation_20260518();
   }
 
