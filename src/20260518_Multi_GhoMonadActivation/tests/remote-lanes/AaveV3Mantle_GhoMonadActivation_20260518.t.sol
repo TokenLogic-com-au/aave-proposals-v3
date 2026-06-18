@@ -36,9 +36,8 @@ contract Mantle_Monad_AaveV3GHOLane_20260105_Test_PreExecution is
   }
 
   function _assertOnAndOffRamps() internal view override {
-    _assertOnRamp_1_6(
-      _localOutboundLaneToEth_1_6(),
-      LOCAL_CHAIN_SELECTOR,
+    _assertOnRamp_2_0(
+      address(_localOutboundLaneToEth_1_6()),
       ETH_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
     );
@@ -80,9 +79,8 @@ contract Mantle_Monad_AaveV3GHOLane_20260105_Test_PostExecution is
   }
 
   function _assertOnAndOffRamps() internal view override {
-    _assertOnRamp_1_6(
-      _localOutboundLaneToEth_1_6(),
-      LOCAL_CHAIN_SELECTOR,
+    _assertOnRamp_2_0(
+      address(_localOutboundLaneToEth_1_6()),
       ETH_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
     );

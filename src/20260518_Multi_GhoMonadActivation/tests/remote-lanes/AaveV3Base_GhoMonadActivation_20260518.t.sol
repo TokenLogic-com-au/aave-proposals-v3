@@ -30,8 +30,8 @@ contract Base_Monad_AaveV3GHOLane_20260105_Test_PreExecution is
   }
 
   function _assertOnAndOffRamps() internal view override {
-    _assertOnRamp(
-      _localOutboundLaneToEth(),
+    _assertOnRamp_1_6(
+      _localOutboundLaneToEth_1_6(),
       LOCAL_CHAIN_SELECTOR,
       ETH_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
@@ -42,8 +42,8 @@ contract Base_Monad_AaveV3GHOLane_20260105_Test_PreExecution is
       REMOTE_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
     );
-    _assertOffRamp(
-      _localInboundLaneFromEth(),
+    _assertOffRamp_1_6(
+      _localInboundLaneFromEth_1_6(),
       ETH_CHAIN_SELECTOR,
       LOCAL_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
@@ -74,8 +74,8 @@ contract Base_Monad_AaveV3GHOLane_20260105_Test_PostExecution is
   }
 
   function _assertOnAndOffRamps() internal view override {
-    _assertOnRamp(
-      _localOutboundLaneToEth(),
+    _assertOnRamp_1_6(
+      _localOutboundLaneToEth_1_6(),
       LOCAL_CHAIN_SELECTOR,
       ETH_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
@@ -86,8 +86,8 @@ contract Base_Monad_AaveV3GHOLane_20260105_Test_PostExecution is
       REMOTE_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
     );
-    _assertOffRamp(
-      _localInboundLaneFromEth(),
+    _assertOffRamp_1_6(
+      _localInboundLaneFromEth_1_6(),
       ETH_CHAIN_SELECTOR,
       LOCAL_CHAIN_SELECTOR,
       LOCAL_CCIP_ROUTER
