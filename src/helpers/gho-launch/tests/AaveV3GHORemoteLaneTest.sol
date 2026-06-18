@@ -7,6 +7,7 @@ import {IInternal} from 'src/interfaces/ccip/IInternal.sol';
 import {IRateLimiter} from 'src/interfaces/ccip/IRateLimiter.sol';
 import {GhoCCIPChains} from '../constants/GhoCCIPChains.sol';
 import {IOnRamp_1_6} from 'src/interfaces/ccip/IEVM2EVMOnRamp.sol';
+import {ITypeAndVersion} from 'src/interfaces/ccip/ITypeAndVersion.sol';
 import {Vm} from 'forge-std/Vm.sol';
 import {AaveV3GHOLaneTest} from './AaveV3GHOLaneTest.sol';
 
@@ -100,7 +101,8 @@ abstract contract BaseAaveV3GHORemoteLaneTest_PostExecution is AaveV3GHOLaneTest
   function _isEthLane_1_6() internal view returns (bool) {
     address onRamp = LOCAL_CCIP_ROUTER.getOnRamp(ETH_CHAIN_SELECTOR);
     return
-      keccak256(bytes(IOnRamp_1_6(onRamp).typeAndVersion())) == keccak256(bytes('OnRamp 1.6.0'));
+      keccak256(bytes(ITypeAndVersion(onRamp).typeAndVersion())) ==
+      keccak256(bytes('OnRamp 1.6.0'));
   }
 
   function _sendMessageToEth(uint256 amount, uint256 aliceBalance, uint256 bucketLevel) internal {

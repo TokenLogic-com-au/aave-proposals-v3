@@ -10,6 +10,7 @@ import {IRouter} from 'src/interfaces/ccip/IRouter.sol';
 import {IRateLimiter} from 'src/interfaces/ccip/IRateLimiter.sol';
 import {IEVM2EVMOnRamp, IOnRamp_1_6} from 'src/interfaces/ccip/IEVM2EVMOnRamp.sol';
 import {IEVM2EVMOffRamp_1_5, IOffRamp_1_6} from 'src/interfaces/ccip/IEVM2EVMOffRamp.sol';
+import {ITypeAndVersion} from 'src/interfaces/ccip/ITypeAndVersion.sol';
 import {ITokenAdminRegistry} from 'src/interfaces/ccip/ITokenAdminRegistry.sol';
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
@@ -294,7 +295,7 @@ abstract contract AaveV3GHOLaneTest is ProtocolV3TestBase {
     uint64 dstSelector,
     IRouter router
   ) internal view virtual {
-    assertEq(IOnRamp_1_6(onRamp).typeAndVersion(), 'OnRamp 2.0.0');
+    assertEq(ITypeAndVersion(onRamp).typeAndVersion(), 'OnRamp 2.0.0');
     assertEq(router.getOnRamp(dstSelector), onRamp);
   }
 
@@ -397,7 +398,8 @@ abstract contract AaveV3GHOLaneTest is ProtocolV3TestBase {
 
   function _isOnRamp_2_0(address onRamp) internal view virtual returns (bool) {
     return
-      keccak256(bytes(IOnRamp_1_6(onRamp).typeAndVersion())) == keccak256(bytes('OnRamp 2.0.0'));
+      keccak256(bytes(ITypeAndVersion(onRamp).typeAndVersion())) ==
+      keccak256(bytes('OnRamp 2.0.0'));
   }
 
   /// @dev Asserts that `onRamp` emitted the 2.0 `CCIPMessageSent` for the expected lane and sender.
