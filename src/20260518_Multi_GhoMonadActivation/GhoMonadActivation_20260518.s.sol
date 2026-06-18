@@ -13,6 +13,7 @@ import {AaveV3Gnosis_GhoMonadActivation_20260518} from './remote-lanes/AaveV3Gno
 import {AaveV3Plasma_GhoMonadActivation_20260518} from './remote-lanes/AaveV3Plasma_GhoMonadActivation_20260518.sol';
 import {AaveV3Ink_GhoMonadActivation_20260518} from './remote-lanes/AaveV3Ink_GhoMonadActivation_20260518.sol';
 import {AaveV3Mantle_GhoMonadActivation_20260518} from './remote-lanes/AaveV3Mantle_GhoMonadActivation_20260518.sol';
+import {AaveV3XLayer_GhoMonadActivation_20260518} from './remote-lanes/AaveV3XLayer_GhoMonadActivation_20260518.sol';
 import {AaveV3Monad_GhoMonadActivation_20260518} from './AaveV3Monad_GhoMonadActivation_20260518.sol';
 
 /**
@@ -214,22 +215,22 @@ contract DeployXLayer is XLayerScript {
  * deploy-command: make deploy-ledger contract=src/20260518_Multi_GhoMonadActivation/GhoMonadActivation_20260518.s.sol:DeployMonad chain=monad
  * verify-command: FOUNDRY_PROFILE=deploy npx catapulta-verify -b broadcast/GhoMonadActivation_20260518.s.sol/143/run-latest.json
  */
-contract DeployMonad is MonadScript {
-  function run() external broadcast {
-    // deploy payloads
-    address payload0 = GovV3Helpers.deployDeterministic(
-      type(AaveV3Monad_GhoMonadActivation_20260518).creationCode
-    );
+// contract DeployMonad is MonadScript {
+//   function run() external broadcast {
+//     // deploy payloads
+//     address payload0 = GovV3Helpers.deployDeterministic(
+//       type(AaveV3Monad_GhoMonadActivation_20260518).creationCode
+//     );
 
-    // compose action
-    IPayloadsControllerCore.ExecutionAction[]
-      memory actions = new IPayloadsControllerCore.ExecutionAction[](1);
-    actions[0] = GovV3Helpers.buildAction(payload0);
+//     // compose action
+//     IPayloadsControllerCore.ExecutionAction[]
+//       memory actions = new IPayloadsControllerCore.ExecutionAction[](1);
+//     actions[0] = GovV3Helpers.buildAction(payload0);
 
-    // register action at payloadsController
-    GovV3Helpers.createPayload(actions);
-  }
-}
+//     // register action at payloadsController
+//     GovV3Helpers.createPayload(actions);
+//   }
+// }
 
 /**
  * @dev Create Proposal
@@ -328,7 +329,7 @@ contract CreateProposal is EthereumScript {
       actionsMonad[0] = GovV3Helpers.buildAction(
         type(AaveV3Monad_GhoMonadActivation_20260518).creationCode
       );
-      payloads[9] = GovV3Helpers.buildMonadPayload(vm, actionsMonad);
+      // payloads[9] = GovV3Helpers.buildMonadPayload(vm, actionsMonad);
     }
 
     // create proposal
