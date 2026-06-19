@@ -51,8 +51,8 @@ The payload performs the following actions on Ethereum mainnet:
 
 ## References
 
-- Implementation: [AaveV3EthereumLido](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260526_AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension/AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526.sol)
-- Tests: [AaveV3EthereumLido](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260526_AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension/AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526.t.sol)
+- Implementation: [AaveV3EthereumLido](https://github.com/aave-dao/aave-proposals-v3/blob/ebd3c58c2c491789de2eb3a9f0d74bd253f740b6/src/20260526_AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension/AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526.sol)
+- Tests: [AaveV3EthereumLido](https://github.com/aave-dao/aave-proposals-v3/blob/ebd3c58c2c491789de2eb3a9f0d74bd253f740b6/src/20260526_AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension/AaveV3EthereumLido_ARFCTokenLogicPhaseIIExtension_20260526.t.sol)
 - [Snapshot](https://snapshot.org/#/s:aavedao.eth/proposal/0x6c2814dc5da68698105894f1c450c80aa2296243ff737843cf9e869eecd8fa69)
 - [Discussion](https://governance.aave.com/t/arfc-tokenlogic-phase-ii-extension/24846)
 
