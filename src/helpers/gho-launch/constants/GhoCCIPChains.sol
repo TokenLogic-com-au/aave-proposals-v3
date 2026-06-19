@@ -39,6 +39,7 @@ import {GovernanceV3Mantle} from 'aave-address-book/GovernanceV3Mantle.sol';
 import {AaveV3XLayer} from 'aave-address-book/AaveV3XLayer.sol';
 import {GovernanceV3XLayer} from 'aave-address-book/GovernanceV3XLayer.sol';
 
+import {AaveV3Monad} from 'aave-address-book/AaveV3Monad.sol';
 import {GovernanceV3Monad} from 'aave-address-book/GovernanceV3Monad.sol';
 
 /**
@@ -391,9 +392,9 @@ library GhoCCIPChains {
         ghoToken: 0xA5AE05b71c3F170E12E7620Fdf7679721aec1EC8,
         ghoCCIPTokenPool: 0xfc421aD3C883Bf9E7C4f42dE845C4e4405799e73,
         ghoBucketSteward: 0xDe6539018B095353A40753Dc54C91C68c9487D4E,
-        ghoAaveCoreSteward: address(0x70D0),
+        ghoAaveCoreSteward: 0xA5Ba213867E175A182a5dd6A9193C6158738105A,
         ghoCCIPSteward: 0x360d8aa8F6b09B7BC57aF34db2Eb84dD87bf4d12,
-        aclManager: address(0),
+        aclManager: address(AaveV3Monad.ACL_MANAGER),
         tokenAdminRegistry: CCIPChainTokenAdminRegistries.MONAD,
         owner: GovernanceV3Monad.EXECUTOR_LVL_1,
         ccipRouter: CCIPChainRouters.MONAD,

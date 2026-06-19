@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import {Script} from 'forge-std/Script.sol';
+
 import {GovV3Helpers, IPayloadsControllerCore, PayloadsControllerUtils} from 'aave-helpers/src/GovV3Helpers.sol';
 import {GovernanceV3Ethereum} from 'aave-address-book/GovernanceV3Ethereum.sol';
 
-import {EthereumScript, AvalancheScript, ArbitrumScript, BaseScript, GnosisScript, InkScript, PlasmaScript, MantleScript, XLayerScript} from 'solidity-utils/contracts/utils/ScriptUtils.sol';
+import {EthereumScript, AvalancheScript, ArbitrumScript, BaseScript, GnosisScript, InkScript, PlasmaScript, MantleScript, XLayerScript, WithChainIdValidation} from 'solidity-utils/contracts/utils/ScriptUtils.sol';
 import {AaveV3Ethereum_GhoMonadActivation_20260518} from './remote-lanes/AaveV3Ethereum_GhoMonadActivation_20260518.sol';
 import {AaveV3Avalanche_GhoMonadActivation_20260518} from './remote-lanes/AaveV3Avalanche_GhoMonadActivation_20260518.sol';
 import {AaveV3Arbitrum_GhoMonadActivation_20260518} from './remote-lanes/AaveV3Arbitrum_GhoMonadActivation_20260518.sol';
@@ -215,22 +217,30 @@ contract DeployXLayer is XLayerScript {
  * deploy-command: make deploy-ledger contract=src/20260518_Multi_GhoMonadActivation/GhoMonadActivation_20260518.s.sol:DeployMonad chain=monad
  * verify-command: FOUNDRY_PROFILE=deploy npx catapulta-verify -b broadcast/GhoMonadActivation_20260518.s.sol/143/run-latest.json
  */
-// contract DeployMonad is MonadScript {
-//   function run() external broadcast {
-//     // deploy payloads
-//     address payload0 = GovV3Helpers.deployDeterministic(
-//       type(AaveV3Monad_GhoMonadActivation_20260518).creationCode
-//     );
+contract DeployMonad is Script {
+  modifier broadcast() {
+    vm.startBroadcast();
+    _;
+    vm.stopBroadcast();
+  }
 
-//     // compose action
-//     IPayloadsControllerCore.ExecutionAction[]
-//       memory actions = new IPayloadsControllerCore.ExecutionAction[](1);
-//     actions[0] = GovV3Helpers.buildAction(payload0);
+  function run() external broadcast {
+    require(block.chainid == 143, 'CHAIN_ID_MISMATCH');
 
-//     // register action at payloadsController
-//     GovV3Helpers.createPayload(actions);
-//   }
-// }
+    // deploy payloads
+    address payload0 = GovV3Helpers.deployDeterministic(
+      type(AaveV3Monad_GhoMonadActivation_20260518).creationCode
+    );
+
+    // compose action
+    IPayloadsControllerCore.ExecutionAction[]
+      memory actions = new IPayloadsControllerCore.ExecutionAction[](1);
+    actions[0] = GovV3Helpers.buildAction(payload0);
+
+    // register action at payloadsController
+    GovV3Helpers.createPayload(actions);
+  }
+}
 
 /**
  * @dev Create Proposal
@@ -329,7 +339,7 @@ contract CreateProposal is EthereumScript {
       actionsMonad[0] = GovV3Helpers.buildAction(
         type(AaveV3Monad_GhoMonadActivation_20260518).creationCode
       );
-      // payloads[9] = GovV3Helpers.buildMonadPayload(vm, actionsMonad);
+      payloads[9] = GovV3Helpers.buildMonadPayload(vm, actionsMonad);
     }
 
     // create proposal
