@@ -87,8 +87,8 @@ The USDG price reference is migrated from the fixed $1.00 feed to the live Chain
 
 ## References
 
-- Implementation: [AaveV4Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260514_AaveV4Ethereum_OnboardPTUSDG24SEP2026OnV4PaxosUSDGPendle/AaveV4Ethereum_OnboardPTUSDG24SEP2026OnV4PaxosUSDGPendle_20260514.sol)
-- Tests: [AaveV4Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260514_AaveV4Ethereum_OnboardPTUSDG24SEP2026OnV4PaxosUSDGPendle/AaveV4Ethereum_OnboardPTUSDG24SEP2026OnV4PaxosUSDGPendle_20260514.t.sol)
+- Implementation: [AaveV4Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/de1d836c2b0377d3248010a43dd1164fc004dab7/src/20260514_AaveV4Ethereum_OnboardPTUSDG24SEP2026OnV4PaxosUSDGPendle/AaveV4Ethereum_OnboardPTUSDG24SEP2026OnV4PaxosUSDGPendle_20260514.sol)
+- Tests: [AaveV4Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/de1d836c2b0377d3248010a43dd1164fc004dab7/src/20260514_AaveV4Ethereum_OnboardPTUSDG24SEP2026OnV4PaxosUSDGPendle/AaveV4Ethereum_OnboardPTUSDG24SEP2026OnV4PaxosUSDGPendle_20260514.t.sol)
 - Snapshot: Direct-To-AIP
 - [Discussion](https://governance.aave.com/t/direct-to-aip-onboard-pt-usdg-24sep2026-to-aave-v4-on-ethereum/24942/3)
 
