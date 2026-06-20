@@ -8,7 +8,7 @@ import {IClient} from 'src/interfaces/ccip/IClient.sol';
 import {IInternal} from 'src/interfaces/ccip/IInternal.sol';
 import {IRouter} from 'src/interfaces/ccip/IRouter.sol';
 import {IRateLimiter} from 'src/interfaces/ccip/IRateLimiter.sol';
-import {IEVM2EVMOnRamp, IOnRamp_1_6} from 'src/interfaces/ccip/IEVM2EVMOnRamp.sol';
+import {IEVM2EVMOnRamp, IOnRamp_1_6, IOnRamp_2_0} from 'src/interfaces/ccip/IEVM2EVMOnRamp.sol';
 import {IEVM2EVMOffRamp_1_5, IOffRamp_1_6} from 'src/interfaces/ccip/IEVM2EVMOffRamp.sol';
 import {ITypeAndVersion} from 'src/interfaces/ccip/ITypeAndVersion.sol';
 import {ITokenAdminRegistry} from 'src/interfaces/ccip/ITokenAdminRegistry.sol';
@@ -292,10 +292,12 @@ abstract contract AaveV3GHOLaneTest is ProtocolV3TestBase {
 
   function _assertOnRamp_2_0(
     address onRamp,
+    uint64 srcSelector,
     uint64 dstSelector,
     IRouter router
   ) internal view virtual {
     assertEq(ITypeAndVersion(onRamp).typeAndVersion(), 'OnRamp 2.0.0');
+    assertEq(IOnRamp_2_0(onRamp).getStaticConfig().chainSelector, srcSelector);
     assertEq(router.getOnRamp(dstSelector), onRamp);
   }
 

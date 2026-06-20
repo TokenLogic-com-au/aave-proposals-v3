@@ -389,8 +389,8 @@ library GhoCCIPChains {
     return
       ChainInfo({
         chainSelector: CCIPChainSelectors.MONAD,
-        ghoToken: 0xA5AE05b71c3F170E12E7620Fdf7679721aec1EC8,
-        ghoCCIPTokenPool: 0xfc421aD3C883Bf9E7C4f42dE845C4e4405799e73,
+        ghoToken: 0xfc421aD3C883Bf9E7C4f42dE845C4e4405799e73,
+        ghoCCIPTokenPool: 0xA5AE05b71c3F170E12E7620Fdf7679721aec1EC8,
         ghoBucketSteward: 0xDe6539018B095353A40753Dc54C91C68c9487D4E,
         ghoAaveCoreSteward: 0xA5Ba213867E175A182a5dd6A9193C6158738105A,
         ghoCCIPSteward: 0x360d8aa8F6b09B7BC57aF34db2Eb84dD87bf4d12,

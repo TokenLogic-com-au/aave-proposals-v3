@@ -32,6 +32,6 @@ export const config: ConfigFile = {
     AaveV3Mantle: {configs: {OTHERS: {}}, cache: {blockNumber: 96884178}},
     AaveV3InkWhitelabel: {configs: {OTHERS: {}}, cache: {blockNumber: 48278619}},
     AaveV3XLayer: {configs: {OTHERS: {}}, cache: {blockNumber: 63129679}},
-    AaveV3Monad: {configs: {OTHERS: {}}, cache: {blockNumber: 82069090}},
+    AaveV3Monad: {configs: {OTHERS: {}}, cache: {blockNumber: 82605370}},
   },
 };
