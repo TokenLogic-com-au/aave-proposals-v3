@@ -81,5 +81,6 @@ plasma = "${RPC_PLASMA}"
 mantle = "${RPC_MANTLE}"
 xlayer = "${RPC_XLAYER}"
 megaeth = "${RPC_MEGAETH}"
+monad = "${RPC_MONAD}"
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/crates/config
