@@ -6,7 +6,7 @@ import {IRouter} from 'src/interfaces/ccip/IRouter.sol';
 import {IInternal} from 'src/interfaces/ccip/IInternal.sol';
 import {IEVM2EVMOnRamp, IOnRamp_1_6} from 'src/interfaces/ccip/IEVM2EVMOnRamp.sol';
 import {INonceManager} from 'src/interfaces/ccip/INonceManager.sol';
-import {IFeeQuoter} from 'src/interfaces/ccip/IFeeQuoter.sol';
+import {ILegacyFeeQuoter} from 'src/interfaces/ccip/ILegacyFeeQuoter.sol';
 
 library CCIPUtils {
   bytes32 internal constant LEAF_DOMAIN_SEPARATOR =
@@ -126,7 +126,7 @@ library CCIPUtils {
     MessageToEventParams memory params
   ) public view returns (IInternal.EVM2AnyRampMessage memory) {
     IOnRamp_1_6 onRamp = IOnRamp_1_6(params.router.getOnRamp(params.destChainSelector));
-    IFeeQuoter feeQuoter = IFeeQuoter(onRamp.getDynamicConfig().feeQuoter);
+    ILegacyFeeQuoter feeQuoter = ILegacyFeeQuoter(onRamp.getDynamicConfig().feeQuoter);
 
     // The OnRamp emits the FeeQuoter-converted extraArgs (e.g. with `allowOutOfOrderExecution`
     // forced on for lanes that enforce it), not the raw user supplied args. The same flag also

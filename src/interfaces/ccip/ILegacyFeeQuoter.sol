@@ -6,7 +6,7 @@ import {IInternal} from './IInternal.sol';
 
 /// @dev Minimal FeeQuoter interface (CCIP 1.6 / 2.0) exposing the views the OnRamp uses
 /// when emitting `CCIPMessageSent`, so tests can reconstruct the exact emitted message.
-interface IFeeQuoter {
+interface ILegacyFeeQuoter {
   /// @notice Validates & converts the user supplied extraArgs and reports the resolved
   /// out-of-order execution flag (the OnRamp emits `convertedExtraArgs`, not the raw args).
   function processMessageArgs(
