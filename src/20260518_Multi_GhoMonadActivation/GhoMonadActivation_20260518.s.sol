@@ -241,7 +241,7 @@ contract DeployMonad is MonadScript {
 contract CreateProposal is EthereumScript {
   function run() external {
     // create payloads
-    PayloadsControllerUtils.Payload[] memory payloads = new PayloadsControllerUtils.Payload[](9);
+    PayloadsControllerUtils.Payload[] memory payloads = new PayloadsControllerUtils.Payload[](10);
 
     // compose actions for validation
     {
@@ -320,7 +320,7 @@ contract CreateProposal is EthereumScript {
       IPayloadsControllerCore.ExecutionAction[]
         memory actionsXLayer = new IPayloadsControllerCore.ExecutionAction[](1);
       actionsXLayer[0] = GovV3Helpers.buildAction(
-        type(AaveV3Monad_GhoMonadActivation_20260518).creationCode
+        type(AaveV3XLayer_GhoMonadActivation_20260518).creationCode
       );
       payloads[8] = GovV3Helpers.buildXLayerPayload(vm, actionsXLayer);
     }
