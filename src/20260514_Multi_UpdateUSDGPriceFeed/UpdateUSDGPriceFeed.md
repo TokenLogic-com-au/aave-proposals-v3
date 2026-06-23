@@ -32,8 +32,8 @@ Since the maturity of the PT-USDG-28MAY2026 asset is now expired, the same price
 
 ## References
 
-- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260514_Multi_UpdateUSDGPriceFeed/AaveV3Ethereum_UpdateUSDGPriceFeed_20260514.sol), [AaveV3XLayer](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260514_Multi_UpdateUSDGPriceFeed/AaveV3XLayer_UpdateUSDGPriceFeed_20260514.sol)
-- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260514_Multi_UpdateUSDGPriceFeed/AaveV3Ethereum_UpdateUSDGPriceFeed_20260514.t.sol), [AaveV3XLayer](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260514_Multi_UpdateUSDGPriceFeed/AaveV3XLayer_UpdateUSDGPriceFeed_20260514.t.sol)
+- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/45150955a62eec69219b252a2c3a8a117e69c833/src/20260514_Multi_UpdateUSDGPriceFeed/AaveV3Ethereum_UpdateUSDGPriceFeed_20260514.sol), [AaveV3XLayer](https://github.com/aave-dao/aave-proposals-v3/blob/45150955a62eec69219b252a2c3a8a117e69c833/src/20260514_Multi_UpdateUSDGPriceFeed/AaveV3XLayer_UpdateUSDGPriceFeed_20260514.sol)
+- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/45150955a62eec69219b252a2c3a8a117e69c833/src/20260514_Multi_UpdateUSDGPriceFeed/AaveV3Ethereum_UpdateUSDGPriceFeed_20260514.t.sol), [AaveV3XLayer](https://github.com/aave-dao/aave-proposals-v3/blob/45150955a62eec69219b252a2c3a8a117e69c833/src/20260514_Multi_UpdateUSDGPriceFeed/AaveV3XLayer_UpdateUSDGPriceFeed_20260514.t.sol)
 - [Discussion](https://governance.aave.com/t/technical-maintenance-proposals/15274/132)
 
 ## Copyright
