@@ -3,12 +3,15 @@ pragma solidity ^0.8.0;
 
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 import {SafeERC20} from 'openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol';
-import {AaveV3Arbitrum} from 'aave-address-book/AaveV3Arbitrum.sol';
+import {AaveV3Arbitrum, AaveV3ArbitrumAssets} from 'aave-address-book/AaveV3Arbitrum.sol';
 import {GhoArbitrum} from 'aave-address-book/GhoArbitrum.sol';
+import {MiscArbitrum} from 'aave-address-book/MiscArbitrum.sol';
 import {GovernanceV3Arbitrum} from 'aave-address-book/GovernanceV3Arbitrum.sol';
-import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
+import {CollectorUtils, ICollector} from 'aave-helpers/src/CollectorUtils.sol';
 import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGenericExecutor.sol';
 
+import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
+import {IAaveCLRobotOperator} from 'src/interfaces/IAaveCLRobotOperator.sol';
 import {IGhoReserve} from 'src/interfaces/IGhoReserve.sol';
 import {IGsm} from 'src/interfaces/IGsm.sol';
 import {IGsmRegistry} from 'src/interfaces/IGsmRegistry.sol';
@@ -34,6 +37,7 @@ import {RemoteGSMLaunchArbitrumSetup} from './setup/RemoteGSMLaunchArbitrumSetup
  */
 contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGenericExecutor {
   using SafeERC20 for IERC20;
+  using CollectorUtils for ICollector;
 
   // GhoReserve
   // https://arbiscan.io/address/0xC912D64F9F649897dC0244da3835869d410d053e
@@ -55,6 +59,9 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
   // https://arbiscan.io/address/0x2169Bf2084bDb881587b3Cf6B24011E6AA091FdE
   address public constant GSM_USDC_FEE_STRATEGY = 0x2169Bf2084bDb881587b3Cf6B24011E6AA091FdE;
 
+  uint96 public constant LINK_AMOUNT_ORACLE_FREEZER_KEEPER = 80 ether;
+  uint32 public constant KEEPER_GAS_LIMIT = 150_000;
+
   function execute() external {
     GHO_RESERVE.grantRole(GHO_RESERVE.LIMIT_MANAGER_ROLE(), GhoArbitrum.RISK_COUNCIL);
 
@@ -65,6 +72,8 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
       RemoteGSMLaunchArbitrumSetup.GSM_USDC_INITIAL_EXPOSURE_CAP,
       GSM_USDC_FEE_STRATEGY
     );
+
+    _registerOracles();
 
     AaveV3Arbitrum.COLLECTOR.transfer(
       IERC20(GhoArbitrum.GHO_TOKEN),
@@ -108,5 +117,29 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
     gsm.updateExposureCap(initialExposureCap);
 
     gsm.updateFeeStrategy(feeStrategy);
+  }
+
+  function _registerOracles() internal {
+    uint256 withdrawnBalance = AaveV3Arbitrum.COLLECTOR.withdrawFromV3(
+      CollectorUtils.IOInput({
+        pool: address(AaveV3Arbitrum.POOL),
+        underlying: AaveV3ArbitrumAssets.LINK_UNDERLYING,
+        amount: LINK_AMOUNT_ORACLE_FREEZER_KEEPER
+      }),
+      address(this)
+    );
+    IERC20(AaveV3ArbitrumAssets.LINK_UNDERLYING).forceApprove(
+      MiscArbitrum.AAVE_CL_ROBOT_OPERATOR,
+      withdrawnBalance
+    );
+    IAaveCLRobotOperator(MiscArbitrum.AAVE_CL_ROBOT_OPERATOR).register(
+      'GHO GSM 4626 stataUSDC OracleSwapFreezer',
+      USDC_ORACLE_SWAP_FREEZER,
+      '',
+      KEEPER_GAS_LIMIT,
+      LINK_AMOUNT_ORACLE_FREEZER_KEEPER,
+      0,
+      ''
+    );
   }
 }

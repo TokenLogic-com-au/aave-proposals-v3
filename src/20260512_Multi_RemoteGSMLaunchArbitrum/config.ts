@@ -10,6 +10,7 @@ export const config: ConfigFile = {
       'AaveV3Mantle',
       'AaveV3Plasma',
       'AaveV3XLayer',
+      'AaveV3Monad',
     ],
     title: 'Remote GSM Launch: Arbitrum',
     shortName: 'RemoteGSMLaunchArbitrum',
@@ -29,5 +30,6 @@ export const config: ConfigFile = {
     AaveV3Mantle: {configs: {OTHERS: {}}, cache: {blockNumber: 95179108}},
     AaveV3Plasma: {configs: {OTHERS: {}}, cache: {blockNumber: 21132780}},
     AaveV3XLayer: {configs: {OTHERS: {}}, cache: {blockNumber: 61831240}},
+    AaveV3Monad: {configs: {OTHERS: {}}, cache: {blockNumber: 82996426}},
   },
 };

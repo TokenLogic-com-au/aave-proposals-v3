@@ -1,0 +1,42 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import {SafeCast} from 'openzeppelin-contracts/contracts/utils/math/SafeCast.sol';
+import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGenericExecutor.sol';
+import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
+import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
+
+import {RemoteGSMLaunchArbitrumSetup} from './setup/RemoteGSMLaunchArbitrumSetup.sol';
+
+/**
+ * @title Remote GSM Launch: Arbitrum
+ * @author TokenLogic
+ * - Snapshot: https://snapshot.org/#/s:aavedao.eth/proposal/0xf24321514fb593af9e5082d26a1358819ec0f648db8fdb5c2b083f53ef785793
+ * - Discussion: https://governance.aave.com/t/arfc-launch-remotegsm-on-arbitrum/24986
+ */
+contract AaveV3Monad_RemoteGSMLaunchArbitrum_20260512 is IProposalGenericExecutor {
+  using SafeCast for uint256;
+
+  address public constant GHO_TOKEN = 0xfc421aD3C883Bf9E7C4f42dE845C4e4405799e73;
+  address public constant GHO_CCIP_TOKEN_POOL = 0xA5AE05b71c3F170E12E7620Fdf7679721aec1EC8;
+
+  function execute() external {
+    // Increase bucket capacity to allow token movements to Monad, accounting for the extra capacity initially bridged
+    // to Arbitrum in this proposal.
+    (uint256 currentFacilitatorBucketCapacity, ) = IGhoToken(GHO_TOKEN).getFacilitatorBucket(
+      GHO_CCIP_TOKEN_POOL
+    );
+
+    IGhoToken(GHO_TOKEN).setFacilitatorBucketCapacity(
+      GHO_CCIP_TOKEN_POOL,
+      currentFacilitatorBucketCapacity.toUint128() +
+        RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT.toUint128()
+    );
+
+    // Normalize all GHO lanes rate-limit config to canonical defaults.
+    RemoteGSMLaunchArbitrumSetup.normalizeIORateLimitsForAllNetworks(
+      GHO_CCIP_TOKEN_POOL,
+      CCIPChainSelectors.MONAD
+    );
+  }
+}
