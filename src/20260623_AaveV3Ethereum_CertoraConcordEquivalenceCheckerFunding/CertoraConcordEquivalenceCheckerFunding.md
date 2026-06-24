@@ -154,8 +154,8 @@ Certora Receiver: [0x0F11640BF66e2D9352d9c41434A5C6E597c5e4c8](https://etherscan
 
 ## References
 
-- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260623_AaveV3Ethereum_CertoraConcordEquivalenceCheckerFunding/AaveV3Ethereum_CertoraConcordEquivalenceCheckerFunding_20260623.sol)
-- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260623_AaveV3Ethereum_CertoraConcordEquivalenceCheckerFunding/AaveV3Ethereum_CertoraConcordEquivalenceCheckerFunding_20260623.t.sol)
+- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/07e4370099d7210154e31a97556f0c9a7d2fe57f/src/20260623_AaveV3Ethereum_CertoraConcordEquivalenceCheckerFunding/AaveV3Ethereum_CertoraConcordEquivalenceCheckerFunding_20260623.sol)
+- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/07e4370099d7210154e31a97556f0c9a7d2fe57f/src/20260623_AaveV3Ethereum_CertoraConcordEquivalenceCheckerFunding/AaveV3Ethereum_CertoraConcordEquivalenceCheckerFunding_20260623.t.sol)
 - [Snapshot](https://snapshot.org/#/s:aavedao.eth/proposal/0xcf9ca2d7a9b1ee819b6b76f8dae1cdc7fb507e027f044e90d7937b4b264a42c1)
 - [Discussion](https://governance.aave.com/t/arfc-strengthening-upgrade-safety-concord-equivalence-checker-by-certora/24713)
 
