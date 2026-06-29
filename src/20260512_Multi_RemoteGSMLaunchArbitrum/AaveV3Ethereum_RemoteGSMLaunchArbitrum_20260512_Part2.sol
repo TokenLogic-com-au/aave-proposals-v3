@@ -37,7 +37,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
 
   // Typical bridge-receive gas limits sit in the 200k–500k range; pick a value that
   // covers the receive + Collector forwarding path with comfortable headroom.
-  uint32 public constant ARBITRUM_BRIDGE_GAS_LIMIT = 100_000;
+  uint32 public constant ARBITRUM_BRIDGE_GAS_LIMIT = 450_000;
 
   function execute() external {
     IGhoToken(AaveV3EthereumAssets.GHO_UNDERLYING).addFacilitator(
