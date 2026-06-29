@@ -20,7 +20,7 @@ contract AaveV3Ink_RemoteGSMLaunchArbitrum_20260512_Test is ProtocolV3TestBase {
   AaveV3Ink_RemoteGSMLaunchArbitrum_20260512 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('ink'), 45935000);
+    vm.createSelectFork(vm.rpcUrl('ink'), 49250266);
     proposal = new AaveV3Ink_RemoteGSMLaunchArbitrum_20260512();
   }
 

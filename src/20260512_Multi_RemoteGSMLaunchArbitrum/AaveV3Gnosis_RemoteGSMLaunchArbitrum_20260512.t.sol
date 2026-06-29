@@ -20,7 +20,7 @@ contract AaveV3Gnosis_RemoteGSMLaunchArbitrum_20260512_Test is ProtocolV3TestBas
   AaveV3Gnosis_RemoteGSMLaunchArbitrum_20260512 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('gnosis'), 45935000);
+    vm.createSelectFork(vm.rpcUrl('gnosis'), 46947490);
     proposal = new AaveV3Gnosis_RemoteGSMLaunchArbitrum_20260512();
   }
 

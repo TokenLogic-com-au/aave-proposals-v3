@@ -20,7 +20,7 @@ contract AaveV3Mantle_RemoteGSMLaunchArbitrum_20260512_Test is ProtocolV3TestBas
   AaveV3Mantle_RemoteGSMLaunchArbitrum_20260512 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('mantle'), 95179108);
+    vm.createSelectFork(vm.rpcUrl('mantle'), 97309200);
     proposal = new AaveV3Mantle_RemoteGSMLaunchArbitrum_20260512();
   }
 

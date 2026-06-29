@@ -19,7 +19,7 @@ contract AaveV3Monad_RemoteGSMLaunchArbitrum_20260512_Test is ProtocolV3TestBase
   AaveV3Monad_RemoteGSMLaunchArbitrum_20260512 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('monad'), 82996426);
+    vm.createSelectFork(vm.rpcUrl('monad'), 84498500);
     proposal = new AaveV3Monad_RemoteGSMLaunchArbitrum_20260512();
   }
 

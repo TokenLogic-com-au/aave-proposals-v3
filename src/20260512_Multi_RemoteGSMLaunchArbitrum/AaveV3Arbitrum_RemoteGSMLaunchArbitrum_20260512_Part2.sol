@@ -11,7 +11,6 @@ import {CollectorUtils, ICollector} from 'aave-helpers/src/CollectorUtils.sol';
 import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGenericExecutor.sol';
 
 import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
-import {IAaveCLRobotOperator} from 'src/interfaces/IAaveCLRobotOperator.sol';
 import {IGhoReserve} from 'src/interfaces/IGhoReserve.sol';
 import {IGsm} from 'src/interfaces/IGsm.sol';
 import {IGsmRegistry} from 'src/interfaces/IGsmRegistry.sol';
@@ -73,8 +72,6 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
       GSM_USDC_FEE_STRATEGY
     );
 
-    _registerOracles();
-
     AaveV3Arbitrum.COLLECTOR.transfer(
       IERC20(GhoArbitrum.GHO_TOKEN),
       address(GHO_RESERVE),
@@ -117,29 +114,5 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
     gsm.updateExposureCap(initialExposureCap);
 
     gsm.updateFeeStrategy(feeStrategy);
-  }
-
-  function _registerOracles() internal {
-    uint256 withdrawnBalance = AaveV3Arbitrum.COLLECTOR.withdrawFromV3(
-      CollectorUtils.IOInput({
-        pool: address(AaveV3Arbitrum.POOL),
-        underlying: AaveV3ArbitrumAssets.LINK_UNDERLYING,
-        amount: LINK_AMOUNT_ORACLE_FREEZER_KEEPER
-      }),
-      address(this)
-    );
-    IERC20(AaveV3ArbitrumAssets.LINK_UNDERLYING).forceApprove(
-      MiscArbitrum.AAVE_CL_ROBOT_OPERATOR,
-      withdrawnBalance
-    );
-    IAaveCLRobotOperator(MiscArbitrum.AAVE_CL_ROBOT_OPERATOR).register(
-      'GHO GSM 4626 stataUSDC OracleSwapFreezer',
-      USDC_ORACLE_SWAP_FREEZER,
-      '',
-      KEEPER_GAS_LIMIT,
-      LINK_AMOUNT_ORACLE_FREEZER_KEEPER,
-      0,
-      ''
-    );
   }
 }

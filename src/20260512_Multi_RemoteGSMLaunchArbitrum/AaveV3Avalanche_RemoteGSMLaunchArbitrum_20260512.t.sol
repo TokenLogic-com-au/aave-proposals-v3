@@ -20,7 +20,7 @@ contract AaveV3Avalanche_RemoteGSMLaunchArbitrum_20260512_Test is ProtocolV3Test
   AaveV3Avalanche_RemoteGSMLaunchArbitrum_20260512 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('avalanche'), 84734234);
+    vm.createSelectFork(vm.rpcUrl('avalanche'), 89068025);
     proposal = new AaveV3Avalanche_RemoteGSMLaunchArbitrum_20260512();
   }
 

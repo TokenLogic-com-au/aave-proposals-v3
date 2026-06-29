@@ -51,7 +51,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
   uint128 internal ccipPoolFacilitatorBucketLevelBeforeCcipDelivery;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('arbitrum'), 472472428);
+    vm.createSelectFork(vm.rpcUrl('arbitrum'), 478622035);
     part1 = new AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1();
     proposal = new AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2();
 
