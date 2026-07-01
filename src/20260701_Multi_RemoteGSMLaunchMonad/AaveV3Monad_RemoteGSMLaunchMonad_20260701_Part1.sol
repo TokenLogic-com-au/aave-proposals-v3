@@ -12,8 +12,8 @@ import {RemoteGSMLaunchMonadSetup} from './setup/RemoteGSMLaunchMonadSetup.sol';
 /**
  * @title Remote GSM Launch: Monad
  * @author TokenLogic
- * - Snapshot: https://snapshot.org/#/s:aavedao.eth/proposal/TODO
- * - Discussion: https://governance.aave.com/t/TODO-arfc-launch-remotegsm-on-monad
+ * - Snapshot: TODO
+ * - Discussion: TODO
  */
 contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1 is IProposalGenericExecutor {
   using SafeCast for uint256;

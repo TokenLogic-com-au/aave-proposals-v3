@@ -12,8 +12,8 @@ import {RemoteGSMLaunchMonadSetup} from './setup/RemoteGSMLaunchMonadSetup.sol';
 /**
  * @title Remote GSM Launch: Monad
  * @author TokenLogic
- * - Snapshot: https://snapshot.org/#/s:aavedao.eth/proposal/TODO
- * - Discussion: https://governance.aave.com/t/TODO-arfc-launch-remotegsm-on-monad
+ * - Snapshot: TODO
+ * - Discussion: TODO
  */
 contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part1 is IProposalGenericExecutor {
   function execute() external {
@@ -24,8 +24,8 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part1 is IProposalGenericE
       currentBridgeLimit + RemoteGSMLaunchMonadSetup.TEMP_BRIDGE_CAPACITY
     );
 
-    // Temporarily increase the Ethereum -> Monad outbound capacity for the one-off 50M seed
-    // bridge. The inbound (Monad -> Ethereum) direction is set to the standard config; it is not
+    // Temporarily increase the Ethereum -> Monad outbound capacity for the one-off seed bridge.
+    // The inbound (Monad -> Ethereum) direction is set to the standard config; it is not
     // widened here and is left at the value Part 2 restores the lane to.
     // TODO: this assumes the inbound direction already sits at DEFAULT_RATE_LIMITER_* on-chain; if
     // it does not, mirror the real pre-execution inbound config so this lane stays unchanged.

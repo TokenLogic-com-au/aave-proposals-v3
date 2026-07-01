@@ -18,8 +18,8 @@ import {RemoteGSMLaunchMonadSetup} from './setup/RemoteGSMLaunchMonadSetup.sol';
 /**
  * @title Remote GSM Launch: Monad
  * @author TokenLogic
- * - Snapshot: https://snapshot.org/#/s:aavedao.eth/proposal/TODO
- * - Discussion: https://governance.aave.com/t/TODO-arfc-launch-remotegsm-on-monad
+ * - Snapshot: TODO
+ * - Discussion: TODO
  *
  * NOTE: granting RISK_ADMIN_ROLE on AaveV3Monad.ACL_MANAGER to a GhoAaveSteward
  * is intentionally OUT OF SCOPE for this proposal. If a steward is not already

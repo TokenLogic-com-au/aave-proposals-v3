@@ -16,8 +16,8 @@ import {RemoteGSMLaunchMonadSetup} from './setup/RemoteGSMLaunchMonadSetup.sol';
 /**
  * @title Remote GSM Launch: Monad
  * @author TokenLogic
- * - Snapshot: https://snapshot.org/#/s:aavedao.eth/proposal/TODO
- * - Discussion: https://governance.aave.com/t/TODO-arfc-launch-remotegsm-on-monad
+ * - Snapshot: TODO
+ * - Discussion: TODO
  */
 contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part2 is IProposalGenericExecutor {
   using SafeERC20 for IERC20;
@@ -29,8 +29,8 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part2 is IProposalGenericE
   string public constant DIRECT_FACILITATOR_NAME = 'GhoDirectFacilitator GSM Monad';
 
   // Ethereum-side AaveGhoCcipBridge (target-agnostic; the destination lane is configured below).
-  // https://etherscan.io/address/0x7F2f96fcdC3A29Be75938d2aC3D92E7006919fe6
   // TODO: confirm this is the bridge that will carry the Ethereum -> Monad GHO lane.
+  // https://etherscan.io/address/0x7F2f96fcdC3A29Be75938d2aC3D92E7006919fe6
   address public constant CCIP_BRIDGE = address(0x7F2f96fcdC3A29Be75938d2aC3D92E7006919fe6);
 
   // AaveGhoCcipBridge on Monad (counterpart that will receive the CCIP message and forward GHO
