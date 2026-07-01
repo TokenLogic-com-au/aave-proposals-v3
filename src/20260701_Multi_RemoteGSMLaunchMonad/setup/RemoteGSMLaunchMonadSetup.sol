@@ -15,7 +15,7 @@ library RemoteGSMLaunchMonadSetup {
   uint128 public constant TEMP_BRIDGE_CAPACITY = 55_000_000 ether;
 
   // Standard per-lane rate-limit config the Ethereum <> Monad GHO lane is RESTORED to after
-  // the one-off 50M bridge. Unlike the Arbitrum launch, this proposal does NOT normalize every
+  // the one-off 50M bridge. Unlike the Arbitrum launch (TODO: insert link), this proposal does NOT normalize every
   // network's lanes: it only widens the single Ethereum <> Monad lane for the transfer and then
   // puts that lane back to its pre-execution config, leaving every other lane untouched.
   // TODO: these values are assumed to match the Ethereum <> Monad GHO lane's config at execution
@@ -34,8 +34,7 @@ library RemoteGSMLaunchMonadSetup {
   // Maximum amount that can be withdrawn by GSM (can be changed by steward later)
   uint128 public constant GSM_USDC_RESERVE_LIMIT = 25_000_000 ether;
 
-  // 20M underlying (6 decimals). On Arbitrum this allowed ~23.3M GHO to be issued given the
-  // ~1.165 stataUSDC rate.
+  // 20M underlying (6 decimals).
   // TODO: confirm the intended initial exposure cap for the Monad USDC GSM (and the stataUSDC
   // rate on Monad) once the GSM is deployed.
   uint128 public constant GSM_USDC_INITIAL_EXPOSURE_CAP = 20_000_000e6; // 20M, 6 decimals
