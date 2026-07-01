@@ -69,9 +69,6 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2 is IProposalGenericExec
   // TODO: set the deployed Monad USDC GSM fee strategy address.
   address public constant GSM_USDC_FEE_STRATEGY = address(0);
 
-  uint96 public constant LINK_AMOUNT_ORACLE_FREEZER_KEEPER = 80 ether;
-  uint32 public constant KEEPER_GAS_LIMIT = 150_000;
-
   function execute() external {
     GHO_RESERVE.grantRole(GHO_RESERVE.LIMIT_MANAGER_ROLE(), RISK_COUNCIL);
 
