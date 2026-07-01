@@ -20,8 +20,8 @@ The migration flow will be made available through the Aave UI.
 
 ## References
 
-- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260623_AaveV3Ethereum_StkGhoMigratorClaimHelper/AaveV3Ethereum_StkGhoMigratorClaimHelper_20260623.sol)
-- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260623_AaveV3Ethereum_StkGhoMigratorClaimHelper/AaveV3Ethereum_StkGhoMigratorClaimHelper_20260623.t.sol)
+- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/063482eb398fdcc1adfa42b5a6353cc99358cd2c/src/20260623_AaveV3Ethereum_StkGhoMigratorClaimHelper/AaveV3Ethereum_StkGhoMigratorClaimHelper_20260623.sol)
+- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/063482eb398fdcc1adfa42b5a6353cc99358cd2c/src/20260623_AaveV3Ethereum_StkGhoMigratorClaimHelper/AaveV3Ethereum_StkGhoMigratorClaimHelper_20260623.t.sol)
 - [Discussion](https://governance.aave.com/t/direct-to-aip-stkgho-sgho-migration-tool/25250)
 
 ## Disclaimer
