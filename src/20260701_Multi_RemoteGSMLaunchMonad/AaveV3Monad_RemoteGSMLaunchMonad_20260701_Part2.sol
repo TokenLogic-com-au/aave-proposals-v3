@@ -116,7 +116,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2 is IProposalGenericExec
     gsm.grantRole(swapFreezerRole, oracleSwapFreezer);
     gsm.grantRole(swapFreezerRole, GovernanceV3Monad.EXECUTOR_LVL_1);
 
-    // Add GSMs to GSM Registry
+    // Add GSM to GSM Registry
     IGsmRegistry(GSM_REGISTRY).addGsm(address(gsm));
 
     // GHO GSM Steward

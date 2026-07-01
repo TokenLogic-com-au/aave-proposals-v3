@@ -79,6 +79,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
     // on the GHO CCIP token pool. The pool acts as a GHO facilitator, so this routes through
     // `IGhoToken.mint` and exercises the facilitator bucket check that Part 1 just configured.
     // Skipped while the OffRamp is unknown so setUp does not revert.
+    // TODO: remove check
     if (CCIP_ETH_OFFRAMP != address(0)) {
       _simulateCcipDeliveryToCollector(RemoteGSMLaunchMonadSetup.GHO_BRIDGE_AMOUNT);
     }
@@ -227,58 +228,57 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
     assertTrue(bucket.isEnabled, 'post-Part2 outbound rate limiter should be enabled');
   }
 
-  function test_otherLaneRateLimitsRestored() public {
-    // Behavior changed vs the Arbitrum launch: this proposal no longer normalizes every lane, it
-    // only restores the single Ethereum <> Monad lane (see restoreLaneRateLimitConfig). The
-    // all-lanes-normalized assertion no longer applies, so this test is skipped.
-    // TODO: repurpose to assert every non-Ethereum lane is left UNTOUCHED by the proposal.
-    vm.skip(true);
-
-    executePayload(vm, address(proposal));
-
+  function test_otherLanesUntouched() public {
+    _skipIfNotDeployed();
+    // This proposal must not change any lane other than the single Monad <> Ethereum lane. Iterate
+    // every supported chain except Ethereum (the lane the proposal temporarily widens and then restores),
+    // snapshot both directions before and after execution, and assert the config is unchanged.
+    // Part 1 (run in setUp) likewise only touches the Ethereum lane, so a delta here would mean the proposal
+    // leaked into an unrelated lane.
+    // Monad is included in the list (the proposal's own chain), but there's no need to skip it.
     GhoCCIPChains.ChainInfo[] memory chains = GhoCCIPChains.getAllChainsExcept(
-      CCIPChainSelectors.MONAD,
+      CCIPChainSelectors.ETHEREUM,
       false
     );
 
+    IRateLimiter.TokenBucket[] memory inboundBefore = new IRateLimiter.TokenBucket[](chains.length);
+    IRateLimiter.TokenBucket[] memory outboundBefore = new IRateLimiter.TokenBucket[](
+      chains.length
+    );
     for (uint256 i = 0; i < chains.length; i++) {
-      _assertLaneNormalized(chains[i].chainSelector);
+      inboundBefore[i] = IUpgradeableBurnMintTokenPool(proposal.GHO_CCIP_TOKEN_POOL())
+        .getCurrentInboundRateLimiterState(chains[i].chainSelector);
+      outboundBefore[i] = IUpgradeableBurnMintTokenPool(proposal.GHO_CCIP_TOKEN_POOL())
+        .getCurrentOutboundRateLimiterState(chains[i].chainSelector);
+    }
+
+    executePayload(vm, address(proposal));
+
+    for (uint256 i = 0; i < chains.length; i++) {
+      _assertLaneUnchanged(chains[i].chainSelector, inboundBefore[i], outboundBefore[i]);
     }
   }
 
-  /// @dev Asserts the inbound and outbound rate limiter for `remoteChainSelector` sit at defaults.
-  function _assertLaneNormalized(uint64 remoteChainSelector) internal view {
-    IRateLimiter.TokenBucket memory inbound = IUpgradeableBurnMintTokenPool(
+  /// @dev Asserts the inbound/outbound rate-limit config of `remoteChainSelector` matches the
+  /// pre-execution snapshot (capacity, rate and isEnabled — the fields the proposal could change).
+  function _assertLaneUnchanged(
+    uint64 remoteChainSelector,
+    IRateLimiter.TokenBucket memory inboundBefore,
+    IRateLimiter.TokenBucket memory outboundBefore
+  ) internal view {
+    IRateLimiter.TokenBucket memory inboundAfter = IUpgradeableBurnMintTokenPool(
       proposal.GHO_CCIP_TOKEN_POOL()
     ).getCurrentInboundRateLimiterState(remoteChainSelector);
+    assertEq(inboundAfter.capacity, inboundBefore.capacity, 'inbound capacity changed');
+    assertEq(inboundAfter.rate, inboundBefore.rate, 'inbound rate changed');
+    assertEq(inboundAfter.isEnabled, inboundBefore.isEnabled, 'inbound isEnabled changed');
 
-    assertEq(
-      inbound.capacity,
-      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_CAPACITY,
-      'post-proposal inbound capacity should be default'
-    );
-    assertEq(
-      inbound.rate,
-      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_RATE,
-      'post-proposal inbound rate should be default'
-    );
-    assertTrue(inbound.isEnabled, 'post-proposal inbound rate limiter should be enabled');
-
-    IRateLimiter.TokenBucket memory outbound = IUpgradeableBurnMintTokenPool(
+    IRateLimiter.TokenBucket memory outboundAfter = IUpgradeableBurnMintTokenPool(
       proposal.GHO_CCIP_TOKEN_POOL()
     ).getCurrentOutboundRateLimiterState(remoteChainSelector);
-
-    assertEq(
-      outbound.capacity,
-      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_CAPACITY,
-      'post-proposal outbound capacity should be default'
-    );
-    assertEq(
-      outbound.rate,
-      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_RATE,
-      'post-proposal outbound rate should be default'
-    );
-    assertTrue(outbound.isEnabled, 'post-proposal outbound rate limiter should be enabled');
+    assertEq(outboundAfter.capacity, outboundBefore.capacity, 'outbound capacity changed');
+    assertEq(outboundAfter.rate, outboundBefore.rate, 'outbound rate changed');
+    assertEq(outboundAfter.isEnabled, outboundBefore.isEnabled, 'outbound isEnabled changed');
   }
 
   function test_gsmRegisteredAsEntity() public {
