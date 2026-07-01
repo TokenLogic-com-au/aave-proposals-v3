@@ -17,7 +17,6 @@ export function generateScript(options: Options) {
   const votingPortal = getVotingPortal(options.votingNetwork);
   let template = '';
   const chains = [...new Set(options.markets.map((market) => getMarketChain(market)!))];
-  const hasWhitelabelMarket = options.markets.some((market) => isWhitelabelMarket(market));
 
   // generate imports
   template += `import {${['Ethereum', ...chains.filter((c) => c !== 'Ethereum' && c !== 'ZkSync')]
@@ -44,6 +43,32 @@ export function generateScript(options: Options) {
   template += Object.keys(marketsToChainsMap)
     .filter((c) => c !== 'ZkSync')
     .map((chain) => {
+      const marketsOnChain = marketsToChainsMap[chain].map((entry, ix) => ({...entry, ix}));
+      const regularMarkets = marketsOnChain.filter(({market}) => !isWhitelabelMarket(market));
+      const whitelabelMarkets = marketsOnChain.filter(({market}) => isWhitelabelMarket(market));
+
+      const composeParts: string[] = [];
+      const registerParts: string[] = [];
+      if (regularMarkets.length > 0) {
+        composeParts.push(
+          `IPayloadsControllerCore.ExecutionAction[] memory actions = new IPayloadsControllerCore.ExecutionAction[](${
+            regularMarkets.length
+          });
+${regularMarkets.map(({ix}, i) => `actions[${i}] = GovV3Helpers.buildAction(payload${ix});`).join('\n')}`,
+        );
+        registerParts.push('GovV3Helpers.createPayload(actions);');
+      }
+      for (const {market, ix} of whitelabelMarkets) {
+        const suffix = market.replace('AaveV3', '');
+        composeParts.push(
+          `IPayloadsControllerCore.ExecutionAction[] memory actions${suffix} = new IPayloadsControllerCore.ExecutionAction[](1);
+actions${suffix}[0] = GovV3Helpers.buildAction(payload${ix});`,
+        );
+        registerParts.push(
+          `GovV3Helpers.createPermissionedPayloadCalldata(GovernanceV3${suffix}.PERMISSIONED_PAYLOADS_CONTROLLER, actions${suffix});`,
+        );
+      }
+
       return `/**
     * @dev Deploy ${chain}
     * deploy-command: make deploy-ledger contract=src/${folderName}/${fileName}.s.sol:Deploy${chain} chain=${getChainAlias(
@@ -56,30 +81,18 @@ export function generateScript(options: Options) {
    contract Deploy${chain} is ${chain}Script {
      function run() external broadcast {
        // deploy payloads
-       ${marketsToChainsMap[chain]
+       ${marketsOnChain
          .map(
-           ({contractName, market}, ix) =>
+           ({contractName, ix}) =>
              `address payload${ix} = GovV3Helpers.deployDeterministic(type(${contractName}).creationCode);`,
          )
          .join('\n')}
 
        // compose action
-       IPayloadsControllerCore.ExecutionAction[] memory actions = new IPayloadsControllerCore.ExecutionAction[](${
-         marketsToChainsMap[chain].length
-       });
-       ${marketsToChainsMap[chain]
-         .map(
-           ({contractName, market}, ix) =>
-             `actions[${ix}] = GovV3Helpers.buildAction(payload${ix});`,
-         )
-         .join('\n')}
+       ${composeParts.join('\n\n')}
 
        // register action at payloadsController
-       ${
-         hasWhitelabelMarket
-           ? `GovV3Helpers.createPermissionedPayloadCalldata(GovernanceV3${marketsToChainsMap[chain][0].market.replace('AaveV3', '')}.PERMISSIONED_PAYLOADS_CONTROLLER, actions);`
-           : 'GovV3Helpers.createPayload(actions);'
-       }
+       ${registerParts.join('\n')}
      }
    }`;
     })
@@ -87,7 +100,13 @@ export function generateScript(options: Options) {
   template += '\n\n';
 
   // generate proposal creation script
-  if (!hasWhitelabelMarket) {
+  const proposalChains = Object.keys(marketsToChainsMap)
+    .map((chain) => ({
+      chain,
+      markets: marketsToChainsMap[chain].filter(({market}) => !isWhitelabelMarket(market)),
+    }))
+    .filter(({markets}) => markets.length > 0);
+  if (proposalChains.length > 0) {
     template += `/**
       * @dev Create Proposal
       * command: make deploy-ledger contract=src/${folderName}/${fileName}.s.sol:CreateProposal chain=mainnet
@@ -96,18 +115,18 @@ export function generateScript(options: Options) {
         function run() external {
           // create payloads
           PayloadsControllerUtils.Payload[] memory payloads = new PayloadsControllerUtils.Payload[](${
-            Object.keys(marketsToChainsMap).length
+            proposalChains.length
           });
 
           // compose actions for validation
-          ${Object.keys(marketsToChainsMap)
-            .map((chain, ix) => {
-              let template = `{\nIPayloadsControllerCore.ExecutionAction[] memory actions${chain} = new IPayloadsControllerCore.ExecutionAction[](${marketsToChainsMap[chain].length});\n`;
-              template += marketsToChainsMap[chain]
-                .map(({contractName, market}, ix) => {
+          ${proposalChains
+            .map(({chain, markets}, ix) => {
+              let template = `{\nIPayloadsControllerCore.ExecutionAction[] memory actions${chain} = new IPayloadsControllerCore.ExecutionAction[](${markets.length});\n`;
+              template += markets
+                .map(({contractName, market}, i) => {
                   return market == 'AaveV3ZkSync'
-                    ? `actions${chain}[${ix}] = GovV3Helpers.buildActionZkSync(vm, '${contractName}');`
-                    : `actions${chain}[${ix}] = GovV3Helpers.buildAction(type(${contractName}).creationCode);`;
+                    ? `actions${chain}[${i}] = GovV3Helpers.buildActionZkSync(vm, '${contractName}');`
+                    : `actions${chain}[${i}] = GovV3Helpers.buildAction(type(${contractName}).creationCode);`;
                 })
                 .join('\n');
               template += `payloads[${ix}] = GovV3Helpers.build${
