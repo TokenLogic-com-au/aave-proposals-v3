@@ -7,6 +7,7 @@ import {GhoEthereum} from 'aave-address-book/GhoEthereum.sol';
 import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {IAaveGhoCcipBridge} from 'aave-helpers/src/bridges/ccip/interfaces/IAaveGhoCcipBridge.sol';
 import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
+import {GhoCCIPChains} from '../helpers/gho-launch/constants/GhoCCIPChains.sol';
 import {IUpgradeableLockReleaseTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableLockReleaseTokenPool.sol';
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 
@@ -169,27 +170,54 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3Te
 
   function test_otherLanesUntouched() public {
     _skipIfNotDeployed();
-    // This proposal must not change lane capacities other than the single Ethereum <> Monad lane.
-    // Snapshot two unrelated lanes (Arbitrum, Base) before and after, and assert they are equal.
-    IRateLimiter.TokenBucket memory arbBefore = IUpgradeableLockReleaseTokenPool(
-      GhoEthereum.GHO_CCIP_TOKEN_POOL
-    ).getCurrentOutboundRateLimiterState(CCIPChainSelectors.ARBITRUM);
-    IRateLimiter.TokenBucket memory baseBefore = IUpgradeableLockReleaseTokenPool(
-      GhoEthereum.GHO_CCIP_TOKEN_POOL
-    ).getCurrentOutboundRateLimiterState(CCIPChainSelectors.BASE);
+    // This proposal must not change any lane other than the single Ethereum <> Monad lane. Iterate
+    // every supported chain except Monad (the lane the proposal temporarily widens and then restores),
+    // snapshot both directions before and after execution, and assert the config is unchanged.
+    // Part 1 (run in setUp) likewise only touches the Monad lane, so a delta here would mean the proposal leaked
+    // into an unrelated lane.
+    // Ethereum is included in the list (the proposal's own chain), but there's no need to skip it.
+    GhoCCIPChains.ChainInfo[] memory chains = GhoCCIPChains.getAllChainsExcept(
+      CCIPChainSelectors.MONAD,
+      false
+    );
+
+    IRateLimiter.TokenBucket[] memory inboundBefore = new IRateLimiter.TokenBucket[](chains.length);
+    IRateLimiter.TokenBucket[] memory outboundBefore = new IRateLimiter.TokenBucket[](
+      chains.length
+    );
+    for (uint256 i = 0; i < chains.length; i++) {
+      inboundBefore[i] = IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
+        .getCurrentInboundRateLimiterState(chains[i].chainSelector);
+      outboundBefore[i] = IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
+        .getCurrentOutboundRateLimiterState(chains[i].chainSelector);
+    }
 
     executePayload(vm, address(proposal));
 
-    IRateLimiter.TokenBucket memory arbAfter = IUpgradeableLockReleaseTokenPool(
-      GhoEthereum.GHO_CCIP_TOKEN_POOL
-    ).getCurrentOutboundRateLimiterState(CCIPChainSelectors.ARBITRUM);
-    IRateLimiter.TokenBucket memory baseAfter = IUpgradeableLockReleaseTokenPool(
-      GhoEthereum.GHO_CCIP_TOKEN_POOL
-    ).getCurrentOutboundRateLimiterState(CCIPChainSelectors.BASE);
+    for (uint256 i = 0; i < chains.length; i++) {
+      _assertLaneUnchanged(chains[i].chainSelector, inboundBefore[i], outboundBefore[i]);
+    }
+  }
 
-    assertEq(arbAfter.capacity, arbBefore.capacity, 'Arbitrum lane capacity should be untouched');
-    assertEq(arbAfter.rate, arbBefore.rate, 'Arbitrum lane rate should be untouched');
-    assertEq(baseAfter.capacity, baseBefore.capacity, 'Base lane capacity should be untouched');
-    assertEq(baseAfter.rate, baseBefore.rate, 'Base lane rate should be untouched');
+  /// @dev Asserts the inbound/outbound rate-limit config of `remoteChainSelector` matches the
+  /// pre-execution snapshot (capacity, rate and isEnabled — the fields the proposal could change).
+  function _assertLaneUnchanged(
+    uint64 remoteChainSelector,
+    IRateLimiter.TokenBucket memory inboundBefore,
+    IRateLimiter.TokenBucket memory outboundBefore
+  ) internal view {
+    IRateLimiter.TokenBucket memory inboundAfter = IUpgradeableLockReleaseTokenPool(
+      GhoEthereum.GHO_CCIP_TOKEN_POOL
+    ).getCurrentInboundRateLimiterState(remoteChainSelector);
+    assertEq(inboundAfter.capacity, inboundBefore.capacity, 'inbound capacity changed');
+    assertEq(inboundAfter.rate, inboundBefore.rate, 'inbound rate changed');
+    assertEq(inboundAfter.isEnabled, inboundBefore.isEnabled, 'inbound isEnabled changed');
+
+    IRateLimiter.TokenBucket memory outboundAfter = IUpgradeableLockReleaseTokenPool(
+      GhoEthereum.GHO_CCIP_TOKEN_POOL
+    ).getCurrentOutboundRateLimiterState(remoteChainSelector);
+    assertEq(outboundAfter.capacity, outboundBefore.capacity, 'outbound capacity changed');
+    assertEq(outboundAfter.rate, outboundBefore.rate, 'outbound rate changed');
+    assertEq(outboundAfter.isEnabled, outboundBefore.isEnabled, 'outbound isEnabled changed');
   }
 }
