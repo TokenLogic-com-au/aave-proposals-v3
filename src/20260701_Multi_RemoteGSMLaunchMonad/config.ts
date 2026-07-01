@@ -1,0 +1,36 @@
+import {ConfigFile} from '../../generator/types';
+export const config: ConfigFile = {
+  rootOptions: {
+    pools: [
+      'AaveV3Ethereum',
+      'AaveV3Arbitrum',
+      'AaveV3Avalanche',
+      'AaveV3Base',
+      'AaveV3Gnosis',
+      'AaveV3Mantle',
+      'AaveV3Plasma',
+      'AaveV3XLayer',
+      'AaveV3Monad',
+      'AaveV3Ink',
+    ],
+    title: 'Remote GSM Launch: Monad',
+    shortName: 'RemoteGSMLaunchMonad',
+    date: '20260701',
+    author: 'TokenLogic',
+    discussion: 'https://governance.aave.com/t/TODO-arfc-launch-remotegsm-on-monad',
+    snapshot: 'https://snapshot.org/#/s:aavedao.eth/proposal/TODO',
+    votingNetwork: 'AVALANCHE',
+  },
+  poolOptions: {
+    AaveV3Ethereum: {configs: {}, cache: {blockNumber: 25424170}},
+    AaveV3Arbitrum: {configs: {OTHERS: {}}, cache: {blockNumber: 478622035}},
+    AaveV3Avalanche: {configs: {OTHERS: {}}, cache: {blockNumber: 89068025}},
+    AaveV3Base: {configs: {OTHERS: {}}, cache: {blockNumber: 47979045}},
+    AaveV3Gnosis: {configs: {OTHERS: {}}, cache: {blockNumber: 46947490}},
+    AaveV3Mantle: {configs: {OTHERS: {}}, cache: {blockNumber: 97309200}},
+    AaveV3Plasma: {configs: {OTHERS: {}}, cache: {blockNumber: 25809490}},
+    AaveV3XLayer: {configs: {OTHERS: {}}, cache: {blockNumber: 63981061}},
+    AaveV3Monad: {configs: {OTHERS: {}}, cache: {blockNumber: 84498500}},
+    AaveV3Ink: {configs: {OTHERS: {}}, cache: {blockNumber: 49250266}},
+  },
+};
