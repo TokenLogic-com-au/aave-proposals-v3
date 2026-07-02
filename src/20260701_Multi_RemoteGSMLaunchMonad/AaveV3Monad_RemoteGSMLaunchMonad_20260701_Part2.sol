@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 import {SafeERC20} from 'openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol';
+import {GhoMonad} from 'aave-address-book/GhoMonad.sol';
 import {AaveV3Monad} from 'aave-address-book/AaveV3Monad.sol';
 import {GovernanceV3Monad} from 'aave-address-book/GovernanceV3Monad.sol';
 import {CollectorUtils, ICollector} from 'aave-helpers/src/CollectorUtils.sol';
@@ -40,11 +41,6 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2 is IProposalGenericExec
   using SafeERC20 for IERC20;
   using CollectorUtils for ICollector;
 
-  // GHO addresses on Monad. Hardcoded because `GhoMonad` is not yet in aave-address-book.
-  // TODO: replace with `GhoMonad.GHO_TOKEN` / `GhoMonad.GHO_CCIP_TOKEN_POOL` once available.
-  address public constant GHO_TOKEN = 0xfc421aD3C883Bf9E7C4f42dE845C4e4405799e73;
-  address public constant GHO_CCIP_TOKEN_POOL = 0xA5AE05b71c3F170E12E7620Fdf7679721aec1EC8;
-
   // Monad Risk Council (LIMIT_MANAGER_ROLE on the GhoReserve).
   // TODO: set the Monad Risk Council address (no GhoMonad.RISK_COUNCIL in aave-address-book yet).
   address public constant RISK_COUNCIL = address(0);
@@ -81,7 +77,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2 is IProposalGenericExec
     );
 
     AaveV3Monad.COLLECTOR.transfer(
-      IERC20(GHO_TOKEN),
+      IERC20(GhoMonad.GHO_TOKEN),
       address(GHO_RESERVE),
       RemoteGSMLaunchMonadSetup.GHO_BRIDGE_AMOUNT
     );
@@ -90,7 +86,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2 is IProposalGenericExec
     // the temporary inbound bump from Part 1. Every other lane is intentionally left untouched.
     // Facilitator Bucket Capacity does not need to change.
     RemoteGSMLaunchMonadSetup.restoreLaneRateLimitConfig(
-      GHO_CCIP_TOKEN_POOL,
+      GhoMonad.GHO_CCIP_TOKEN_POOL,
       CCIPChainSelectors.ETHEREUM
     );
   }

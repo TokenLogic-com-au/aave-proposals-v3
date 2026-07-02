@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import {GhoMonad} from 'aave-address-book/GhoMonad.sol';
 import {AaveV3Monad} from 'aave-address-book/AaveV3Monad.sol';
 import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
@@ -44,7 +45,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1_Test is ProtocolV3TestB
   function test_bridgeLimitIncrease() public {
     // Capture the pre-existing Eth -> Monad inbound config (unknown ahead of time).
     IRateLimiter.TokenBucket memory bucket = IUpgradeableBurnMintTokenPool(
-      proposal.GHO_CCIP_TOKEN_POOL()
+      GhoMonad.GHO_CCIP_TOKEN_POOL
     ).getCurrentInboundRateLimiterState(CCIPChainSelectors.ETHEREUM);
 
     assertTrue(bucket.isEnabled, 'pre-proposal inbound rate limiter should be enabled');
@@ -53,7 +54,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1_Test is ProtocolV3TestB
 
     vm.warp(block.timestamp + 1);
 
-    bucket = IUpgradeableBurnMintTokenPool(proposal.GHO_CCIP_TOKEN_POOL())
+    bucket = IUpgradeableBurnMintTokenPool(GhoMonad.GHO_CCIP_TOKEN_POOL)
       .getCurrentInboundRateLimiterState(CCIPChainSelectors.ETHEREUM);
 
     assertEq(
@@ -78,18 +79,14 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1_Test is ProtocolV3TestB
     // CCIP mints GHO on the destination chain via the token pool facilitator. For the
     // bridged amount to land on Monad, that facilitator's bucket capacity must be
     // raised by the bridged amount before the bridge runs.
-    IGhoToken gho = IGhoToken(proposal.GHO_TOKEN());
+    IGhoToken gho = IGhoToken(GhoMonad.GHO_TOKEN);
 
-    IGhoToken.Facilitator memory preFacilitator = gho.getFacilitator(
-      proposal.GHO_CCIP_TOKEN_POOL()
-    );
+    IGhoToken.Facilitator memory preFacilitator = gho.getFacilitator(GhoMonad.GHO_CCIP_TOKEN_POOL);
     uint128 preBucketLevel = preFacilitator.bucketLevel;
 
     executePayload(vm, address(proposal));
 
-    IGhoToken.Facilitator memory postFacilitator = gho.getFacilitator(
-      proposal.GHO_CCIP_TOKEN_POOL()
-    );
+    IGhoToken.Facilitator memory postFacilitator = gho.getFacilitator(GhoMonad.GHO_CCIP_TOKEN_POOL);
 
     assertEq(
       postFacilitator.bucketCapacity,

@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {SafeCast} from 'openzeppelin-contracts/contracts/utils/math/SafeCast.sol';
+import {GhoMonad} from 'aave-address-book/GhoMonad.sol';
 import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGenericExecutor.sol';
 import {CCIPChainSelectors} from 'src/helpers/gho-launch/constants/CCIPChainSelectors.sol';
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
@@ -18,19 +19,13 @@ import {RemoteGSMLaunchMonadSetup} from './setup/RemoteGSMLaunchMonadSetup.sol';
 contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1 is IProposalGenericExecutor {
   using SafeCast for uint256;
 
-  // GHO addresses on Monad. Hardcoded because `GhoMonad` is not yet in aave-address-book.
-  // TODO: replace with `GhoMonad.GHO_TOKEN` / `GhoMonad.GHO_CCIP_TOKEN_POOL` once available.
-  address public constant GHO_TOKEN = 0xfc421aD3C883Bf9E7C4f42dE845C4e4405799e73;
-  address public constant GHO_CCIP_TOKEN_POOL = 0xA5AE05b71c3F170E12E7620Fdf7679721aec1EC8;
-
   function execute() external {
     // Increase bucket capacity to allow minting the bridged GHO on Monad.
-    (uint256 currentFacilitatorBucketCapacity, ) = IGhoToken(GHO_TOKEN).getFacilitatorBucket(
-      GHO_CCIP_TOKEN_POOL
-    );
+    (uint256 currentFacilitatorBucketCapacity, ) = IGhoToken(GhoMonad.GHO_TOKEN)
+      .getFacilitatorBucket(GhoMonad.GHO_CCIP_TOKEN_POOL);
 
-    IGhoToken(GHO_TOKEN).setFacilitatorBucketCapacity(
-      GHO_CCIP_TOKEN_POOL,
+    IGhoToken(GhoMonad.GHO_TOKEN).setFacilitatorBucketCapacity(
+      GhoMonad.GHO_CCIP_TOKEN_POOL,
       currentFacilitatorBucketCapacity.toUint128() +
         RemoteGSMLaunchMonadSetup.GHO_BRIDGE_AMOUNT.toUint128()
     );
@@ -40,7 +35,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1 is IProposalGenericExec
     // direction is set to the standard config; Part 2 restores the whole lane to it.
     // TODO: this assumes the outbound direction already sits at DEFAULT_RATE_LIMITER_* on-chain;
     // if it does not, mirror the real pre-execution outbound config so this lane stays unchanged.
-    IUpgradeableBurnMintTokenPool(GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
+    IUpgradeableBurnMintTokenPool(GhoMonad.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
       CCIPChainSelectors.ETHEREUM,
       IRateLimiter.Config({
         isEnabled: true,

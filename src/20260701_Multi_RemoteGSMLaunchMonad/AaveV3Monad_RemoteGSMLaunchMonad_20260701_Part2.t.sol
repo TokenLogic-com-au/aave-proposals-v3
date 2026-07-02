@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 import {IERC4626} from 'openzeppelin-contracts/contracts/interfaces/IERC4626.sol';
+import {GhoMonad} from 'aave-address-book/GhoMonad.sol';
 import {AaveV3Monad} from 'aave-address-book/AaveV3Monad.sol';
 import {GovernanceV3Monad} from 'aave-address-book/GovernanceV3Monad.sol';
 import {GhoEthereum} from 'aave-address-book/GhoEthereum.sol';
@@ -68,11 +69,11 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
     executePayload(vm, address(part1));
     vm.warp(block.timestamp + 1); // let the inbound rate limiter refill to capacity
 
-    collectorGhoBalanceBeforeCcipDelivery = IERC20(proposal.GHO_TOKEN()).balanceOf(
+    collectorGhoBalanceBeforeCcipDelivery = IERC20(GhoMonad.GHO_TOKEN).balanceOf(
       address(AaveV3Monad.COLLECTOR)
     );
-    ccipPoolFacilitatorBucketLevelBeforeCcipDelivery = IGhoToken(proposal.GHO_TOKEN())
-      .getFacilitator(proposal.GHO_CCIP_TOKEN_POOL())
+    ccipPoolFacilitatorBucketLevelBeforeCcipDelivery = IGhoToken(GhoMonad.GHO_TOKEN)
+      .getFacilitator(GhoMonad.GHO_CCIP_TOKEN_POOL)
       .bucketLevel;
 
     // Simulate CCIP delivery end-to-end: prank as the Eth->Monad OffRamp and call `releaseOrMint`
@@ -112,12 +113,12 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
 
   function test_ghoReserveIsFunded() public {
     _skipIfNotDeployed();
-    assertEq(IERC20(proposal.GHO_TOKEN()).balanceOf(address(proposal.GHO_RESERVE())), 0);
+    assertEq(IERC20(GhoMonad.GHO_TOKEN).balanceOf(address(proposal.GHO_RESERVE())), 0);
 
     executePayload(vm, address(proposal));
 
     assertEq(
-      IERC20(proposal.GHO_TOKEN()).balanceOf(address(proposal.GHO_RESERVE())),
+      IERC20(GhoMonad.GHO_TOKEN).balanceOf(address(proposal.GHO_RESERVE())),
       RemoteGSMLaunchMonadSetup.GHO_BRIDGE_AMOUNT
     );
   }
@@ -155,14 +156,14 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
     // If Part 1's facilitator-capacity update is misconfigured (e.g. capacity below
     // BRIDGED_AMOUNT), setUp's `releaseOrMint` reverts and the whole suite fails at setUp.
     assertEq(
-      IERC20(proposal.GHO_TOKEN()).balanceOf(address(AaveV3Monad.COLLECTOR)) -
+      IERC20(GhoMonad.GHO_TOKEN).balanceOf(address(AaveV3Monad.COLLECTOR)) -
         collectorGhoBalanceBeforeCcipDelivery,
       RemoteGSMLaunchMonadSetup.GHO_BRIDGE_AMOUNT,
       'Collector GHO balance should increase by exactly BRIDGED_AMOUNT'
     );
 
-    IGhoToken.Facilitator memory facilitator = IGhoToken(proposal.GHO_TOKEN()).getFacilitator(
-      proposal.GHO_CCIP_TOKEN_POOL()
+    IGhoToken.Facilitator memory facilitator = IGhoToken(GhoMonad.GHO_TOKEN).getFacilitator(
+      GhoMonad.GHO_CCIP_TOKEN_POOL
     );
     assertEq(
       facilitator.bucketLevel - ccipPoolFacilitatorBucketLevelBeforeCcipDelivery,
@@ -177,7 +178,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
     // already widened by this point.
 
     IRateLimiter.TokenBucket memory bucket = IUpgradeableBurnMintTokenPool(
-      proposal.GHO_CCIP_TOKEN_POOL()
+      GhoMonad.GHO_CCIP_TOKEN_POOL
     ).getCurrentInboundRateLimiterState(CCIPChainSelectors.ETHEREUM);
 
     // Before Part 2 execution, the limits should be larger than defaults.
@@ -195,7 +196,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
 
     executePayload(vm, address(proposal));
 
-    bucket = IUpgradeableBurnMintTokenPool(proposal.GHO_CCIP_TOKEN_POOL())
+    bucket = IUpgradeableBurnMintTokenPool(GhoMonad.GHO_CCIP_TOKEN_POOL)
       .getCurrentInboundRateLimiterState(CCIPChainSelectors.ETHEREUM);
 
     // The Ethereum lane is restored to the standard config after Part 2 execution.
@@ -212,7 +213,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
     assertTrue(bucket.isEnabled, 'post-Part2 inbound rate limiter should be enabled');
 
     // The proposal restores both inbound and outbound configs; assert outbound too.
-    bucket = IUpgradeableBurnMintTokenPool(proposal.GHO_CCIP_TOKEN_POOL())
+    bucket = IUpgradeableBurnMintTokenPool(GhoMonad.GHO_CCIP_TOKEN_POOL)
       .getCurrentOutboundRateLimiterState(CCIPChainSelectors.ETHEREUM);
 
     assertEq(
@@ -246,9 +247,9 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
       chains.length
     );
     for (uint256 i = 0; i < chains.length; i++) {
-      inboundBefore[i] = IUpgradeableBurnMintTokenPool(proposal.GHO_CCIP_TOKEN_POOL())
+      inboundBefore[i] = IUpgradeableBurnMintTokenPool(GhoMonad.GHO_CCIP_TOKEN_POOL)
         .getCurrentInboundRateLimiterState(chains[i].chainSelector);
-      outboundBefore[i] = IUpgradeableBurnMintTokenPool(proposal.GHO_CCIP_TOKEN_POOL())
+      outboundBefore[i] = IUpgradeableBurnMintTokenPool(GhoMonad.GHO_CCIP_TOKEN_POOL)
         .getCurrentOutboundRateLimiterState(chains[i].chainSelector);
     }
 
@@ -267,14 +268,14 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
     IRateLimiter.TokenBucket memory outboundBefore
   ) internal view {
     IRateLimiter.TokenBucket memory inboundAfter = IUpgradeableBurnMintTokenPool(
-      proposal.GHO_CCIP_TOKEN_POOL()
+      GhoMonad.GHO_CCIP_TOKEN_POOL
     ).getCurrentInboundRateLimiterState(remoteChainSelector);
     assertEq(inboundAfter.capacity, inboundBefore.capacity, 'inbound capacity changed');
     assertEq(inboundAfter.rate, inboundBefore.rate, 'inbound rate changed');
     assertEq(inboundAfter.isEnabled, inboundBefore.isEnabled, 'inbound isEnabled changed');
 
     IRateLimiter.TokenBucket memory outboundAfter = IUpgradeableBurnMintTokenPool(
-      proposal.GHO_CCIP_TOKEN_POOL()
+      GhoMonad.GHO_CCIP_TOKEN_POOL
     ).getCurrentOutboundRateLimiterState(remoteChainSelector);
     assertEq(outboundAfter.capacity, outboundBefore.capacity, 'outbound capacity changed');
     assertEq(outboundAfter.rate, outboundBefore.rate, 'outbound rate changed');
@@ -364,13 +365,13 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
    */
   function _simulateCcipDeliveryToCollector(uint256 amount) internal {
     vm.prank(CCIP_ETH_OFFRAMP);
-    IUpgradeableBurnMintTokenPool_1_5_1(proposal.GHO_CCIP_TOKEN_POOL()).releaseOrMint(
+    IUpgradeableBurnMintTokenPool_1_5_1(GhoMonad.GHO_CCIP_TOKEN_POOL).releaseOrMint(
       IPool_CCIP.ReleaseOrMintInV1({
         originalSender: abi.encode(GovernanceV3Monad.EXECUTOR_LVL_1),
         remoteChainSelector: CCIPChainSelectors.ETHEREUM,
         receiver: address(AaveV3Monad.COLLECTOR),
         amount: amount,
-        localToken: proposal.GHO_TOKEN(),
+        localToken: GhoMonad.GHO_TOKEN,
         // Informational on the destination side; using the real Eth pool keeps it realistic.
         sourcePoolAddress: abi.encode(GhoEthereum.GHO_CCIP_TOKEN_POOL),
         sourcePoolData: new bytes(0),
@@ -448,12 +449,12 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
     deal(underlying, address(this), 1_000e6, true);
 
     IERC20(underlying).approve(address(gsm), 1_000e6);
-    IERC20(proposal.GHO_TOKEN()).approve(address(gsm), 1_200 ether);
+    IERC20(GhoMonad.GHO_TOKEN).approve(address(gsm), 1_200 ether);
 
     uint256 amountUnderlying = 1_000e6;
     uint256 gsmBalanceBefore = IERC20(underlying).balanceOf(address(gsm));
     uint256 userUnderlyingBefore = IERC20(underlying).balanceOf(address(this));
-    uint256 balanceGhoBefore = IGhoToken(proposal.GHO_TOKEN()).balanceOf(address(this));
+    uint256 balanceGhoBefore = IGhoToken(GhoMonad.GHO_TOKEN).balanceOf(address(this));
 
     (, uint256 ghoBought) = gsm.sellAsset(amountUnderlying, address(this));
 
@@ -468,7 +469,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
       'user underlying balance after sellAsset is wrong'
     );
     assertEq(
-      IGhoToken(proposal.GHO_TOKEN()).balanceOf(address(this)),
+      IGhoToken(GhoMonad.GHO_TOKEN).balanceOf(address(this)),
       balanceGhoBefore + ghoBought,
       'GHO balance after sellAsset is wrong'
     );
@@ -486,7 +487,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
       'user underlying balance after buyAsset is wrong'
     );
     assertEq(
-      IGhoToken(proposal.GHO_TOKEN()).balanceOf(address(this)),
+      IGhoToken(GhoMonad.GHO_TOKEN).balanceOf(address(this)),
       balanceGhoBefore + ghoBought - ghoSold,
       'GHO balance after buyAsset is wrong'
     );
