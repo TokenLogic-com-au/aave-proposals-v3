@@ -31,7 +31,7 @@ export const config: ConfigFile = {
     AaveV3Mantle: {configs: {OTHERS: {}}, cache: {blockNumber: 97309200}},
     AaveV3Plasma: {configs: {OTHERS: {}}, cache: {blockNumber: 25809490}},
     AaveV3XLayer: {configs: {OTHERS: {}}, cache: {blockNumber: 63981061}},
-    AaveV3Monad: {configs: {OTHERS: {}}, cache: {blockNumber: 84498500}},
+    AaveV3Monad: {configs: {OTHERS: {}}, cache: {blockNumber: 85996454}},
     AaveV3Ink: {configs: {OTHERS: {}}, cache: {blockNumber: 49250266}},
   },
 };

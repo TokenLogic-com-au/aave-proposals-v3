@@ -43,6 +43,16 @@ For each GSM:
 
 On both ends of every GHO lane touched by this proposal — Arbitrum, Avalanche, Base, Gnosis, Mantle, Plasma, X-Layer, Ink and Monad — set inbound and outbound CCIP rate-limit configs to canonical defaults: **capacity 5,000,000 GHO/day, refill 1,000 GHO/sec**. The temporary boosts on the Arbitrum lane used for the 50M seed transfer are restored to these defaults in the same payloads.
 
+### Execution Order
+
+Execution order (same pattern as the Plasma launch, #879):
+
+- Ethereum Part 1 — raises the bridge limit and the Eth→Arb outbound rate limiter.
+- Ethereum Part 2 — mints 50M GHO via the new GhoDirectFacilitator and bridges it. Reverts if executed within the same second as Part 1 (the outbound bucket needs ~1s to refill).
+- Arbitrum Part 1 must execute before the CCIP message arrives, otherwise the inbound rate limit / facilitator bucket rejects the mint and the delivery has to be manually retried on https://ccip.chain.link/.
+- Arbitrum Part 2 — reverts until the bridged GHO reaches the Collector.
+- The remaining network payloads (Avalanche, Base, Gnosis, Ink, Mantle, Monad, Plasma, X-Layer) are independent and can execute any time.
+
 ## References
 
 - Implementation: [AaveV3Ethereum_Part 1](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260512_Multi_RemoteGSMLaunchArbitrum/AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1.sol), [AaveV3Ethereum_Part 2](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260512_Multi_RemoteGSMLaunchArbitrum/AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2.sol), [AaveV3Arbitrum_Part 1](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260512_Multi_RemoteGSMLaunchArbitrum/AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1.sol), [AaveV3Arbitrum_Part 2](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260512_Multi_RemoteGSMLaunchArbitrum/AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2.sol), [AaveV3Avalanche](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260512_Multi_RemoteGSMLaunchArbitrum/AaveV3Avalanche_RemoteGSMLaunchArbitrum_20260512.sol), [AaveV3Base](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260512_Multi_RemoteGSMLaunchArbitrum/AaveV3Base_RemoteGSMLaunchArbitrum_20260512.sol), [AaveV3Gnosis](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260512_Multi_RemoteGSMLaunchArbitrum/AaveV3Gnosis_RemoteGSMLaunchArbitrum_20260512.sol), [AaveV3Mantle](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260512_Multi_RemoteGSMLaunchArbitrum/AaveV3Mantle_RemoteGSMLaunchArbitrum_20260512.sol), [AaveV3Ink](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260512_Multi_RemoteGSMLaunchArbitrum/AaveV3Ink_RemoteGSMLaunchArbitrum_20260512.sol), [AaveV3Plasma](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260512_Multi_RemoteGSMLaunchArbitrum/AaveV3Plasma_RemoteGSMLaunchArbitrum_20260512.sol), [AaveV3XLayer](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260512_Multi_RemoteGSMLaunchArbitrum/AaveV3XLayer_RemoteGSMLaunchArbitrum_20260512.sol), [AaveV3Monad](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260512_Multi_RemoteGSMLaunchArbitrum/AaveV3Monad_RemoteGSMLaunchArbitrum_20260512.sol)

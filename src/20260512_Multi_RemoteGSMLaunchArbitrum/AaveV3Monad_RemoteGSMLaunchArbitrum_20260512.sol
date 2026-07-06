@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import {GhoMonad} from 'aave-address-book/GhoMonad.sol';
 import {SafeCast} from 'openzeppelin-contracts/contracts/utils/math/SafeCast.sol';
 import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGenericExecutor.sol';
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
@@ -23,11 +24,10 @@ contract AaveV3Monad_RemoteGSMLaunchArbitrum_20260512 is IProposalGenericExecuto
   function execute() external {
     // Increase bucket capacity to allow token movements to Monad, accounting for the extra capacity initially bridged
     // to Arbitrum in this proposal.
-    (uint256 currentFacilitatorBucketCapacity, ) = IGhoToken(GHO_TOKEN).getFacilitatorBucket(
-      GHO_CCIP_TOKEN_POOL
-    );
+    (uint256 currentFacilitatorBucketCapacity, ) = IGhoToken(GhoMonad.GHO_TOKEN)
+      .getFacilitatorBucket(GhoMonad.GHO_CCIP_TOKEN_POOL);
 
-    IGhoToken(GHO_TOKEN).setFacilitatorBucketCapacity(
+    IGhoToken(GhoMonad.GHO_TOKEN).setFacilitatorBucketCapacity(
       GHO_CCIP_TOKEN_POOL,
       currentFacilitatorBucketCapacity.toUint128() +
         RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT.toUint128()
@@ -35,7 +35,7 @@ contract AaveV3Monad_RemoteGSMLaunchArbitrum_20260512 is IProposalGenericExecuto
 
     // Normalize all GHO lanes rate-limit config to canonical defaults.
     RemoteGSMLaunchArbitrumSetup.normalizeIORateLimitsForAllNetworks(
-      GHO_CCIP_TOKEN_POOL,
+      GhoMonad.GHO_CCIP_TOKEN_POOL,
       CCIPChainSelectors.MONAD
     );
   }

@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {AaveV3Monad} from 'aave-address-book/AaveV3Monad.sol';
+import {GhoMonad} from 'aave-address-book/GhoMonad.sol';
 import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
@@ -19,7 +20,7 @@ contract AaveV3Monad_RemoteGSMLaunchArbitrum_20260512_Test is ProtocolV3TestBase
   AaveV3Monad_RemoteGSMLaunchArbitrum_20260512 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('monad'), 84498500);
+    vm.createSelectFork(vm.rpcUrl('monad'), 85996454);
     proposal = new AaveV3Monad_RemoteGSMLaunchArbitrum_20260512();
   }
 
@@ -42,16 +43,12 @@ contract AaveV3Monad_RemoteGSMLaunchArbitrum_20260512_Test is ProtocolV3TestBase
   }
 
   function test_facilitatorBucketCapacityIncrease() public {
-    IGhoToken gho = IGhoToken(proposal.GHO_TOKEN());
-    IGhoToken.Facilitator memory preFacilitator = gho.getFacilitator(
-      proposal.GHO_CCIP_TOKEN_POOL()
-    );
+    IGhoToken gho = IGhoToken(GhoMonad.GHO_TOKEN);
+    IGhoToken.Facilitator memory preFacilitator = gho.getFacilitator(GhoMonad.GHO_CCIP_TOKEN_POOL);
 
     executePayload(vm, address(proposal));
 
-    IGhoToken.Facilitator memory postFacilitator = gho.getFacilitator(
-      proposal.GHO_CCIP_TOKEN_POOL()
-    );
+    IGhoToken.Facilitator memory postFacilitator = gho.getFacilitator(GhoMonad.GHO_CCIP_TOKEN_POOL);
 
     assertEq(
       postFacilitator.bucketCapacity,
@@ -82,7 +79,7 @@ contract AaveV3Monad_RemoteGSMLaunchArbitrum_20260512_Test is ProtocolV3TestBase
   /// @dev Asserts the inbound and outbound rate limiter for `remoteChainSelector` sit at defaults.
   function _assertLaneNormalized(uint64 remoteChainSelector) internal view {
     IRateLimiter.TokenBucket memory inbound = IUpgradeableBurnMintTokenPool(
-      proposal.GHO_CCIP_TOKEN_POOL()
+      GhoMonad.GHO_CCIP_TOKEN_POOL
     ).getCurrentInboundRateLimiterState(remoteChainSelector);
 
     assertEq(
@@ -98,7 +95,7 @@ contract AaveV3Monad_RemoteGSMLaunchArbitrum_20260512_Test is ProtocolV3TestBase
     assertTrue(inbound.isEnabled, 'post-proposal inbound rate limiter should be enabled');
 
     IRateLimiter.TokenBucket memory outbound = IUpgradeableBurnMintTokenPool(
-      proposal.GHO_CCIP_TOKEN_POOL()
+      GhoMonad.GHO_CCIP_TOKEN_POOL
     ).getCurrentOutboundRateLimiterState(remoteChainSelector);
 
     assertEq(

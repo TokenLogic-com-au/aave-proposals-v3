@@ -41,6 +41,10 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
   // fails with a clear diagnostic if CCIP rotates the OffRamp at a future block.
   address internal constant CCIP_ETH_OFFRAMP = 0x542ba1902044069330e8c5b36A84EC503863722f;
 
+  // Existing Eth->Arb inbound rate-limiter capacity at the pinned block, before Part 1 widens it.
+  // A 50M CCIP delivery exceeds this, which is what `test_ccipDeliveryRevertsWithoutPart1` asserts.
+  uint256 internal constant EXISTING_ETH_INBOUND_RATE_LIMITER_CAPACITY = 1_500_000 ether;
+
   AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1 internal part1;
   AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 internal proposal;
 
@@ -142,6 +146,26 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
       uint128(RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT),
       'CCIP token pool facilitator bucketLevel should increase by exactly BRIDGED_AMOUNT'
     );
+  }
+
+  function test_ccipDeliveryRevertsWithoutPart1() public {
+    // Ordering guard for Part 1 -> Part 2. Part 2 depends on the 50M bridged from Ethereum landing on
+    // Arbitrum, which is only possible once Part 1 widens the Eth->Arb inbound rate limiter (1.5M ->
+    // TEMP_BRIDGE_CAPACITY). Re-fork to discard setUp's Part 1 + simulated delivery, then show the
+    // delivery reverts on the inbound rate limiter without Part 1: 50M exceeds the 1.5M capacity, so
+    // the funds cannot arrive if Part 1 is skipped. (Whether the funds are actually bridged depends on
+    // the Ethereum payloads; this only asserts Arbitrum cannot receive them until Part 1 runs.)
+    vm.createSelectFork(vm.rpcUrl('arbitrum'), 478622035);
+
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        IUpgradeableBurnMintTokenPool.TokenMaxCapacityExceeded.selector,
+        EXISTING_ETH_INBOUND_RATE_LIMITER_CAPACITY,
+        RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT,
+        GhoArbitrum.GHO_TOKEN
+      )
+    );
+    _simulateCcipDeliveryToCollector(RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT);
   }
 
   function test_bridgeLimitRestore() public {
