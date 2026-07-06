@@ -7,7 +7,7 @@ snapshot: "https://snapshot.org/#/s:aavedao.eth/proposal/0xf24321514fb593af9e508
 
 ## Simple Summary
 
-Launch GHO GSM on Arbitrum (stataUSDC) using the new RemoteGSM architecture. The proposal mints 50M GHO via a dedicated `GhoDirectFacilitator` on Ethereum, bridges it to Arbitrum over CCIP to seed the local `GhoReserve`, wires up the Arbitrum GSM, and normalizes the GHO CCIP lane capacity across every supported network to a uniform 5M GHO/day with a 1,000 GHO/sec refill rate.
+Launch GHO GSM on Arbitrum (stataUSDC) using the new RemoteGSM architecture. The proposal mints 50M GHO via a dedicated `GhoDirectFacilitator` on Ethereum, bridges it to Arbitrum over CCIP to seed the local `GhoReserve`, wires up the Arbitrum GSM, and normalizes the GHO CCIP lane capacity across every supported network to a uniform 5M GHO max transfer with a 1,000 GHO/sec refill rate.
 
 ## Motivation
 
@@ -41,7 +41,7 @@ For each GSM:
 
 ### Normalize GHO CCIP lane capacity across networks
 
-On both ends of every GHO lane touched by this proposal — Arbitrum, Avalanche, Base, Gnosis, Mantle, Plasma, X-Layer — set inbound and outbound CCIP rate-limit configs to canonical defaults: **capacity 5,000,000 GHO/day, refill 1,000 GHO/sec**. The temporary boosts on the Arbitrum lane used for the 50M seed transfer are restored to these defaults in the same payloads.
+On both ends of every GHO lane touched by this proposal — Arbitrum, Avalanche, Base, Gnosis, Mantle, Plasma, X-Layer, Ink and Monad — set inbound and outbound CCIP rate-limit configs to canonical defaults: **capacity 5,000,000 GHO/day, refill 1,000 GHO/sec**. The temporary boosts on the Arbitrum lane used for the 50M seed transfer are restored to these defaults in the same payloads.
 
 ## References
 

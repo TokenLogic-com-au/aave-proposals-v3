@@ -15,7 +15,7 @@ library RemoteGSMLaunchArbitrumSetup {
   // 50M GHO bridge amount + 10% leeway in case of other bridges
   uint128 public constant TEMP_BRIDGE_CAPACITY = 55_000_000 ether;
 
-  // Maximum capacity per day to be applied to every lane
+  // Maximum capacity per transaction to be applied to every lane
   uint128 public constant DEFAULT_RATE_LIMITER_CAPACITY = 5_000_000 ether;
 
   // Refill rate per second to be applied to every lane
@@ -37,8 +37,6 @@ library RemoteGSMLaunchArbitrumSetup {
    * @dev Iterates over every chain returned by `GhoCCIPChains.getAllChainsExcept` (1.6.0 chains
    * included) and applies the same default config — `DEFAULT_RATE_LIMITER_CAPACITY` /
    * `DEFAULT_RATE_LIMITER_RATE`, enabled — on both the inbound and outbound lane to each of them.
-   * TODO: `setChainRateLimiterConfig` reverts for any remote chain selector not already supported
-   * by the pool, so this assumes a lane to every other supported network exists on `tokenPool`.
    * Tests should catch this once enabled; double check.
    * @param tokenPool The GHO CCIP token pool whose lanes will be normalized. Typed as
    * `IUpgradeableLockReleaseTokenPool`, but `setChainRateLimiterConfig` shares the same selector

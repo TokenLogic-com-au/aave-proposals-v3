@@ -110,4 +110,27 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
       'facilitator bucket level should be unchanged by the capacity update'
     );
   }
+
+  function test_outboundRateLimiter() public {
+    // Part 1 writes the outbound side of the Arb->Eth lane to the canonical defaults in the same
+    // setChainRateLimiterConfig call that raises the inbound side. It is asserted directly here so a
+    // disabled / zero-capacity outbound config cannot slip through if Part 2 (which rewrites it) stalls.
+    executePayload(vm, address(proposal));
+
+    IRateLimiter.TokenBucket memory bucket = IUpgradeableBurnMintTokenPool(
+      GhoArbitrum.GHO_CCIP_TOKEN_POOL
+    ).getCurrentOutboundRateLimiterState(CCIPChainSelectors.ETHEREUM);
+
+    assertTrue(bucket.isEnabled, 'post-proposal outbound rate limiter should be enabled');
+    assertEq(
+      bucket.capacity,
+      RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_CAPACITY,
+      'post-proposal outbound capacity should be the canonical default'
+    );
+    assertEq(
+      bucket.rate,
+      RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_RATE,
+      'post-proposal outbound rate should be the canonical default'
+    );
+  }
 }

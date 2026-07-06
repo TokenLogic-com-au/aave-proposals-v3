@@ -21,7 +21,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1 is IProposalGener
     uint256 currentBridgeLimit = IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
       .getBridgeLimit();
     IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setBridgeLimit(
-      currentBridgeLimit + RemoteGSMLaunchArbitrumSetup.TEMP_BRIDGE_CAPACITY
+      currentBridgeLimit + RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT
     );
 
     // Temporarily increase the maximum bridge limit (outbound capacity)

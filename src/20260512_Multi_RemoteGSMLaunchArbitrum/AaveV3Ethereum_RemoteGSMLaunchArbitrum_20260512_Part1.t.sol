@@ -49,7 +49,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
 
     assertEq(
       IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).getBridgeLimit(),
-      bridgeLimitBefore + RemoteGSMLaunchArbitrumSetup.TEMP_BRIDGE_CAPACITY,
+      bridgeLimitBefore + RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT,
       'bridge limit not raised by TEMP_BRIDGE_CAPACITY after proposal'
     );
   }
@@ -121,6 +121,29 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part1_Test is ProtocolV
       bucket.tokens,
       RemoteGSMLaunchArbitrumSetup.TEMP_BRIDGE_CAPACITY,
       'tokens should refill to TEMP_BRIDGE_CAPACITY after 1s'
+    );
+  }
+
+  function test_inboundRateLimiter() public {
+    // Part 1 writes the inbound side of the Eth->Arb lane to the canonical defaults in the same
+    // setChainRateLimiterConfig call that raises the outbound side. It is asserted directly here so a
+    // disabled / zero-capacity inbound config cannot slip through if Part 2 (which rewrites it) stalls.
+    executePayload(vm, address(proposal));
+
+    IRateLimiter.TokenBucket memory bucket = IUpgradeableLockReleaseTokenPool(
+      GhoEthereum.GHO_CCIP_TOKEN_POOL
+    ).getCurrentInboundRateLimiterState(CCIPChainSelectors.ARBITRUM);
+
+    assertTrue(bucket.isEnabled, 'post-proposal inbound rate limiter should be enabled');
+    assertEq(
+      bucket.capacity,
+      RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_CAPACITY,
+      'post-proposal inbound capacity should be the canonical default'
+    );
+    assertEq(
+      bucket.rate,
+      RemoteGSMLaunchArbitrumSetup.DEFAULT_RATE_LIMITER_RATE,
+      'post-proposal inbound rate should be the canonical default'
     );
   }
 }

@@ -259,15 +259,40 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
     );
   }
 
+  // The USDC GSM is deployed (outside governance) with a default 40M exposure cap; the payload lowers
+  // it to GSM_USDC_INITIAL_EXPOSURE_CAP. Pinned as pre-state so the post checks can't pass vacuously
+  // against a GSM redeployed already-configured (which would let a dropped payload line slip through).
+  uint128 internal constant GSM_USDC_DEPLOY_EXPOSURE_CAP = 40_000_000e6;
+
   function test_checkGsmConfig_USDC() public {
+    IGsm gsm = IGsm(proposal.GSM_USDC());
+    IGhoReserve reserve = IGhoReserve(address(proposal.GHO_RESERVE()));
+
+    // Pre-state: the payload must move each of these. Pinning the "before" makes the post-state
+    // assertions below meaningful — a pre-configured redeploy would fail here instead of passing
+    // silently with payload lines removed.
+    assertEq(
+      gsm.getExposureCap(),
+      GSM_USDC_DEPLOY_EXPOSURE_CAP,
+      'pre: exposure cap should be the deploy default'
+    );
+    assertEq(gsm.getFeeStrategy(), address(0), 'pre: fee strategy should be unset');
+    assertEq(reserve.getLimit(address(gsm)), 0, 'pre: reserve limit should be unset');
+
     executePayload(vm, address(proposal));
 
-    uint256 limit = IGhoReserve(address(proposal.GHO_RESERVE())).getLimit(proposal.GSM_USDC());
+    uint256 limit = reserve.getLimit(address(gsm));
     assertEq(
       limit,
       RemoteGSMLaunchArbitrumSetup.GSM_USDC_RESERVE_LIMIT,
       'USDC GSM reserve limit not set'
     );
+
+    // Read back the reserve address set by updateGhoReserve. NOTE: on the pinned fork the GSM is
+    // already deployed pointing at GHO_RESERVE, so this confirms the wiring but does not by itself
+    // guard a dropped updateGhoReserve line — the reserve-limit transition above (0 -> 25M) is the
+    // payload guard for the reserve wiring.
+    assertEq(gsm.getGhoReserve(), address(reserve), 'USDC GSM reserve address wrong');
 
     GsmConfig memory gsmConfig = GsmConfig({
       sellFee: 0, // 0%
@@ -283,7 +308,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
       feeStrategy: proposal.GSM_USDC_FEE_STRATEGY()
     });
     _checkGsmConfig(
-      IGsm(proposal.GSM_USDC()),
+      gsm,
       AaveV3ArbitrumAssets.USDC_STATA_TOKEN,
       IOracleSwapFreezer(proposal.USDC_ORACLE_SWAP_FREEZER()),
       gsmConfig
@@ -299,8 +324,16 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
   }
 
   function test_checkRoles_USDC() public {
+    IGsm gsm = IGsm(proposal.GSM_USDC());
+
+    // Pre-state: the payload grants these four roles. Assert they are ungranted beforehand so the
+    // post-state role checks cannot pass vacuously against a pre-authorized redeploy with a
+    // grantRole line dropped. (DEFAULT_ADMIN / CONFIGURATOR on the executor are set at GSM deploy,
+    // not by this payload, so they are intentionally not pinned here.)
+    _assertPayloadGrantedRolesUngranted(gsm);
+
     executePayload(vm, address(proposal));
-    _checkRolesConfig(IGsm(proposal.GSM_USDC()));
+    _checkRolesConfig(gsm);
   }
 
   function test_gsmIsOperational_USDC() public {
@@ -402,56 +435,92 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
   function _testGsmIsOperational(IGsm gsm, address underlying) internal {
     executePayload(vm, address(proposal));
 
-    // NOTE: `deal(STATA, true)` writes the balance slot directly *and* updates the
-    // ERC4626 accounting (`totalAssets`, `totalSupply`). For pure GSM-path arithmetic this
-    // is not strictly required, but once real GSMs are deployed verify that `sellAsset` / `buyAsset`
-    // produce the expected GHO amounts. If not, switch to dealing the underlying USDC
-    // and wrapping via `IERC4626.deposit(...)` to keep 4626 accounting consistent.
+    // NOTE: `deal(STATA, true)` writes the balance slot directly *and* updates the ERC4626
+    // accounting (`totalAssets`, `totalSupply`), so the 4626 preview math behind
+    // `getAssetPriceInGho` stays consistent with the dealt balance. The swap outputs below are
+    // checked against the price + fee strategies directly (not the swap's own return value), so a
+    // mispriced strategy or wrong fee is caught.
     deal(underlying, address(this), 1_000e6, true);
 
     IERC20(underlying).approve(address(gsm), 1_000e6);
     IERC20(GhoArbitrum.GHO_TOKEN).approve(address(gsm), 1_200 ether);
 
-    uint256 amountUnderlying = 1_000e6;
+    uint256 amountToSell = 1_000e6;
+    uint256 amountToBuy = 500e6;
     uint256 gsmBalanceBefore = IERC20(underlying).balanceOf(address(gsm));
     uint256 userUnderlyingBefore = IERC20(underlying).balanceOf(address(this));
     uint256 balanceGhoBefore = IGhoToken(GhoArbitrum.GHO_TOKEN).balanceOf(address(this));
 
-    (, uint256 ghoBought) = gsm.sellAsset(amountUnderlying, address(this));
+    // Expected GHO out on a sell, derived independently: selling rounds the GHO valuation down and
+    // the user receives the gross value minus the sell fee.
+    uint256 expectedGhoBought = _expectedGhoForSell(gsm, amountToSell);
+    // Expected GHO in on a buy, derived independently: buying rounds the GHO valuation up and the
+    // user pays the gross value plus the buy fee.
+    uint256 expectedGhoSold = _expectedGhoForBuy(gsm, amountToBuy);
 
+    {
+      (, uint256 ghoBought) = gsm.sellAsset(amountToSell, address(this));
+      assertEq(
+        ghoBought,
+        expectedGhoBought,
+        'sellAsset GHO out does not match price + fee strategy'
+      );
+    }
     assertEq(
       IERC20(underlying).balanceOf(address(gsm)),
-      gsmBalanceBefore + amountUnderlying,
+      gsmBalanceBefore + amountToSell,
       'underlying balance in GSM after sellAsset is wrong'
     );
     assertEq(
       IERC20(underlying).balanceOf(address(this)),
-      userUnderlyingBefore - amountUnderlying,
+      userUnderlyingBefore - amountToSell,
       'user underlying balance after sellAsset is wrong'
     );
     assertEq(
       IGhoToken(GhoArbitrum.GHO_TOKEN).balanceOf(address(this)),
-      balanceGhoBefore + ghoBought,
+      balanceGhoBefore + expectedGhoBought,
       'GHO balance after sellAsset is wrong'
     );
 
-    (, uint256 ghoSold) = gsm.buyAsset(500e6, address(this));
-
+    {
+      (, uint256 ghoSold) = gsm.buyAsset(amountToBuy, address(this));
+      assertEq(ghoSold, expectedGhoSold, 'buyAsset GHO in does not match price + fee strategy');
+    }
     assertEq(
       IERC20(underlying).balanceOf(address(gsm)),
-      gsmBalanceBefore + amountUnderlying - 500e6,
+      gsmBalanceBefore + amountToSell - amountToBuy,
       'underlying balance in GSM after buyAsset is wrong'
     );
     assertEq(
       IERC20(underlying).balanceOf(address(this)),
-      userUnderlyingBefore - amountUnderlying + 500e6,
+      userUnderlyingBefore - amountToSell + amountToBuy,
       'user underlying balance after buyAsset is wrong'
     );
     assertEq(
       IGhoToken(GhoArbitrum.GHO_TOKEN).balanceOf(address(this)),
-      balanceGhoBefore + ghoBought - ghoSold,
+      balanceGhoBefore + expectedGhoBought - expectedGhoSold,
       'GHO balance after buyAsset is wrong'
     );
+  }
+
+  /// @dev GHO the user receives when selling `assetAmount` of underlying: gross value (rounded
+  /// down) minus the sell fee, computed from the GSM's price and fee strategies directly.
+  function _expectedGhoForSell(IGsm gsm, uint256 assetAmount) internal view returns (uint256) {
+    uint256 gross = IFixedPriceStrategy4626(gsm.PRICE_STRATEGY()).getAssetPriceInGho(
+      assetAmount,
+      false
+    );
+    return gross - IGsmFeeStrategy(gsm.getFeeStrategy()).getSellFee(gross);
+  }
+
+  /// @dev GHO the user pays when buying `assetAmount` of underlying: gross value (rounded up) plus
+  /// the buy fee, computed from the GSM's price and fee strategies directly.
+  function _expectedGhoForBuy(IGsm gsm, uint256 assetAmount) internal view returns (uint256) {
+    uint256 gross = IFixedPriceStrategy4626(gsm.PRICE_STRATEGY()).getAssetPriceInGho(
+      assetAmount,
+      true
+    );
+    return gross + IGsmFeeStrategy(gsm.getFeeStrategy()).getBuyFee(gross);
   }
 
   function _testUpdateExposureCap(IGsm gsm) internal {
@@ -516,6 +585,30 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
         GhoArbitrum.RISK_COUNCIL
       ),
       'Limit manager role not granted to RiskCouncil'
+    );
+  }
+
+  /// @dev Asserts the four roles this payload grants are NOT held pre-execution, so the post-state
+  /// role checks in `_checkRolesConfig` guard against a dropped grantRole (rather than passing
+  /// vacuously against a pre-authorized redeploy).
+  function _assertPayloadGrantedRolesUngranted(IGsm gsm) internal view {
+    bytes32 swapFreezerRole = gsm.SWAP_FREEZER_ROLE();
+    assertFalse(
+      gsm.hasRole(swapFreezerRole, proposal.USDC_ORACLE_SWAP_FREEZER()),
+      'pre: swap freezer role should not be granted to the oracle swap freezer'
+    );
+    assertFalse(
+      gsm.hasRole(swapFreezerRole, GovernanceV3Arbitrum.EXECUTOR_LVL_1),
+      'pre: swap freezer role should not be granted to the executor'
+    );
+    assertFalse(
+      gsm.hasRole(gsm.CONFIGURATOR_ROLE(), proposal.GHO_GSM_STEWARD()),
+      'pre: configurator role should not be granted to the gho gsm steward'
+    );
+    IGhoReserve reserve = IGhoReserve(address(proposal.GHO_RESERVE()));
+    assertFalse(
+      reserve.hasRole(reserve.LIMIT_MANAGER_ROLE(), GhoArbitrum.RISK_COUNCIL),
+      'pre: limit manager role should not be granted to the risk council'
     );
   }
 

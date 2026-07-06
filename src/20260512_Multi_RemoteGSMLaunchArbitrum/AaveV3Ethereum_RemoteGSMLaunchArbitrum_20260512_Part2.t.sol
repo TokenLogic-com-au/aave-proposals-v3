@@ -170,6 +170,20 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
       RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT,
       'facilitator bucket level should match bridged amount'
     );
+
+    assertEq(
+      IERC20(AaveV3EthereumAssets.GHO_UNDERLYING).balanceOf(address(proposal)),
+      0,
+      'left over GHO on payload'
+    );
+    assertEq(
+      IERC20(AaveV3EthereumAssets.GHO_UNDERLYING).allowance(
+        address(proposal),
+        proposal.CCIP_BRIDGE()
+      ),
+      0,
+      'left over allowance on payload'
+    );
   }
 
   function test_otherLaneRateLimitsRestored() public {

@@ -15,6 +15,7 @@ fs_permissions = [
   { access = "read", path = "./zkout" },
   { access = "read-write", path = "./diffs" },
   { access = "read", path = "./out" },
+  { access = "read-write", path = "./snapshot" },
 ]
 evm_version = 'shanghai'
 cache_path = 'cache/shanghai'
@@ -82,5 +83,7 @@ mantle = "${RPC_MANTLE}"
 xlayer = "${RPC_XLAYER}"
 megaeth = "${RPC_MEGAETH}"
 monad = "${RPC_MONAD}"
+mainnet_virtual = "${RPC_TENDERLY_VIRTUAL_MAINNET}"
+arbitrum_virtual = "${RPC_TENDERLY_VIRTUAL_ARBITRUM}"
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/crates/config
