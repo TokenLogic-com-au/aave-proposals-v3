@@ -34,13 +34,13 @@ import {RemoteGSMLaunchMonadSetup} from './setup/RemoteGSMLaunchMonadSetup.sol';
  * @dev Test for AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2
  * command: FOUNDRY_PROFILE=test forge test --match-path=src/20260701_Multi_RemoteGSMLaunchMonad/AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2.t.sol -vv
  *
- * The Monad GSM/Reserve/Steward/Registry (and the CCIP OffRamp used to simulate delivery) are not
- * deployed yet. The full test structure of the Arbitrum RemoteGSM launch is kept here; execution
+ * TODO: (remove comment) The Monad GSM/Reserve/Steward/Registry (and the CCIP OffRamp used to simulate delivery) are
+ * not deployed yet. The full test structure of the Arbitrum RemoteGSM launch is kept here; execution
  * tests are skipped via `_skipIfNotDeployed` (GSM addresses) or `_skipIfNoOffRamp` (CCIP OffRamp)
  * and activate automatically once the payload placeholders below are set.
  */
 contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestBase {
-  // Existing Eth->Arb inbound rate-limiter capacity at the pinned block, before Part 1 widens it.
+  // Existing Eth->Monad inbound rate-limiter capacity at the pinned block, before Part 1 widens it.
   // A 50M CCIP delivery exceeds this, which is what `test_ccipDeliveryRevertsWithoutPart1` asserts.
   // TODO: confirm with test after Arb proposal is executed.
   uint256 internal constant EXISTING_ETH_INBOUND_RATE_LIMITER_CAPACITY = 5_000_000 ether;

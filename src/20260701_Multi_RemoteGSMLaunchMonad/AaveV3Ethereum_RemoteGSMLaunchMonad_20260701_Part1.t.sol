@@ -105,4 +105,27 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part1_Test is ProtocolV3Te
       'tokens should refill to TEMP_BRIDGE_CAPACITY after 1s'
     );
   }
+
+  function test_inboundRateLimiter() public {
+    // Part 1 writes the inbound side of the Eth->Monad lane to the canonical defaults in the same
+    // setChainRateLimiterConfig call that raises the outbound side. It is asserted directly here so a
+    // disabled / zero-capacity inbound config cannot slip through if Part 2 (which rewrites it) stalls.
+    executePayload(vm, address(proposal));
+
+    IRateLimiter.TokenBucket memory bucket = IUpgradeableLockReleaseTokenPool(
+      GhoEthereum.GHO_CCIP_TOKEN_POOL
+    ).getCurrentInboundRateLimiterState(CCIPChainSelectors.MONAD);
+
+    assertTrue(bucket.isEnabled, 'post-proposal inbound rate limiter should be enabled');
+    assertEq(
+      bucket.capacity,
+      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_CAPACITY,
+      'post-proposal inbound capacity should be the canonical default'
+    );
+    assertEq(
+      bucket.rate,
+      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_RATE,
+      'post-proposal inbound rate should be the canonical default'
+    );
+  }
 }
