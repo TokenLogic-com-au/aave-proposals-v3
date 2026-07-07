@@ -45,8 +45,8 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part1_Test is ProtocolV3Te
 
     assertEq(
       IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).getBridgeLimit(),
-      bridgeLimitBefore + RemoteGSMLaunchMonadSetup.TEMP_BRIDGE_CAPACITY,
-      'bridge limit not raised by TEMP_BRIDGE_CAPACITY after proposal'
+      bridgeLimitBefore + RemoteGSMLaunchMonadSetup.GHO_BRIDGE_AMOUNT,
+      'bridge limit not raised by GHO_BRIDGE_AMOUNT after proposal'
     );
   }
 

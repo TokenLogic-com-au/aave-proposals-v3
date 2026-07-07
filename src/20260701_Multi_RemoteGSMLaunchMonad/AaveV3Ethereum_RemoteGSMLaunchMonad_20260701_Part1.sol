@@ -21,7 +21,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part1 is IProposalGenericE
     uint256 currentBridgeLimit = IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
       .getBridgeLimit();
     IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setBridgeLimit(
-      currentBridgeLimit + RemoteGSMLaunchMonadSetup.TEMP_BRIDGE_CAPACITY
+      currentBridgeLimit + RemoteGSMLaunchMonadSetup.GHO_BRIDGE_AMOUNT
     );
 
     // Temporarily increase the Ethereum -> Monad outbound capacity for the one-off seed bridge.
