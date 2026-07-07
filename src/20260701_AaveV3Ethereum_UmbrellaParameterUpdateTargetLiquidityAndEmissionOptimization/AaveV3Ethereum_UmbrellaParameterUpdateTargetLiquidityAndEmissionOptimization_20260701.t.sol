@@ -7,7 +7,7 @@ import {IUmbrella} from 'aave-address-book/common/IUmbrella.sol';
 import {IRewardsController} from 'aave-umbrella/rewards/interfaces/IRewardsController.sol';
 
 import 'forge-std/Test.sol';
-import {ProtocolV3TestBase, ReserveConfig} from 'aave-helpers/src/ProtocolV3TestBase.sol';
+import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {AaveV3Ethereum_UmbrellaParameterUpdateTargetLiquidityAndEmissionOptimization_20260701} from './AaveV3Ethereum_UmbrellaParameterUpdateTargetLiquidityAndEmissionOptimization_20260701.sol';
 
 /**
@@ -48,15 +48,15 @@ contract AaveV3Ethereum_UmbrellaParameterUpdateTargetLiquidityAndEmissionOptimiz
   function test_targetLiquidityUpdated() public {
     assertNotEq(
       _targetLiquidity(UmbrellaEthereumAssets.STK_WA_USDT_V1),
-      proposal.USDT_TARGET_LIQUIDITY()
+      proposal.STATA_USDT_TARGET_LIQUIDITY()
     );
     assertNotEq(
       _targetLiquidity(UmbrellaEthereumAssets.STK_WA_USDC_V1),
-      proposal.USDC_TARGET_LIQUIDITY()
+      proposal.STATA_USDC_TARGET_LIQUIDITY()
     );
     assertNotEq(
       _targetLiquidity(UmbrellaEthereumAssets.STK_WA_WETH_V1),
-      proposal.WETH_TARGET_LIQUIDITY()
+      proposal.STATA_WETH_TARGET_LIQUIDITY()
     );
     assertNotEq(
       _targetLiquidity(UmbrellaEthereumAssets.STK_GHO_V1),
@@ -67,15 +67,15 @@ contract AaveV3Ethereum_UmbrellaParameterUpdateTargetLiquidityAndEmissionOptimiz
 
     assertEq(
       _targetLiquidity(UmbrellaEthereumAssets.STK_WA_USDT_V1),
-      proposal.USDT_TARGET_LIQUIDITY()
+      proposal.STATA_USDT_TARGET_LIQUIDITY()
     );
     assertEq(
       _targetLiquidity(UmbrellaEthereumAssets.STK_WA_USDC_V1),
-      proposal.USDC_TARGET_LIQUIDITY()
+      proposal.STATA_USDC_TARGET_LIQUIDITY()
     );
     assertEq(
       _targetLiquidity(UmbrellaEthereumAssets.STK_WA_WETH_V1),
-      proposal.WETH_TARGET_LIQUIDITY()
+      proposal.STATA_WETH_TARGET_LIQUIDITY()
     );
     assertEq(_targetLiquidity(UmbrellaEthereumAssets.STK_GHO_V1), proposal.GHO_TARGET_LIQUIDITY());
   }
@@ -169,6 +169,56 @@ contract AaveV3Ethereum_UmbrellaParameterUpdateTargetLiquidityAndEmissionOptimiz
       IUmbrella(UmbrellaEthereum.UMBRELLA).getDeficitOffset(AaveV3EthereumAssets.GHO_UNDERLYING),
       proposal.GHO_DEFICIT_OFFSET()
     );
+  }
+
+  function test_rewardPayerSetToCollector() public {
+    uint256 usdtDistEnd = _distributionEnd(
+      UmbrellaEthereumAssets.STK_WA_USDT_V1,
+      AaveV3EthereumAssets.USDT_A_TOKEN
+    );
+    uint256 usdcDistEnd = _distributionEnd(
+      UmbrellaEthereumAssets.STK_WA_USDC_V1,
+      AaveV3EthereumAssets.USDC_A_TOKEN
+    );
+    uint256 wethDistEnd = _distributionEnd(
+      UmbrellaEthereumAssets.STK_WA_WETH_V1,
+      AaveV3EthereumAssets.WETH_A_TOKEN
+    );
+
+    vm.expectEmit(UmbrellaEthereum.UMBRELLA_REWARDS_CONTROLLER);
+    emit IRewardsController.RewardConfigUpdated(
+      UmbrellaEthereumAssets.STK_WA_USDT_V1,
+      AaveV3EthereumAssets.USDT_A_TOKEN,
+      USDT_EXPECTED_EMISSION,
+      usdtDistEnd,
+      address(AaveV3Ethereum.COLLECTOR)
+    );
+    vm.expectEmit(UmbrellaEthereum.UMBRELLA_REWARDS_CONTROLLER);
+    emit IRewardsController.RewardConfigUpdated(
+      UmbrellaEthereumAssets.STK_WA_USDC_V1,
+      AaveV3EthereumAssets.USDC_A_TOKEN,
+      USDC_EXPECTED_EMISSION,
+      usdcDistEnd,
+      address(AaveV3Ethereum.COLLECTOR)
+    );
+    vm.expectEmit(UmbrellaEthereum.UMBRELLA_REWARDS_CONTROLLER);
+    emit IRewardsController.RewardConfigUpdated(
+      UmbrellaEthereumAssets.STK_WA_WETH_V1,
+      AaveV3EthereumAssets.WETH_A_TOKEN,
+      WETH_EXPECTED_EMISSION,
+      wethDistEnd,
+      address(AaveV3Ethereum.COLLECTOR)
+    );
+    vm.expectEmit(true, true, true, false, UmbrellaEthereum.UMBRELLA_REWARDS_CONTROLLER);
+    emit IRewardsController.RewardConfigUpdated(
+      UmbrellaEthereumAssets.STK_GHO_V1,
+      AaveV3EthereumAssets.GHO_UNDERLYING,
+      0,
+      0,
+      address(0)
+    );
+
+    executePayload(vm, address(proposal));
   }
 
   function _targetLiquidity(address stakeToken) internal view returns (uint256) {

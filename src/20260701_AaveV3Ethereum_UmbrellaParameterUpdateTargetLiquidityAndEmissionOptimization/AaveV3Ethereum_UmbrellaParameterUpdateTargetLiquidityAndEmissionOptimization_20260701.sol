@@ -19,16 +19,16 @@ contract AaveV3Ethereum_UmbrellaParameterUpdateTargetLiquidityAndEmissionOptimiz
 {
   uint256 public constant SECONDS_PER_YEAR = 365 days;
 
-  uint256 public constant USDT_TARGET_LIQUIDITY = 34_114_525e6;
-  uint256 public constant USDC_TARGET_LIQUIDITY = 32_518_555e6;
-  uint256 public constant WETH_TARGET_LIQUIDITY = 17_437.44e18;
+  uint256 public constant STATA_USDT_TARGET_LIQUIDITY = 34_114_525e6; // 34.11M waUSDT, 6 decimals
+  uint256 public constant STATA_USDC_TARGET_LIQUIDITY = 32_518_555e6; // 32.52M waUSDC, 6 decimals
+  uint256 public constant STATA_WETH_TARGET_LIQUIDITY = 17_437.44e18; // 17,437.44 waWETH, 18 decimals
 
-  uint256 public constant USDT_EMISSION_PER_YEAR = 1_280_000e6;
-  uint256 public constant USDC_EMISSION_PER_YEAR = 1_220_000e6;
-  uint256 public constant WETH_EMISSION_PER_YEAR = 470e18;
+  uint256 public constant USDT_EMISSION_PER_YEAR = 1_280_000e6; // 1.28M aEthUSDT, 6 decimals
+  uint256 public constant USDC_EMISSION_PER_YEAR = 1_220_000e6; // 1.22M aEthUSDC, 6 decimals
+  uint256 public constant WETH_EMISSION_PER_YEAR = 470e18; // 470 aEthWETH, 18 decimals
 
-  uint256 public constant GHO_TARGET_LIQUIDITY = 1e18;
-  uint256 public constant GHO_DEFICIT_OFFSET = 3_000_000e18;
+  uint256 public constant GHO_TARGET_LIQUIDITY = 1e18; // 1 GHO, 18 decimals
+  uint256 public constant GHO_DEFICIT_OFFSET = 3_000_000e18; // 3M GHO, 18 decimals
 
   constructor() UmbrellaBasePayload(UmbrellaEthereum.UMBRELLA_CONFIG_ENGINE) {}
 
@@ -44,19 +44,19 @@ contract AaveV3Ethereum_UmbrellaParameterUpdateTargetLiquidityAndEmissionOptimiz
     configs[0] = _buildConfig(
       UmbrellaEthereumAssets.STK_WA_USDT_V1,
       AaveV3EthereumAssets.USDT_A_TOKEN,
-      USDT_TARGET_LIQUIDITY,
+      STATA_USDT_TARGET_LIQUIDITY,
       USDT_EMISSION_PER_YEAR / SECONDS_PER_YEAR
     );
     configs[1] = _buildConfig(
       UmbrellaEthereumAssets.STK_WA_USDC_V1,
       AaveV3EthereumAssets.USDC_A_TOKEN,
-      USDC_TARGET_LIQUIDITY,
+      STATA_USDC_TARGET_LIQUIDITY,
       USDC_EMISSION_PER_YEAR / SECONDS_PER_YEAR
     );
     configs[2] = _buildConfig(
       UmbrellaEthereumAssets.STK_WA_WETH_V1,
       AaveV3EthereumAssets.WETH_A_TOKEN,
-      WETH_TARGET_LIQUIDITY,
+      STATA_WETH_TARGET_LIQUIDITY,
       WETH_EMISSION_PER_YEAR / SECONDS_PER_YEAR
     );
     configs[3] = _buildConfig(
