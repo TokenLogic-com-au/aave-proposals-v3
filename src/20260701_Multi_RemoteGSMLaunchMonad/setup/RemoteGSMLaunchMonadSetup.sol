@@ -14,7 +14,7 @@ library RemoteGSMLaunchMonadSetup {
   // 50M GHO bridge amount + 10% leeway in case of other bridges
   uint128 public constant TEMP_BRIDGE_CAPACITY = 55_000_000 ether;
 
-  // Standard per-lane rate-limit config the Ethereum <> Monad GHO lane is RESTORED to after
+  // Standard per-lane transaction limit the Ethereum <> Monad GHO lane is RESTORED to after
   // the one-off 50M bridge. Unlike the Arbitrum launch (TODO: insert link), this proposal does NOT normalize every
   // network's lanes: it only widens the single Ethereum <> Monad lane for the transfer and then
   // puts that lane back to its pre-execution config, leaving every other lane untouched.

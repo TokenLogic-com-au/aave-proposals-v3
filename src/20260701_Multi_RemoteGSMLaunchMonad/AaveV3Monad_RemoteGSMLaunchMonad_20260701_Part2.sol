@@ -2,11 +2,10 @@
 pragma solidity ^0.8.0;
 
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
-import {SafeERC20} from 'openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol';
 import {GhoMonad} from 'aave-address-book/GhoMonad.sol';
 import {AaveV3Monad} from 'aave-address-book/AaveV3Monad.sol';
 import {GovernanceV3Monad} from 'aave-address-book/GovernanceV3Monad.sol';
-import {CollectorUtils, ICollector} from 'aave-helpers/src/CollectorUtils.sol';
+import {ICollector} from 'aave-helpers/src/CollectorUtils.sol';
 import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGenericExecutor.sol';
 
 import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
@@ -38,9 +37,6 @@ import {RemoteGSMLaunchMonadSetup} from './setup/RemoteGSMLaunchMonadSetup.sol';
  * fill them in before deploy. Tests that execute this payload are skipped until they are set.
  */
 contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2 is IProposalGenericExecutor {
-  using SafeERC20 for IERC20;
-  using CollectorUtils for ICollector;
-
   // Monad Risk Council (LIMIT_MANAGER_ROLE on the GhoReserve).
   // TODO: set the Monad Risk Council address (no GhoMonad.RISK_COUNCIL in aave-address-book yet).
   address public constant RISK_COUNCIL = address(0);
