@@ -4,7 +4,6 @@ pragma solidity ^0.8.0;
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 import {AaveV3Arbitrum} from 'aave-address-book/AaveV3Arbitrum.sol';
 import {GhoArbitrum} from 'aave-address-book/GhoArbitrum.sol';
-import {MiscArbitrum} from 'aave-address-book/MiscArbitrum.sol';
 import {GovernanceV3Arbitrum} from 'aave-address-book/GovernanceV3Arbitrum.sol';
 import {ICollector} from 'aave-helpers/src/CollectorUtils.sol';
 import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGenericExecutor.sol';
@@ -97,7 +96,7 @@ contract AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 is IProposalGener
     gsm.grantRole(swapFreezerRole, oracleSwapFreezer);
     gsm.grantRole(swapFreezerRole, GovernanceV3Arbitrum.EXECUTOR_LVL_1);
 
-    // Add GSMs to GSM Registry
+    // Add GSM to GSM Registry
     IGsmRegistry(GSM_REGISTRY).addGsm(address(gsm));
 
     // GHO GSM Steward

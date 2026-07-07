@@ -28,7 +28,11 @@ contract AaveV3Ink_RemoteGSMLaunchArbitrum_20260512_Test is ProtocolV3TestBase {
    * @dev executes the generic test suite including e2e and config snapshots
    */
   function test_defaultProposalExecution() public {
-    executePayload(vm, address(proposal));
+    defaultTest(
+      'AaveV3Ink_RemoteGSMLaunchArbitrum_20260512',
+      AaveV3InkWhitelabel.POOL,
+      address(proposal)
+    );
   }
 
   function test_facilitatorBucketCapacityIncrease() public {

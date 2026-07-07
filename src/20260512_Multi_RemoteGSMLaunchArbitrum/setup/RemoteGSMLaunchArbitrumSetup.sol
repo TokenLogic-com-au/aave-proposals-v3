@@ -37,7 +37,6 @@ library RemoteGSMLaunchArbitrumSetup {
    * @dev Iterates over every chain returned by `GhoCCIPChains.getAllChainsExcept` (1.6.0 chains
    * included) and applies the same default config — `DEFAULT_RATE_LIMITER_CAPACITY` /
    * `DEFAULT_RATE_LIMITER_RATE`, enabled — on both the inbound and outbound lane to each of them.
-   * Tests should catch this once enabled; double check.
    * @param tokenPool The GHO CCIP token pool whose lanes will be normalized. Typed as
    * `IUpgradeableLockReleaseTokenPool`, but `setChainRateLimiterConfig` shares the same selector
    * across the lock-release and burn-mint pools, so a burn-mint pool address may also be passed.

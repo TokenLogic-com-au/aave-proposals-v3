@@ -28,17 +28,10 @@ contract AaveV3Monad_RemoteGSMLaunchArbitrum_20260512_Test is ProtocolV3TestBase
    * @dev executes the generic test suite including e2e and config snapshots
    */
   function test_defaultProposalExecution() public {
-    // e2e is skipped: at this fork block no Monad reserve satisfies all of ProtocolV3TestBase._getGoodCollateral's
-    // gates (active, unfrozen, not paused, usable as collateral, debtCeiling == 0, ltv != 0), so the default e2e
-    // supply / borrow path reverts with "No usable collateral found".
-    // This payload only touches the GHO CCIP bucket capacity and lane rate-limit config.
-    // It does not modify pool reserves, so e2e adds no coverage here.
     defaultTest(
       'AaveV3Monad_RemoteGSMLaunchArbitrum_20260512',
       AaveV3Monad.POOL,
-      address(proposal),
-      false,
-      false
+      address(proposal)
     );
   }
 

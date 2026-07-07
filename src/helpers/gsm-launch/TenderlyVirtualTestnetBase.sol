@@ -124,12 +124,22 @@ abstract contract TenderlyVirtualTestnetBase is Script {
 
   function _refork(string memory fork) internal {
     currentFork = fork;
-    vm.selectFork(vm.createFork(vm.rpcUrl(fork)));
+    try vm.createFork(vm.rpcUrl(fork)) returns (uint256 id) {
+      vm.selectFork(id);
+    } catch {
+      vm.sleep(2000);
+      vm.selectFork(vm.createFork(vm.rpcUrl(fork)));
+    }
   }
 
   function _reforkCurrent() internal {
     require(bytes(currentFork).length != 0, 'no fork selected: use _refork');
     _refork(currentFork);
+  }
+
+  function _increaseTime(uint256 inSeconds) internal {
+    // plain JSON number, no quotes, no hex — verified via curl
+    vm.rpc('evm_increaseTime', string.concat('[', vm.toString(inSeconds), ']'));
   }
 
   // Snapshot Environment

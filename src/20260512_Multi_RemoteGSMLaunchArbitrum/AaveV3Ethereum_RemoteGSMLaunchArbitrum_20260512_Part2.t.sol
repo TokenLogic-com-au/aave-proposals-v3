@@ -160,6 +160,8 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
       proposal.DIRECT_FACILITATOR()
     );
 
+    assertEq(facilitator.label, proposal.DIRECT_FACILITATOR_NAME());
+
     assertEq(
       facilitator.bucketCapacity,
       RemoteGSMLaunchArbitrumSetup.DIRECT_FACILITATOR_CAPACITY,

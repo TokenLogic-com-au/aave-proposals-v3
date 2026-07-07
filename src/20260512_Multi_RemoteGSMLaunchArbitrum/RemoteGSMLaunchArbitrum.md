@@ -19,7 +19,7 @@ The RemoteGSM upgrade refactors GHO's stability mechanism into a three-layer des
 
 On Ethereum:
 
-- Temporarily raise the GHO CCIP bridge limit and the Arbitrum-lane outbound rate limiter to fit a one-off 50M GHO transfer.
+- Temporarily raise the Arbitrum-lane outbound rate limiter to fit a one-off 50M GHO transfer.
 - Register an Arbitrum-scoped `GhoDirectFacilitator` on the GHO token with a 50M bucket capacity.
 - Mint 50M GHO into the payload and bridge it to Arbitrum via `AaveGhoCcipBridge` (configuring the Arbitrum destination lane first).
 
@@ -30,8 +30,6 @@ On Arbitrum:
 
 ### Wire up Arbitrum GSM (stataUSDC)
 
-For each GSM:
-
 - Point it at the `GhoReserve`, enroll it as an entity with a 25M GHO reserve limit.
 - Grant `SWAP_FREEZER_ROLE` to the asset's `OracleSwapFreezer` and to the Arbitrum executor.
 - Register it in the `GsmRegistry` and grant `CONFIGURATOR_ROLE` to the `GhoGsmSteward`.
@@ -41,7 +39,7 @@ For each GSM:
 
 ### Normalize GHO CCIP lane capacity across networks
 
-On both ends of every GHO lane touched by this proposal — Arbitrum, Avalanche, Base, Gnosis, Mantle, Plasma, X-Layer, Ink and Monad — set inbound and outbound CCIP rate-limit configs to canonical defaults: **capacity 5,000,000 GHO/day, refill 1,000 GHO/sec**. The temporary boosts on the Arbitrum lane used for the 50M seed transfer are restored to these defaults in the same payloads.
+On both ends of every GHO lane touched by this proposal — Arbitrum, Avalanche, Base, Gnosis, Mantle, Plasma, X-Layer, Ink and Monad — set inbound and outbound CCIP rate-limit configs to canonical defaults: **capacity 5,000,000 GHO max transfer, refill 1,000 GHO/sec**. The temporary boosts on the Arbitrum lane used for the 50M seed transfer are restored to these defaults in the same payloads.
 
 ### Execution Order
 
@@ -52,6 +50,7 @@ Execution order (same pattern as the Plasma launch, #879):
 - Arbitrum Part 1 must execute before the CCIP message arrives, otherwise the inbound rate limit / facilitator bucket rejects the mint and the delivery has to be manually retried on https://ccip.chain.link/.
 - Arbitrum Part 2 — reverts until the bridged GHO reaches the Collector.
 - The remaining network payloads (Avalanche, Base, Gnosis, Ink, Mantle, Monad, Plasma, X-Layer) are independent and can execute any time.
+- Manually register OracleSwapFreezer via SAFE post execution.
 
 ## References
 

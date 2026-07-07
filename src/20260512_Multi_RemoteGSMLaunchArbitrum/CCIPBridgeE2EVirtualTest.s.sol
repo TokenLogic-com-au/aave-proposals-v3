@@ -13,12 +13,14 @@ import {AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part1} from './AaveV3Arb
 import {AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2} from './AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2.sol';
 
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
+import {IGsm} from 'src/interfaces/IGsm.sol';
+import {IGhoReserve} from 'src/interfaces/IGhoReserve.sol';
+import {IGsmRegistry} from 'src/interfaces/IGsmRegistry.sol';
+import {RemoteGSMLaunchArbitrumSetup} from './setup/RemoteGSMLaunchArbitrumSetup.sol';
 
 contract CCIPBridgeE2EVirtualTest is TenderlyVirtualTestnetBase {
   string private constant MAINNET = 'mainnet_virtual';
   string private constant ARBITRUM = 'arbitrum_virtual';
-
-  uint256 constant EXPECTED_BRIDGE_AMOUNT = 50_000_000 ether;
 
   uint256 internal ghoBefore;
 
@@ -67,16 +69,50 @@ contract CCIPBridgeE2EVirtualTest is TenderlyVirtualTestnetBase {
     ghoBefore = IGhoToken(GhoArbitrum.GHO_TOKEN).balanceOf(address(AaveV3Arbitrum.COLLECTOR));
 
     _executePayloadOn(eth, ethPart1);
+    _refork(eth.rpcAlias);
+    _increaseTime(5 seconds);
     _executePayloadOn(eth, ethPart2);
 
     _pollUntilDelivered(arb.rpcAlias, 60, 3000);
 
     _executePayloadOn(arb, arbPart2);
 
-    // Layer-2 asserts for part2 — TODO(fermin): assert the GSM state your
-    // Part2 configures (registry entry, exposure cap 20M, reserve limit 25M,
-    // swap freezer wiring…) exactly as in your .t.sol expectations
+    // Assert Part 2 landed the bridged GHO in the reserve and configured the USDC GSM.
     _refork(ARBITRUM);
+    _assertArbPart2(AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2(arbPart2));
+  }
+
+  /// @dev End-state checks for Arbitrum Part 2, read from the payload's own constants so the
+  /// expected addresses can't drift from what was executed.
+  function _assertArbPart2(AaveV3Arbitrum_RemoteGSMLaunchArbitrum_20260512_Part2 payload) internal {
+    address gsm = payload.GSM_USDC();
+    IGhoReserve reserve = payload.GHO_RESERVE();
+
+    // Bridged GHO reached the reserve (Collector -> GhoReserve forward in Part 2).
+    require(
+      IGhoToken(GhoArbitrum.GHO_TOKEN).balanceOf(address(reserve)) ==
+        RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT,
+      'ArbPart2: reserve not funded with bridged GHO'
+    );
+    // GSM enrolled with its reserve draw limit.
+    require(
+      reserve.getLimit(gsm) == RemoteGSMLaunchArbitrumSetup.GSM_USDC_RESERVE_LIMIT,
+      'ArbPart2: wrong GSM reserve limit'
+    );
+    // GSM wired to the reserve and configured with cap + fee strategy.
+    require(IGsm(gsm).getGhoReserve() == address(reserve), 'ArbPart2: GSM reserve not set');
+    require(
+      IGsm(gsm).getExposureCap() == RemoteGSMLaunchArbitrumSetup.GSM_USDC_INITIAL_EXPOSURE_CAP,
+      'ArbPart2: wrong GSM exposure cap'
+    );
+    require(
+      IGsm(gsm).getFeeStrategy() == payload.GSM_USDC_FEE_STRATEGY(),
+      'ArbPart2: fee strategy not set'
+    );
+    // GSM registered in the registry.
+    IGsmRegistry registry = IGsmRegistry(payload.GSM_REGISTRY());
+    require(registry.getGsmListLength() == 1, 'ArbPart2: GSM not registered');
+    require(registry.getGsmAtIndex(0) == gsm, 'ArbPart2: wrong GSM registered');
   }
 
   function _isDelivered() internal view override returns (bool) {
@@ -84,14 +120,4 @@ contract CCIPBridgeE2EVirtualTest is TenderlyVirtualTestnetBase {
       IGhoToken(GhoArbitrum.GHO_TOKEN).balanceOf(address(AaveV3Arbitrum.COLLECTOR)) >=
       ghoBefore + EXPECTED_BRIDGE_AMOUNT;
   }
-}
-
-interface IExecutor {
-  function executeTransaction(
-    address target,
-    uint256 value,
-    string memory signature,
-    bytes memory data,
-    bool withDelegateCall
-  ) external payable returns (bytes memory);
 }
