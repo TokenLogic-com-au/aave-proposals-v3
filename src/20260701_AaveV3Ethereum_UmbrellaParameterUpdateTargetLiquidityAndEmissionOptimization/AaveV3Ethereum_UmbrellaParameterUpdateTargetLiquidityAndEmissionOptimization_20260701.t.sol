@@ -5,6 +5,7 @@ import {AaveV3Ethereum, AaveV3EthereumAssets} from 'aave-address-book/AaveV3Ethe
 import {UmbrellaEthereum, UmbrellaEthereumAssets} from 'aave-address-book/UmbrellaEthereum.sol';
 import {IUmbrella} from 'aave-address-book/common/IUmbrella.sol';
 import {IRewardsController} from 'aave-umbrella/rewards/interfaces/IRewardsController.sol';
+import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 
 import 'forge-std/Test.sol';
 import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
@@ -219,6 +220,36 @@ contract AaveV3Ethereum_UmbrellaParameterUpdateTargetLiquidityAndEmissionOptimiz
     );
 
     executePayload(vm, address(proposal));
+  }
+
+  function test_rewardAllowancesRenewed() public {
+    address collector = address(AaveV3Ethereum.COLLECTOR);
+    address rewardsController = UmbrellaEthereum.UMBRELLA_REWARDS_CONTROLLER;
+
+    uint256 usdtBefore = IERC20(AaveV3EthereumAssets.USDT_A_TOKEN).allowance(
+      collector,
+      rewardsController
+    );
+    uint256 usdcBefore = IERC20(AaveV3EthereumAssets.USDC_A_TOKEN).allowance(
+      collector,
+      rewardsController
+    );
+
+    assertGt(usdtBefore, 0);
+    assertGt(usdcBefore, 0);
+
+    executePayload(vm, address(proposal));
+
+    assertEq(
+      IERC20(AaveV3EthereumAssets.USDT_A_TOKEN).allowance(collector, rewardsController) -
+        usdtBefore,
+      proposal.USDT_RENEWAL_ALLOWANCE()
+    );
+    assertEq(
+      IERC20(AaveV3EthereumAssets.USDC_A_TOKEN).allowance(collector, rewardsController) -
+        usdcBefore,
+      proposal.USDC_RENEWAL_ALLOWANCE()
+    );
   }
 
   function _targetLiquidity(address stakeToken) internal view returns (uint256) {

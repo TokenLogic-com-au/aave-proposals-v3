@@ -7,6 +7,7 @@ import {EngineFlags} from 'aave-umbrella/payloads/EngineFlags.sol';
 import {IUmbrellaEngineStructs} from 'aave-umbrella/payloads/IUmbrellaEngineStructs.sol';
 import {UmbrellaBasePayload} from 'aave-umbrella/payloads/UmbrellaBasePayload.sol';
 import {IRewardsStructs} from 'aave-umbrella/rewards/interfaces/IRewardsStructs.sol';
+import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 
 /**
  * @title Umbrella Parameter Update: Target Liquidity and Emission Optimization
@@ -30,7 +31,29 @@ contract AaveV3Ethereum_UmbrellaParameterUpdateTargetLiquidityAndEmissionOptimiz
   uint256 public constant GHO_TARGET_LIQUIDITY = 1e18; // 1 GHO, 18 decimals
   uint256 public constant GHO_DEFICIT_OFFSET = 3_000_000e18; // 3M GHO, 18 decimals
 
+  uint256 public constant USDT_RENEWAL_ALLOWANCE = 182_560e6;
+  uint256 public constant USDC_RENEWAL_ALLOWANCE = 243_153e6;
+
   constructor() UmbrellaBasePayload(UmbrellaEthereum.UMBRELLA_CONFIG_ENGINE) {}
+
+  function _postExecute() internal override {
+    address collector = address(AaveV3Ethereum.COLLECTOR);
+    address rewardsController = UmbrellaEthereum.UMBRELLA_REWARDS_CONTROLLER;
+
+    AaveV3Ethereum.COLLECTOR.approve(
+      IERC20(AaveV3EthereumAssets.USDT_A_TOKEN),
+      rewardsController,
+      IERC20(AaveV3EthereumAssets.USDT_A_TOKEN).allowance(collector, rewardsController) +
+        USDT_RENEWAL_ALLOWANCE
+    );
+
+    AaveV3Ethereum.COLLECTOR.approve(
+      IERC20(AaveV3EthereumAssets.USDC_A_TOKEN),
+      rewardsController,
+      IERC20(AaveV3EthereumAssets.USDC_A_TOKEN).allowance(collector, rewardsController) +
+        USDC_RENEWAL_ALLOWANCE
+    );
+  }
 
   function configureStakeAndRewards()
     public
