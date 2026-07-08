@@ -27,7 +27,7 @@ contract AaveV3Mantle_RemoteGSMLaunchArbitrum_20260512_Test is ProtocolV3TestBas
   /**
    * @dev executes the generic test suite including e2e and config snapshots
    */
-  /// forge-config: test.isolate = true
+  /// forge-config: default.isolate = true
   function test_defaultProposalExecution() public {
     // e2e is skipped: at this fork block no Mantle reserve satisfies all of ProtocolV3TestBase._getGoodCollateral's
     // gates (active, unfrozen, not paused, usable as collateral, debtCeiling == 0, ltv != 0), so the default e2e

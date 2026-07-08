@@ -40,7 +40,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2_Test is ProtocolV
   /**
    * @dev executes the generic test suite including e2e and config snapshots
    */
-  /// forge-config: test.isolate = true
+  /// forge-config: default.isolate = true
   function test_defaultProposalExecution() public {
     defaultTest(
       'AaveV3Ethereum_RemoteGSMLaunchArbitrum_20260512_Part2',

@@ -28,7 +28,7 @@ contract AaveV3Ink_RemoteGSMLaunchArbitrum_20260512_Test is ProtocolV3TestBase {
   /**
    * @dev executes the generic test suite including e2e and config snapshots
    */
-  /// forge-config: test.isolate = true
+  /// forge-config: default.isolate = true
   function test_defaultProposalExecution() public {
     defaultTest(
       'AaveV3Ink_RemoteGSMLaunchArbitrum_20260512',
