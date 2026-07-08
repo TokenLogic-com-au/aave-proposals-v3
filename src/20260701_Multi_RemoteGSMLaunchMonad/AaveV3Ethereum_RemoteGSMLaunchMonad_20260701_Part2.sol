@@ -20,9 +20,7 @@ import {RemoteGSMLaunchMonadSetup} from './setup/RemoteGSMLaunchMonadSetup.sol';
  */
 contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part2 is IProposalGenericExecutor {
   // GhoDirectFacilitator Constants
-  // TODO: a dedicated `GhoDirectFacilitator GSM Monad` must be deployed on Ethereum for this
-  // launch; set its address here before deploy. Left as address(0) for now.
-  address public constant DIRECT_FACILITATOR = address(0);
+  address public constant DIRECT_FACILITATOR = 0x0cB7C2A2Ab38Aed3e6096631D7Dba3DaBf237134;
   string public constant DIRECT_FACILITATOR_NAME = 'GhoDirectFacilitator GSM Monad';
 
   // Ethereum-side AaveGhoCcipBridge (target-agnostic; the destination lane is configured below).
@@ -32,8 +30,8 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part2 is IProposalGenericE
 
   // AaveGhoCcipBridge on Monad (counterpart that will receive the CCIP message and forward GHO
   // to the Monad Collector).
-  // TODO: set the deployed Monad counterpart bridge address. Left as address(0) for now.
-  address public constant MONAD_BRIDGE_DESTINATION = address(0);
+  // https://monadscan.com/address/0x16A6D0fD02D4DAB40Fee3014faa05b39d083F4ee
+  address public constant MONAD_BRIDGE_DESTINATION = 0x16A6D0fD02D4DAB40Fee3014faa05b39d083F4ee;
 
   // Typical bridge-receive gas limits sit in the 200k–500k range; pick a value that
   // covers the receive + Collector forwarding path with comfortable headroom.

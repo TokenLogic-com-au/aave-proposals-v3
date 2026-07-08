@@ -20,7 +20,7 @@ contract AaveV3Base_RemoteGSMLaunchMonad_20260701_Test is ProtocolV3TestBase {
   AaveV3Base_RemoteGSMLaunchMonad_20260701 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('base'), 47979045);
+    vm.createSelectFork(vm.rpcUrl('base'), 48376300);
     proposal = new AaveV3Base_RemoteGSMLaunchMonad_20260701();
   }
 

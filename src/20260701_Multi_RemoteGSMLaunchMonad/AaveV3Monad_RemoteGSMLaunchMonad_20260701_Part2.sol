@@ -41,25 +41,24 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2 is IProposalGenericExec
   // TODO: set the Monad Risk Council address (no GhoMonad.RISK_COUNCIL in aave-address-book yet).
   address public constant RISK_COUNCIL = address(0);
 
-  // GhoReserve
-  // TODO: set the deployed Monad GhoReserve address.
-  IGhoReserve public constant GHO_RESERVE = IGhoReserve(address(0));
+  // https://monadscan.com/address/0x307707A53Cb51670a8bcC8a2808A349C65E1Fb92
+  IGhoReserve public constant GHO_RESERVE = IGhoReserve(0x307707A53Cb51670a8bcC8a2808A349C65E1Fb92);
 
-  // TODO: set the deployed Monad GhoGsmSteward address.
-  address public constant GHO_GSM_STEWARD = address(0);
+  // https://monadscan.com/address/0x6C4b8AC66a3C879129282C137fc038519b883AE6
+  address public constant GHO_GSM_STEWARD = 0x6C4b8AC66a3C879129282C137fc038519b883AE6;
 
-  // TODO: set the deployed Monad GsmRegistry address.
-  address public constant GSM_REGISTRY = address(0);
+  // https://monadscan.com/address/0xAee666216888e92E9e8B7b31484D1D98eb6fA869
+  address public constant GSM_REGISTRY = 0xAee666216888e92E9e8B7b31484D1D98eb6fA869;
 
   // GSM USDC
-  // TODO: set the deployed Monad USDC GSM address.
-  address public constant GSM_USDC = address(0);
+  // https://monadscan.com/address/0x3Cf3779EEf770931543ACd2C7f6ECd1b37E35caB
+  address public constant GSM_USDC = 0x3Cf3779EEf770931543ACd2C7f6ECd1b37E35caB;
 
-  // TODO: set the deployed Monad USDC OracleSwapFreezer address.
-  address public constant USDC_ORACLE_SWAP_FREEZER = address(0);
+  // https://monadscan.com/address/0xC26bF89C90cd9cE12360D08bB494695206189159
+  address public constant USDC_ORACLE_SWAP_FREEZER = 0xC26bF89C90cd9cE12360D08bB494695206189159;
 
-  // TODO: set the deployed Monad USDC GSM fee strategy address.
-  address public constant GSM_USDC_FEE_STRATEGY = address(0);
+  // https://monadscan.com/address/0xAcB3d2f60CAA4966dE003E22936033FFBE7f6787
+  address public constant GSM_USDC_FEE_STRATEGY = 0xAcB3d2f60CAA4966dE003E22936033FFBE7f6787;
 
   function execute() external {
     GHO_RESERVE.grantRole(GHO_RESERVE.LIMIT_MANAGER_ROLE(), RISK_COUNCIL);

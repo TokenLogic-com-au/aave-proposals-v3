@@ -33,11 +33,6 @@ import {RemoteGSMLaunchMonadSetup} from './setup/RemoteGSMLaunchMonadSetup.sol';
 /**
  * @dev Test for AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2
  * command: FOUNDRY_PROFILE=test forge test --match-path=src/20260701_Multi_RemoteGSMLaunchMonad/AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2.t.sol -vv
- *
- * TODO: (remove comment) The Monad GSM/Reserve/Steward/Registry (and the CCIP OffRamp used to simulate delivery) are
- * not deployed yet. The full test structure of the Arbitrum RemoteGSM launch is kept here; execution
- * tests are skipped via `_skipIfNotDeployed` (GSM addresses) or `_skipIfNoOffRamp` (CCIP OffRamp)
- * and activate automatically once the payload placeholders below are set.
  */
 contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestBase {
   // Existing Eth->Monad inbound rate-limiter capacity at the pinned block, before Part 1 widens it.
@@ -52,13 +47,11 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
 
   // Ethereum -> Monad CCIP OffRamp on the Monad router. `test_ccipOffRampIsRegistered` re-checks
   // that it is a registered OffRamp at the pinned block.
-  // TODO: set the Eth->Monad OffRamp address (leaving it address(0) skips the CCIP-delivery tests).
-  address internal constant CCIP_ETH_OFFRAMP = address(0);
+  address internal constant CCIP_ETH_OFFRAMP = 0xBad8b04ED03A1CEaC89e8328f4eA7148B2E6D642;
 
   // Monad USDC assets are not in AaveV3MonadAssets yet.
-  // TODO: set the Monad USDC (stataUSDC) GSM underlying and the plain USDC underlying.
-  address internal constant USDC_STATA_TOKEN = address(0);
-  address internal constant USDC_UNDERLYING = address(0);
+  address internal constant USDC_STATA_TOKEN = 0xC554aFfE2f581F5E0811e0D42D484ECaC5c6B8e2;
+  address internal constant USDC_UNDERLYING = 0x754704Bc059F8C67012fEd69BC8A327a5aafb603;
 
   AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1 internal part1;
   AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2 internal proposal;
@@ -70,7 +63,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
   uint128 internal ccipPoolFacilitatorBucketLevelBeforeCcipDelivery;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('monad'), 84498500);
+    vm.createSelectFork(vm.rpcUrl('monad'), 86478300);
     part1 = new AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1();
     proposal = new AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2();
 
@@ -89,21 +82,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
     // Simulate CCIP delivery end-to-end: prank as the Eth->Monad OffRamp and call `releaseOrMint`
     // on the GHO CCIP token pool. The pool acts as a GHO facilitator, so this routes through
     // `IGhoToken.mint` and exercises the facilitator bucket check that Part 1 just configured.
-    // Skipped while the OffRamp is unknown so setUp does not revert.
-    // TODO: remove check
-    if (CCIP_ETH_OFFRAMP != address(0)) {
-      _simulateCcipDeliveryToCollector(RemoteGSMLaunchMonadSetup.GHO_BRIDGE_AMOUNT);
-    }
-  }
-
-  /// @dev Skips the calling test while the Monad launch addresses are still placeholders.
-  function _skipIfNotDeployed() internal {
-    vm.skip(proposal.GSM_USDC() == address(0));
-  }
-
-  /// @dev Skips the calling test while the CCIP OffRamp (and its simulated delivery) is unknown.
-  function _skipIfNoOffRamp() internal {
-    vm.skip(CCIP_ETH_OFFRAMP == address(0));
+    _simulateCcipDeliveryToCollector(RemoteGSMLaunchMonadSetup.GHO_BRIDGE_AMOUNT);
   }
 
   /**
@@ -112,7 +91,6 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
    */
   /// forge-config: default.isolate = true
   function test_defaultProposalExecution() public {
-    _skipIfNotDeployed();
     defaultTest(
       'AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2',
       AaveV3Monad.POOL,
@@ -123,7 +101,6 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
   }
 
   function test_ghoReserveIsFunded() public {
-    _skipIfNotDeployed();
     assertEq(IERC20(GhoMonad.GHO_TOKEN).balanceOf(address(proposal.GHO_RESERVE())), 0);
 
     executePayload(vm, address(proposal));
@@ -135,7 +112,6 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
   }
 
   function test_gsmIsRegisteredUnderGsmRegistry() public {
-    _skipIfNotDeployed();
     IGsmRegistry registry = IGsmRegistry(proposal.GSM_REGISTRY());
 
     assertEq(registry.getGsmListLength(), 0);
@@ -149,8 +125,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
     assertEq(registry.getGsmAtIndex(0), proposal.GSM_USDC());
   }
 
-  function test_ccipOffRampIsRegistered() public {
-    _skipIfNoOffRamp();
+  function test_ccipOffRampIsRegistered() public view {
     // Guard: if CCIP rotates the Eth -> Monad OffRamp at a future block, this test fails
     // with a clear signal before the more-opaque `releaseOrMint` revert in setUp shows up
     // elsewhere in the suite.
@@ -160,8 +135,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
     );
   }
 
-  function test_ccipDeliveryMintsToCollector() public {
-    _skipIfNoOffRamp();
+  function test_ccipDeliveryMintsToCollector() public view {
     // setUp ran Part 1 then simulated a CCIP delivery via releaseOrMint. Assert the
     // Collector and the GHO_CCIP_TOKEN_POOL facilitator both moved by BRIDGED_AMOUNT.
     // If Part 1's facilitator-capacity update is misconfigured (e.g. capacity below
@@ -191,7 +165,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
     // the funds cannot arrive if Part 1 is skipped. (Whether the funds are actually bridged depends on
     // the Ethereum payloads; this only asserts Monad cannot receive them until Part 1 runs.)
     // TODO: pin block after Arbitrum's proposal execution
-    vm.createSelectFork(vm.rpcUrl('monad'));
+    vm.createSelectFork(vm.rpcUrl('monad'), 86478300);
 
     vm.expectRevert(
       abi.encodeWithSelector(
@@ -205,7 +179,6 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
   }
 
   function test_bridgeLimitRestore() public {
-    _skipIfNotDeployed();
     // setUp() already executes Part 1 and warps 1 second; the inbound rate limiter is
     // already widened by this point.
 
@@ -262,7 +235,6 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
   }
 
   function test_otherLanesUntouched() public {
-    _skipIfNotDeployed();
     // This proposal must not change any lane other than the single Monad <> Ethereum lane. Iterate
     // every supported chain except Ethereum (the lane the proposal temporarily widens and then restores),
     // snapshot both directions before and after execution, and assert the config is unchanged.
@@ -315,7 +287,6 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
   }
 
   function test_gsmRegisteredAsEntity() public {
-    _skipIfNotDeployed();
     executePayload(vm, address(proposal));
 
     assertTrue(
@@ -325,8 +296,6 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
   }
 
   function test_checkGsmConfig_USDC() public {
-    _skipIfNotDeployed();
-
     IGsm gsm = IGsm(proposal.GSM_USDC());
     IGhoReserve reserve = IGhoReserve(address(proposal.GHO_RESERVE()));
 
@@ -372,7 +341,6 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
   }
 
   function test_oracleSwapFreezer_USDC() public {
-    _skipIfNotDeployed();
     _testOracleSwapFreezer(
       IGsm(proposal.GSM_USDC()),
       IOracleSwapFreezer(proposal.USDC_ORACLE_SWAP_FREEZER()),
@@ -381,7 +349,6 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
   }
 
   function test_checkRoles_USDC() public {
-    _skipIfNotDeployed();
     IGsm gsm = IGsm(proposal.GSM_USDC());
 
     // Pre-state: the payload grants these four roles. Assert they are ungranted beforehand so the
@@ -395,17 +362,14 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
   }
 
   function test_gsmIsOperational_USDC() public {
-    _skipIfNotDeployed();
     _testGsmIsOperational(IGsm(proposal.GSM_USDC()), USDC_STATA_TOKEN);
   }
 
   function test_ghoGsmSteward_updateExposureCap_USDC() public {
-    _skipIfNotDeployed();
     _testUpdateExposureCap(IGsm(proposal.GSM_USDC()));
   }
 
   function test_ghoGsmSteward_updateGsmBuySellFees_USDC() public {
-    _skipIfNotDeployed();
     _testUpdateBuySellFees(IGsm(proposal.GSM_USDC()));
   }
 

@@ -21,7 +21,7 @@ contract AaveV3Ink_RemoteGSMLaunchMonad_20260701_Test is ProtocolV3TestBase {
   AaveV3Ink_RemoteGSMLaunchMonad_20260701 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('ink'), 49250266);
+    vm.createSelectFork(vm.rpcUrl('ink'), 50043600);
     proposal = new AaveV3Ink_RemoteGSMLaunchMonad_20260701();
   }
 

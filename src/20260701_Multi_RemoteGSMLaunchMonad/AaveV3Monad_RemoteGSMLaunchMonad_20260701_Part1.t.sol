@@ -14,16 +14,12 @@ import {RemoteGSMLaunchMonadSetup} from './setup/RemoteGSMLaunchMonadSetup.sol';
 /**
  * @dev Test for AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1
  * command: FOUNDRY_PROFILE=test forge test --match-path=src/20260701_Multi_RemoteGSMLaunchMonad/AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1.t.sol -vv
- *
- * TODO: this test assumes the Monad -> Ethereum GHO lane already exists on the Monad
- * GHO_CCIP_TOKEN_POOL at the pinned block; otherwise `setChainRateLimiterConfig(ETHEREUM, ...)`
- * reverts with `NonExistentChain`.
  */
 contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1_Test is ProtocolV3TestBase {
   AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('monad'), 84498500);
+    vm.createSelectFork(vm.rpcUrl('monad'), 86478300);
     proposal = new AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1();
   }
 

@@ -20,7 +20,7 @@ contract AaveV3Gnosis_RemoteGSMLaunchMonad_20260701_Test is ProtocolV3TestBase {
   AaveV3Gnosis_RemoteGSMLaunchMonad_20260701 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('gnosis'), 46947490);
+    vm.createSelectFork(vm.rpcUrl('gnosis'), 47102800);
     proposal = new AaveV3Gnosis_RemoteGSMLaunchMonad_20260701();
   }
 
