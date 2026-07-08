@@ -29,6 +29,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part1_Test is ProtocolV3Te
   /**
    * @dev executes the generic test suite including e2e and config snapshots
    */
+  /// forge-config: default.isolate = true
   function test_defaultProposalExecution() public {
     defaultTest(
       'AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part1',

@@ -22,11 +22,13 @@ On Ethereum:
 - Temporarily raise the GHO CCIP bridge limit and the Monad-lane outbound rate limiter to fit a one-off 50M GHO transfer.
 - Register a Monad-scoped `GhoDirectFacilitator` on the GHO token with a 50M bucket capacity.
 - Mint 50M GHO into the payload and bridge it to Monad via `AaveGhoCcipBridge` (configuring the Monad destination lane first).
+- Increase bridge limit by 50M.
 - After bridging, restore the Ethereum ↔ Monad lane rate-limit config to its prior value. No other lane is modified.
 
 On Monad:
 
-- Temporarily raise the CCIP token-pool facilitator bucket capacity and the Ethereum-lane inbound rate limiter to receive the 50M GHO.
+- Raise the CCIP token-pool facilitator bucket capacity by 50M.
+- Temporarily raise the Ethereum-lane inbound rate limiter to receive the 50M GHO.
 - On receipt, the `Collector` forwards the 50M GHO to the `GhoReserve`.
 - After bridging, restore the Monad ↔ Ethereum lane rate-limit config to its prior value.
 

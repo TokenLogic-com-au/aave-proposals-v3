@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import {AaveV3InkWhitelabel} from 'aave-address-book/AaveV3InkWhitelabel.sol';
 import {GhoInk} from 'aave-address-book/GhoInk.sol';
+import {GovernanceV3Ink} from 'aave-address-book/GovernanceV3Ink.sol';
 import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
@@ -27,8 +28,14 @@ contract AaveV3Ink_RemoteGSMLaunchMonad_20260701_Test is ProtocolV3TestBase {
   /**
    * @dev executes the generic test suite including e2e and config snapshots
    */
+  /// forge-config: default.isolate = true
   function test_defaultProposalExecution() public {
-    executePayload(vm, address(proposal));
+    defaultTest(
+      'AaveV3Ink_RemoteGSMLaunchArbitrum_20260512',
+      AaveV3InkWhitelabel.POOL,
+      address(proposal),
+      GovernanceV3Ink.PAYLOADS_CONTROLLER
+    );
   }
 
   function test_facilitatorBucketCapacityIncrease() public {
@@ -91,6 +98,12 @@ contract AaveV3Ink_RemoteGSMLaunchMonad_20260701_Test is ProtocolV3TestBase {
       GhoInk.GHO_CCIP_TOKEN_POOL
     ).getCurrentOutboundRateLimiterState(remoteChainSelector);
 
+    // TODO: enable check after ARB proposal is executed
+    // assertEq(
+    //   postFacilitator.bucketCapacity,
+    //   200_000_000 ether,
+    //   'post-proposal facilitator capacity should be 200M'
+    // );
     assertEq(
       outbound.capacity,
       RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_CAPACITY,

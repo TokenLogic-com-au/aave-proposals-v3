@@ -110,6 +110,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
    * @dev executes the generic test suite. e2e is skipped (no usable Monad collateral at the fork
    * block) — the payload does not modify pool reserves, so e2e adds no coverage.
    */
+  /// forge-config: default.isolate = true
   function test_defaultProposalExecution() public {
     _skipIfNotDeployed();
     defaultTest(

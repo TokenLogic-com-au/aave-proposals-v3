@@ -27,6 +27,7 @@ contract AaveV3Avalanche_RemoteGSMLaunchMonad_20260701_Test is ProtocolV3TestBas
   /**
    * @dev executes the generic test suite including e2e and config snapshots
    */
+  /// forge-config: default.isolate = true
   function test_defaultProposalExecution() public {
     defaultTest(
       'AaveV3Avalanche_RemoteGSMLaunchMonad_20260701',
@@ -47,6 +48,12 @@ contract AaveV3Avalanche_RemoteGSMLaunchMonad_20260701_Test is ProtocolV3TestBas
       GhoAvalanche.GHO_CCIP_TOKEN_POOL
     );
 
+    // TODO: enable check after ARB proposal is executed
+    // assertEq(
+    //   postFacilitator.bucketCapacity,
+    //   200_000_000 ether,
+    //   'post-proposal facilitator capacity should be 200M'
+    // );
     assertEq(
       postFacilitator.bucketCapacity,
       preFacilitator.bucketCapacity + RemoteGSMLaunchMonadSetup.GHO_BRIDGE_AMOUNT,

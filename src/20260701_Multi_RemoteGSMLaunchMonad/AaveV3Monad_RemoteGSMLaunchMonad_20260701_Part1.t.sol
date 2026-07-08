@@ -32,6 +32,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1_Test is ProtocolV3TestB
    * satisfies ProtocolV3TestBase._getGoodCollateral's gates, so the default supply/borrow path
    * reverts. This payload does not modify pool reserves, so e2e adds no coverage here.
    */
+  /// forge-config: default.isolate = true
   function test_defaultProposalExecution() public {
     defaultTest(
       'AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1',
@@ -88,6 +89,12 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1_Test is ProtocolV3TestB
 
     IGhoToken.Facilitator memory postFacilitator = gho.getFacilitator(GhoMonad.GHO_CCIP_TOKEN_POOL);
 
+    // TODO: enable check after ARB proposal is executed
+    // assertEq(
+    //   postFacilitator.bucketCapacity,
+    //   200_000_000 ether,
+    //   'post-proposal facilitator capacity should be 200M'
+    // );
     assertEq(
       postFacilitator.bucketCapacity,
       preFacilitator.bucketCapacity + RemoteGSMLaunchMonadSetup.GHO_BRIDGE_AMOUNT,
