@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import {StdConstants} from 'forge-std/StdConstants.sol';
+
+import {IUpgradeableBurnMintTokenPool} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
 import {IUpgradeableLockReleaseTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableLockReleaseTokenPool.sol';
 
 /**
@@ -60,6 +63,50 @@ library RemoteGSMLaunchMonadSetup {
       remoteChainSelector,
       standardConfig,
       standardConfig
+    );
+  }
+
+  function assertLaneDefaults(
+    address ccipTokenPool,
+    uint64 remoteChainSelector,
+    bool postProposal
+  ) internal view {
+    string memory msgPrefix = postProposal ? 'post' : 'pre';
+
+    IRateLimiter.TokenBucket memory inbound = IUpgradeableBurnMintTokenPool(ccipTokenPool)
+      .getCurrentInboundRateLimiterState(remoteChainSelector);
+
+    StdConstants.VM.assertEq(
+      inbound.capacity,
+      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_CAPACITY,
+      string.concat(msgPrefix, '-proposal inbound capacity should be default')
+    );
+    StdConstants.VM.assertEq(
+      inbound.rate,
+      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_RATE,
+      string.concat(msgPrefix, '-proposal inbound rate should be default')
+    );
+    StdConstants.VM.assertTrue(
+      inbound.isEnabled,
+      string.concat(msgPrefix, '-proposal inbound rate limiter should be enabled')
+    );
+
+    IRateLimiter.TokenBucket memory outbound = IUpgradeableBurnMintTokenPool(ccipTokenPool)
+      .getCurrentOutboundRateLimiterState(remoteChainSelector);
+
+    StdConstants.VM.assertEq(
+      outbound.capacity,
+      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_CAPACITY,
+      string.concat(msgPrefix, '-proposal outbound capacity should be default')
+    );
+    StdConstants.VM.assertEq(
+      outbound.rate,
+      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_RATE,
+      string.concat(msgPrefix, '-proposal outbound rate should be default')
+    );
+    StdConstants.VM.assertTrue(
+      outbound.isEnabled,
+      string.concat(msgPrefix, '-proposal outbound rate limiter should be enabled')
     );
   }
 }

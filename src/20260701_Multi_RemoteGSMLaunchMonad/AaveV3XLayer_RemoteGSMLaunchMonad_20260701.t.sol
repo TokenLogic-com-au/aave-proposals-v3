@@ -5,7 +5,6 @@ import {AaveV3XLayer} from 'aave-address-book/AaveV3XLayer.sol';
 import {GhoXLayer} from 'aave-address-book/GhoXLayer.sol';
 import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
-import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
 import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
 import {GhoCCIPChains} from '../helpers/gho-launch/constants/GhoCCIPChains.sol';
 
@@ -61,55 +60,28 @@ contract AaveV3XLayer_RemoteGSMLaunchMonad_20260701_Test is ProtocolV3TestBase {
   }
 
   function test_allLaneRateLimitsNormalized() public {
-    // Behavior changed: this proposal no longer normalizes lane rate-limit config (only the
-    // facilitator bucket capacity is bumped), so this all-lanes-normalized assertion no longer
-    // applies. TODO: repurpose to assert lanes are left untouched.
-    vm.skip(true);
-    executePayload(vm, address(proposal));
-
-    // Every lane to every other supported network (itself excluded) is normalized to defaults.
+    // Every lane to every other supported network (itself excluded).
     GhoCCIPChains.ChainInfo[] memory chains = GhoCCIPChains.getAllChainsExcept(
       CCIPChainSelectors.XLAYER,
       false
     );
 
     for (uint256 i = 0; i < chains.length; i++) {
-      _assertLaneNormalized(chains[i].chainSelector);
+      RemoteGSMLaunchMonadSetup.assertLaneDefaults(
+        GhoXLayer.GHO_CCIP_TOKEN_POOL,
+        chains[i].chainSelector,
+        false
+      );
     }
-  }
 
-  /// @dev Asserts the inbound and outbound rate limiter for `remoteChainSelector` sit at defaults.
-  function _assertLaneNormalized(uint64 remoteChainSelector) internal view {
-    IRateLimiter.TokenBucket memory inbound = IUpgradeableBurnMintTokenPool(
-      GhoXLayer.GHO_CCIP_TOKEN_POOL
-    ).getCurrentInboundRateLimiterState(remoteChainSelector);
+    executePayload(vm, address(proposal));
 
-    assertEq(
-      inbound.capacity,
-      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_CAPACITY,
-      'post-proposal inbound capacity should be default'
-    );
-    assertEq(
-      inbound.rate,
-      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_RATE,
-      'post-proposal inbound rate should be default'
-    );
-    assertTrue(inbound.isEnabled, 'post-proposal inbound rate limiter should be enabled');
-
-    IRateLimiter.TokenBucket memory outbound = IUpgradeableBurnMintTokenPool(
-      GhoXLayer.GHO_CCIP_TOKEN_POOL
-    ).getCurrentOutboundRateLimiterState(remoteChainSelector);
-
-    assertEq(
-      outbound.capacity,
-      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_CAPACITY,
-      'post-proposal outbound capacity should be default'
-    );
-    assertEq(
-      outbound.rate,
-      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_RATE,
-      'post-proposal outbound rate should be default'
-    );
-    assertTrue(outbound.isEnabled, 'post-proposal outbound rate limiter should be enabled');
+    for (uint256 i = 0; i < chains.length; i++) {
+      RemoteGSMLaunchMonadSetup.assertLaneDefaults(
+        GhoXLayer.GHO_CCIP_TOKEN_POOL,
+        chains[i].chainSelector,
+        true
+      );
+    }
   }
 }
