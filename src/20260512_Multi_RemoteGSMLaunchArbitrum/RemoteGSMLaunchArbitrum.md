@@ -22,11 +22,13 @@ On Ethereum:
 - Temporarily raise the Arbitrum-lane outbound rate limiter to fit a one-off 50M GHO transfer.
 - Register an Arbitrum-scoped `GhoDirectFacilitator` on the GHO token with a 50M bucket capacity.
 - Mint 50M GHO into the payload and bridge it to Arbitrum via `AaveGhoCcipBridge` (configuring the Arbitrum destination lane first).
+- Increase bridge capacity by 50M.
 
 On Arbitrum:
 
 - Temporarily raise the CCIP token-pool facilitator bucket capacity and the Ethereum-lane inbound rate limiter to receive the 50M GHO.
 - On receipt, the `Collector` forwards the 50M GHO to the `GhoReserve`.
+- Increase bridge capacity by 50M.
 
 ### Wire up Arbitrum GSM (stataUSDC)
 
@@ -34,12 +36,13 @@ On Arbitrum:
 - Grant `SWAP_FREEZER_ROLE` to the asset's `OracleSwapFreezer` and to the Arbitrum executor.
 - Register it in the `GsmRegistry` and grant `CONFIGURATOR_ROLE` to the `GhoGsmSteward`.
 - Set the initial exposure cap to 20M of the underlying (6 decimals) and attach the 0% mint / 0.10% burn fee strategy.
+- Increase bridge capacity by 50M across all networks.
 
 `LIMIT_MANAGER_ROLE` on the Arbitrum `GhoReserve` is granted to the Arbitrum Risk Council.
 
 ### Normalize GHO CCIP lane capacity across networks
 
-On both ends of every GHO lane touched by this proposal — Arbitrum, Avalanche, Base, Gnosis, Mantle, Plasma, X-Layer, Ink and Monad — set inbound and outbound CCIP rate-limit configs to canonical defaults: **capacity 5,000,000 GHO max transfer, refill 1,000 GHO/sec**. The temporary boosts on the Arbitrum lane used for the 50M seed transfer are restored to these defaults in the same payloads.
+On both ends of every GHO lane touched by this proposal — Arbitrum, Avalanche, Base, Gnosis, Mantle, Plasma, X-Layer, Ink and Monad — set inbound and outbound CCIP rate-limit configs to canonical defaults: **capacity 5,000,000 GHO max transfer, refill 1,000 GHO/sec**. The temporary boosts on the Arbitrum lane used for the 50M seed transfer are restored to these defaults in the same payloads. All bridge limits are increased by 50M.
 
 ### Execution Order
 

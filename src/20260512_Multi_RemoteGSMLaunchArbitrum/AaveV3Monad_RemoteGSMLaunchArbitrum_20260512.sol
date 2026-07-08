@@ -18,9 +18,6 @@ import {RemoteGSMLaunchArbitrumSetup} from './setup/RemoteGSMLaunchArbitrumSetup
 contract AaveV3Monad_RemoteGSMLaunchArbitrum_20260512 is IProposalGenericExecutor {
   using SafeCast for uint256;
 
-  address public constant GHO_TOKEN = 0xfc421aD3C883Bf9E7C4f42dE845C4e4405799e73;
-  address public constant GHO_CCIP_TOKEN_POOL = 0xA5AE05b71c3F170E12E7620Fdf7679721aec1EC8;
-
   function execute() external {
     // Increase bucket capacity to allow token movements to Monad, accounting for the extra capacity initially bridged
     // to Arbitrum in this proposal.
@@ -28,7 +25,7 @@ contract AaveV3Monad_RemoteGSMLaunchArbitrum_20260512 is IProposalGenericExecuto
       .getFacilitatorBucket(GhoMonad.GHO_CCIP_TOKEN_POOL);
 
     IGhoToken(GhoMonad.GHO_TOKEN).setFacilitatorBucketCapacity(
-      GHO_CCIP_TOKEN_POOL,
+      GhoMonad.GHO_CCIP_TOKEN_POOL,
       currentFacilitatorBucketCapacity.toUint128() +
         RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT.toUint128()
     );

@@ -27,6 +27,7 @@ contract AaveV3XLayer_RemoteGSMLaunchArbitrum_20260512_Test is ProtocolV3TestBas
   /**
    * @dev executes the generic test suite including e2e and config snapshots
    */
+  /// forge-config: test.isolate = true
   function test_defaultProposalExecution() public {
     defaultTest(
       'AaveV3XLayer_RemoteGSMLaunchArbitrum_20260512',
@@ -45,6 +46,11 @@ contract AaveV3XLayer_RemoteGSMLaunchArbitrum_20260512_Test is ProtocolV3TestBas
       GhoXLayer.GHO_CCIP_TOKEN_POOL
     );
 
+    assertEq(
+      postFacilitator.bucketCapacity,
+      150_000_000 ether,
+      'post-proposal facilitator capacity should be 150M'
+    );
     assertEq(
       postFacilitator.bucketCapacity,
       preFacilitator.bucketCapacity + RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT,

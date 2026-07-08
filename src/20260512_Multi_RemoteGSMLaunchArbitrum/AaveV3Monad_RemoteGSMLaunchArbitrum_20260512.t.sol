@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {AaveV3Monad} from 'aave-address-book/AaveV3Monad.sol';
+import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
+import {AaveV3Monad, AaveV3MonadAssets} from 'aave-address-book/AaveV3Monad.sol';
 import {GhoMonad} from 'aave-address-book/GhoMonad.sol';
+import {GovernanceV3Monad} from 'aave-address-book/GovernanceV3Monad.sol';
 import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
@@ -27,6 +29,7 @@ contract AaveV3Monad_RemoteGSMLaunchArbitrum_20260512_Test is ProtocolV3TestBase
   /**
    * @dev executes the generic test suite including e2e and config snapshots
    */
+  /// forge-config: test.isolate = true
   function test_defaultProposalExecution() public {
     defaultTest(
       'AaveV3Monad_RemoteGSMLaunchArbitrum_20260512',
@@ -43,6 +46,11 @@ contract AaveV3Monad_RemoteGSMLaunchArbitrum_20260512_Test is ProtocolV3TestBase
 
     IGhoToken.Facilitator memory postFacilitator = gho.getFacilitator(GhoMonad.GHO_CCIP_TOKEN_POOL);
 
+    assertEq(
+      postFacilitator.bucketCapacity,
+      150_000_000 ether,
+      'post-proposal facilitator capacity should be 150M'
+    );
     assertEq(
       postFacilitator.bucketCapacity,
       preFacilitator.bucketCapacity + RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT,
@@ -67,6 +75,19 @@ contract AaveV3Monad_RemoteGSMLaunchArbitrum_20260512_Test is ProtocolV3TestBase
     for (uint256 i = 0; i < chains.length; i++) {
       _assertLaneNormalized(chains[i].chainSelector);
     }
+  }
+
+  /**
+   * @dev AUSD uses namespaced storage that forge-std `deal` cannot write; the generic e2e funds
+   * test users via `deal`, so route AUSD through an on-chain holder instead.
+   */
+  function deal(address token, address to, uint256 give) internal override {
+    if (token == AaveV3MonadAssets.AUSD_UNDERLYING) {
+      vm.prank(0xD5D960E8C380B724a48AC59E2DfF1b2CB4a1eAee);
+      IERC20(token).transfer(to, give);
+      return;
+    }
+    super.deal(token, to, give);
   }
 
   /// @dev Asserts the inbound and outbound rate limiter for `remoteChainSelector` sit at defaults.

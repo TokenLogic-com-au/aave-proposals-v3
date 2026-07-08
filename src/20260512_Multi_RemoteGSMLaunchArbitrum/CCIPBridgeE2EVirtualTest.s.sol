@@ -27,8 +27,8 @@ contract CCIPBridgeE2EVirtualTest is TenderlyVirtualTestnetBase {
   function run() external {
     // Snapshot so Virtual Testnet does not drift
     string[] memory aliases = new string[](2);
-    aliases[0] = 'mainnet_virtual';
-    aliases[1] = 'arbitrum_virtual';
+    aliases[0] = MAINNET;
+    aliases[1] = ARBITRUM;
     _snapshotLifecycle(aliases, './snapshot');
 
     GovNetworks.GovNetwork memory eth = GovNetworks.mainnet();
@@ -53,6 +53,9 @@ contract CCIPBridgeE2EVirtualTest is TenderlyVirtualTestnetBase {
     );
 
     // Execute Arb Part 1
+    // In practice, Eth Part 1 could and Eth Part 2 could be executed prior to Arb Part 1
+    // Since there are no delays in this script, executing Arb Part 1 because of limitations
+    // on the Virual Testnets
     _refork(arb.rpcAlias);
     (uint256 capBefore, ) = IGhoToken(GhoArbitrum.GHO_TOKEN).getFacilitatorBucket(
       GhoArbitrum.GHO_CCIP_TOKEN_POOL
@@ -64,7 +67,10 @@ contract CCIPBridgeE2EVirtualTest is TenderlyVirtualTestnetBase {
     (uint256 capAfter, ) = IGhoToken(GhoArbitrum.GHO_TOKEN).getFacilitatorBucket(
       GhoArbitrum.GHO_CCIP_TOKEN_POOL
     );
-    require(capAfter == capBefore + EXPECTED_BRIDGE_AMOUNT, 'ArbPart1: bucket not increased');
+    require(
+      capAfter == capBefore + RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT,
+      'ArbPart1: bucket not increased'
+    );
 
     ghoBefore = IGhoToken(GhoArbitrum.GHO_TOKEN).balanceOf(address(AaveV3Arbitrum.COLLECTOR));
 
@@ -118,6 +124,6 @@ contract CCIPBridgeE2EVirtualTest is TenderlyVirtualTestnetBase {
   function _isDelivered() internal view override returns (bool) {
     return
       IGhoToken(GhoArbitrum.GHO_TOKEN).balanceOf(address(AaveV3Arbitrum.COLLECTOR)) >=
-      ghoBefore + EXPECTED_BRIDGE_AMOUNT;
+      ghoBefore + RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT;
   }
 }

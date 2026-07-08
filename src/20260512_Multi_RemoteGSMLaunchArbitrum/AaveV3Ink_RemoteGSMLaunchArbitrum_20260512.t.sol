@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import {AaveV3InkWhitelabel} from 'aave-address-book/AaveV3InkWhitelabel.sol';
 import {GhoInk} from 'aave-address-book/GhoInk.sol';
+import {GovernanceV3Ink} from 'aave-address-book/GovernanceV3Ink.sol';
 import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
@@ -27,11 +28,13 @@ contract AaveV3Ink_RemoteGSMLaunchArbitrum_20260512_Test is ProtocolV3TestBase {
   /**
    * @dev executes the generic test suite including e2e and config snapshots
    */
+  /// forge-config: test.isolate = true
   function test_defaultProposalExecution() public {
     defaultTest(
       'AaveV3Ink_RemoteGSMLaunchArbitrum_20260512',
       AaveV3InkWhitelabel.POOL,
-      address(proposal)
+      address(proposal),
+      GovernanceV3Ink.PAYLOADS_CONTROLLER
     );
   }
 
@@ -43,6 +46,11 @@ contract AaveV3Ink_RemoteGSMLaunchArbitrum_20260512_Test is ProtocolV3TestBase {
 
     IGhoToken.Facilitator memory postFacilitator = gho.getFacilitator(GhoInk.GHO_CCIP_TOKEN_POOL);
 
+    assertEq(
+      postFacilitator.bucketCapacity,
+      150_000_000 ether,
+      'post-proposal facilitator capacity should be 150M'
+    );
     assertEq(
       postFacilitator.bucketCapacity,
       preFacilitator.bucketCapacity + RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT,

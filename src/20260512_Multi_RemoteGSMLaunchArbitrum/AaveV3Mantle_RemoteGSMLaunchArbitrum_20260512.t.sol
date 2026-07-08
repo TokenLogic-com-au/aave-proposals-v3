@@ -27,6 +27,7 @@ contract AaveV3Mantle_RemoteGSMLaunchArbitrum_20260512_Test is ProtocolV3TestBas
   /**
    * @dev executes the generic test suite including e2e and config snapshots
    */
+  /// forge-config: test.isolate = true
   function test_defaultProposalExecution() public {
     // e2e is skipped: at this fork block no Mantle reserve satisfies all of ProtocolV3TestBase._getGoodCollateral's
     // gates (active, unfrozen, not paused, usable as collateral, debtCeiling == 0, ltv != 0), so the default e2e
@@ -52,6 +53,11 @@ contract AaveV3Mantle_RemoteGSMLaunchArbitrum_20260512_Test is ProtocolV3TestBas
       GhoMantle.GHO_CCIP_TOKEN_POOL
     );
 
+    assertEq(
+      postFacilitator.bucketCapacity,
+      150_000_000 ether,
+      'post-proposal facilitator capacity should be 150M'
+    );
     assertEq(
       postFacilitator.bucketCapacity,
       preFacilitator.bucketCapacity + RemoteGSMLaunchArbitrumSetup.GHO_BRIDGE_AMOUNT,
