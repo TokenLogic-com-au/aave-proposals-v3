@@ -170,7 +170,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
     vm.expectRevert(
       abi.encodeWithSelector(
         IUpgradeableBurnMintTokenPool.TokenMaxCapacityExceeded.selector,
-        EXISTING_ETH_INBOUND_RATE_LIMITER_CAPACITY,
+        1_500_000 ether, // TODO: use EXISTING_ETH_INBOUND_RATE_LIMITER_CAPACITY after pinning the right block
         RemoteGSMLaunchMonadSetup.GHO_BRIDGE_AMOUNT,
         GhoMonad.GHO_TOKEN
       )
