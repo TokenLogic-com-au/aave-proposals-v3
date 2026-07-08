@@ -6,7 +6,6 @@ import {GhoInk} from 'aave-address-book/GhoInk.sol';
 import {GovernanceV3Ink} from 'aave-address-book/GovernanceV3Ink.sol';
 import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
-import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
 import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
 import {GhoCCIPChains} from '../helpers/gho-launch/constants/GhoCCIPChains.sol';
 

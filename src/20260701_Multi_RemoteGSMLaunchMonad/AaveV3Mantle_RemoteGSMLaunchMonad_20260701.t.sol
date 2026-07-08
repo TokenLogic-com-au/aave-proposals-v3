@@ -5,7 +5,6 @@ import {AaveV3Mantle} from 'aave-address-book/AaveV3Mantle.sol';
 import {GhoMantle} from 'aave-address-book/GhoMantle.sol';
 import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
-import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
 import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
 import {GhoCCIPChains} from '../helpers/gho-launch/constants/GhoCCIPChains.sol';
 
