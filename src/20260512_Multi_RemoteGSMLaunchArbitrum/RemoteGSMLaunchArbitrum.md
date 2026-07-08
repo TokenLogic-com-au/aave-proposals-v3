@@ -26,8 +26,8 @@ On Ethereum:
 
 On Arbitrum:
 
-- Raise the CCIP token-pool facilitator bucket capacity by by 50M.
-- Temporarily the Ethereum-lane inbound rate limiter to receive the 50M GHO.
+- Raise the CCIP token-pool facilitator bucket capacity by 50M.
+- Temporarily raise the Ethereum-lane inbound rate limiter to receive the 50M GHO.
 - On receipt, the `Collector` forwards the 50M GHO to the `GhoReserve`.
 
 ### Wire up Arbitrum GSM (stataUSDC)
