@@ -556,7 +556,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
     uint128 oldExposureCap = gsm.getExposureCap();
     uint128 newExposureCap = oldExposureCap + 1;
 
-    vm.startPrank(proposal.RISK_COUNCIL());
+    vm.startPrank(GhoMonad.RISK_COUNCIL);
     IGsmSteward(proposal.GHO_GSM_STEWARD()).updateGsmExposureCap(address(gsm), newExposureCap);
     assertEq(gsm.getExposureCap(), newExposureCap, 'exposure cap not updated by GhoGsmSteward');
   }
@@ -568,7 +568,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
     uint256 buyFee = IGsmFeeStrategy(feeStrategy).getBuyFee(1e4);
     uint256 sellFee = IGsmFeeStrategy(feeStrategy).getSellFee(1e4);
 
-    vm.startPrank(proposal.RISK_COUNCIL());
+    vm.startPrank(GhoMonad.RISK_COUNCIL);
     IGsmSteward(proposal.GHO_GSM_STEWARD()).updateGsmBuySellFees(address(gsm), buyFee + 1, sellFee);
     address newStrategy = gsm.getFeeStrategy();
     uint256 newBuyFee = IGsmFeeStrategy(newStrategy).getBuyFee(1e4);
@@ -606,7 +606,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
     assertTrue(
       IGhoReserve(address(proposal.GHO_RESERVE())).hasRole(
         IGhoReserve(address(proposal.GHO_RESERVE())).LIMIT_MANAGER_ROLE(),
-        proposal.RISK_COUNCIL()
+        GhoMonad.RISK_COUNCIL
       ),
       'Limit manager role not granted to RiskCouncil'
     );

@@ -37,10 +37,6 @@ import {RemoteGSMLaunchMonadSetup} from './setup/RemoteGSMLaunchMonadSetup.sol';
  * fill them in before deploy. Tests that execute this payload are skipped until they are set.
  */
 contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2 is IProposalGenericExecutor {
-  // Monad Risk Council (LIMIT_MANAGER_ROLE on the GhoReserve).
-  // TODO: set the Monad Risk Council address (no GhoMonad.RISK_COUNCIL in aave-address-book yet).
-  address public constant RISK_COUNCIL = address(0);
-
   // https://monadscan.com/address/0x307707A53Cb51670a8bcC8a2808A349C65E1Fb92
   IGhoReserve public constant GHO_RESERVE = IGhoReserve(0x307707A53Cb51670a8bcC8a2808A349C65E1Fb92);
 
@@ -61,7 +57,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2 is IProposalGenericExec
   address public constant GSM_USDC_FEE_STRATEGY = 0xAcB3d2f60CAA4966dE003E22936033FFBE7f6787;
 
   function execute() external {
-    GHO_RESERVE.grantRole(GHO_RESERVE.LIMIT_MANAGER_ROLE(), RISK_COUNCIL);
+    GHO_RESERVE.grantRole(GHO_RESERVE.LIMIT_MANAGER_ROLE(), GhoMonad.RISK_COUNCIL);
 
     _wireGsm(
       IGsm(GSM_USDC),
