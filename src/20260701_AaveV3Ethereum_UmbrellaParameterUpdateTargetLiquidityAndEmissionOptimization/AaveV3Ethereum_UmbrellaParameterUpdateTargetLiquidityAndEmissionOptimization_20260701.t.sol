@@ -252,6 +252,28 @@ contract AaveV3Ethereum_UmbrellaParameterUpdateTargetLiquidityAndEmissionOptimiz
     );
   }
 
+  function test_rewardAllowancesSufficient() public {
+    address collector = address(AaveV3Ethereum.COLLECTOR);
+    address rewardsController = UmbrellaEthereum.UMBRELLA_REWARDS_CONTROLLER;
+
+    executePayload(vm, address(proposal));
+
+    assertGe(
+      IERC20(AaveV3EthereumAssets.USDT_A_TOKEN).allowance(collector, rewardsController),
+      _maxOutstandingRewards(
+        UmbrellaEthereumAssets.STK_WA_USDT_V1,
+        AaveV3EthereumAssets.USDT_A_TOKEN
+      )
+    );
+    assertGe(
+      IERC20(AaveV3EthereumAssets.USDC_A_TOKEN).allowance(collector, rewardsController),
+      _maxOutstandingRewards(
+        UmbrellaEthereumAssets.STK_WA_USDC_V1,
+        AaveV3EthereumAssets.USDC_A_TOKEN
+      )
+    );
+  }
+
   function _targetLiquidity(address stakeToken) internal view returns (uint256) {
     return REWARDS_CONTROLLER.getAssetData(stakeToken).targetLiquidity;
   }
@@ -262,5 +284,14 @@ contract AaveV3Ethereum_UmbrellaParameterUpdateTargetLiquidityAndEmissionOptimiz
 
   function _distributionEnd(address stakeToken, address reward) internal view returns (uint256) {
     return REWARDS_CONTROLLER.getRewardData(stakeToken, reward).distributionEnd;
+  }
+
+  function _maxOutstandingRewards(
+    address stakeToken,
+    address reward
+  ) internal view returns (uint256) {
+    return
+      _emission(stakeToken, reward) *
+      (_distributionEnd(stakeToken, reward) - vm.getBlockTimestamp());
   }
 }
