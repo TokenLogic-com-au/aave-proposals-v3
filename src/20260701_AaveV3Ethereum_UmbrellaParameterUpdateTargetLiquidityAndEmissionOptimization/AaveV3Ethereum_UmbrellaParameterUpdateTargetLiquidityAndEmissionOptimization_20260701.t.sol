@@ -26,6 +26,17 @@ contract AaveV3Ethereum_UmbrellaParameterUpdateTargetLiquidityAndEmissionOptimiz
   uint256 internal constant USDC_EXPECTED_EMISSION = 38685; // 1.22M aEthUSDC / year
   uint256 internal constant WETH_EXPECTED_EMISSION = 14903602232369; // 470 aEthWETH / year
 
+  // Live Umbrella config at the fork block.
+  uint256 internal constant USDT_CURRENT_TARGET_LIQUIDITY = 92_413_776e6;
+  uint256 internal constant USDC_CURRENT_TARGET_LIQUIDITY = 58_330_074e6;
+  uint256 internal constant WETH_CURRENT_TARGET_LIQUIDITY = 23_893.07490733916715e18;
+  uint256 internal constant GHO_CURRENT_TARGET_LIQUIDITY = 12_000_000e18;
+
+  uint256 internal constant USDT_CURRENT_EMISSION = 116_374; // 3.67M aEthUSDT / year
+  uint256 internal constant USDC_CURRENT_EMISSION = 73_883; // 2.33M aEthUSDC / year
+  uint256 internal constant WETH_CURRENT_EMISSION = 17_440_385_591_070; // 550 aEthWETH / year
+  uint256 internal constant GHO_CURRENT_EMISSION = 38_051_750_380_517_503; // 1.2M GHO / year
+
   AaveV3Ethereum_UmbrellaParameterUpdateTargetLiquidityAndEmissionOptimization_20260701
     internal proposal;
 
@@ -47,22 +58,19 @@ contract AaveV3Ethereum_UmbrellaParameterUpdateTargetLiquidityAndEmissionOptimiz
   }
 
   function test_targetLiquidityUpdated() public {
-    assertNotEq(
+    assertEq(
       _targetLiquidity(UmbrellaEthereumAssets.STK_WA_USDT_V1),
-      proposal.STATA_USDT_TARGET_LIQUIDITY()
+      USDT_CURRENT_TARGET_LIQUIDITY
     );
-    assertNotEq(
+    assertEq(
       _targetLiquidity(UmbrellaEthereumAssets.STK_WA_USDC_V1),
-      proposal.STATA_USDC_TARGET_LIQUIDITY()
+      USDC_CURRENT_TARGET_LIQUIDITY
     );
-    assertNotEq(
+    assertEq(
       _targetLiquidity(UmbrellaEthereumAssets.STK_WA_WETH_V1),
-      proposal.STATA_WETH_TARGET_LIQUIDITY()
+      WETH_CURRENT_TARGET_LIQUIDITY
     );
-    assertNotEq(
-      _targetLiquidity(UmbrellaEthereumAssets.STK_GHO_V1),
-      proposal.GHO_TARGET_LIQUIDITY()
-    );
+    assertEq(_targetLiquidity(UmbrellaEthereumAssets.STK_GHO_V1), GHO_CURRENT_TARGET_LIQUIDITY);
 
     executePayload(vm, address(proposal));
 
@@ -82,19 +90,22 @@ contract AaveV3Ethereum_UmbrellaParameterUpdateTargetLiquidityAndEmissionOptimiz
   }
 
   function test_maxEmissionPerSecondUpdated() public {
-    assertNotEq(
+    assertEq(
       _emission(UmbrellaEthereumAssets.STK_WA_USDT_V1, AaveV3EthereumAssets.USDT_A_TOKEN),
-      USDT_EXPECTED_EMISSION
+      USDT_CURRENT_EMISSION
     );
-    assertNotEq(
+    assertEq(
       _emission(UmbrellaEthereumAssets.STK_WA_USDC_V1, AaveV3EthereumAssets.USDC_A_TOKEN),
-      USDC_EXPECTED_EMISSION
+      USDC_CURRENT_EMISSION
     );
-    assertNotEq(
+    assertEq(
       _emission(UmbrellaEthereumAssets.STK_WA_WETH_V1, AaveV3EthereumAssets.WETH_A_TOKEN),
-      WETH_EXPECTED_EMISSION
+      WETH_CURRENT_EMISSION
     );
-    assertGt(_emission(UmbrellaEthereumAssets.STK_GHO_V1, AaveV3EthereumAssets.GHO_UNDERLYING), 0);
+    assertEq(
+      _emission(UmbrellaEthereumAssets.STK_GHO_V1, AaveV3EthereumAssets.GHO_UNDERLYING),
+      GHO_CURRENT_EMISSION
+    );
 
     executePayload(vm, address(proposal));
 
