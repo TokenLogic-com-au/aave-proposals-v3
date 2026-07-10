@@ -1,0 +1,41 @@
+## Event logs
+
+#### 0xfc421aD3C883Bf9E7C4f42dE845C4e4405799e73 (AaveV3InkWhitelabel.ASSETS.GHO.UNDERLYING, GhoInk.GHO_TOKEN)
+
+| index | event |
+| --- | --- |
+| 0 | FacilitatorBucketCapacityUpdated(facilitatorAddress: 0xDe6539018B095353A40753Dc54C91C68c9487D4E, oldCapacity: 100000000000000000000000000, newCapacity: 150000000000000000000000000) |
+
+#### 0x47aAdaAE1F05C978E6aBb7568d11B7F6e0FC4d6A (GovernanceV3Ink.EXECUTOR_LVL_1)
+
+| index | event |
+| --- | --- |
+| 1 | ExecutedAction(target: 0x5615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f, value: 0, signature: execute(), data: 0x, executionTime: 1783542011, withDelegatecall: true, resultData: 0x) |
+
+#### 0x44D73D7C4b2f98F426Bf8B5e87628d9eE38ef0Cf (GovernanceV3Ink.PAYLOADS_CONTROLLER)
+
+| index | event |
+| --- | --- |
+| 2 | PayloadExecuted(payloadId: 6) |
+
+## Raw storage changes
+
+### 0x44d73d7c4b2f98f426bf8b5e87628d9ee38ef0cf (GovernanceV3Ink.PAYLOADS_CONTROLLER)
+
+| slot | previous value | new value |
+| --- | --- | --- |
+| 0xc69056f16cbaa3c616b828e333ab7d3a32310765507f8f58359e99ebb7a885f3 | 0x006a4eb0fa000000000002000000000000000000000000000000000000000000 | 0x006a4eb0fa000000000003000000000000000000000000000000000000000000 |
+| 0xc69056f16cbaa3c616b828e333ab7d3a32310765507f8f58359e99ebb7a885f4 | 0x000000000000000000093a800000000000006a7cd57b00000000000000000000 | 0x000000000000000000093a800000000000006a7cd57b0000000000006a4eb0fb |
+
+### 0xfc421ad3c883bf9e7c4f42de845c4e4405799e73 (AaveV3InkWhitelabel.ASSETS.GHO.UNDERLYING, GhoInk.GHO_TOKEN)
+
+| slot | previous value | new value |
+| --- | --- | --- |
+| 0x9b3b068d87884c5356c62511a016dad778c18fa41fabe618bdc9ba5a1465b7b0 | 0x0000000000033e37d6623c6707ba958e000000000052b7d2dcc80cd2e4000000 | 0x0000000000033e37d6623c6707ba958e00000000007c13bc4b2c133c56000000 |
+
+
+## Raw diff
+
+```json
+{}
+```
