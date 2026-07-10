@@ -80,12 +80,12 @@ library RemoteGSMLaunchMonadSetup {
 
     StdConstants.VM.assertEq(
       inbound.capacity,
-      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_CAPACITY,
+      DEFAULT_RATE_LIMITER_CAPACITY,
       string.concat(msgPrefix, '-proposal inbound capacity should be default')
     );
     StdConstants.VM.assertEq(
       inbound.rate,
-      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_RATE,
+      DEFAULT_RATE_LIMITER_RATE,
       string.concat(msgPrefix, '-proposal inbound rate should be default')
     );
     StdConstants.VM.assertTrue(
@@ -98,12 +98,12 @@ library RemoteGSMLaunchMonadSetup {
 
     StdConstants.VM.assertEq(
       outbound.capacity,
-      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_CAPACITY,
+      DEFAULT_RATE_LIMITER_CAPACITY,
       string.concat(msgPrefix, '-proposal outbound capacity should be default')
     );
     StdConstants.VM.assertEq(
       outbound.rate,
-      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_RATE,
+      DEFAULT_RATE_LIMITER_RATE,
       string.concat(msgPrefix, '-proposal outbound rate should be default')
     );
     StdConstants.VM.assertTrue(

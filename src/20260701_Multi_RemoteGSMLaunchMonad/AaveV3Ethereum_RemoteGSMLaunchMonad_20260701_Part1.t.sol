@@ -5,7 +5,7 @@ import {AaveV3Ethereum} from 'aave-address-book/AaveV3Ethereum.sol';
 import {GhoEthereum} from 'aave-address-book/GhoEthereum.sol';
 import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {IUpgradeableLockReleaseTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableLockReleaseTokenPool.sol';
-import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
+import {CCIPChainSelectors} from 'src/helpers/gho-launch/constants/CCIPChainSelectors.sol';
 
 import {AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part1} from './AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part1.sol';
 import {RemoteGSMLaunchMonadSetup} from './setup/RemoteGSMLaunchMonadSetup.sol';
@@ -13,10 +13,6 @@ import {RemoteGSMLaunchMonadSetup} from './setup/RemoteGSMLaunchMonadSetup.sol';
 /**
  * @dev Test for AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part1
  * command: FOUNDRY_PROFILE=test forge test --match-path=src/20260701_Multi_RemoteGSMLaunchMonad/AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part1.t.sol -vv
- *
- * TODO: this test assumes the Ethereum -> Monad GHO lane already exists on the mainnet
- * GHO_CCIP_TOKEN_POOL at the pinned block; otherwise `setChainRateLimiterConfig(MONAD, ...)`
- * reverts with `NonExistentChain`. Update the fork block once the Monad lane is live on mainnet.
  */
 contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part1_Test is ProtocolV3TestBase {
   AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part1 internal proposal;

@@ -5,8 +5,8 @@ import {AaveV3Plasma} from 'aave-address-book/AaveV3Plasma.sol';
 import {GhoPlasma} from 'aave-address-book/GhoPlasma.sol';
 import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
-import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
-import {GhoCCIPChains} from '../helpers/gho-launch/constants/GhoCCIPChains.sol';
+import {CCIPChainSelectors} from 'src/helpers/gho-launch/constants/CCIPChainSelectors.sol';
+import {GhoCCIPChains} from 'src/helpers/gho-launch/constants/GhoCCIPChains.sol';
 
 import {AaveV3Plasma_RemoteGSMLaunchMonad_20260701} from './AaveV3Plasma_RemoteGSMLaunchMonad_20260701.sol';
 import {RemoteGSMLaunchMonadSetup} from './setup/RemoteGSMLaunchMonadSetup.sol';

@@ -19,10 +19,9 @@ The RemoteGSM upgrade refactors GHO's stability mechanism into a three-layer des
 
 On Ethereum:
 
-- Temporarily raise the GHO CCIP bridge limit and the Monad-lane outbound rate limiter to fit a one-off 50M GHO transfer.
+- Raise the GHO CCIP bridge limit by 50M (permanent: the bridged 50M becomes part of the locked supply) and temporarily widen the Monad-lane outbound rate limiter to fit the one-off 50M GHO transfer.
 - Register a Monad-scoped `GhoDirectFacilitator` on the GHO token with a 50M bucket capacity.
 - Mint 50M GHO into the payload and bridge it to Monad via `AaveGhoCcipBridge` (configuring the Monad destination lane first).
-- Increase bridge limit by 50M.
 - After bridging, restore the Ethereum ↔ Monad lane rate-limit config to its prior value. No other lane is modified.
 
 On Monad:
@@ -39,11 +38,9 @@ For the GSM:
 - Point it at the `GhoReserve`, enroll it as an entity with a 25M GHO reserve limit.
 - Grant `SWAP_FREEZER_ROLE` to the asset's `OracleSwapFreezer` and to the Monad executor.
 - Register it in the `GsmRegistry` and grant `CONFIGURATOR_ROLE` to the `GhoGsmSteward`.
-- Set the initial exposure cap to 20M of the underlying (6 decimals) and attach the 0% mint / 0.10% burn fee strategy.
+- Set the initial exposure cap to 20M of the underlying (6 decimals) and attach the 0% sell / 0.10% buy fee strategy (selling the underlying for GHO is free; buying it back with GHO costs 0.10%).
 
 `LIMIT_MANAGER_ROLE` on the Monad `GhoReserve` is granted to the Monad Risk Council.
-
-> TODO: The Monad GSM, GhoReserve, GhoGsmSteward, GsmRegistry, OracleSwapFreezer, fee strategy and Risk Council (and the Ethereum-side `GhoDirectFacilitator` and Monad counterpart bridge) are not deployed yet. Those addresses are left as `address(0)` in the payloads and must be filled in before deploy.
 
 ### GHO CCIP lane capacity
 
@@ -57,7 +54,7 @@ Execution order (same pattern as the Plasma / Arbitrum launch):
 - Ethereum Part 2 — mints 50M GHO via the new GhoDirectFacilitator and bridges it. Reverts if executed within the same second as Part 1 (the outbound bucket needs ~1s to refill).
 - Monad Part 1 must execute before the CCIP message arrives, otherwise the inbound rate limit / facilitator bucket rejects the mint and the delivery has to be manually retried on https://ccip.chain.link/.
 - Monad Part 2 — reverts until the bridged GHO reaches the Collector.
-- The remaining network payloads (Avalanche, Base, Gnosis, Ink, Mantle, Monad, Plasma, X-Layer) are independent and can execute any time.
+- The remaining network payloads (Arbitrum, Avalanche, Base, Gnosis, Ink, Mantle, Plasma, X-Layer) are independent and can execute any time.
 
 ## References
 

@@ -6,7 +6,7 @@ import {AaveV3Monad} from 'aave-address-book/AaveV3Monad.sol';
 import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
-import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
+import {CCIPChainSelectors} from 'src/helpers/gho-launch/constants/CCIPChainSelectors.sol';
 
 import {AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1} from './AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1.sol';
 import {RemoteGSMLaunchMonadSetup} from './setup/RemoteGSMLaunchMonadSetup.sol';
@@ -39,7 +39,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1_Test is ProtocolV3TestB
     );
   }
 
-  function test_bridgeLimitIncrease() public {
+  function test_inboundRateLimiterIncrease() public {
     // Capture the pre-existing Eth -> Monad inbound config (unknown ahead of time).
     IRateLimiter.TokenBucket memory bucket = IUpgradeableBurnMintTokenPool(
       GhoMonad.GHO_CCIP_TOKEN_POOL

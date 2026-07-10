@@ -12,9 +12,9 @@ import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/I
 import {IUpgradeableBurnMintTokenPool_1_5_1} from 'src/interfaces/ccip/tokenPool/IUpgradeableBurnMintTokenPool.sol';
 import {IPool as IPool_CCIP} from 'src/interfaces/ccip/tokenPool/IPool.sol';
 import {IRouter} from 'src/interfaces/ccip/IRouter.sol';
-import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
-import {GhoCCIPChains} from '../helpers/gho-launch/constants/GhoCCIPChains.sol';
-import {CCIPChainRouters} from '../helpers/gho-launch/constants/CCIPChainRouters.sol';
+import {CCIPChainSelectors} from 'src/helpers/gho-launch/constants/CCIPChainSelectors.sol';
+import {GhoCCIPChains} from 'src/helpers/gho-launch/constants/GhoCCIPChains.sol';
+import {CCIPChainRouters} from 'src/helpers/gho-launch/constants/CCIPChainRouters.sol';
 import {IAaveOracle} from 'aave-address-book/AaveV2.sol';
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 import {IGsm} from 'src/interfaces/IGsm.sol';
@@ -37,8 +37,9 @@ import {RemoteGSMLaunchMonadSetup} from './setup/RemoteGSMLaunchMonadSetup.sol';
 contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestBase {
   // Existing Eth->Monad inbound rate-limiter capacity at the pinned block, before Part 1 widens it.
   // A 50M CCIP delivery exceeds this, which is what `test_ccipDeliveryRevertsWithoutPart1` asserts.
-  // TODO: confirm with test after Arb proposal is executed.
-  uint256 internal constant EXISTING_ETH_INBOUND_RATE_LIMITER_CAPACITY = 5_000_000 ether;
+  // TODO: after the Arb proposal executes and the lanes are normalized, re-pin the block and update
+  // this to the normalized capacity (5M).
+  uint256 internal constant EXISTING_ETH_INBOUND_RATE_LIMITER_CAPACITY = 1_500_000 ether;
 
   // The USDC GSM is deployed (outside governance) with a default 40M exposure cap; the payload lowers
   // it to GSM_USDC_INITIAL_EXPOSURE_CAP. Pinned as pre-state so the post checks can't pass vacuously
@@ -159,18 +160,19 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
 
   function test_ccipDeliveryRevertsWithoutPart1() public {
     // Ordering guard for Part 1 -> Part 2. Part 2 depends on the 50M bridged from Ethereum landing on
-    // Monad, which is only possible once Part 1 widens the Eth->Monad inbound rate limiter (5M ->
-    // TEMP_BRIDGE_CAPACITY). Re-fork to discard setUp's Part 1 + simulated delivery, then show the
-    // delivery reverts on the inbound rate limiter without Part 1: 50M exceeds the 5M capacity, so
-    // the funds cannot arrive if Part 1 is skipped. (Whether the funds are actually bridged depends on
-    // the Ethereum payloads; this only asserts Monad cannot receive them until Part 1 runs.)
+    // Monad, which is only possible once Part 1 widens the Eth->Monad inbound rate limiter
+    // (EXISTING_ETH_INBOUND_RATE_LIMITER_CAPACITY -> TEMP_BRIDGE_CAPACITY). Re-fork to discard
+    // setUp's Part 1 + simulated delivery, then show the delivery reverts on the inbound rate
+    // limiter without Part 1: 50M exceeds the existing capacity, so the funds cannot arrive if
+    // Part 1 is skipped. (Whether the funds are actually bridged depends on the Ethereum payloads;
+    // this only asserts Monad cannot receive them until Part 1 runs.)
     // TODO: pin block after Arbitrum's proposal execution
     vm.createSelectFork(vm.rpcUrl('monad'), 86478300);
 
     vm.expectRevert(
       abi.encodeWithSelector(
         IUpgradeableBurnMintTokenPool.TokenMaxCapacityExceeded.selector,
-        1_500_000 ether, // TODO: use EXISTING_ETH_INBOUND_RATE_LIMITER_CAPACITY after pinning the right block
+        EXISTING_ETH_INBOUND_RATE_LIMITER_CAPACITY,
         RemoteGSMLaunchMonadSetup.GHO_BRIDGE_AMOUNT,
         GhoMonad.GHO_TOKEN
       )
@@ -178,7 +180,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
     _simulateCcipDeliveryToCollector(RemoteGSMLaunchMonadSetup.GHO_BRIDGE_AMOUNT);
   }
 
-  function test_bridgeLimitRestore() public {
+  function test_laneRateLimitRestored() public {
     // setUp() already executes Part 1 and warps 1 second; the inbound rate limiter is
     // already widened by this point.
 

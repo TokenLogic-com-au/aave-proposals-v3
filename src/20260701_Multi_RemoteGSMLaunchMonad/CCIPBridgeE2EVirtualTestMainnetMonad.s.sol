@@ -53,9 +53,9 @@ contract CCIPBridgeE2EVirtualTestMainnetMonad is TenderlyVirtualTestnetBase {
     );
 
     // Execute Monad Part 1
-    // In practice, Eth Part 1 could and Eth Part 2 could be executed prior to Monad Part 1
-    // Since there are no delays in this script, executing Monad Part 1 because of limitations
-    // on the Virtual Testnets
+    // In practice, Eth Part 1 and Eth Part 2 could be executed prior to Monad Part 1; this
+    // script executes Monad Part 1 first because the Virtual Testnets do not support
+    // execution delays.
     _refork(monad.rpcAlias);
     (uint256 capBefore, ) = IGhoToken(GhoMonad.GHO_TOKEN).getFacilitatorBucket(
       GhoMonad.GHO_CCIP_TOKEN_POOL

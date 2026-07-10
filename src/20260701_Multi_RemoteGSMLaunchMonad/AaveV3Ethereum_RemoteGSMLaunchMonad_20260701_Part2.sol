@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
-import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
+import {CCIPChainSelectors} from 'src/helpers/gho-launch/constants/CCIPChainSelectors.sol';
 import {AaveV3EthereumAssets} from 'aave-address-book/AaveV3Ethereum.sol';
 import {GhoEthereum} from 'aave-address-book/GhoEthereum.sol';
 import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGenericExecutor.sol';
@@ -26,7 +26,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part2 is IProposalGenericE
   // Ethereum-side AaveGhoCcipBridge (target-agnostic; the destination lane is configured below).
   // TODO: confirm this is the bridge that will carry the Ethereum -> Monad GHO lane.
   // https://etherscan.io/address/0x7F2f96fcdC3A29Be75938d2aC3D92E7006919fe6
-  address public constant CCIP_BRIDGE = address(0x7F2f96fcdC3A29Be75938d2aC3D92E7006919fe6);
+  address public constant CCIP_BRIDGE = 0x7F2f96fcdC3A29Be75938d2aC3D92E7006919fe6;
 
   // AaveGhoCcipBridge on Monad (counterpart that will receive the CCIP message and forward GHO
   // to the Monad Collector).

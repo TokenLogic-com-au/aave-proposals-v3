@@ -5,8 +5,8 @@ import {AaveV3Mantle} from 'aave-address-book/AaveV3Mantle.sol';
 import {GhoMantle} from 'aave-address-book/GhoMantle.sol';
 import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
-import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
-import {GhoCCIPChains} from '../helpers/gho-launch/constants/GhoCCIPChains.sol';
+import {CCIPChainSelectors} from 'src/helpers/gho-launch/constants/CCIPChainSelectors.sol';
+import {GhoCCIPChains} from 'src/helpers/gho-launch/constants/GhoCCIPChains.sol';
 
 import {AaveV3Mantle_RemoteGSMLaunchMonad_20260701} from './AaveV3Mantle_RemoteGSMLaunchMonad_20260701.sol';
 import {RemoteGSMLaunchMonadSetup} from './setup/RemoteGSMLaunchMonadSetup.sol';
@@ -24,7 +24,7 @@ contract AaveV3Mantle_RemoteGSMLaunchMonad_20260701_Test is ProtocolV3TestBase {
   }
 
   /**
-   * @dev executes the generic test suite including e2e and config snapshots
+   * @dev executes the generic test suite and config snapshots; e2e is skipped (see below)
    */
   /// forge-config: default.isolate = true
   function test_defaultProposalExecution() public {

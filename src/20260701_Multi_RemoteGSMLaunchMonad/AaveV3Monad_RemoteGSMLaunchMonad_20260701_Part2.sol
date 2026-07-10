@@ -5,10 +5,9 @@ import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 import {GhoMonad} from 'aave-address-book/GhoMonad.sol';
 import {AaveV3Monad} from 'aave-address-book/AaveV3Monad.sol';
 import {GovernanceV3Monad} from 'aave-address-book/GovernanceV3Monad.sol';
-import {ICollector} from 'aave-helpers/src/CollectorUtils.sol';
 import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGenericExecutor.sol';
 
-import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
+import {CCIPChainSelectors} from 'src/helpers/gho-launch/constants/CCIPChainSelectors.sol';
 import {IGhoReserve} from 'src/interfaces/IGhoReserve.sol';
 import {IGsm} from 'src/interfaces/IGsm.sol';
 import {IGsmRegistry} from 'src/interfaces/IGsmRegistry.sol';
@@ -31,10 +30,6 @@ import {RemoteGSMLaunchMonadSetup} from './setup/RemoteGSMLaunchMonadSetup.sol';
  * Collector -> GhoReserve transfer below depends on that. If the CCIP receiver
  * for this lane is anything other than the Collector, this payload will revert.
  * Verify on-chain before deploy.
- *
- * TODO: every GSM/Reserve/Steward/Registry address below, plus the Risk Council, are Monad
- * deployments that are not available yet. They are left as address(0) so the payload compiles;
- * fill them in before deploy. Tests that execute this payload are skipped until they are set.
  */
 contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2 is IProposalGenericExecutor {
   // https://monadscan.com/address/0x307707A53Cb51670a8bcC8a2808A349C65E1Fb92

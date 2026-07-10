@@ -6,8 +6,8 @@ import {GhoInk} from 'aave-address-book/GhoInk.sol';
 import {GovernanceV3Ink} from 'aave-address-book/GovernanceV3Ink.sol';
 import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
-import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
-import {GhoCCIPChains} from '../helpers/gho-launch/constants/GhoCCIPChains.sol';
+import {CCIPChainSelectors} from 'src/helpers/gho-launch/constants/CCIPChainSelectors.sol';
+import {GhoCCIPChains} from 'src/helpers/gho-launch/constants/GhoCCIPChains.sol';
 
 import {AaveV3Ink_RemoteGSMLaunchMonad_20260701} from './AaveV3Ink_RemoteGSMLaunchMonad_20260701.sol';
 import {RemoteGSMLaunchMonadSetup} from './setup/RemoteGSMLaunchMonadSetup.sol';
@@ -30,7 +30,7 @@ contract AaveV3Ink_RemoteGSMLaunchMonad_20260701_Test is ProtocolV3TestBase {
   /// forge-config: default.isolate = true
   function test_defaultProposalExecution() public {
     defaultTest(
-      'AaveV3Ink_RemoteGSMLaunchArbitrum_20260512',
+      'AaveV3Ink_RemoteGSMLaunchMonad_20260701',
       AaveV3InkWhitelabel.POOL,
       address(proposal),
       GovernanceV3Ink.PAYLOADS_CONTROLLER
@@ -45,6 +45,12 @@ contract AaveV3Ink_RemoteGSMLaunchMonad_20260701_Test is ProtocolV3TestBase {
 
     IGhoToken.Facilitator memory postFacilitator = gho.getFacilitator(GhoInk.GHO_CCIP_TOKEN_POOL);
 
+    // TODO: enable check after ARB proposal is executed
+    // assertEq(
+    //   postFacilitator.bucketCapacity,
+    //   200_000_000 ether,
+    //   'post-proposal facilitator capacity should be 200M'
+    // );
     assertEq(
       postFacilitator.bucketCapacity,
       preFacilitator.bucketCapacity + RemoteGSMLaunchMonadSetup.GHO_BRIDGE_AMOUNT,

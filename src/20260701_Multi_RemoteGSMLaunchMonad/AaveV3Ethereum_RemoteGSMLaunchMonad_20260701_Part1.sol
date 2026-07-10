@@ -33,8 +33,8 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part1 is IProposalGenericE
       CCIPChainSelectors.MONAD,
       IRateLimiter.Config({
         isEnabled: true,
-        capacity: uint128(RemoteGSMLaunchMonadSetup.TEMP_BRIDGE_CAPACITY),
-        rate: uint128(RemoteGSMLaunchMonadSetup.TEMP_BRIDGE_CAPACITY) - 1 // Set rate to new capacity so it refills immediately
+        capacity: RemoteGSMLaunchMonadSetup.TEMP_BRIDGE_CAPACITY,
+        rate: RemoteGSMLaunchMonadSetup.TEMP_BRIDGE_CAPACITY - 1 // Set rate to capacity so it fills to limit right away (-1 because they cannot be the same)
       }),
       IRateLimiter.Config({
         isEnabled: true,

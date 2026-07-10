@@ -7,8 +7,8 @@ import {GovernanceV3Ethereum} from 'aave-address-book/GovernanceV3Ethereum.sol';
 import {GhoEthereum} from 'aave-address-book/GhoEthereum.sol';
 import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {IAaveGhoCcipBridge} from 'aave-helpers/src/bridges/ccip/interfaces/IAaveGhoCcipBridge.sol';
-import {CCIPChainSelectors} from '../helpers/gho-launch/constants/CCIPChainSelectors.sol';
-import {GhoCCIPChains} from '../helpers/gho-launch/constants/GhoCCIPChains.sol';
+import {CCIPChainSelectors} from 'src/helpers/gho-launch/constants/CCIPChainSelectors.sol';
+import {GhoCCIPChains} from 'src/helpers/gho-launch/constants/GhoCCIPChains.sol';
 import {IUpgradeableLockReleaseTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableLockReleaseTokenPool.sol';
 import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 
@@ -20,13 +20,6 @@ import {RemoteGSMLaunchMonadSetup} from './setup/RemoteGSMLaunchMonadSetup.sol';
 /**
  * @dev Test for AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part2
  * command: FOUNDRY_PROFILE=test forge test --match-path=src/20260701_Multi_RemoteGSMLaunchMonad/AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part2.t.sol -vv
- *
- * NOTE: every test here executes Part 2, which registers the (not-yet-deployed)
- * `DIRECT_FACILITATOR` and bridges to the `MONAD_BRIDGE_DESTINATION`. While those are still
- * address(0), the execution tests are skipped via `_skipIfNotDeployed`; they activate
- * automatically once the real addresses are set in the payload.
- * TODO: setUp executes Part 1, which requires the Ethereum -> Monad GHO lane to already exist on
- * the mainnet GHO_CCIP_TOKEN_POOL at the pinned block.
  */
 contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestBase {
   AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part1 internal part1;
@@ -44,17 +37,11 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3Te
     vm.warp(block.timestamp + 1); // let the outbound rate limiter refill to capacity
   }
 
-  /// @dev Skips the calling test while the launch addresses are still placeholders.
-  function _skipIfNotDeployed() internal {
-    vm.skip(proposal.DIRECT_FACILITATOR() == address(0));
-  }
-
   /**
    * @dev executes the generic test suite including e2e and config snapshots
    */
   /// forge-config: default.isolate = true
   function test_defaultProposalExecution() public {
-    _skipIfNotDeployed();
     defaultTest(
       'AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part2',
       AaveV3Ethereum.POOL,
@@ -63,7 +50,6 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3Te
   }
 
   function test_ccipBridgeDestinationChainSetUp() public {
-    _skipIfNotDeployed();
     IAaveGhoCcipBridge bridge = IAaveGhoCcipBridge(proposal.CCIP_BRIDGE());
 
     IAaveGhoCcipBridge.RemoteChainConfig memory config = bridge.getDestinationRemoteConfig(
@@ -84,7 +70,6 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3Te
   }
 
   function test_bridgeLaneRestored() public {
-    _skipIfNotDeployed();
     // setUp already executed Part 1, which raised the outbound rate limiter for the Monad lane to
     // (capacity = TEMP_BRIDGE_CAPACITY, rate = TEMP_BRIDGE_CAPACITY - 1) and warped 1 second so
     // the bucket refilled to capacity.
@@ -134,7 +119,6 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3Te
   }
 
   function test_bridge() public {
-    _skipIfNotDeployed();
     // setUp already executed Part 1, raising the bridge limit and outbound rate limiter
     // on the GHO_CCIP_TOKEN_POOL so Part 2's bridge step has the headroom it needs.
     IGhoToken.Facilitator memory facilitator = IGhoToken(AaveV3EthereumAssets.GHO_UNDERLYING)
@@ -185,7 +169,6 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3Te
   }
 
   function test_otherLanesUntouched() public {
-    _skipIfNotDeployed();
     // This proposal must not change any lane other than the single Ethereum <> Monad lane. Iterate
     // every supported chain except Monad (the lane the proposal temporarily widens and then restores),
     // snapshot both directions before and after execution, and assert the config is unchanged.
