@@ -49,6 +49,18 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3Te
     );
   }
 
+  function test_directFacilitatorName() public {
+    executePayload(vm, address(proposal));
+
+    assertEq(
+      IGhoToken(AaveV3EthereumAssets.GHO_UNDERLYING)
+        .getFacilitator(proposal.DIRECT_FACILITATOR())
+        .label,
+      proposal.DIRECT_FACILITATOR_NAME(),
+      'direct facilitator name mismatch'
+    );
+  }
+
   function test_ccipBridgeDestinationChainSetUp() public {
     IAaveGhoCcipBridge bridge = IAaveGhoCcipBridge(proposal.CCIP_BRIDGE());
 

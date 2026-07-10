@@ -20,6 +20,7 @@ import {RemoteGSMLaunchMonadSetup} from './setup/RemoteGSMLaunchMonadSetup.sol';
  */
 contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part2 is IProposalGenericExecutor {
   // GhoDirectFacilitator Constants
+  // https://etherscan.io/address/0x0cB7C2A2Ab38Aed3e6096631D7Dba3DaBf237134
   address public constant DIRECT_FACILITATOR = 0x0cB7C2A2Ab38Aed3e6096631D7Dba3DaBf237134;
   string public constant DIRECT_FACILITATOR_NAME = 'GhoDirectFacilitator GSM Monad';
 

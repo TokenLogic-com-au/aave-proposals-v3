@@ -7,7 +7,7 @@ snapshot: "https://snapshot.org/#/s:aavedao.eth/proposal/0x24f105bd023c476a9b85f
 
 ## Simple Summary
 
-Launch a GHO GSM on Monad (USDC) using the RemoteGSM architecture. The proposal mints 50M GHO via a dedicated `GhoDirectFacilitator` on Ethereum, bridges it to Monad over CCIP to seed the local `GhoReserve`, and wires up the Monad USDC GSM. Unlike the Arbitrum RemoteGSM launch, GHO CCIP lane capacities are left unchanged: only the Ethereum ↔ Monad lane is temporarily widened for the one-off seed transfer and then restored to its prior config.
+Launch a GHO GSM on Monad (USDC) using the RemoteGSM architecture. The proposal mints 50M GHO via a dedicated `GhoDirectFacilitator` on Ethereum, bridges it to Monad over CCIP to seed the local `GhoReserve`, and wires up the Monad USDC GSM.
 
 ## Motivation
 
@@ -48,13 +48,14 @@ GHO CCIP lane rate-limit capacities are kept the same as before execution. The p
 
 ### Execution Order
 
-Execution order (same pattern as the Plasma / Arbitrum launch):
+Execution order:
 
 - Ethereum Part 1 — raises the bridge limit and the Eth→Monad outbound rate limiter.
 - Ethereum Part 2 — mints 50M GHO via the new GhoDirectFacilitator and bridges it. Reverts if executed within the same second as Part 1 (the outbound bucket needs ~1s to refill).
 - Monad Part 1 must execute before the CCIP message arrives, otherwise the inbound rate limit / facilitator bucket rejects the mint and the delivery has to be manually retried on https://ccip.chain.link/.
 - Monad Part 2 — reverts until the bridged GHO reaches the Collector.
 - The remaining network payloads (Arbitrum, Avalanche, Base, Gnosis, Ink, Mantle, Plasma, X-Layer) are independent and can execute any time.
+- Manually register OracleSwapFreezer via SAFE post execution.
 
 ## References
 
