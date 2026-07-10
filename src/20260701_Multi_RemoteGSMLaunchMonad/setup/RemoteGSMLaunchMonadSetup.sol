@@ -37,10 +37,10 @@ library RemoteGSMLaunchMonadSetup {
   // Maximum amount that can be withdrawn by GSM (can be changed by steward later)
   uint128 public constant GSM_USDC_RESERVE_LIMIT = 25_000_000 ether;
 
-  // 20M underlying (6 decimals).
+  // 40M underlying (6 decimals).
   // TODO: confirm the intended initial exposure cap for the Monad USDC GSM (and the stataUSDC
   // rate on Monad) once the GSM is deployed.
-  uint128 public constant GSM_USDC_INITIAL_EXPOSURE_CAP = 20_000_000e6; // 20M, 6 decimals
+  uint128 public constant GSM_USDC_INITIAL_EXPOSURE_CAP = 40_000_000e6; // 40M, 6 decimals
 
   /**
    * @notice Restores the inbound and outbound CCIP rate-limit config of a single GHO lane to the
