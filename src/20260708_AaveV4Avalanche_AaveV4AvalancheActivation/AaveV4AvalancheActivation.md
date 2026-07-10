@@ -142,8 +142,8 @@ The Treasury Spoke [0x2C4Aea1A5F000889c6DfFE8f52377aFc2CB113a6](https://snowscan
 
 ## References
 
-- Implementation: [AaveV4Avalanche](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260708_AaveV4Avalanche_AaveV4AvalancheActivation/AaveV4Avalanche_AaveV4AvalancheActivation_20260708.sol)
-- Tests: [AaveV4Avalanche](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260708_AaveV4Avalanche_AaveV4AvalancheActivation/AaveV4Avalanche_AaveV4AvalancheActivation_20260708.t.sol)
+- Implementation: [AaveV4Avalanche](https://github.com/aave-dao/aave-proposals-v3/blob/7bb6bcb394723856ebeb04e020a566da0978efa4/src/20260708_AaveV4Avalanche_AaveV4AvalancheActivation/AaveV4Avalanche_AaveV4AvalancheActivation_20260708.sol)
+- Tests: [AaveV4Avalanche](https://github.com/aave-dao/aave-proposals-v3/blob/7bb6bcb394723856ebeb04e020a566da0978efa4/src/20260708_AaveV4Avalanche_AaveV4AvalancheActivation/AaveV4Avalanche_AaveV4AvalancheActivation_20260708.t.sol)
 - [Snapshot](https://snapshot.org/#/aavedao.eth/proposal/0xe5c4a9387ce1096075f2ad5c3840a915ef730a1ad9180118be8bd4b6f10dacfe)
 - [Discussion](https://governance.aave.com/t/arfc-deploy-aave-v4-on-avalanche/25165)
 
