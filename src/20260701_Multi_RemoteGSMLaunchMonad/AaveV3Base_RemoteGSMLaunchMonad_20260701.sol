@@ -2,11 +2,8 @@
 pragma solidity ^0.8.0;
 
 import {GhoBase} from 'aave-address-book/GhoBase.sol';
-import {SafeCast} from 'openzeppelin-contracts/contracts/utils/math/SafeCast.sol';
-import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGenericExecutor.sol';
-import {IGhoToken} from 'src/interfaces/IGhoToken.sol';
 
-import {RemoteGSMLaunchMonadSetup} from './setup/RemoteGSMLaunchMonadSetup.sol';
+import {RemoteGSMLaunchMonadFacilitatorProposalBase} from './setup/RemoteGSMLaunchMonadFacilitatorProposalBase.sol';
 
 /**
  * @title Remote GSM Launch: Monad
@@ -14,21 +11,12 @@ import {RemoteGSMLaunchMonadSetup} from './setup/RemoteGSMLaunchMonadSetup.sol';
  * - Snapshot: https://snapshot.org/#/s:aavedao.eth/proposal/0x24f105bd023c476a9b85fa87ff795bfeec769fa799ce6ada8e2724c9738049f6
  * - Discussion: https://governance.aave.com/t/arfc-deploy-aave-protocol-v3-7-on-monad/24943
  */
-contract AaveV3Base_RemoteGSMLaunchMonad_20260701 is IProposalGenericExecutor {
-  using SafeCast for uint256;
+contract AaveV3Base_RemoteGSMLaunchMonad_20260701 is RemoteGSMLaunchMonadFacilitatorProposalBase {
+  function GHO_TOKEN() public pure override returns (address) {
+    return GhoBase.GHO_TOKEN;
+  }
 
-  function execute() external {
-    // Increase bucket capacity to allow token movements to Base, accounting for the extra supply minted
-    // on Ethereum and initially bridged to Monad in this proposal.
-    // NOTE: this proposal does NOT normalize lane rate-limit config; GHO lane capacities are left
-    // untouched (only the facilitator bucket capacity is bumped).
-    (uint256 currentFacilitatorBucketCapacity, ) = IGhoToken(GhoBase.GHO_TOKEN)
-      .getFacilitatorBucket(GhoBase.GHO_CCIP_TOKEN_POOL);
-
-    IGhoToken(GhoBase.GHO_TOKEN).setFacilitatorBucketCapacity(
-      GhoBase.GHO_CCIP_TOKEN_POOL,
-      currentFacilitatorBucketCapacity.toUint128() +
-        RemoteGSMLaunchMonadSetup.GHO_BRIDGE_AMOUNT.toUint128()
-    );
+  function GHO_CCIP_TOKEN_POOL() public pure override returns (address) {
+    return GhoBase.GHO_CCIP_TOKEN_POOL;
   }
 }
