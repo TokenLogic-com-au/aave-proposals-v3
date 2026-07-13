@@ -121,7 +121,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part1_Test is ProtocolV3Te
     );
     assertEq(
       bucket.rate,
-      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_RATE,
+      RemoteGSMLaunchMonadSetup.DEFAULT_LIMITER_RATE,
       'post-proposal inbound rate should be the canonical default'
     );
   }

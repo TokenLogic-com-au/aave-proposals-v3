@@ -188,16 +188,16 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
       GhoMonad.GHO_CCIP_TOKEN_POOL
     ).getCurrentInboundRateLimiterState(CCIPChainSelectors.ETHEREUM);
 
-    // Before Part 2 execution, the limits should be larger than defaults.
-    assertGt(
+    // Before Part 2 execution, Part 1 has widened the inbound lane to the temporary bridge config.
+    assertEq(
       bucket.capacity,
-      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_CAPACITY,
-      'pre-Part2 inbound capacity should be raised'
+      RemoteGSMLaunchMonadSetup.TEMP_BRIDGE_CAPACITY,
+      'pre-Part2 inbound capacity should be raised to TEMP_BRIDGE_CAPACITY'
     );
-    assertGt(
+    assertEq(
       bucket.rate,
-      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_RATE,
-      'pre-Part2 inbound rate should be raised'
+      RemoteGSMLaunchMonadSetup.TEMP_BRIDGE_CAPACITY - 1,
+      'pre-Part2 inbound rate should be raised to TEMP_BRIDGE_CAPACITY - 1'
     );
     assertTrue(bucket.isEnabled, 'pre-Part2 inbound rate limiter should be enabled');
 
@@ -214,7 +214,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
     );
     assertEq(
       bucket.rate,
-      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_RATE,
+      RemoteGSMLaunchMonadSetup.DEFAULT_LIMITER_RATE,
       'post-Part2 inbound rate should be restored to default'
     );
     assertTrue(bucket.isEnabled, 'post-Part2 inbound rate limiter should be enabled');
@@ -230,7 +230,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
     );
     assertEq(
       bucket.rate,
-      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_RATE,
+      RemoteGSMLaunchMonadSetup.DEFAULT_LIMITER_RATE,
       'post-Part2 outbound rate should be restored to default'
     );
     assertTrue(bucket.isEnabled, 'post-Part2 outbound rate limiter should be enabled');

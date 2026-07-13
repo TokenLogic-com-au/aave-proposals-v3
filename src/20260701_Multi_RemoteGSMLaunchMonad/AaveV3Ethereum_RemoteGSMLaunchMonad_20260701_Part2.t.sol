@@ -89,10 +89,10 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3Te
       GhoEthereum.GHO_CCIP_TOKEN_POOL
     ).getCurrentOutboundRateLimiterState(CCIPChainSelectors.MONAD);
 
-    assertGt(
+    assertEq(
       bucket.capacity,
-      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_CAPACITY,
-      'pre-proposal outbound capacity should be raised'
+      RemoteGSMLaunchMonadSetup.TEMP_BRIDGE_CAPACITY,
+      'pre-proposal outbound capacity should be raised to TEMP_BRIDGE_CAPACITY'
     );
 
     executePayload(vm, address(proposal));
@@ -108,7 +108,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3Te
     );
     assertEq(
       bucket.rate,
-      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_RATE,
+      RemoteGSMLaunchMonadSetup.DEFAULT_LIMITER_RATE,
       'post-proposal outbound rate should be restored to standard'
     );
     assertTrue(bucket.isEnabled, 'post-proposal outbound rate limiter should be enabled');
@@ -124,7 +124,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3Te
     );
     assertEq(
       bucket.rate,
-      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_RATE,
+      RemoteGSMLaunchMonadSetup.DEFAULT_LIMITER_RATE,
       'post-proposal inbound rate should be restored to standard'
     );
     assertTrue(bucket.isEnabled, 'post-proposal inbound rate limiter should be enabled');

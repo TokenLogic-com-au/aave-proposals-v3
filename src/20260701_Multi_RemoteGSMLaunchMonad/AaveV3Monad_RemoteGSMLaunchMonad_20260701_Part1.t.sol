@@ -88,7 +88,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1_Test is ProtocolV3TestB
     // TODO: enable check after ARB proposal is executed
     // assertEq(
     //   postFacilitator.bucketCapacity,
-    //   200_000_000 ether,
+    //   RemoteGSMLaunchMonadSetup.EXPECTED_BUCKET_CAPACITY,
     //   'post-proposal facilitator capacity should be 200M'
     // );
     assertEq(
@@ -121,7 +121,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1_Test is ProtocolV3TestB
     );
     assertEq(
       bucket.rate,
-      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_RATE,
+      RemoteGSMLaunchMonadSetup.DEFAULT_LIMITER_RATE,
       'post-proposal outbound rate should be the canonical default'
     );
   }

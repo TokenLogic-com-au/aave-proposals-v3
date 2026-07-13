@@ -28,10 +28,13 @@ library RemoteGSMLaunchMonadSetup {
   uint128 public constant DEFAULT_RATE_LIMITER_CAPACITY = 5_000_000 ether;
 
   // Refill rate per second the lane is restored to
-  uint128 public constant DEFAULT_RATE_LIMITER_RATE = 1_000 ether;
+  uint128 public constant DEFAULT_LIMITER_RATE = 1_000 ether;
 
   // Facilitator capacity matches bridge amount (as uint128)
   uint128 public constant DIRECT_FACILITATOR_CAPACITY = uint128(GHO_BRIDGE_AMOUNT);
+
+  // Expected GHO facilitator bucket capacity after payloads are executed
+  uint128 public constant EXPECTED_BUCKET_CAPACITY = 200_000_000 ether;
 
   // GSM USDC
   // Maximum amount that can be withdrawn by GSM (can be changed by steward later)
@@ -56,7 +59,7 @@ library RemoteGSMLaunchMonadSetup {
     IRateLimiter.Config memory standardConfig = IRateLimiter.Config({
       isEnabled: true,
       capacity: DEFAULT_RATE_LIMITER_CAPACITY,
-      rate: DEFAULT_RATE_LIMITER_RATE
+      rate: DEFAULT_LIMITER_RATE
     });
 
     IUpgradeableLockReleaseTokenPool(tokenPool).setChainRateLimiterConfig(
@@ -85,7 +88,7 @@ library RemoteGSMLaunchMonadSetup {
     );
     StdConstants.VM.assertEq(
       inbound.rate,
-      DEFAULT_RATE_LIMITER_RATE,
+      DEFAULT_LIMITER_RATE,
       string.concat(msgPrefix, '-proposal inbound rate should be default')
     );
     StdConstants.VM.assertTrue(
@@ -103,7 +106,7 @@ library RemoteGSMLaunchMonadSetup {
     );
     StdConstants.VM.assertEq(
       outbound.rate,
-      DEFAULT_RATE_LIMITER_RATE,
+      DEFAULT_LIMITER_RATE,
       string.concat(msgPrefix, '-proposal outbound rate should be default')
     );
     StdConstants.VM.assertTrue(

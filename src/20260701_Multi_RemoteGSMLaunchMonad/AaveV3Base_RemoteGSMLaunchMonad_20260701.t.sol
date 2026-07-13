@@ -42,7 +42,7 @@ contract AaveV3Base_RemoteGSMLaunchMonad_20260701_Test is ProtocolV3TestBase {
     // TODO: enable check after ARB proposal is executed
     // assertEq(
     //   postFacilitator.bucketCapacity,
-    //   200_000_000 ether,
+    //   RemoteGSMLaunchMonadSetup.EXPECTED_BUCKET_CAPACITY,
     //   'post-proposal facilitator capacity should be 200M'
     // );
     assertEq(

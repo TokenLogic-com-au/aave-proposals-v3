@@ -40,7 +40,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1 is IProposalGenericExec
       IRateLimiter.Config({
         isEnabled: true,
         capacity: RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_CAPACITY,
-        rate: RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_RATE
+        rate: RemoteGSMLaunchMonadSetup.DEFAULT_LIMITER_RATE
       }),
       IRateLimiter.Config({
         isEnabled: true,
