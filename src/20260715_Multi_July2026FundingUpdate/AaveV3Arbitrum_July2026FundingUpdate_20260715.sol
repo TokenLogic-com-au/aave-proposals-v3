@@ -66,10 +66,14 @@ contract AaveV3Arbitrum_July2026FundingUpdate_20260715 is IProposalGenericExecut
       currentAllowanceUsdt + USDT_ALLOWANCE
     );
 
+    uint256 currentAllowanceGho = IERC20(AaveV3ArbitrumAssets.GHO_A_TOKEN).allowance(
+      address(AaveV3Arbitrum.COLLECTOR),
+      MiscArbitrum.AFC_SAFE
+    );
     AaveV3Arbitrum.COLLECTOR.approve(
       IERC20(AaveV3ArbitrumAssets.GHO_A_TOKEN),
       MiscArbitrum.AFC_SAFE,
-      GHO_ALLOWANCE
+      currentAllowanceGho + GHO_ALLOWANCE
     );
   }
 
