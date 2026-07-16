@@ -81,9 +81,9 @@ contract AaveV3Plasma_July2026FundingUpdate_20260715 is IProposalGenericExecutor
     );
 
     AaveV3Plasma.COLLECTOR.approve(
-      IERC20(AaveV3PlasmaAssets.USDe_A_TOKEN),
+      IERC20(AaveV3PlasmaAssets.sUSDe_A_TOKEN),
       MiscPlasma.AFC_SAFE,
-      IERC20(AaveV3PlasmaAssets.USDe_A_TOKEN).balanceOf(address(AaveV3Plasma.COLLECTOR))
+      IERC20(AaveV3PlasmaAssets.sUSDe_A_TOKEN).balanceOf(address(AaveV3Plasma.COLLECTOR))
     );
   }
 

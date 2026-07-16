@@ -73,6 +73,22 @@ contract AaveV3Ethereum_July2026FundingUpdate_20260715_Test is ProtocolV3TestBas
     assertEq(allowanceAfterAhab, proposal.WBTC_MONAD_ALLOWANCE());
   }
 
+  function test_cancelMeritUsdcAllowance() public {
+    uint256 allowanceBefore = IERC20(AaveV3EthereumAssets.USDC_A_TOKEN).allowance(
+      address(AaveV3Ethereum.COLLECTOR),
+      MiscEthereum.MERIT_AHAB_SAFE
+    );
+    assertGt(allowanceBefore, 0);
+
+    executePayload(vm, address(proposal));
+
+    uint256 allowanceAfter = IERC20(AaveV3EthereumAssets.USDC_A_TOKEN).allowance(
+      address(AaveV3Ethereum.COLLECTOR),
+      MiscEthereum.MERIT_AHAB_SAFE
+    );
+    assertEq(allowanceAfter, 0);
+  }
+
   function test_depositETH() public {
     uint256 collectorEthBalanceBefore = address(AaveV3Ethereum.COLLECTOR).balance;
     assertGt(collectorEthBalanceBefore, 0, 'collector should hold ETH to deposit');

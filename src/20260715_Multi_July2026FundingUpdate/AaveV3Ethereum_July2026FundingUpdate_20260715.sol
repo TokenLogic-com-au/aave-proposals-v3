@@ -31,7 +31,7 @@ contract AaveV3Ethereum_July2026FundingUpdate_20260715 is IProposalGenericExecut
   uint256 public constant USDT_SWAP_BUDGET_AMOUNT = 10_000_000e6;
   uint256 public constant USDC_SWAP_BUDGET_AMOUNT = 10_000_000e6;
   uint256 public constant USDe_SWAP_BUDGET_AMOUNT = 1_000_000 ether;
-  uint256 public constant USDS_SWAP_BUDGET_AMOUNT = 11_000_000 ether;
+  uint256 public constant USDS_SWAP_BUDGET_AMOUNT = 1_000_000 ether;
   uint256 public constant DAI_SWAP_BUDGET_AMOUNT = 1_000_000 ether;
   uint256 public constant RLUSD_SWAP_BUDGET_AMOUNT = 1_000_000 ether;
   uint256 public constant PYUSD_SWAP_BUDGET_AMOUNT = 500_000e6;
@@ -42,7 +42,16 @@ contract AaveV3Ethereum_July2026FundingUpdate_20260715 is IProposalGenericExecut
     _reimbursements();
     _replenishAllowances();
     _swapPaths();
+    _cancelAllowances();
     _rescueTokens();
+  }
+
+  function _cancelAllowances() internal {
+    AaveV3Ethereum.COLLECTOR.approve(
+      IERC20(AaveV3EthereumAssets.USDC_A_TOKEN),
+      MiscEthereum.MERIT_AHAB_SAFE,
+      0
+    );
   }
 
   function _monad() internal {

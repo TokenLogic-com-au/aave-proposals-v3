@@ -73,7 +73,7 @@ contract AaveV3Plasma_July2026FundingUpdate_20260715_Test is ProtocolV3TestBase 
   }
 
   function test_approvals_usde() public {
-    _assertFullBalanceApproval(AaveV3PlasmaAssets.USDe_A_TOKEN);
+    _assertFullBalanceApproval(AaveV3PlasmaAssets.sUSDe_A_TOKEN);
   }
 
   function test_approvals_usdt() public {
