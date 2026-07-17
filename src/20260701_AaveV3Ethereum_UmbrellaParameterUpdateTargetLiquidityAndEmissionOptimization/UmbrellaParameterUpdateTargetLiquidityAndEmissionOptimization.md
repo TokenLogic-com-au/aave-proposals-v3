@@ -40,8 +40,8 @@ The payload performs the following actions on Ethereum mainnet via the `Umbrella
 
 ## References
 
-- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260701_AaveV3Ethereum_UmbrellaParameterUpdateTargetLiquidityAndEmissionOptimization/AaveV3Ethereum_UmbrellaParameterUpdateTargetLiquidityAndEmissionOptimization_20260701.sol)
-- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260701_AaveV3Ethereum_UmbrellaParameterUpdateTargetLiquidityAndEmissionOptimization/AaveV3Ethereum_UmbrellaParameterUpdateTargetLiquidityAndEmissionOptimization_20260701.t.sol)
+- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/cd142d7c21a52e907901b789d457a311aad8833a/src/20260701_AaveV3Ethereum_UmbrellaParameterUpdateTargetLiquidityAndEmissionOptimization/AaveV3Ethereum_UmbrellaParameterUpdateTargetLiquidityAndEmissionOptimization_20260701.sol)
+- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/cd142d7c21a52e907901b789d457a311aad8833a/src/20260701_AaveV3Ethereum_UmbrellaParameterUpdateTargetLiquidityAndEmissionOptimization/AaveV3Ethereum_UmbrellaParameterUpdateTargetLiquidityAndEmissionOptimization_20260701.t.sol)
 - [Snapshot](https://snapshot.org/#/s:aavedao.eth/proposal/0x1b262e62f554d2a5a68eb56a267e14ec3aeacad5bd185ef328be8b38aca651ca)
 - [Discussion](https://governance.aave.com/t/arfc-umbrella-parameter-update-target-liquidity-and-emission-optimization/25154)
 
