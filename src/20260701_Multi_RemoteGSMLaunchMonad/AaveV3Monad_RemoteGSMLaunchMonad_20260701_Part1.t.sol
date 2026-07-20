@@ -85,12 +85,11 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1_Test is ProtocolV3TestB
 
     IGhoToken.Facilitator memory postFacilitator = gho.getFacilitator(GhoMonad.GHO_CCIP_TOKEN_POOL);
 
-    // TODO: enable check after ARB proposal is executed
-    // assertEq(
-    //   postFacilitator.bucketCapacity,
-    //   RemoteGSMLaunchMonadSetup.EXPECTED_BUCKET_CAPACITY,
-    //   'post-proposal facilitator capacity should be 200M'
-    // );
+    assertEq(
+      postFacilitator.bucketCapacity,
+      RemoteGSMLaunchMonadSetup.EXPECTED_BUCKET_CAPACITY,
+      'post-proposal facilitator capacity should be 200M'
+    );
     assertEq(
       postFacilitator.bucketCapacity,
       preFacilitator.bucketCapacity + RemoteGSMLaunchMonadSetup.GHO_BRIDGE_AMOUNT,

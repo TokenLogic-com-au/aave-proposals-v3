@@ -38,7 +38,6 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part2 is IProposalGenericE
 
   // Typical bridge-receive gas limits sit in the 200k–500k range; pick a value that
   // covers the receive + Collector forwarding path with comfortable headroom.
-  // TODO: verify an appropriate gas limit for the Monad receive path.
   uint32 public constant MONAD_BRIDGE_GAS_LIMIT = 450_000;
 
   function execute() external {

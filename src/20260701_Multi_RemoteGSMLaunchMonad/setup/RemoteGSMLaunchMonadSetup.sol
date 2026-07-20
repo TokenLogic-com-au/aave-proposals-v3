@@ -8,7 +8,7 @@ import {IUpgradeableLockReleaseTokenPool, IRateLimiter} from 'src/interfaces/cci
 
 /**
  * @notice Common setup library containing constants and helper functions used in the proposal.
- * @dev See forum post for reference: TODO add the Monad RemoteGSM launch discussion link.
+ * @dev See forum post for reference: https://governance.aave.com/t/arfc-deploy-aave-protocol-v3-7-on-monad/24943.
  */
 library RemoteGSMLaunchMonadSetup {
   // Amount to mint in Mainnet and bridge to Monad
@@ -39,8 +39,6 @@ library RemoteGSMLaunchMonadSetup {
   uint128 public constant GSM_USDC_RESERVE_LIMIT = 25_000_000 ether;
 
   // 40M underlying (6 decimals).
-  // TODO: confirm the intended initial exposure cap for the Monad USDC GSM (and the stataUSDC
-  // rate on Monad) once the GSM is deployed.
   uint128 public constant GSM_USDC_INITIAL_EXPOSURE_CAP = 40_000_000e6; // 40M, 6 decimals
 
   /**

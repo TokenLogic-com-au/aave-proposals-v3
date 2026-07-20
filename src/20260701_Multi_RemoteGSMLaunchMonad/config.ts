@@ -17,8 +17,9 @@ export const config: ConfigFile = {
     shortName: 'RemoteGSMLaunchMonad',
     date: '20260701',
     author: 'TokenLogic',
-    discussion: 'https://governance.aave.com/t/TODO-arfc-launch-remotegsm-on-monad',
-    snapshot: 'https://snapshot.org/#/s:aavedao.eth/proposal/TODO',
+    discussion: 'https://governance.aave.com/t/arfc-deploy-aave-protocol-v3-7-on-monad/24943',
+    snapshot:
+      'https://snapshot.org/#/s:aavedao.eth/proposal/0x24f105bd023c476a9b85fa87ff795bfeec769fa799ce6ada8e2724c9738049f6',
     votingNetwork: 'AVALANCHE',
   },
   poolOptions: {
