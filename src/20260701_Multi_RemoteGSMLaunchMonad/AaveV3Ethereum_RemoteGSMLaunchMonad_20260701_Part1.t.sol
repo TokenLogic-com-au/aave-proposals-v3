@@ -18,7 +18,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part1_Test is ProtocolV3Te
   AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part1 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('mainnet'), 25490200);
+    vm.createSelectFork(vm.rpcUrl('mainnet'), 25576000);
     proposal = new AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part1();
   }
 

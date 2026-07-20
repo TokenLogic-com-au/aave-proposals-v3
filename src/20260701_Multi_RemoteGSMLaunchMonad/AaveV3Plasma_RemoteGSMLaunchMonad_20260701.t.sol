@@ -19,7 +19,7 @@ contract AaveV3Plasma_RemoteGSMLaunchMonad_20260701_Test is
   }
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('plasma'), 26601700);
+    vm.createSelectFork(vm.rpcUrl('plasma'), 27635800);
     proposal = new AaveV3Plasma_RemoteGSMLaunchMonad_20260701();
   }
 

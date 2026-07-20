@@ -19,7 +19,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1_Test is ProtocolV3TestB
   AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('monad'), 86478300);
+    vm.createSelectFork(vm.rpcUrl('monad'), 89055500);
     proposal = new AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1();
   }
 

@@ -18,13 +18,11 @@ library RemoteGSMLaunchMonadSetup {
   uint128 public constant TEMP_BRIDGE_CAPACITY = 55_000_000 ether;
 
   // Standard per-lane transaction limit the Ethereum <> Monad GHO lane is RESTORED to after
-  // the one-off 50M bridge. Unlike the Arbitrum launch (TODO: insert link), this proposal does NOT normalize every
-  // network's lanes: it only widens the single Ethereum <> Monad lane for the transfer and then
-  // puts that lane back to its pre-execution config, leaving every other lane untouched.
-  // TODO: these values are assumed to match the Ethereum <> Monad GHO lane's config at execution
-  // time (both directions, on both the Ethereum and Monad token pools). Verify on-chain before
-  // deploy; if the lane currently uses different values, set them here so the proposal restores
-  // the lane faithfully ("keep the capacity the same").
+  // the one-off 50M bridge. This proposal does NOT normalize every network's lanes: it only widens
+  // the single Ethereum <> Monad lane for the transfer and then puts that lane back to its pre-execution config,
+  // leaving every other lane untouched.
+  // Verified on-chain to match the Ethereum <> Monad GHO lane's current config in both directions,
+  // on both the Ethereum and Monad token pools, so the proposal restores the lane faithfully.
   uint128 public constant DEFAULT_RATE_LIMITER_CAPACITY = 5_000_000 ether;
 
   // Refill rate per second the lane is restored to

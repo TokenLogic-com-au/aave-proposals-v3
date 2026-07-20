@@ -28,12 +28,11 @@ abstract contract RemoteGSMLaunchMonadFacilitatorProposalBaseTest is ProtocolV3T
 
     IGhoToken.Facilitator memory postFacilitator = gho.getFacilitator(ccipTokenPool);
 
-    // TODO: enable check after ARB proposal is executed
-    // assertEq(
-    //   postFacilitator.bucketCapacity,
-    //   RemoteGSMLaunchMonadSetup.EXPECTED_BUCKET_CAPACITY,
-    //   'post-proposal facilitator capacity should be 200M'
-    // );
+    assertEq(
+      postFacilitator.bucketCapacity,
+      RemoteGSMLaunchMonadSetup.EXPECTED_BUCKET_CAPACITY,
+      'post-proposal facilitator capacity should be 200M'
+    );
     assertEq(
       postFacilitator.bucketCapacity,
       preFacilitator.bucketCapacity + RemoteGSMLaunchMonadSetup.GHO_BRIDGE_AMOUNT,
@@ -47,9 +46,6 @@ abstract contract RemoteGSMLaunchMonadFacilitatorProposalBaseTest is ProtocolV3T
   }
 
   function test_allLaneRateLimitsNormalized() public {
-    // TODO: re-enable tests after ARB proposal is executed and lanes are normalized
-    vm.skip(true);
-
     // Every lane to every other supported network (itself excluded).
     GhoCCIPChains.ChainInfo[] memory chains = GhoCCIPChains.getAllChainsExcept(
       CURRENT_CHAIN_SELECTOR(),

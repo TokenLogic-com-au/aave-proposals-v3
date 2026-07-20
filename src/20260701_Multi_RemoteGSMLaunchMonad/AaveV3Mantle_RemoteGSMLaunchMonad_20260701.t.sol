@@ -19,7 +19,7 @@ contract AaveV3Mantle_RemoteGSMLaunchMonad_20260701_Test is
   }
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('mantle'), 97705800);
+    vm.createSelectFork(vm.rpcUrl('mantle'), 98222900);
     proposal = new AaveV3Mantle_RemoteGSMLaunchMonad_20260701();
   }
 

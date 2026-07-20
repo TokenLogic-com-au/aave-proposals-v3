@@ -37,9 +37,9 @@ import {RemoteGSMLaunchMonadSetup} from './setup/RemoteGSMLaunchMonadSetup.sol';
 contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestBase {
   // Existing Eth->Monad inbound rate-limiter capacity at the pinned block, before Part 1 widens it.
   // A 50M CCIP delivery exceeds this, which is what `test_ccipDeliveryRevertsWithoutPart1` asserts.
-  // TODO: after the Arb proposal executes and the lanes are normalized, re-pin the block and update
-  // this to the normalized capacity (5M).
-  uint256 internal constant EXISTING_ETH_INBOUND_RATE_LIMITER_CAPACITY = 1_500_000 ether;
+  // The lane is now normalized, so this matches the standard per-lane capacity.
+  uint256 internal constant EXISTING_ETH_INBOUND_RATE_LIMITER_CAPACITY =
+    RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_CAPACITY;
 
   // The USDC GSM is deployed (outside governance) with a default 40M exposure cap; the payload lowers
   // it to GSM_USDC_INITIAL_EXPOSURE_CAP. Pinned as pre-state so the post checks can't pass vacuously
@@ -64,7 +64,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
   uint128 internal ccipPoolFacilitatorBucketLevelBeforeCcipDelivery;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('monad'), 86478300);
+    vm.createSelectFork(vm.rpcUrl('monad'), 89055500);
     part1 = new AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1();
     proposal = new AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2();
 
@@ -166,8 +166,7 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
     // limiter without Part 1: 50M exceeds the existing capacity, so the funds cannot arrive if
     // Part 1 is skipped. (Whether the funds are actually bridged depends on the Ethereum payloads;
     // this only asserts Monad cannot receive them until Part 1 runs.)
-    // TODO: pin block after Arbitrum's proposal execution
-    vm.createSelectFork(vm.rpcUrl('monad'), 86478300);
+    vm.createSelectFork(vm.rpcUrl('monad'), 89055500);
 
     vm.expectRevert(
       abi.encodeWithSelector(
