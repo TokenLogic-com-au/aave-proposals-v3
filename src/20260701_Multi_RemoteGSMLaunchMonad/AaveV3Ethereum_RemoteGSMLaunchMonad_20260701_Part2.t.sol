@@ -61,6 +61,32 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3Te
     );
   }
 
+  /// @dev Confirms CCIP_BRIDGE is the AaveGhoCcipBridge that carries the Ethereum -> Monad GHO lane
+  function test_ccipBridgeIdentity() public view {
+    IAaveGhoCcipBridge bridge = IAaveGhoCcipBridge(proposal.CCIP_BRIDGE());
+
+    assertEq(
+      bridge.GHO_TOKEN(),
+      AaveV3EthereumAssets.GHO_UNDERLYING,
+      'bridge does not move mainnet GHO'
+    );
+    assertEq(
+      bridge.COLLECTOR(),
+      address(AaveV3Ethereum.COLLECTOR),
+      'bridge collector is not the Ethereum Collector'
+    );
+    assertEq(
+      bridge.ROUTER(),
+      IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).getRouter(),
+      'bridge router is not the router GHO_CCIP_TOKEN_POOL is registered under'
+    );
+    assertEq(
+      IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).getToken(),
+      AaveV3EthereumAssets.GHO_UNDERLYING,
+      'GHO_CCIP_TOKEN_POOL does not serve mainnet GHO'
+    );
+  }
+
   function test_ccipBridgeDestinationChainSetUp() public {
     IAaveGhoCcipBridge bridge = IAaveGhoCcipBridge(proposal.CCIP_BRIDGE());
 

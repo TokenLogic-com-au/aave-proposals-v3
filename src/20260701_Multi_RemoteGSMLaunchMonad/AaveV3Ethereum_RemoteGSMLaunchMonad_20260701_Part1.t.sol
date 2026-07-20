@@ -107,11 +107,29 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part1_Test is ProtocolV3Te
     // Part 1 writes the inbound side of the Eth->Monad lane to the canonical defaults in the same
     // setChainRateLimiterConfig call that raises the outbound side. It is asserted directly here so a
     // disabled / zero-capacity inbound config cannot slip through if Part 2 (which rewrites it) stalls.
-    executePayload(vm, address(proposal));
-
+    // The lane is expected to already sit at those defaults, which is what makes the rewrite a
+    // no-op for the inbound direction. Assert that pre-execution rather than assuming it: if the
+    // lane is ever reconfigured, this fails instead of the proposal silently changing it.
     IRateLimiter.TokenBucket memory bucket = IUpgradeableLockReleaseTokenPool(
       GhoEthereum.GHO_CCIP_TOKEN_POOL
     ).getCurrentInboundRateLimiterState(CCIPChainSelectors.MONAD);
+
+    assertTrue(bucket.isEnabled, 'pre-proposal inbound rate limiter should be enabled');
+    assertEq(
+      bucket.capacity,
+      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_CAPACITY,
+      'pre-proposal inbound capacity should already be the canonical default'
+    );
+    assertEq(
+      bucket.rate,
+      RemoteGSMLaunchMonadSetup.DEFAULT_LIMITER_RATE,
+      'pre-proposal inbound rate should already be the canonical default'
+    );
+
+    executePayload(vm, address(proposal));
+
+    bucket = IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL)
+      .getCurrentInboundRateLimiterState(CCIPChainSelectors.MONAD);
 
     assertTrue(bucket.isEnabled, 'post-proposal inbound rate limiter should be enabled');
     assertEq(

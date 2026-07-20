@@ -27,8 +27,9 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part1 is IProposalGenericE
     // Temporarily increase the Ethereum -> Monad outbound capacity for the one-off seed bridge.
     // The inbound (Monad -> Ethereum) direction is set to the standard config; it is not
     // widened here and is left at the value Part 2 restores the lane to.
-    // TODO: this assumes the inbound direction already sits at DEFAULT_RATE_LIMITER_* on-chain; if
-    // it does not, mirror the real pre-execution inbound config so this lane stays unchanged.
+    // The inbound direction already sits at DEFAULT_RATE_LIMITER_* on-chain, so rewriting it here
+    // leaves it unchanged. `test_inboundRateLimiter` asserts that pre-execution state, and fails
+    // if the lane is ever reconfigured out from under this assumption.
     IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
       CCIPChainSelectors.MONAD,
       IRateLimiter.Config({

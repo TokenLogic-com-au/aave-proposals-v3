@@ -25,7 +25,9 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part2 is IProposalGenericE
   string public constant DIRECT_FACILITATOR_NAME = 'GhoDirectFacilitator GSM Monad';
 
   // Ethereum-side AaveGhoCcipBridge (target-agnostic; the destination lane is configured below).
-  // TODO: confirm this is the bridge that will carry the Ethereum -> Monad GHO lane.
+  // Its ROUTER is the same one GhoEthereum.GHO_CCIP_TOKEN_POOL is registered under, so `send`
+  // below provably drives the GHO token pool this proposal configures. See
+  // `test_ccipBridgeIdentity`.
   // https://etherscan.io/address/0x7F2f96fcdC3A29Be75938d2aC3D92E7006919fe6
   address public constant CCIP_BRIDGE = 0x7F2f96fcdC3A29Be75938d2aC3D92E7006919fe6;
 

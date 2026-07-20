@@ -107,11 +107,29 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part1_Test is ProtocolV3TestB
     // Part 1 writes the outbound side of the Monad->Eth lane to the canonical defaults in the same
     // setChainRateLimiterConfig call that raises the inbound side. It is asserted directly here so a
     // disabled / zero-capacity outbound config cannot slip through if Part 2 (which rewrites it) stalls.
-    executePayload(vm, address(proposal));
-
+    // The lane is expected to already sit at those defaults, which is what makes the rewrite a
+    // no-op for the outbound direction. Assert that pre-execution rather than assuming it: if the
+    // lane is ever reconfigured, this fails instead of the proposal silently changing it.
     IRateLimiter.TokenBucket memory bucket = IUpgradeableBurnMintTokenPool(
       GhoMonad.GHO_CCIP_TOKEN_POOL
     ).getCurrentOutboundRateLimiterState(CCIPChainSelectors.ETHEREUM);
+
+    assertTrue(bucket.isEnabled, 'pre-proposal outbound rate limiter should be enabled');
+    assertEq(
+      bucket.capacity,
+      RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_CAPACITY,
+      'pre-proposal outbound capacity should already be the canonical default'
+    );
+    assertEq(
+      bucket.rate,
+      RemoteGSMLaunchMonadSetup.DEFAULT_LIMITER_RATE,
+      'pre-proposal outbound rate should already be the canonical default'
+    );
+
+    executePayload(vm, address(proposal));
+
+    bucket = IUpgradeableBurnMintTokenPool(GhoMonad.GHO_CCIP_TOKEN_POOL)
+      .getCurrentOutboundRateLimiterState(CCIPChainSelectors.ETHEREUM);
 
     assertTrue(bucket.isEnabled, 'post-proposal outbound rate limiter should be enabled');
     assertEq(
