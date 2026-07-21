@@ -41,9 +41,9 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
   uint256 internal constant EXISTING_ETH_INBOUND_RATE_LIMITER_CAPACITY =
     RemoteGSMLaunchMonadSetup.DEFAULT_RATE_LIMITER_CAPACITY;
 
-  // The USDC GSM is deployed (outside governance) with a default 40M exposure cap; the payload lowers
-  // it to GSM_USDC_INITIAL_EXPOSURE_CAP. Pinned as pre-state so the post checks can't pass vacuously
-  // against a GSM redeployed already-configured (which would let a dropped payload line slip through).
+  // The USDC GSM is deployed (outside governance) with a default 40M exposure cap; the payload sets
+  // it to GSM_USDC_INITIAL_EXPOSURE_CAP (currently the same value). Pinned as pre-state so the post checks can't
+  // pass vacuously against a GSM redeployed already-configured (which would let a dropped payload line slip through).
   uint128 internal constant GSM_USDC_DEPLOY_EXPOSURE_CAP = 40_000_000e6;
 
   // Ethereum -> Monad CCIP OffRamp on the Monad router. `test_ccipOffRampIsRegistered` re-checks

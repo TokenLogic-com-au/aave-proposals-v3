@@ -38,7 +38,7 @@ For the GSM:
 - Point it at the `GhoReserve`, enroll it as an entity with a 25M GHO reserve limit.
 - Grant `SWAP_FREEZER_ROLE` to the asset's `OracleSwapFreezer` and to the Monad executor.
 - Register it in the `GsmRegistry` and grant `CONFIGURATOR_ROLE` to the `GhoGsmSteward`.
-- Set the initial exposure cap to 20M of the underlying (6 decimals) and attach the 0% sell / 0.10% buy fee strategy (selling the underlying for GHO is free; buying it back with GHO costs 0.10%).
+- Set the initial exposure cap to 40M of the underlying (6 decimals) and attach the 0% sell / 0.10% buy fee strategy (selling the underlying for GHO is free; buying it back with GHO costs 0.10%).
 
 `LIMIT_MANAGER_ROLE` on the Monad `GhoReserve` is granted to the Monad Risk Council.
 
