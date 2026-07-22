@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
+import {SafeERC20} from 'openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol';
 import {CCIPChainSelectors} from 'src/helpers/gho-launch/constants/CCIPChainSelectors.sol';
 import {AaveV3EthereumAssets} from 'aave-address-book/AaveV3Ethereum.sol';
 import {GhoEthereum} from 'aave-address-book/GhoEthereum.sol';
@@ -19,6 +20,8 @@ import {RemoteGSMLaunchMonadSetup} from './setup/RemoteGSMLaunchMonadSetup.sol';
  * - Discussion: https://governance.aave.com/t/arfc-deploy-aave-protocol-v3-7-on-monad/24943
  */
 contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part2 is IProposalGenericExecutor {
+  using SafeERC20 for IERC20;
+
   // GhoDirectFacilitator Constants
   // https://etherscan.io/address/0x0cB7C2A2Ab38Aed3e6096631D7Dba3DaBf237134
   address public constant DIRECT_FACILITATOR = 0x0cB7C2A2Ab38Aed3e6096631D7Dba3DaBf237134;
@@ -52,7 +55,7 @@ contract AaveV3Ethereum_RemoteGSMLaunchMonad_20260701_Part2 is IProposalGenericE
       RemoteGSMLaunchMonadSetup.GHO_BRIDGE_AMOUNT
     );
 
-    IERC20(AaveV3EthereumAssets.GHO_UNDERLYING).approve(
+    IERC20(AaveV3EthereumAssets.GHO_UNDERLYING).forceApprove(
       CCIP_BRIDGE,
       RemoteGSMLaunchMonadSetup.GHO_BRIDGE_AMOUNT
     );

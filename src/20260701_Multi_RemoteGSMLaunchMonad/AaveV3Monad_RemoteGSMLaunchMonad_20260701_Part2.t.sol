@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 import {IERC4626} from 'openzeppelin-contracts/contracts/interfaces/IERC4626.sol';
+import {SafeERC20} from 'openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol';
 import {GhoMonad} from 'aave-address-book/GhoMonad.sol';
 import {AaveV3Monad} from 'aave-address-book/AaveV3Monad.sol';
 import {GovernanceV3Monad} from 'aave-address-book/GovernanceV3Monad.sol';
@@ -35,6 +36,8 @@ import {RemoteGSMLaunchMonadSetup} from './setup/RemoteGSMLaunchMonadSetup.sol';
  * command: FOUNDRY_PROFILE=test forge test --match-path=src/20260701_Multi_RemoteGSMLaunchMonad/AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2.t.sol -vv
  */
 contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestBase {
+  using SafeERC20 for IERC20;
+
   // Existing Eth->Monad inbound rate-limiter capacity at the pinned block, before Part 1 widens it.
   // A 50M CCIP delivery exceeds this, which is what `test_ccipDeliveryRevertsWithoutPart1` asserts.
   // The lane is now normalized, so this matches the standard per-lane capacity.
@@ -468,8 +471,8 @@ contract AaveV3Monad_RemoteGSMLaunchMonad_20260701_Part2_Test is ProtocolV3TestB
     // mispriced strategy or wrong fee is caught.
     deal(underlying, address(this), 1_000e6, true);
 
-    IERC20(underlying).approve(address(gsm), 1_000e6);
-    IERC20(GhoMonad.GHO_TOKEN).approve(address(gsm), 1_200 ether);
+    IERC20(underlying).forceApprove(address(gsm), 1_000e6);
+    IERC20(GhoMonad.GHO_TOKEN).forceApprove(address(gsm), 1_200 ether);
 
     uint256 amountToSell = 1_000e6;
     uint256 amountToBuy = 500e6;
