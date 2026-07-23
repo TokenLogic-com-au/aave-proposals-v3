@@ -9,6 +9,7 @@ import {buildAddressConstant} from '../constants';
 import {assetIdentifier, checksumAddress} from '../testHelpers';
 import {selectAsset} from '../assetSelect';
 import {promptFeeReceiver} from '../feeReceiver';
+import {promptProxyAdminOwner} from '../proxyAdminOwner';
 
 function hubAssetKey(hubAccessor: string, underlying: string) {
   const hubKey = hubAccessor.split('.').pop()!;
@@ -48,9 +49,10 @@ export const hubAssetListing: FeatureModule<V4HubAssetListing[]> = {
       let tokenization: V4HubAssetListing['tokenization'];
       if (withTokenization) {
         const addCap = (await numberPrompt({message: 'TokenizationSpoke addCap'})) || '0';
+        const proxyAdminOwner = await promptProxyAdminOwner(m);
         const name = await input({message: 'TokenizationSpoke name'});
         const symbol = await input({message: 'TokenizationSpoke symbol'});
-        tokenization = {addCap, name, symbol};
+        tokenization = {addCap, proxyAdminOwner, name, symbol};
       }
       response.push({
         hubLib: hubLibAccessor(m, hub),
@@ -94,6 +96,7 @@ export const hubAssetListing: FeatureModule<V4HubAssetListing[]> = {
         }),
         tokenization: IConfigEngine.TokenizationSpokeConfig({
           addCap: ${c.tokenization ? c.tokenization.addCap : '0'},
+          proxyAdminOwner: ${c.tokenization ? checksumAddress(c.tokenization.proxyAdminOwner) : 'address(0)'},
           name: '${c.tokenization ? c.tokenization.name.replace(/'/g, "\\'") : ''}',
           symbol: '${c.tokenization ? c.tokenization.symbol.replace(/'/g, "\\'") : ''}'
         })

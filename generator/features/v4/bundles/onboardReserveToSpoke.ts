@@ -17,6 +17,7 @@ import {
   readHubAssets,
   isAssetListedOnHub,
 } from '../onchain';
+import {promptProxyAdminOwner} from '../proxyAdminOwner';
 import {spokeReserveListing} from '../spoke/spokeReserveListing';
 import {hubAssetListing} from '../hub/hubAssetListing';
 import {spokeReserveConfigUpdate} from '../spoke/spokeReserveConfigUpdate';
@@ -82,6 +83,7 @@ async function hubAssetListingPrompt(
   if (withTokenization) {
     tokenization = {
       addCap: (await numberPrompt({message: 'TokenizationSpoke addCap'})) || '0',
+      proxyAdminOwner: await promptProxyAdminOwner(m),
       name: await input({message: 'TokenizationSpoke name'}),
       symbol: await input({message: 'TokenizationSpoke symbol'}),
     };

@@ -86,7 +86,12 @@ const hubAssetListingCfg: V4HubAssetListing[] = [
       rateGrowthBeforeOptimal: literal('400'),
       rateGrowthAfterOptimal: literal('6000'),
     },
-    tokenization: {addCap: '1000', name: 'TS', symbol: 'TS'},
+    tokenization: {
+      addCap: '1000',
+      proxyAdminOwner: 'GovernanceV3Ethereum.EXECUTOR_LVL_1',
+      name: 'TS',
+      symbol: 'TS',
+    },
   },
 ];
 
@@ -236,6 +241,7 @@ const roleUpdateCfg: V4RoleUpdate[] = [
     guardian: literal('2'),
     grantDelay: keepCurrentUint32(),
     label: 'admin',
+    labelUpdate: false,
   },
 ];
 
