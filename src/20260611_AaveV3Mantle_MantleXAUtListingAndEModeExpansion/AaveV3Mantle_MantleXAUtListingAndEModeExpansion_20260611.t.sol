@@ -16,16 +16,14 @@ import {AaveV3Mantle_MantleXAUtListingAndEModeExpansion_20260611} from './AaveV3
  * command: FOUNDRY_PROFILE=test forge test --match-path=src/20260611_AaveV3Mantle_MantleXAUtListingAndEModeExpansion/AaveV3Mantle_MantleXAUtListingAndEModeExpansion_20260611.t.sol -vv
  */
 contract AaveV3Mantle_MantleXAUtListingAndEModeExpansion_20260611_Test is ProtocolV3TestBase {
-  uint8 internal constant XAUT_STABLECOINS_EMODE_ID = 6;
-  uint8 internal constant WETH_STABLECOINS_EMODE_ID = 7;
-  uint8 internal constant WMNT_STABLECOINS_EMODE_ID = 8;
+  uint8 internal constant XAUT_STABLECOINS_EMODE_ID = 7;
+  uint8 internal constant WETH_STABLECOINS_EMODE_ID = 8;
 
   AaveV3Mantle_MantleXAUtListingAndEModeExpansion_20260611 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('mantle'), 96533222);
+    vm.createSelectFork(vm.rpcUrl('mantle'), 98527920);
     proposal = new AaveV3Mantle_MantleXAUtListingAndEModeExpansion_20260611();
-    _mockXAUtPriceFeed();
     deal(proposal.XAUt(), GovernanceV3Mantle.EXECUTOR_LVL_1, proposal.XAUt_SEED_AMOUNT());
   }
 
@@ -48,7 +46,7 @@ contract AaveV3Mantle_MantleXAUtListingAndEModeExpansion_20260611_Test is Protoc
     assertGe(IERC20(aXAUt).balanceOf(AaveV3Mantle.DUST_BIN), proposal.XAUt_SEED_AMOUNT());
   }
 
-  function test_wethAndWmntCollateralUpdates() public {
+  function test_wethCollateralUpdates() public {
     executePayload(vm, address(proposal));
 
     ReserveConfig[] memory configs = _getReservesConfigs(AaveV3Mantle.POOL);
@@ -56,15 +54,9 @@ contract AaveV3Mantle_MantleXAUtListingAndEModeExpansion_20260611_Test is Protoc
       configs,
       AaveV3MantleAssets.WETH_UNDERLYING
     );
-    ReserveConfig memory wmntConfig = _findReserveConfig(
-      configs,
-      AaveV3MantleAssets.WMNT_UNDERLYING
-    );
 
     assertEq(wethConfig.ltv, 78_00);
     assertEq(wethConfig.liquidationThreshold, 80_00);
-    assertEq(wmntConfig.ltv, 0);
-    assertEq(wmntConfig.liquidationThreshold, 45_00);
   }
 
   function test_eModeCategoriesCreated() public {
@@ -85,14 +77,6 @@ contract AaveV3Mantle_MantleXAUtListingAndEModeExpansion_20260611_Test is Protoc
       105_50,
       'WETH Stablecoins',
       AaveV3MantleAssets.WETH_UNDERLYING
-    );
-    _assertEModeCategory(
-      WMNT_STABLECOINS_EMODE_ID,
-      40_00,
-      45_00,
-      110_00,
-      'WMNT Stablecoins',
-      AaveV3MantleAssets.WMNT_UNDERLYING
     );
   }
 
@@ -156,24 +140,6 @@ contract AaveV3Mantle_MantleXAUtListingAndEModeExpansion_20260611_Test is Protoc
         borrowableBitmap,
         AaveV3Mantle.POOL.getReserveData(AaveV3MantleAssets.GHO_UNDERLYING).id
       )
-    );
-  }
-
-  function _mockXAUtPriceFeed() internal {
-    vm.mockCall(
-      proposal.XAUt_PRICE_FEED(),
-      abi.encodeWithSignature('latestAnswer()'),
-      abi.encode(int256(3_000e8))
-    );
-    vm.mockCall(
-      proposal.XAUt_PRICE_FEED(),
-      abi.encodeWithSignature('decimals()'),
-      abi.encode(uint8(8))
-    );
-    vm.mockCall(
-      proposal.XAUt_PRICE_FEED(),
-      abi.encodeWithSignature('description()'),
-      abi.encode('XAUt / USD (mock)')
     );
   }
 }

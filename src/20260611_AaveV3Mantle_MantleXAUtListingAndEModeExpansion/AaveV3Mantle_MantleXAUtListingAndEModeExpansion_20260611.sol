@@ -9,7 +9,7 @@ import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 import {SafeERC20} from 'openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol';
 
 /**
- * @title Aave V3 Mantle – XAUt Listing, WMNT/WETH eMode Expansion and Isolation Removal
+ * @title Aave V3 Mantle – XAUt Listing, WETH eMode Expansion and Isolation Removal
  * @author @TokenLogic
  * - Snapshot: Direct-to-AIP
  * - Discussion: https://governance.aave.com/t/direct-to-aip-aave-v3-mantle-collateral-enablement-emode-expansion-and-isolation-updates-usdt0-usde-eth-xaut/24153
@@ -19,8 +19,8 @@ contract AaveV3Mantle_MantleXAUtListingAndEModeExpansion_20260611 is AaveV3Paylo
 
   // https://mantlescan.xyz/address/0x6199CCd9273A1E0e41e2cC18d9dAcd1E9382F58E
   address public constant XAUt = 0x6199CCd9273A1E0e41e2cC18d9dAcd1E9382F58E;
-  // TODO: replace with Chainlink XAU/USD on Mantle once deployed
-  address public constant XAUt_PRICE_FEED = 0x0000000000000000000000000000000000000001;
+  // https://mantlescan.xyz/address/0x23A1105fd2C26BCc9EA691725Bbda3f5F1bC0b78
+  address public constant XAUt_PRICE_FEED = 0x23A1105fd2C26BCc9EA691725Bbda3f5F1bC0b78;
   uint256 public constant XAUt_SEED_AMOUNT = 10 ** 6;
 
   function _postExecute() internal override {
@@ -35,20 +35,13 @@ contract AaveV3Mantle_MantleXAUtListingAndEModeExpansion_20260611 is AaveV3Paylo
     returns (IAaveV3ConfigEngine.CollateralUpdate[] memory)
   {
     IAaveV3ConfigEngine.CollateralUpdate[]
-      memory collateralUpdate = new IAaveV3ConfigEngine.CollateralUpdate[](2);
+      memory collateralUpdate = new IAaveV3ConfigEngine.CollateralUpdate[](1);
 
     collateralUpdate[0] = IAaveV3ConfigEngine.CollateralUpdate({
       asset: AaveV3MantleAssets.WETH_UNDERLYING,
       ltv: 78_00,
       liqThreshold: 80_00,
       liqBonus: 5_50,
-      liqProtocolFee: 10_00
-    });
-    collateralUpdate[1] = IAaveV3ConfigEngine.CollateralUpdate({
-      asset: AaveV3MantleAssets.WMNT_UNDERLYING,
-      ltv: 0,
-      liqThreshold: 45_00,
-      liqBonus: 10_00,
       liqProtocolFee: 10_00
     });
 
@@ -101,7 +94,7 @@ contract AaveV3Mantle_MantleXAUtListingAndEModeExpansion_20260611 is AaveV3Paylo
     returns (IAaveV3ConfigEngine.EModeCategoryCreation[] memory)
   {
     IAaveV3ConfigEngine.EModeCategoryCreation[]
-      memory eModeCreations = new IAaveV3ConfigEngine.EModeCategoryCreation[](3);
+      memory eModeCreations = new IAaveV3ConfigEngine.EModeCategoryCreation[](2);
 
     address[] memory borrowableAssets_Stablecoins = new address[](3);
     borrowableAssets_Stablecoins[0] = AaveV3MantleAssets.USDT0_UNDERLYING;
@@ -130,19 +123,6 @@ contract AaveV3Mantle_MantleXAUtListingAndEModeExpansion_20260611 is AaveV3Paylo
       liqBonus: 5_50,
       label: 'WETH Stablecoins',
       collaterals: collateralAssets_WETHStablecoins,
-      borrowables: borrowableAssets_Stablecoins,
-      isolated: false
-    });
-
-    address[] memory collateralAssets_WMNTStablecoins = new address[](1);
-    collateralAssets_WMNTStablecoins[0] = AaveV3MantleAssets.WMNT_UNDERLYING;
-
-    eModeCreations[2] = IAaveV3ConfigEngine.EModeCategoryCreation({
-      ltv: 40_00,
-      liqThreshold: 45_00,
-      liqBonus: 10_00,
-      label: 'WMNT Stablecoins',
-      collaterals: collateralAssets_WMNTStablecoins,
       borrowables: borrowableAssets_Stablecoins,
       isolated: false
     });
