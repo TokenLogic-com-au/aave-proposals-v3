@@ -131,7 +131,7 @@ contract AaveV3Mantle_AaveV3MantleMETHListing_20260806_Test is ProtocolV3TestBas
     AaveV3Mantle.POOL.supply(proposal.mETH(), supplyAmount, user, 0);
 
     // LTV is 0 outside the e-mode, so the borrow must revert
-    vm.expectRevert(abi.encodeWithSelector(Errors.LtvValidationFailed.selector));
+    vm.expectRevert(Errors.LtvValidationFailed.selector);
     AaveV3Mantle.POOL.borrow(AaveV3MantleAssets.WETH_UNDERLYING, 1, 2, 0, user);
 
     vm.stopPrank();
