@@ -1,13 +1,13 @@
 import {ConfigFile} from '../../generator/types';
 export const config: ConfigFile = {
   rootOptions: {
-    configFile: 'src/meth-config-temp.ts',
     markets: ['AaveV3Mantle'],
     title: 'Aave V3 Mantle – mETH Listing',
     shortName: 'AaveV3MantleMETHListing',
     date: '20260806',
     author: '@TokenLogic',
-    discussion: '',
+    discussion:
+      'https://governance.aave.com/t/arfc-onboard-mnt-meth-cmeth-as-collateral-assets-on-aave-v3-mantle-instance/21772',
     snapshot: 'Direct-to-AIP',
     votingNetwork: 'AVALANCHE',
   },

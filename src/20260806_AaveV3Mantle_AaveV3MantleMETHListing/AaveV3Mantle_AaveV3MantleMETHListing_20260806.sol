@@ -7,7 +7,6 @@ import {EngineFlags} from 'aave-v3-origin/contracts/extensions/v3-config-engine/
 import {IAaveV3ConfigEngine} from 'aave-v3-origin/contracts/extensions/v3-config-engine/IAaveV3ConfigEngine.sol';
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 import {SafeERC20} from 'openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol';
-import {IEmissionManager} from 'aave-v3-origin/contracts/rewards/interfaces/IEmissionManager.sol';
 
 /**
  * @title Aave V3 Mantle – mETH Listing
@@ -20,12 +19,13 @@ contract AaveV3Mantle_AaveV3MantleMETHListing_20260806 is AaveV3PayloadMantle {
 
   // https://mantlescan.xyz/address/0xcDA86A272531e8640cD7F1a92c01839911B90bb0
   address public constant mETH = 0xcDA86A272531e8640cD7F1a92c01839911B90bb0;
-  uint256 public constant mETH_SEED_AMOUNT = 1e18;
+  uint256 public constant mETH_SEED_AMOUNT = 0.05e18; // 0.05 mETH (~100 USD)
   // TODO: placeholder — replace with the Capped mETH / ETH / USD CAPO adapter once deployed
   address public constant mETH_PRICE_FEED = 0x0000000000000000000000000000000000000001;
 
   function _postExecute() internal override {
-    _supplyAndConfigureLMAdmin(mETH, mETH_SEED_AMOUNT, address(0));
+    IERC20(mETH).forceApprove(address(AaveV3Mantle.POOL), mETH_SEED_AMOUNT);
+    AaveV3Mantle.POOL.supply(mETH, mETH_SEED_AMOUNT, address(AaveV3Mantle.DUST_BIN), 0);
   }
 
   function newListings() public pure override returns (IAaveV3ConfigEngine.Listing[] memory) {
@@ -42,6 +42,7 @@ contract AaveV3Mantle_AaveV3MantleMETHListing_20260806 is AaveV3PayloadMantle {
       liqBonus: 0,
       reserveFactor: 20_00,
       supplyCap: 5_000,
+      // borrowing is disabled; borrowCap 1 acts as a second guardrail in case it is ever enabled by mistake
       borrowCap: 1,
       liqProtocolFee: 10_00,
       rateStrategyParams: IAaveV3ConfigEngine.InterestRateInputData({
@@ -53,19 +54,6 @@ contract AaveV3Mantle_AaveV3MantleMETHListing_20260806 is AaveV3PayloadMantle {
     });
 
     return listings;
-  }
-
-  function _supplyAndConfigureLMAdmin(address asset, uint256 seedAmount, address lmAdmin) internal {
-    IERC20(asset).forceApprove(address(AaveV3Mantle.POOL), seedAmount);
-    AaveV3Mantle.POOL.supply(asset, seedAmount, address(AaveV3Mantle.DUST_BIN), 0);
-
-    if (lmAdmin != address(0)) {
-      address aToken = AaveV3Mantle.POOL.getReserveAToken(asset);
-      address vToken = AaveV3Mantle.POOL.getReserveVariableDebtToken(asset);
-      IEmissionManager(AaveV3Mantle.EMISSION_MANAGER).setEmissionAdmin(asset, lmAdmin);
-      IEmissionManager(AaveV3Mantle.EMISSION_MANAGER).setEmissionAdmin(aToken, lmAdmin);
-      IEmissionManager(AaveV3Mantle.EMISSION_MANAGER).setEmissionAdmin(vToken, lmAdmin);
-    }
   }
 
   function eModeCategoryCreations()

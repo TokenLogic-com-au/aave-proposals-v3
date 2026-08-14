@@ -197,6 +197,7 @@ contract AaveV3Mantle_AaveV3MantleMETHListing_20260806_Test is ProtocolV3TestBas
     vm.stopPrank();
   }
 
+  // TODO: remove this mock once the mETH / ETH / USD CAPO adapter is deployed and plugged in
   function _mockMEthPriceFeed() internal {
     vm.mockCall(
       proposal.mETH_PRICE_FEED(),
