@@ -6,7 +6,7 @@ discussions: "https://governance.aave.com/t/direct-to-aip-august-september-2026-
 
 ## Simple Summary
 
-This publication presents the August Funding Update, consisting of the following key activities:
+This publication presents the August/September Funding Update, consisting of the following key activities:
 
 - Acquire GHO to support the runway;
 - Create Allowances to support Operations; and
