@@ -107,6 +107,11 @@ contract AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907_Test is Protoc
       allowanceBefore + proposal.REIMBURSEMENTS_GHO_AMOUNT(),
       'TokenLogic allowance should increase by the reimbursement amount'
     );
+    assertEq(
+      allowanceAfter,
+      75_000 ether,
+      'TokenLogic allowance should equal the standing allowance plus the 25k audit reimbursement'
+    );
   }
 
   function test_refreshSwapBudgets() public {
