@@ -111,9 +111,39 @@ contract AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907_Test is Protoc
 
   function test_refreshSwapBudgets() public {
     assertGt(
+      _budgetOf(AaveV3EthereumAssets.WETH_UNDERLYING),
+      proposal.WETH_SWAP_BUDGET(),
+      'WETH budget should be above the target before execution'
+    );
+    assertGt(
       _budgetOf(AaveV3EthereumAssets.USDC_UNDERLYING),
       proposal.USDC_SWAP_BUDGET(),
       'USDC budget should be above the target before execution'
+    );
+    assertGt(
+      _budgetOf(AaveV3EthereumAssets.USDT_UNDERLYING),
+      proposal.USDT_SWAP_BUDGET(),
+      'USDT budget should be above the target before execution'
+    );
+    assertGt(
+      _budgetOf(AaveV3EthereumAssets.USDe_UNDERLYING),
+      proposal.USDE_SWAP_BUDGET(),
+      'USDe budget should be above the target before execution'
+    );
+    assertGt(
+      _budgetOf(AaveV3EthereumAssets.USDS_UNDERLYING),
+      proposal.USDS_SWAP_BUDGET(),
+      'USDS budget should be above the target before execution'
+    );
+    assertGt(
+      _budgetOf(AaveV3EthereumAssets.DAI_UNDERLYING),
+      proposal.DAI_SWAP_BUDGET(),
+      'DAI budget should be above the target before execution'
+    );
+    assertLt(
+      _budgetOf(AaveV3EthereumAssets.RLUSD_UNDERLYING),
+      proposal.RLUSD_SWAP_BUDGET(),
+      'rlUSD budget should be below the target before execution'
     );
     assertLt(
       _budgetOf(AaveV3EthereumAssets.PYUSD_UNDERLYING),
