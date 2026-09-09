@@ -22,8 +22,6 @@ The MainnetSwapSteward and Aave Finance Committee (AFC) will continue executing 
 
 Reimburse TokenLogic for costs incurred in facilitating a second audit of the GHO ↔ sGHO two-way swap layer. The value of the Audit performed by Trail of Bits was 25,000 aEthLidoGHO.
 
-Reimburse Aave Labs for Aave V4 and Aave App audit costs, along with legal costs related to handling the Kelp and LayerZero bridge exploit. The combined value of the associated costs is 1,818,102 aAvaDAI on the Avalanche Network.
-
 ### Asset Backed Private Credit
 
 Asset-backed private credit represents a potential growth opportunity for GHO and the Aave ecosystem. TokenLogic will support the assessment, implementation, monitoring and reporting of these arrangements, in coordination with Aave Labs and within the authority and parameters established through the applicable governance process. Specialist third parties will originate and service the underlying assets.
@@ -42,16 +40,16 @@ Use the MainnetSwapSteward to acquire 4M of GHO to be deposited into the Prime i
 
 To support the acquisition of GHO, wETH and AAVE, replenish token budgets on the MainnetSwapSteward to the absolute values listed in the table below.
 
-| Token | Budget | Acquirable Asset |
-| ----- | ------ | ---------------- |
-| ETH   | 5k     | GHO, AAVE        |
-| USDC  | 10M    | GHO, AAVE, wETH  |
-| USDT  | 10M    | GHO, AAVE, wETH  |
-| USDe  | 1M     | GHO, AAVE, wETH  |
-| USDS  | 0.2M   | GHO, AAVE, wETH  |
-| DAI   | 0.2M   | GHO, AAVE, wETH  |
-| rlUSD | 0.2M   | GHO, AAVE, wETH  |
-| pyUSD | 0.2M   | GHO, AAVE, wETH  |
+| Token | Budget |
+| ----- | ------ |
+| ETH   | 5k     |
+| USDC  | 10M    |
+| USDT  | 10M    |
+| USDe  | 1M     |
+| USDS  | 0.2M   |
+| DAI   | 0.2M   |
+| rlUSD | 0.2M   |
+| pyUSD | 0.2M   |
 
 Upon implementation, the budgets for each token will be as shown above; any higher budgets will be marked lower, and any lower budgets will be increased to reflect the values presented in the table.
 
@@ -66,13 +64,6 @@ Reimburse 25,000 aEthLidoGHO to TokenLogic for the second GHO ↔ sGHO two-way s
 Asset: aEthLidoGHO `0x18eFE565A5373f430e2F809b97De30335B3ad96A`
 Amount: 25,000
 Spender: TokenLogic `0xAA088dfF3dcF619664094945028d44E779F19894`
-
-Reimburse 1,818,102 to Aave Labs for the Aave V4 audit, Aave App audit and rsETH related legal expenses. To complete this reimbursement, the Aave Finance Committee will transfer DAI to the Aave Labs controlled address listed below.
-
-Network: Avalanche
-From Safe: Aave Finance Committee `0x22740deBa78d5a0c24C58C740e3715ec29de1bFa`
-Amount: 1,818,102
-To Safe: Aave Labs `0x4aD8bF8e4FBaf415d51Eb394a2e097fF150353c2`
 
 Cancel/Remove the following Allowance:
 

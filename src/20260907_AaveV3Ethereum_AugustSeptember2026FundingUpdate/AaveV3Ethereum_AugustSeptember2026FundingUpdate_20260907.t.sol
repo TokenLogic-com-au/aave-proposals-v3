@@ -89,10 +89,10 @@ contract AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907_Test is Protoc
       MiscEthereum.TOKENLOGIC_FUNDING_RECEIVER
     );
 
-    assertGt(
+    assertEq(
       allowanceBefore,
-      0,
-      'TokenLogic should have an aEthLidoGHO allowance before execution'
+      50_000 ether,
+      'TokenLogic allowance should equal the July reimbursement before execution'
     );
 
     executePayload(vm, address(proposal));
