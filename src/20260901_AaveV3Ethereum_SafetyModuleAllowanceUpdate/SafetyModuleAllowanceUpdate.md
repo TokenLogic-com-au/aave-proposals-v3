@@ -1,5 +1,5 @@
 ---
-title: "[Direct-To-AIP] Safety Module August 2026 - Allowance Update"
+title: "Safety Module August 2026 - Allowance Update"
 author: "@TokenLogic"
 discussions: "https://governance.aave.com/t/direct-to-aip-safety-module-august-2026-allowance-update/25550"
 ---

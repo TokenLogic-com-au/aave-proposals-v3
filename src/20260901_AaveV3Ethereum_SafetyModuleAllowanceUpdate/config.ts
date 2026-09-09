@@ -3,7 +3,7 @@ export const config: ConfigFile = {
   rootOptions: {
     configFile: 'src/20260901_AaveV3Ethereum_SafetyModuleAllowanceUpdate/config.ts',
     markets: ['AaveV3Ethereum'],
-    title: '[Direct-To-AIP] Safety Module August 2026 - Allowance Update',
+    title: 'Safety Module August 2026 - Allowance Update',
     shortName: 'SafetyModuleAllowanceUpdate',
     date: '20260901',
     author: '@TokenLogic',

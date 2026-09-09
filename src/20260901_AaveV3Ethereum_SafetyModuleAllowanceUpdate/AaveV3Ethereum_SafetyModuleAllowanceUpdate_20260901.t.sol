@@ -31,6 +31,11 @@ contract AaveV3Ethereum_SafetyModuleAllowanceUpdate_20260901_Test is ProtocolV3T
     0x507B3F6d4f85c451f7914006C647391a1Afb96D6
   ];
 
+  // sum of getTotalRewardsBalance across all historical holders at block 25843055
+  uint256 internal constant STK_ABPT_RESIDUAL = 1_198.29 ether;
+  uint256 internal constant STK_GHO_RESIDUAL = 1_190.72 ether;
+  uint256 internal constant STK_AAVE_WSTETH_BPTV2_RESIDUAL = 2_280.53 ether;
+
   // holders with pending rewards on each sunset module at the fork block
   address internal constant STK_ABPT_CLAIMER = 0xcf27ec0AE6F3C4AFf868b2A19F8dad58CdC8730c;
   address internal constant STK_GHO_CLAIMER = 0xa02A67966Ef2BFf32A225374EC71fDF7B2a6f9Ae;
@@ -144,6 +149,22 @@ contract AaveV3Ethereum_SafetyModuleAllowanceUpdate_20260901_Test is ProtocolV3T
       _allowanceOf(AaveSafetyModule.STK_AAVE_WSTETH_BPTV2),
       proposal.STK_AAVE_WSTETH_BPTV2_ABSOLUTE_ALLOWANCE(),
       'stkAAVEwstETHBPTv2 allowance should be 2500 AAVE'
+    );
+
+    assertGe(
+      proposal.STK_ABPT_V1_ABSOLUTE_ALLOWANCE(),
+      STK_ABPT_RESIDUAL,
+      'stkABPT v1 allowance should cover the residual claimable rewards'
+    );
+    assertGe(
+      proposal.STK_GHO_ABSOLUTE_ALLOWANCE(),
+      STK_GHO_RESIDUAL,
+      'stkGHO allowance should cover the residual claimable rewards'
+    );
+    assertGe(
+      proposal.STK_AAVE_WSTETH_BPTV2_ABSOLUTE_ALLOWANCE(),
+      STK_AAVE_WSTETH_BPTV2_RESIDUAL,
+      'stkAAVEwstETHBPTv2 allowance should cover the residual claimable rewards'
     );
   }
 
