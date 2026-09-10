@@ -31,8 +31,8 @@ Once whitelisted, the contracts are exempt from Flashloan Fees on the Aave V3 X 
 
 ## References
 
-- Implementation: [AaveV3XLayer](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260821_AaveV3XLayer_WhitelistXLayerFlashBorrower/AaveV3XLayer_WhitelistXLayerFlashBorrower_20260821.sol)
-- Tests: [AaveV3XLayer](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260821_AaveV3XLayer_WhitelistXLayerFlashBorrower/AaveV3XLayer_WhitelistXLayerFlashBorrower_20260821.t.sol)
+- Implementation: [AaveV3XLayer](https://github.com/aave-dao/aave-proposals-v3/blob/6968563e6326a7961b9724d2186cf020f95554da/src/20260821_AaveV3XLayer_WhitelistXLayerFlashBorrower/AaveV3XLayer_WhitelistXLayerFlashBorrower_20260821.sol)
+- Tests: [AaveV3XLayer](https://github.com/aave-dao/aave-proposals-v3/blob/6968563e6326a7961b9724d2186cf020f95554da/src/20260821_AaveV3XLayer_WhitelistXLayerFlashBorrower/AaveV3XLayer_WhitelistXLayerFlashBorrower_20260821.t.sol)
 - [Discussion](https://governance.aave.com/t/direct-to-aip-add-x-layer-loop-tool-margin-trading-to-flashborrowers/25551)
 
 ## Copyright
