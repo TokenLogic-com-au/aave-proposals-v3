@@ -55,6 +55,51 @@ contract AaveV3XLayer_AaveV3XLayerUSDCListing_20260818 is AaveV3PayloadXLayer {
     return listings;
   }
 
+  function eModeCategoriesUpdates()
+    public
+    pure
+    override
+    returns (IAaveV3ConfigEngine.EModeCategoryUpdate[] memory)
+  {
+    IAaveV3ConfigEngine.EModeCategoryUpdate[]
+      memory eModeUpdates = new IAaveV3ConfigEngine.EModeCategoryUpdate[](4);
+
+    eModeUpdates[0] = IAaveV3ConfigEngine.EModeCategoryUpdate({
+      eModeCategory: AaveV3XLayerEModes.xBTC__USDT_USDG_GHO,
+      ltv: EngineFlags.KEEP_CURRENT,
+      liqThreshold: EngineFlags.KEEP_CURRENT,
+      liqBonus: EngineFlags.KEEP_CURRENT,
+      label: 'xBTC__Stablecoins',
+      isolated: EngineFlags.KEEP_CURRENT
+    });
+    eModeUpdates[1] = IAaveV3ConfigEngine.EModeCategoryUpdate({
+      eModeCategory: AaveV3XLayerEModes.xETH__USDT_USDG_GHO,
+      ltv: EngineFlags.KEEP_CURRENT,
+      liqThreshold: EngineFlags.KEEP_CURRENT,
+      liqBonus: EngineFlags.KEEP_CURRENT,
+      label: 'xETH__Stablecoins',
+      isolated: EngineFlags.KEEP_CURRENT
+    });
+    eModeUpdates[2] = IAaveV3ConfigEngine.EModeCategoryUpdate({
+      eModeCategory: AaveV3XLayerEModes.xSOL__USDT_USDG_GHO,
+      ltv: EngineFlags.KEEP_CURRENT,
+      liqThreshold: EngineFlags.KEEP_CURRENT,
+      liqBonus: EngineFlags.KEEP_CURRENT,
+      label: 'xSOL__Stablecoins',
+      isolated: EngineFlags.KEEP_CURRENT
+    });
+    eModeUpdates[3] = IAaveV3ConfigEngine.EModeCategoryUpdate({
+      eModeCategory: AaveV3XLayerEModes.WOKB__USDT_USDG_GHO,
+      ltv: EngineFlags.KEEP_CURRENT,
+      liqThreshold: EngineFlags.KEEP_CURRENT,
+      liqBonus: EngineFlags.KEEP_CURRENT,
+      label: 'WOKB__Stablecoins',
+      isolated: EngineFlags.KEEP_CURRENT
+    });
+
+    return eModeUpdates;
+  }
+
   function assetsEModeUpdates()
     public
     pure
@@ -94,7 +139,7 @@ contract AaveV3XLayer_AaveV3XLayerUSDCListing_20260818 is AaveV3PayloadXLayer {
     });
     assetEModeUpdates[4] = IAaveV3ConfigEngine.AssetEModeUpdate({
       asset: USDC,
-      // PT_USDG__Stablecoins, constant not yet published in aave-address-book
+      // AaveV3XLayerEModes.PT_USDG_29OCT2026__USDT_USDG_GHO
       eModeCategory: 7,
       borrowable: EngineFlags.ENABLED,
       collateral: EngineFlags.DISABLED,

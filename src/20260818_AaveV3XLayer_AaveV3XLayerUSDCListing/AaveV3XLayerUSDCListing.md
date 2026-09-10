@@ -46,7 +46,7 @@ USDC is priced through a `PriceCapAdapterStable` (`Capped USDC / USD`), followin
 | Underlying feed | [0xB8a08c178D96C315FbFB5661ABD208477391BC40](https://www.oklink.com/x-layer/address/0xB8a08c178D96C315FbFB5661ABD208477391BC40) (Chainlink USDC/USD) |
 | Price cap       | 1.04 USD                                                                                                                                             |
 
-**eMode updates:** USDC is enabled as a borrowable asset (not collateral) within the existing stablecoin eMode categories, alongside USDT0, USDG and GHO.
+**eMode updates:** USDC is enabled as a borrowable asset (not collateral) within the existing stablecoin eMode categories, alongside USDT0, USDG and GHO. The four crypto-collateral categories are also renamed to `<asset>__Stablecoins` to reflect the broader borrowable set; all risk parameters remain unchanged.
 
 | eMode                      | Collateral        | USDC Borrowable |
 | -------------------------- | ----------------- | --------------- |

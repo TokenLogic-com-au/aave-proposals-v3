@@ -7,6 +7,8 @@ import {EngineFlags} from 'aave-v3-origin/contracts/extensions/v3-config-engine/
 import {IAaveV3ConfigEngine} from 'aave-v3-origin/contracts/extensions/v3-config-engine/IAaveV3ConfigEngine.sol';
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 
+import {DataTypes} from 'aave-v3-origin/contracts/protocol/libraries/types/DataTypes.sol';
+
 import 'forge-std/Test.sol';
 import {ProtocolV3TestBase, ReserveConfig, ExpectedListing} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {AaveV3XLayer_AaveV3XLayerUSDCListing_20260818} from './AaveV3XLayer_AaveV3XLayerUSDCListing_20260818.sol';
@@ -168,6 +170,52 @@ contract AaveV3XLayer_AaveV3XLayerUSDCListing_20260818_Test is ProtocolV3TestBas
     vm.stopPrank();
   }
 
+  function test_eModeLabelsAndParams() public {
+    assertEq(
+      AaveV3XLayer.POOL.getEModeCategoryLabel(AaveV3XLayerEModes.xBTC__USDT_USDG_GHO),
+      'xBTC__USDT0_USDG_GHO',
+      'xBTC eMode should carry the pre-rename label before execution'
+    );
+
+    GovV3Helpers.executePayload(vm, address(proposal));
+
+    _assertEModeLabelAndParams(
+      AaveV3XLayerEModes.xBTC__USDT_USDG_GHO,
+      'xBTC__Stablecoins',
+      78_00,
+      81_00,
+      106_00
+    );
+    _assertEModeLabelAndParams(
+      AaveV3XLayerEModes.xETH__USDT_USDG_GHO,
+      'xETH__Stablecoins',
+      78_00,
+      80_00,
+      106_00
+    );
+    _assertEModeLabelAndParams(
+      AaveV3XLayerEModes.xSOL__USDT_USDG_GHO,
+      'xSOL__Stablecoins',
+      65_00,
+      70_00,
+      107_50
+    );
+    _assertEModeLabelAndParams(
+      AaveV3XLayerEModes.WOKB__USDT_USDG_GHO,
+      'WOKB__Stablecoins',
+      50_00,
+      55_00,
+      110_00
+    );
+    _assertEModeLabelAndParams(
+      _findEModeCategoryId('PT_USDG__Stablecoins'),
+      'PT_USDG__Stablecoins',
+      92_66,
+      94_66,
+      102_34
+    );
+  }
+
   function _findEModeCategoryId(string memory label) internal view returns (uint8) {
     for (uint8 i = 1; i < 255; i++) {
       if (keccak256(bytes(AaveV3XLayer.POOL.getEModeCategoryLabel(i))) == keccak256(bytes(label))) {
@@ -175,5 +223,25 @@ contract AaveV3XLayer_AaveV3XLayerUSDCListing_20260818_Test is ProtocolV3TestBas
       }
     }
     revert('eMode category not found');
+  }
+
+  function _assertEModeLabelAndParams(
+    uint8 eModeId,
+    string memory label,
+    uint16 ltv,
+    uint16 liquidationThreshold,
+    uint16 liquidationBonus
+  ) internal view {
+    assertEq(AaveV3XLayer.POOL.getEModeCategoryLabel(eModeId), label, 'eMode label mismatch');
+    DataTypes.CollateralConfig memory config = AaveV3XLayer.POOL.getEModeCategoryCollateralConfig(
+      eModeId
+    );
+    assertEq(config.ltv, ltv, 'eMode ltv mismatch');
+    assertEq(
+      config.liquidationThreshold,
+      liquidationThreshold,
+      'eMode liquidation threshold mismatch'
+    );
+    assertEq(config.liquidationBonus, liquidationBonus, 'eMode liquidation bonus mismatch');
   }
 }
