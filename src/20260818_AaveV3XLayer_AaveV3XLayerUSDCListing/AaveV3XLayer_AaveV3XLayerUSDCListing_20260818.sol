@@ -139,8 +139,7 @@ contract AaveV3XLayer_AaveV3XLayerUSDCListing_20260818 is AaveV3PayloadXLayer {
     });
     assetEModeUpdates[4] = IAaveV3ConfigEngine.AssetEModeUpdate({
       asset: USDC,
-      // AaveV3XLayerEModes.PT_USDG_29OCT2026__USDT_USDG_GHO
-      eModeCategory: 7,
+      eModeCategory: AaveV3XLayerEModes.PT_USDG_29OCT2026__USDT_USDG_GHO,
       borrowable: EngineFlags.ENABLED,
       collateral: EngineFlags.DISABLED,
       ltvzero: EngineFlags.DISABLED

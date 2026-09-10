@@ -90,7 +90,7 @@ contract AaveV3XLayer_AaveV3XLayerUSDCListing_20260818_Test is ProtocolV3TestBas
       AaveV3XLayerEModes.xETH__USDT_USDG_GHO,
       AaveV3XLayerEModes.xSOL__USDT_USDG_GHO,
       AaveV3XLayerEModes.WOKB__USDT_USDG_GHO,
-      _findEModeCategoryId('PT_USDG__Stablecoins')
+      AaveV3XLayerEModes.PT_USDG_29OCT2026__USDT_USDG_GHO
     ];
 
     for (uint256 i = 0; i < eModeIds.length; i++) {
@@ -140,8 +140,7 @@ contract AaveV3XLayer_AaveV3XLayerUSDCListing_20260818_Test is ProtocolV3TestBas
   function test_eModeBorrowUsdc() public {
     GovV3Helpers.executePayload(vm, address(proposal));
 
-    uint8 eModeId = _findEModeCategoryId('PT_USDG__Stablecoins');
-    assertEq(eModeId, 7, 'hardcoded eMode id should match the PT_USDG__Stablecoins label');
+    uint8 eModeId = AaveV3XLayerEModes.PT_USDG_29OCT2026__USDT_USDG_GHO;
 
     address user = makeAddr('eModeBorrower');
     address collateral = PT_USDG_29OCT2026;
@@ -208,21 +207,12 @@ contract AaveV3XLayer_AaveV3XLayerUSDCListing_20260818_Test is ProtocolV3TestBas
       110_00
     );
     _assertEModeLabelAndParams(
-      _findEModeCategoryId('PT_USDG__Stablecoins'),
+      AaveV3XLayerEModes.PT_USDG_29OCT2026__USDT_USDG_GHO,
       'PT_USDG__Stablecoins',
       92_66,
       94_66,
       102_34
     );
-  }
-
-  function _findEModeCategoryId(string memory label) internal view returns (uint8) {
-    for (uint8 i = 1; i < 255; i++) {
-      if (keccak256(bytes(AaveV3XLayer.POOL.getEModeCategoryLabel(i))) == keccak256(bytes(label))) {
-        return i;
-      }
-    }
-    revert('eMode category not found');
   }
 
   function _assertEModeLabelAndParams(
