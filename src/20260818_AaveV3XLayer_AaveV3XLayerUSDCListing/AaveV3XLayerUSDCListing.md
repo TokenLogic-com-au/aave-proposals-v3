@@ -58,8 +58,8 @@ USDC is priced through a `PriceCapAdapterStable` (`Capped USDC / USD`), followin
 
 ## References
 
-- Implementation: [AaveV3XLayer](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260818_AaveV3XLayer_AaveV3XLayerUSDCListing/AaveV3XLayer_AaveV3XLayerUSDCListing_20260818.sol)
-- Tests: [AaveV3XLayer](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260818_AaveV3XLayer_AaveV3XLayerUSDCListing/AaveV3XLayer_AaveV3XLayerUSDCListing_20260818.t.sol)
+- Implementation: [AaveV3XLayer](https://github.com/aave-dao/aave-proposals-v3/blob/943c5a778a2dbc7a9f53c9fe09a680cb15b3ea19/src/20260818_AaveV3XLayer_AaveV3XLayerUSDCListing/AaveV3XLayer_AaveV3XLayerUSDCListing_20260818.sol)
+- Tests: [AaveV3XLayer](https://github.com/aave-dao/aave-proposals-v3/blob/943c5a778a2dbc7a9f53c9fe09a680cb15b3ea19/src/20260818_AaveV3XLayer_AaveV3XLayerUSDCListing/AaveV3XLayer_AaveV3XLayerUSDCListing_20260818.t.sol)
 - [Discussion](https://governance.aave.com/t/direct-to-aip-asset-listing-usdc-x-layer/25467)
 
 ## Copyright
