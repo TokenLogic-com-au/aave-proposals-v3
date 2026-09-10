@@ -36,11 +36,17 @@ contract AaveV3Ethereum_SafetyModuleAllowanceUpdate_20260901_Test is ProtocolV3T
   uint256 internal constant STK_GHO_RESIDUAL = 1_190.72 ether;
   uint256 internal constant STK_AAVE_WSTETH_BPTV2_RESIDUAL = 2_280.53 ether;
 
-  // holders with pending rewards on each sunset module at the fork block
+  // largest pending rewards on each sunset module at the fork block
   address internal constant STK_ABPT_CLAIMER = 0xcf27ec0AE6F3C4AFf868b2A19F8dad58CdC8730c;
-  address internal constant STK_GHO_CLAIMER = 0xa02A67966Ef2BFf32A225374EC71fDF7B2a6f9Ae;
-  address internal constant STK_AAVE_WSTETH_BPTV2_CLAIMER =
-    0xa19ed0aE46e89461e56063f1eD268a0dc225745f;
+  address internal constant STK_GHO_CLAIMER = 0x25854e2a49A6CDAeC7f0505b4179834509038549;
+
+  // top three pending rewards on stkAAVEwstETHBPTv2 at the fork block, jointly ~1,495 AAVE
+  // against the 2,500 AAVE absolute allowance
+  address[3] internal stkBptV2Claimers = [
+    0x0154d25120Ed20A516fE43991702e7463c5A6F6e,
+    0xef2B43A07d275f538a8B22058Ea9Bb2C852ECd5f,
+    0x12478d1a60a910C9CbFFb90648766a2bDD5918f5
+  ];
 
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('mainnet'), 25880238);
@@ -196,7 +202,59 @@ contract AaveV3Ethereum_SafetyModuleAllowanceUpdate_20260901_Test is ProtocolV3T
 
     _assertClaimSucceeds(AaveSafetyModule.STK_ABPT, STK_ABPT_CLAIMER);
     _assertClaimSucceeds(AaveSafetyModule.STK_GHO, STK_GHO_CLAIMER);
-    _assertClaimSucceeds(AaveSafetyModule.STK_AAVE_WSTETH_BPTV2, STK_AAVE_WSTETH_BPTV2_CLAIMER);
+    for (uint256 i = 0; i < stkBptV2Claimers.length; i++) {
+      _assertClaimSucceeds(AaveSafetyModule.STK_AAVE_WSTETH_BPTV2, stkBptV2Claimers[i]);
+    }
+  }
+
+  function test_delayedExecutionStillCoversClaims() public {
+    vm.warp(block.timestamp + 60 days);
+
+    (uint128 emissionPerSecond, , ) = IStakeToken(AaveSafetyModule.STK_AAVE).assets(
+      AaveSafetyModule.STK_AAVE
+    );
+    uint256 allowanceBefore = _allowanceOf(AaveSafetyModule.STK_AAVE);
+
+    GovV3Helpers.executePayload(vm, address(proposal));
+
+    uint256 expected = allowanceBefore +
+      proposal.STK_AAVE_BACKLOG_GAP() +
+      uint256(emissionPerSecond) *
+      (block.timestamp - proposal.SNAPSHOT_TIMESTAMP() + proposal.FORWARD_EMISSIONS_PERIOD());
+    assertEq(
+      _allowanceOf(AaveSafetyModule.STK_AAVE),
+      expected,
+      'stkAAVE allowance should cover the backlog plus 90 days when executed late'
+    );
+
+    for (uint256 i = 0; i < stkAaveClaimers.length; i++) {
+      _assertClaimSucceeds(AaveSafetyModule.STK_AAVE, stkAaveClaimers[i]);
+    }
+  }
+
+  function test_priorClaimsReduceAllowanceOneForOne() public {
+    uint256 snap = vm.snapshotState();
+
+    GovV3Helpers.executePayload(vm, address(proposal));
+    uint256 noClaimAllowance = _allowanceOf(AaveSafetyModule.STK_AAVE);
+
+    vm.revertToState(snap);
+
+    address staker = stkAaveClaimers[0];
+    uint256 balanceBefore = IERC20(AaveV3EthereumAssets.AAVE_UNDERLYING).balanceOf(staker);
+    vm.prank(staker);
+    IStakeToken(AaveSafetyModule.STK_AAVE).claimRewards(staker, type(uint256).max);
+    uint256 claimed = IERC20(AaveV3EthereumAssets.AAVE_UNDERLYING).balanceOf(staker) -
+      balanceBefore;
+    assertGt(claimed, 0, 'staker should claim a non-zero amount before execution');
+
+    GovV3Helpers.executePayload(vm, address(proposal));
+
+    assertEq(
+      _allowanceOf(AaveSafetyModule.STK_AAVE),
+      noClaimAllowance - claimed,
+      'claims before execution should reduce the final allowance one for one'
+    );
   }
 
   function _assertClaimSucceeds(address module, address claimer) internal {
