@@ -125,13 +125,13 @@
 | 12 | CollateralConfigurationChanged(asset: 0xB6CEceAB302E2E4948951eE7843FC24E92933061 (symbol: USDC), ltv: 7500, liquidationThreshold: 7800, liquidationBonus: 10750) |
 | 13 | LiquidationProtocolFeeChanged(asset: 0xB6CEceAB302E2E4948951eE7843FC24E92933061 (symbol: USDC), oldFee: 0, newFee: 1000) |
 | 14 | EModeCategoryAdded(categoryId: 1, ltv: 7800, liquidationThreshold: 8100, liquidationBonus: 10600, oracle: 0x0000000000000000000000000000000000000000, label: xBTC__Stablecoins) |
-| 15 | topics: `0xea07f8a4f488dcc1dc8c27b9c526ac8ba2d04b8024e206616f306c51d9b16826`, `0x0000000000000000000000000000000000000000000000000000000000000001`, data: `0x0000000000000000000000000000000000000000000000000000000000000000` |
+| 15 | EModeCategoryIsolationChanged(categoryId: 1, isolated: false) |
 | 16 | EModeCategoryAdded(categoryId: 2, ltv: 7800, liquidationThreshold: 8000, liquidationBonus: 10600, oracle: 0x0000000000000000000000000000000000000000, label: xETH__Stablecoins) |
-| 17 | topics: `0xea07f8a4f488dcc1dc8c27b9c526ac8ba2d04b8024e206616f306c51d9b16826`, `0x0000000000000000000000000000000000000000000000000000000000000002`, data: `0x0000000000000000000000000000000000000000000000000000000000000000` |
+| 17 | EModeCategoryIsolationChanged(categoryId: 2, isolated: false) |
 | 18 | EModeCategoryAdded(categoryId: 3, ltv: 6500, liquidationThreshold: 7000, liquidationBonus: 10750, oracle: 0x0000000000000000000000000000000000000000, label: xSOL__Stablecoins) |
-| 19 | topics: `0xea07f8a4f488dcc1dc8c27b9c526ac8ba2d04b8024e206616f306c51d9b16826`, `0x0000000000000000000000000000000000000000000000000000000000000003`, data: `0x0000000000000000000000000000000000000000000000000000000000000000` |
+| 19 | EModeCategoryIsolationChanged(categoryId: 3, isolated: false) |
 | 20 | EModeCategoryAdded(categoryId: 4, ltv: 5000, liquidationThreshold: 5500, liquidationBonus: 11000, oracle: 0x0000000000000000000000000000000000000000, label: WOKB__Stablecoins) |
-| 21 | topics: `0xea07f8a4f488dcc1dc8c27b9c526ac8ba2d04b8024e206616f306c51d9b16826`, `0x0000000000000000000000000000000000000000000000000000000000000004`, data: `0x0000000000000000000000000000000000000000000000000000000000000000` |
+| 21 | EModeCategoryIsolationChanged(categoryId: 4, isolated: false) |
 | 22 | AssetCollateralInEModeChanged(asset: 0xB6CEceAB302E2E4948951eE7843FC24E92933061 (symbol: USDC), categoryId: 1, collateral: false) |
 | 23 | AssetBorrowableInEModeChanged(asset: 0xB6CEceAB302E2E4948951eE7843FC24E92933061 (symbol: USDC), categoryId: 1, borrowable: true) |
 | 24 | AssetCollateralInEModeChanged(asset: 0xB6CEceAB302E2E4948951eE7843FC24E92933061 (symbol: USDC), categoryId: 2, collateral: false) |
