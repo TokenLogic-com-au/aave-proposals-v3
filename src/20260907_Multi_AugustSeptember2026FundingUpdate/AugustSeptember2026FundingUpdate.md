@@ -9,8 +9,9 @@ discussions: "https://governance.aave.com/t/direct-to-aip-august-september-2026-
 This publication presents the August/September Funding Update, consisting of the following key activities:
 
 - Acquire GHO to support the runway;
-- Create Allowances to support Operations; and
-- Fund initial Asset Backed Private Credit trial deployments.
+- Create Allowances to support Operations;
+- Fund initial Asset Backed Private Credit trial deployments; and
+- Activate the PoolExposureSteward on Monad and Plasma.
 
 ## Motivation
 
@@ -71,10 +72,22 @@ Network: Ethereum
 Asset: aEthLidoWETH `0xfa1fdbbd71b0aa16162d76914d69cd8cb3ef92da`
 Spender: Ahab `0xAA2461f0f0A3dE5fEAF3273eAe16DEF861cf594e`
 
+### Monad
+
+Grant the `FUNDS_ADMIN` role on the Aave V3 Monad Collector to the newly deployed PoolExposureSteward, enabling the steward to manage Collector liquidity across the instance.
+
+Steward: `0x72EAfbD4331dD482f5c8135fF0452d97da6F77B0`
+
+### Plasma
+
+Grant the `FUNDS_ADMIN` role on the Aave V3 Plasma Collector to the newly deployed PoolExposureSteward, enabling the steward to manage Collector liquidity across the instance.
+
+Steward: `0xB5c5D35553826d681F3f3CC5Bae6cfA0446dE706`
+
 ## References
 
-- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260907_AaveV3Ethereum_AugustSeptember2026FundingUpdate/AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907.sol)
-- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260907_AaveV3Ethereum_AugustSeptember2026FundingUpdate/AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907.t.sol)
+- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260907_Multi_AugustSeptember2026FundingUpdate/AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907.sol), [AaveV3Monad](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260907_Multi_AugustSeptember2026FundingUpdate/AaveV3Monad_AugustSeptember2026FundingUpdate_20260907.sol), [AaveV3Plasma](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260907_Multi_AugustSeptember2026FundingUpdate/AaveV3Plasma_AugustSeptember2026FundingUpdate_20260907.sol)
+- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260907_Multi_AugustSeptember2026FundingUpdate/AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907.t.sol), [AaveV3Monad](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260907_Multi_AugustSeptember2026FundingUpdate/AaveV3Monad_AugustSeptember2026FundingUpdate_20260907.t.sol), [AaveV3Plasma](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260907_Multi_AugustSeptember2026FundingUpdate/AaveV3Plasma_AugustSeptember2026FundingUpdate_20260907.t.sol)
 - [Discussion](https://governance.aave.com/t/direct-to-aip-august-september-2026-funding-update/25597)
 
 ## Copyright

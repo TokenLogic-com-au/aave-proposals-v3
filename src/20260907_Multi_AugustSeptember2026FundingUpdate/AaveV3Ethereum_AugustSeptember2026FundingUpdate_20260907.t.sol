@@ -12,7 +12,7 @@ import {AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907} from './AaveV3
 
 /**
  * @dev Test for AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907
- * command: FOUNDRY_PROFILE=test forge test --match-path=src/20260907_AaveV3Ethereum_AugustSeptember2026FundingUpdate/AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907.t.sol -vv
+ * command: FOUNDRY_PROFILE=test forge test --match-path=src/20260907_Multi_AugustSeptember2026FundingUpdate/AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907.t.sol -vv
  */
 contract AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907_Test is ProtocolV3TestBase {
   AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907 internal proposal;
