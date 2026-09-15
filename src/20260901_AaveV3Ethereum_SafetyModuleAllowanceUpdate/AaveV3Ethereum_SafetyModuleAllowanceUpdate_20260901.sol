@@ -22,6 +22,7 @@ contract AaveV3Ethereum_SafetyModuleAllowanceUpdate_20260901 is IProposalGeneric
   // 2026-08-27 00:45:23 UTC, block 25843055
   uint256 public constant SNAPSHOT_TIMESTAMP = 1_787_791_523;
   uint256 public constant FORWARD_EMISSIONS_PERIOD = 90 days;
+  uint256 public constant TARGET_ALLOWANCE_DIVISOR = 4;
 
   uint256 public constant STK_ABPT_V1_ABSOLUTE_ALLOWANCE = 1_250 ether;
   uint256 public constant STK_GHO_ABSOLUTE_ALLOWANCE = 1_200 ether;
@@ -35,10 +36,10 @@ contract AaveV3Ethereum_SafetyModuleAllowanceUpdate_20260901 is IProposalGeneric
       MiscEthereum.ECOSYSTEM_RESERVE,
       AaveSafetyModule.STK_AAVE
     );
-    uint256 newStkAaveAllowance = currentAllowance +
+    uint256 newStkAaveAllowance = (currentAllowance +
       STK_AAVE_BACKLOG_GAP +
       emissionPerSecond *
-      (block.timestamp - SNAPSHOT_TIMESTAMP + FORWARD_EMISSIONS_PERIOD);
+      (block.timestamp - SNAPSHOT_TIMESTAMP + FORWARD_EMISSIONS_PERIOD)) / TARGET_ALLOWANCE_DIVISOR;
 
     _setAllowance(AaveSafetyModule.STK_AAVE, newStkAaveAllowance);
     _setAllowance(AaveSafetyModule.STK_ABPT, STK_ABPT_V1_ABSOLUTE_ALLOWANCE);
