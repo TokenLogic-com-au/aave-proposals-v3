@@ -16,13 +16,13 @@ import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
  */
 contract AaveV3Ethereum_SafetyModuleAllowanceUpdate_20260901 is IProposalGenericExecutor {
   // Claimable backlog not covered by the stkAAVE allowance at the snapshot, rounded up.
-  // Claims after the snapshot reduce the backlog and the live allowance by the same amount,
-  // so adding this constant to the allowance read at execution time remains exact.
+  // Claims after the snapshot reduce the allowance read at execution by the same amount,
+  // so adding a share of this constant on top of it does not double count claimed rewards.
   uint256 public constant STK_AAVE_BACKLOG_GAP = 50_500 ether;
   // 2026-08-27 00:45:23 UTC, block 25843055
   uint256 public constant SNAPSHOT_TIMESTAMP = 1_787_791_523;
   uint256 public constant FORWARD_EMISSIONS_PERIOD = 90 days;
-  uint256 public constant TARGET_ALLOWANCE_DIVISOR = 4;
+  uint256 public constant BACKLOG_GAP_DIVISOR = 4;
 
   uint256 public constant STK_ABPT_V1_ABSOLUTE_ALLOWANCE = 1_250 ether;
   uint256 public constant STK_GHO_ABSOLUTE_ALLOWANCE = 1_200 ether;
@@ -36,10 +36,11 @@ contract AaveV3Ethereum_SafetyModuleAllowanceUpdate_20260901 is IProposalGeneric
       MiscEthereum.ECOSYSTEM_RESERVE,
       AaveSafetyModule.STK_AAVE
     );
-    uint256 newStkAaveAllowance = (currentAllowance +
-      STK_AAVE_BACKLOG_GAP +
+    uint256 newStkAaveAllowance = currentAllowance +
+      STK_AAVE_BACKLOG_GAP /
+      BACKLOG_GAP_DIVISOR +
       emissionPerSecond *
-      (block.timestamp - SNAPSHOT_TIMESTAMP + FORWARD_EMISSIONS_PERIOD)) / TARGET_ALLOWANCE_DIVISOR;
+      (block.timestamp - SNAPSHOT_TIMESTAMP + FORWARD_EMISSIONS_PERIOD);
 
     _setAllowance(AaveSafetyModule.STK_AAVE, newStkAaveAllowance);
     _setAllowance(AaveSafetyModule.STK_ABPT, STK_ABPT_V1_ABSOLUTE_ALLOWANCE);

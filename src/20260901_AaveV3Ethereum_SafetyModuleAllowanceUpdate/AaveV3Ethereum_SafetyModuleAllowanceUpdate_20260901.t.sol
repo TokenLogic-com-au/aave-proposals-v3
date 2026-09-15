@@ -96,22 +96,22 @@ contract AaveV3Ethereum_SafetyModuleAllowanceUpdate_20260901_Test is ProtocolV3T
 
     GovV3Helpers.executePayload(vm, address(proposal));
 
-    uint256 expected = (allowanceBefore +
-      proposal.STK_AAVE_BACKLOG_GAP() +
+    uint256 expected = allowanceBefore +
+      proposal.STK_AAVE_BACKLOG_GAP() /
+      proposal.BACKLOG_GAP_DIVISOR() +
       uint256(emissionPerSecond) *
-      (block.timestamp - proposal.SNAPSHOT_TIMESTAMP() + proposal.FORWARD_EMISSIONS_PERIOD())) /
-      proposal.TARGET_ALLOWANCE_DIVISOR();
+      (block.timestamp - proposal.SNAPSHOT_TIMESTAMP() + proposal.FORWARD_EMISSIONS_PERIOD());
     uint256 allowanceAfter = _allowanceOf(AaveSafetyModule.STK_AAVE);
     assertEq(
       allowanceAfter,
       expected,
-      'stkAAVE allowance should fund a quarter of the backlog plus 90 days of emissions'
+      'stkAAVE allowance should fund a quarter of the backlog gap plus accrual and 90 days of emissions'
     );
     assertApproxEqAbs(
       allowanceAfter,
-      17_121.86 ether,
+      30_612.44 ether,
       1 ether,
-      'stkAAVE allowance should match a quarter of the forum-projected total at the fork block'
+      'stkAAVE allowance should match the quarter-gap target at the fork block'
     );
   }
 
@@ -213,15 +213,15 @@ contract AaveV3Ethereum_SafetyModuleAllowanceUpdate_20260901_Test is ProtocolV3T
 
     GovV3Helpers.executePayload(vm, address(proposal));
 
-    uint256 expected = (allowanceBefore +
-      proposal.STK_AAVE_BACKLOG_GAP() +
+    uint256 expected = allowanceBefore +
+      proposal.STK_AAVE_BACKLOG_GAP() /
+      proposal.BACKLOG_GAP_DIVISOR() +
       uint256(emissionPerSecond) *
-      (block.timestamp - proposal.SNAPSHOT_TIMESTAMP() + proposal.FORWARD_EMISSIONS_PERIOD())) /
-      proposal.TARGET_ALLOWANCE_DIVISOR();
+      (block.timestamp - proposal.SNAPSHOT_TIMESTAMP() + proposal.FORWARD_EMISSIONS_PERIOD());
     assertEq(
       _allowanceOf(AaveSafetyModule.STK_AAVE),
       expected,
-      'stkAAVE allowance should fund a quarter of the backlog plus 90 days when executed late'
+      'stkAAVE allowance should fund a quarter of the backlog gap plus 90 days when executed late'
     );
 
     for (uint256 i = 0; i < stkAaveClaimers.length; i++) {
@@ -229,7 +229,7 @@ contract AaveV3Ethereum_SafetyModuleAllowanceUpdate_20260901_Test is ProtocolV3T
     }
   }
 
-  function test_priorClaimsReduceAllowanceProRata() public {
+  function test_priorClaimsReduceAllowanceOneForOne() public {
     uint256 snap = vm.snapshotState();
 
     GovV3Helpers.executePayload(vm, address(proposal));
@@ -247,11 +247,10 @@ contract AaveV3Ethereum_SafetyModuleAllowanceUpdate_20260901_Test is ProtocolV3T
 
     GovV3Helpers.executePayload(vm, address(proposal));
 
-    assertApproxEqAbs(
+    assertEq(
       _allowanceOf(AaveSafetyModule.STK_AAVE),
-      noClaimAllowance - claimed / proposal.TARGET_ALLOWANCE_DIVISOR(),
-      1,
-      'claims before execution should reduce the final allowance by a quarter of the claim'
+      noClaimAllowance - claimed,
+      'claims before execution should reduce the final allowance one for one'
     );
   }
 
