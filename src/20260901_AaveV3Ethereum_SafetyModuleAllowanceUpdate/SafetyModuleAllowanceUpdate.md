@@ -29,8 +29,8 @@ The new stkAAVE allowance is computed at execution time as the sum of the allowa
 
 ## References
 
-- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260901_AaveV3Ethereum_SafetyModuleAllowanceUpdate/AaveV3Ethereum_SafetyModuleAllowanceUpdate_20260901.sol)
-- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260901_AaveV3Ethereum_SafetyModuleAllowanceUpdate/AaveV3Ethereum_SafetyModuleAllowanceUpdate_20260901.t.sol)
+- Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/8531b34270f6e4ec0bbeba44be86c5c9f10c0942/src/20260901_AaveV3Ethereum_SafetyModuleAllowanceUpdate/AaveV3Ethereum_SafetyModuleAllowanceUpdate_20260901.sol)
+- Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/8531b34270f6e4ec0bbeba44be86c5c9f10c0942/src/20260901_AaveV3Ethereum_SafetyModuleAllowanceUpdate/AaveV3Ethereum_SafetyModuleAllowanceUpdate_20260901.t.sol)
 - [Discussion](https://governance.aave.com/t/direct-to-aip-safety-module-august-2026-allowance-update/25550)
 
 ## Copyright
