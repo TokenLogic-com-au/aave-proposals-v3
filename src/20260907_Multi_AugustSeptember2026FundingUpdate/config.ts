@@ -2,7 +2,7 @@ import {ConfigFile} from '../../generator/types';
 export const config: ConfigFile = {
   rootOptions: {
     configFile: 'src/20260907_Multi_AugustSeptember2026FundingUpdate/config.ts',
-    markets: ['AaveV3Ethereum', 'AaveV3Monad', 'AaveV3Plasma'],
+    markets: ['AaveV3Ethereum', 'AaveV3Base', 'AaveV3Monad', 'AaveV3Plasma'],
     title: 'August/September 2026 Funding Update',
     shortName: 'AugustSeptember2026FundingUpdate',
     date: '20260907',
@@ -14,6 +14,7 @@ export const config: ConfigFile = {
   },
   marketOptions: {
     AaveV3Ethereum: {configs: {OTHERS: {}}, cache: {blockNumber: 25927734}},
+    AaveV3Base: {configs: {OTHERS: {}}, cache: {blockNumber: 51612000}},
     AaveV3Monad: {configs: {OTHERS: {}}, cache: {blockNumber: 104774356}},
     AaveV3Plasma: {configs: {OTHERS: {}}, cache: {blockNumber: 32456523}},
   },

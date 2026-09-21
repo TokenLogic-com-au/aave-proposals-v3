@@ -17,12 +17,17 @@ import {IMainnetSwapSteward} from 'src/interfaces/IMainnetSwapSteward.sol';
  * - Discussion: https://governance.aave.com/t/direct-to-aip-august-september-2026-funding-update/25597
  */
 contract AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907 is IProposalGenericExecutor {
-  uint256 public constant REIMBURSEMENTS_GHO_AMOUNT = 25_000 ether;
+  uint256 public constant REIMBURSEMENTS_GHO_AMOUNT = 69_939.27 ether;
+
+  uint256 public constant ALC_GHO_ALLOWANCE = 750_000 ether;
+
+  uint256 public constant AFC_USDC_ALLOWANCE = 1_500_000e6;
+  uint256 public constant BUDGET_INCENTIVE_USDC_ALLOWANCE = 850_000e6;
 
   uint256 public constant WETH_SWAP_BUDGET = 5_000 ether;
   uint256 public constant USDC_SWAP_BUDGET = 10_000_000e6;
   uint256 public constant USDT_SWAP_BUDGET = 10_000_000e6;
-  uint256 public constant USDE_SWAP_BUDGET = 1_000_000 ether;
+  uint256 public constant USDE_SWAP_BUDGET = 2_000_000 ether;
   uint256 public constant USDS_SWAP_BUDGET = 200_000 ether;
   uint256 public constant DAI_SWAP_BUDGET = 200_000 ether;
   uint256 public constant RLUSD_SWAP_BUDGET = 200_000 ether;
@@ -31,6 +36,8 @@ contract AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907 is IProposalGe
   function execute() external {
     _cancelAllowances();
     _depositEth();
+    _aaveLiquidityCommittee();
+    _growthAllowances();
     _reimbursements();
     _refreshSwapBudgets();
   }
@@ -54,6 +61,28 @@ contract AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907 is IProposalGe
       address(AaveV3Ethereum.POOL),
       address(AaveV3Ethereum.COLLECTOR),
       0
+    );
+  }
+
+  function _aaveLiquidityCommittee() internal {
+    AaveV3Ethereum.COLLECTOR.approve(
+      IERC20(AaveV3EthereumLidoAssets.GHO_A_TOKEN),
+      MiscEthereum.ALC_SAFE,
+      ALC_GHO_ALLOWANCE
+    );
+  }
+
+  function _growthAllowances() internal {
+    AaveV3Ethereum.COLLECTOR.approve(
+      IERC20(AaveV3EthereumAssets.USDC_A_TOKEN),
+      MiscEthereum.AFC_SAFE,
+      AFC_USDC_ALLOWANCE
+    );
+
+    AaveV3Ethereum.COLLECTOR.approve(
+      IERC20(AaveV3EthereumAssets.USDC_A_TOKEN),
+      MiscEthereum.BUDGET_INCENTIVE_SAFE,
+      BUDGET_INCENTIVE_USDC_ALLOWANCE
     );
   }
 

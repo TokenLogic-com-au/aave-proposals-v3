@@ -109,8 +109,65 @@ contract AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907_Test is Protoc
     );
     assertEq(
       allowanceAfter,
-      75_000 ether,
-      'TokenLogic allowance should equal the standing allowance plus the 25k audit reimbursement'
+      119_939.27 ether,
+      'TokenLogic allowance should equal the standing allowance plus the two audit reimbursements'
+    );
+  }
+
+  function test_aaveLiquidityCommitteeAllowance() public {
+    uint256 allowanceBefore = IERC20(AaveV3EthereumLidoAssets.GHO_A_TOKEN).allowance(
+      address(AaveV3Ethereum.COLLECTOR),
+      MiscEthereum.ALC_SAFE
+    );
+    assertEq(allowanceBefore, 0, 'ALC should have no aEthLidoGHO allowance before execution');
+
+    executePayload(vm, address(proposal));
+
+    uint256 allowanceAfter = IERC20(AaveV3EthereumLidoAssets.GHO_A_TOKEN).allowance(
+      address(AaveV3Ethereum.COLLECTOR),
+      MiscEthereum.ALC_SAFE
+    );
+    assertEq(
+      allowanceAfter,
+      proposal.ALC_GHO_ALLOWANCE(),
+      'ALC aEthLidoGHO allowance should be set to the six month budget'
+    );
+    assertEq(allowanceAfter, 750_000 ether, 'ALC aEthLidoGHO allowance should be 750,000');
+  }
+
+  function test_growthAllowances() public {
+    assertEq(
+      _usdcAllowanceOf(MiscEthereum.AFC_SAFE),
+      0,
+      'AFC should have no aEthUSDC allowance before execution'
+    );
+    assertEq(
+      _usdcAllowanceOf(MiscEthereum.BUDGET_INCENTIVE_SAFE),
+      0,
+      'Incentive Budget Safe should have no aEthUSDC allowance before execution'
+    );
+
+    executePayload(vm, address(proposal));
+
+    assertEq(
+      _usdcAllowanceOf(MiscEthereum.AFC_SAFE),
+      proposal.AFC_USDC_ALLOWANCE(),
+      'AFC aEthUSDC allowance should be set to the growth allowance'
+    );
+    assertEq(
+      _usdcAllowanceOf(MiscEthereum.AFC_SAFE),
+      1_500_000e6,
+      'AFC aEthUSDC allowance should be 1,500,000'
+    );
+    assertEq(
+      _usdcAllowanceOf(MiscEthereum.BUDGET_INCENTIVE_SAFE),
+      proposal.BUDGET_INCENTIVE_USDC_ALLOWANCE(),
+      'Incentive Budget Safe aEthUSDC allowance should be set to the growth allowance'
+    );
+    assertEq(
+      _usdcAllowanceOf(MiscEthereum.BUDGET_INCENTIVE_SAFE),
+      850_000e6,
+      'Incentive Budget Safe aEthUSDC allowance should be 850,000'
     );
   }
 
@@ -176,7 +233,7 @@ contract AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907_Test is Protoc
     assertEq(
       _budgetOf(AaveV3EthereumAssets.USDe_UNDERLYING),
       proposal.USDE_SWAP_BUDGET(),
-      'USDe budget should be 1M'
+      'USDe budget should be 2M'
     );
     assertEq(
       _budgetOf(AaveV3EthereumAssets.USDS_UNDERLYING),
@@ -202,5 +259,13 @@ contract AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907_Test is Protoc
 
   function _budgetOf(address token) internal view returns (uint256) {
     return IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD).tokenBudget(token);
+  }
+
+  function _usdcAllowanceOf(address spender) internal view returns (uint256) {
+    return
+      IERC20(AaveV3EthereumAssets.USDC_A_TOKEN).allowance(
+        address(AaveV3Ethereum.COLLECTOR),
+        spender
+      );
   }
 }
