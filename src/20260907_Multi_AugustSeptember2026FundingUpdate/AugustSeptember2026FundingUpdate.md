@@ -23,6 +23,8 @@ The MainnetSwapSteward and Aave Finance Committee (AFC) will continue executing 
 
 Reimburse TokenLogic for costs incurred in facilitating a second audit of the GHO ↔ sGHO two-way swap layer of the Aave V4 Reinvestment Controller. The audits performed by Trail of Bits and ChainSecurity cost 25,000 and 44,939.27 respectively, for a total of 69,939.27 aEthLidoGHO.
 
+The reimbursement of 1,818,102 to Aave Labs for the Aave V4 audit, Aave App audit and rsETH related legal expenses is executed by the Aave Finance Committee through a DAI transfer from its Safe on Avalanche, and is therefore not part of this payload.
+
 ### Asset Backed Private Credit
 
 Asset-backed private credit represents a potential growth opportunity for GHO and the Aave ecosystem. TokenLogic will support the assessment, implementation, monitoring and reporting of these arrangements, in coordination with Aave Labs and within the authority and parameters established through the applicable governance process. Specialist third parties will originate and service the underlying assets.

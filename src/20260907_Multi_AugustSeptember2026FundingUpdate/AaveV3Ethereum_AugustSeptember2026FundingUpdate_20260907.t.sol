@@ -218,41 +218,81 @@ contract AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907_Test is Protoc
     assertEq(
       _budgetOf(AaveV3EthereumAssets.WETH_UNDERLYING),
       proposal.WETH_SWAP_BUDGET(),
+      'WETH budget should match the target'
+    );
+    assertEq(
+      _budgetOf(AaveV3EthereumAssets.WETH_UNDERLYING),
+      5_000 ether,
       'WETH budget should be 5k'
     );
     assertEq(
       _budgetOf(AaveV3EthereumAssets.USDC_UNDERLYING),
       proposal.USDC_SWAP_BUDGET(),
+      'USDC budget should match the target'
+    );
+    assertEq(
+      _budgetOf(AaveV3EthereumAssets.USDC_UNDERLYING),
+      10_000_000e6,
       'USDC budget should be 10M'
     );
     assertEq(
       _budgetOf(AaveV3EthereumAssets.USDT_UNDERLYING),
       proposal.USDT_SWAP_BUDGET(),
+      'USDT budget should match the target'
+    );
+    assertEq(
+      _budgetOf(AaveV3EthereumAssets.USDT_UNDERLYING),
+      10_000_000e6,
       'USDT budget should be 10M'
     );
     assertEq(
       _budgetOf(AaveV3EthereumAssets.USDe_UNDERLYING),
       proposal.USDE_SWAP_BUDGET(),
+      'USDe budget should match the target'
+    );
+    assertEq(
+      _budgetOf(AaveV3EthereumAssets.USDe_UNDERLYING),
+      2_000_000 ether,
       'USDe budget should be 2M'
     );
     assertEq(
       _budgetOf(AaveV3EthereumAssets.USDS_UNDERLYING),
       proposal.USDS_SWAP_BUDGET(),
+      'USDS budget should match the target'
+    );
+    assertEq(
+      _budgetOf(AaveV3EthereumAssets.USDS_UNDERLYING),
+      200_000 ether,
       'USDS budget should be 0.2M'
     );
     assertEq(
       _budgetOf(AaveV3EthereumAssets.DAI_UNDERLYING),
       proposal.DAI_SWAP_BUDGET(),
+      'DAI budget should match the target'
+    );
+    assertEq(
+      _budgetOf(AaveV3EthereumAssets.DAI_UNDERLYING),
+      200_000 ether,
       'DAI budget should be 0.2M'
     );
     assertEq(
       _budgetOf(AaveV3EthereumAssets.RLUSD_UNDERLYING),
       proposal.RLUSD_SWAP_BUDGET(),
+      'rlUSD budget should match the target'
+    );
+    assertEq(
+      _budgetOf(AaveV3EthereumAssets.RLUSD_UNDERLYING),
+      200_000 ether,
       'rlUSD budget should be 0.2M'
     );
     assertEq(
       _budgetOf(AaveV3EthereumAssets.PYUSD_UNDERLYING),
       proposal.PYUSD_SWAP_BUDGET(),
+      'pyUSD budget should match the target'
+    );
+    assertEq(
+      _budgetOf(AaveV3EthereumAssets.PYUSD_UNDERLYING),
+      200_000e6,
       'pyUSD budget should be 0.2M'
     );
   }
