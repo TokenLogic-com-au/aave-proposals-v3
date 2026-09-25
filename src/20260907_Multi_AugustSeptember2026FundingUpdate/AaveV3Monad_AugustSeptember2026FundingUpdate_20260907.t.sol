@@ -44,7 +44,7 @@ contract AaveV3Monad_AugustSeptember2026FundingUpdate_20260907_Test is ProtocolV
   function test_fundsAdminRoleGranted() public {
     assertFalse(
       IAccessControl(address(AaveV3Monad.COLLECTOR)).hasRole(
-        'FUNDS_ADMIN',
+        AaveV3Monad.COLLECTOR.FUNDS_ADMIN_ROLE(),
         proposal.POOL_EXPOSURE_STEWARD()
       ),
       'steward should not have the funds admin role before execution'
@@ -54,7 +54,7 @@ contract AaveV3Monad_AugustSeptember2026FundingUpdate_20260907_Test is ProtocolV
 
     assertTrue(
       IAccessControl(address(AaveV3Monad.COLLECTOR)).hasRole(
-        'FUNDS_ADMIN',
+        AaveV3Monad.COLLECTOR.FUNDS_ADMIN_ROLE(),
         proposal.POOL_EXPOSURE_STEWARD()
       ),
       'steward should have the funds admin role after execution'

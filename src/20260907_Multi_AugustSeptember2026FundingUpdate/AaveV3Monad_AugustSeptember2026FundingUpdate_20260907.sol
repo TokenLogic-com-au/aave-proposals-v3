@@ -16,6 +16,9 @@ contract AaveV3Monad_AugustSeptember2026FundingUpdate_20260907 is IProposalGener
   address public constant POOL_EXPOSURE_STEWARD = 0x72EAfbD4331dD482f5c8135fF0452d97da6F77B0;
 
   function execute() external {
-    IAccessControl(address(AaveV3Monad.COLLECTOR)).grantRole('FUNDS_ADMIN', POOL_EXPOSURE_STEWARD);
+    IAccessControl(address(AaveV3Monad.COLLECTOR)).grantRole(
+      AaveV3Monad.COLLECTOR.FUNDS_ADMIN_ROLE(),
+      POOL_EXPOSURE_STEWARD
+    );
   }
 }
