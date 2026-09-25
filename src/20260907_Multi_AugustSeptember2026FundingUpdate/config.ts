@@ -15,7 +15,7 @@ export const config: ConfigFile = {
   marketOptions: {
     AaveV3Ethereum: {configs: {OTHERS: {}}, cache: {blockNumber: 25927734}},
     AaveV3Base: {configs: {OTHERS: {}}, cache: {blockNumber: 51612000}},
-    AaveV3Monad: {configs: {OTHERS: {}}, cache: {blockNumber: 104774356}},
+    AaveV3Monad: {configs: {OTHERS: {}}, cache: {blockNumber: 107787000}},
     AaveV3Plasma: {configs: {OTHERS: {}}, cache: {blockNumber: 32456523}},
   },
 };

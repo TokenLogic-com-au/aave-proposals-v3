@@ -16,7 +16,7 @@ contract AaveV3Monad_AugustSeptember2026FundingUpdate_20260907_Test is ProtocolV
   AaveV3Monad_AugustSeptember2026FundingUpdate_20260907 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('monad'), 104774356);
+    vm.createSelectFork(vm.rpcUrl('monad'), 107787000);
     proposal = new AaveV3Monad_AugustSeptember2026FundingUpdate_20260907();
   }
 
