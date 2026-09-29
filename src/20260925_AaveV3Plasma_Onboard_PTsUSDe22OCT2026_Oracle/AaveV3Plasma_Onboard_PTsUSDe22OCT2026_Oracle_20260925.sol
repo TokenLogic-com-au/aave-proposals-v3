@@ -1,38 +1,35 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {AaveV3Ethereum, AaveV3EthereumAssets, AaveV3EthereumEModes} from 'aave-address-book/AaveV3Ethereum.sol';
-import {GovernanceV3Ethereum} from 'aave-address-book/GovernanceV3Ethereum.sol';
-import {MiscEthereum} from 'aave-address-book/MiscEthereum.sol';
+import {AaveV3Plasma, AaveV3PlasmaAssets, AaveV3PlasmaEModes} from 'aave-address-book/AaveV3Plasma.sol';
+import {MiscPlasma} from 'aave-address-book/MiscPlasma.sol';
 import {AgentHubAgentActivationPayload} from '../helpers/agent-hub/AgentHubAgentActivationPayload.sol';
 import {AgentHubConfigs} from '../helpers/agent-hub/Configs.sol';
 
 /**
- * @title Onboard_PTsrUSDe22OCT2026_Oracle
+ * @title Onboard_PTsUSDe22OCT2026_Oracle
  * @author LlamaRisk
  * - Snapshot: direct-to-AIP
- * - Discussion: https://governance.aave.com/t/arfc-upgrade-pt-risk-oracle-to-protocol-owned-infrastructure-on-cre/25119
+ * - Discussion: https://governance.aave.com/t/arfc-upgrade-pt-risk-oracle-to-protocol-owned-infrastructure-on-cre/25119/5
  */
-contract AaveV3Ethereum_Onboard_PTsrUSDe22OCT2026_Oracle_20260817 is
-  AgentHubAgentActivationPayload
-{
+contract AaveV3Plasma_Onboard_PTsUSDe22OCT2026_Oracle_20260925 is AgentHubAgentActivationPayload {
   /// @dev Protocol guardian, so a misbehaving agent can be disabled without a governance cycle.
   ///      Registration stays governance-only: `registerAgent` and `setAgentAdmin` are `onlyOwner`.
-  address public constant AGENT_ADMIN = MiscEthereum.PROTOCOL_GUARDIAN;
+  address public constant AGENT_ADMIN = MiscPlasma.PROTOCOL_GUARDIAN;
 
   function execute() external {
     AgentHubConfig memory agentHubConfig = AgentHubConfig({
-      aclManager: address(AaveV3Ethereum.ACL_MANAGER),
-      agentHub: MiscEthereum.AGENT_HUB,
-      rangeValidationModule: MiscEthereum.RANGE_VALIDATION_MODULE,
+      aclManager: address(AaveV3Plasma.ACL_MANAGER),
+      agentHub: MiscPlasma.AGENT_HUB,
+      rangeValidationModule: MiscPlasma.RANGE_VALIDATION_MODULE,
       agentAdmin: AGENT_ADMIN,
-      riskOracle: MiscEthereum.LLAMARISK_RISK_ORACLE
+      riskOracle: MiscPlasma.LLAMARISK_RISK_ORACLE
     });
 
-    address discountRateAgent = MiscEthereum.LLAMARISK_PT_DISCOUNT_RATE_AGENT;
+    address discountRateAgent = MiscPlasma.LLAMARISK_PT_DISCOUNT_RATE_AGENT;
 
     address[] memory ptMarkets = new address[](1);
-    ptMarkets[0] = AaveV3EthereumAssets.PT_srUSDe_22OCT2026_UNDERLYING;
+    ptMarkets[0] = AaveV3PlasmaAssets.PT_sUSDE_22OCT2026_UNDERLYING;
 
     uint256 discountAgentId = _registerAgentAndGrantRole(
       agentHubConfig,
@@ -46,14 +43,12 @@ contract AaveV3Ethereum_Onboard_PTsrUSDe22OCT2026_Oracle_20260817 is
       })
     );
 
-    address eModeAgent = MiscEthereum.LLAMARISK_PT_EMODE_AGENT;
+    address eModeAgent = MiscPlasma.LLAMARISK_PT_EMODE_AGENT;
 
     address[] memory eModeMarkets = new address[](2);
     // The AgentHub represents eMode category ids as address values.
-    eModeMarkets[0] = address(
-      uint160(AaveV3EthereumEModes.sUSDe_PT_srUSDe_22OCT2026__USDC_USDT_USDe)
-    );
-    eModeMarkets[1] = address(uint160(AaveV3EthereumEModes.sUSDe_PT_srUSDe_22OCT2026__USDe));
+    eModeMarkets[0] = address(uint160(AaveV3PlasmaEModes.sUSDe_PT_sUSDE_22OCT2026__USDT0_USDe_GHO));
+    eModeMarkets[1] = address(uint160(AaveV3PlasmaEModes.sUSDe_PT_sUSDE_22OCT2026__USDe));
 
     uint256 eModeAgentId = _registerAgentAndGrantRole(
       agentHubConfig,
@@ -63,7 +58,7 @@ contract AaveV3Ethereum_Onboard_PTsrUSDe22OCT2026_Oracle_20260817 is
         minimumDelay: AgentHubConfigs.EMODE_MINIMUM_DELAY,
         updateType: string.concat(AgentHubConfigs.EMODE_UPDATE_TYPE, UPDATE_TYPE_SUFFIX),
         // The eMode agent executes updates through the Aave ConfigEngine.
-        agentContext: abi.encode(AaveV3Ethereum.CONFIG_ENGINE),
+        agentContext: abi.encode(AaveV3Plasma.CONFIG_ENGINE),
         allowedMarkets: eModeMarkets
       })
     );
