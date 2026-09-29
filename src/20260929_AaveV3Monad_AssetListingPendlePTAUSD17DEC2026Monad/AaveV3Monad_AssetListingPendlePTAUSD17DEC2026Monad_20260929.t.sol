@@ -23,7 +23,7 @@ contract AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad_20260929_Test is Pro
   AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad_20260929 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('monad'), 109049769);
+    vm.createSelectFork(vm.rpcUrl('monad'), 109065127);
     proposal = new AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad_20260929();
   }
 
