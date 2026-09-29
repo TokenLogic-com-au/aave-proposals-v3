@@ -9,7 +9,7 @@ export const config: ConfigFile = {
     date: '20260929',
     author: '@TokenLogic',
     discussion:
-      'https://governance.aave.com/t/direct-to-aip-onboard-pt-ausd-17dec2026-to-aave-v3-monad/25999',
+      'https://governance.aave.com/t/direct-to-aip-onboard-pt-ausd-17dec2026-to-aave-v3-monad-instance/25701',
     snapshot: 'Direct-to-AIP',
   },
   marketOptions: {

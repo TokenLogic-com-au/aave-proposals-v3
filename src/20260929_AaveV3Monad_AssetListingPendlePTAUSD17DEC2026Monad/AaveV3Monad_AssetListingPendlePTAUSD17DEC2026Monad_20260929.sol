@@ -12,7 +12,7 @@ import {SafeERC20} from 'openzeppelin-contracts/contracts/token/ERC20/utils/Safe
  * @title Onboard PT-AUSD-17DEC2026 to Aave V3 Monad
  * @author @TokenLogic
  * - Snapshot: Direct-to-AIP
- * - Discussion: https://governance.aave.com/t/direct-to-aip-onboard-pt-ausd-17dec2026-to-aave-v3-monad/25999
+ * - Discussion: https://governance.aave.com/t/direct-to-aip-onboard-pt-ausd-17dec2026-to-aave-v3-monad-instance/25701
  */
 contract AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad_20260929 is AaveV3PayloadMonad {
   using SafeERC20 for IERC20;

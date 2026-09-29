@@ -18,6 +18,8 @@ import {IPendlePriceCapAdapter} from '../interfaces/IPendlePriceCapAdapter.sol';
 /**
  * @dev Test for AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad_20260929
  * command: FOUNDRY_PROFILE=test forge test --match-path=src/20260929_AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad/AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad_20260929.t.sol -vv
+ * forge-config: default.networks.network = "monad"
+ * forge-config: default.hardfork = "monad:monadten"
  */
 contract AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad_20260929_Test is ProtocolV3TestBase {
   AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad_20260929 internal proposal;
