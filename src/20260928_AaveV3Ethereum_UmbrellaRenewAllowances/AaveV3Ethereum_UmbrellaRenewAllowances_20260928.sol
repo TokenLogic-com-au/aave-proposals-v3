@@ -16,14 +16,14 @@ import {UmbrellaEthereum} from 'aave-address-book/UmbrellaEthereum.sol';
  *         continue at the current rate without interruption.
  */
 contract AaveV3Ethereum_UmbrellaRenewAllowances_20260928 is IProposalGenericExecutor {
-  /// @notice Target allowance for stkwaEthUSDT.v1 rewards (USDT, 6 decimals).
-  uint256 public constant USDT_TARGET_ALLOWANCE = 500_000e6;
+  /// @notice Absolute allowance for stkwaEthUSDT.v1 rewards (USDT, 6 decimals).
+  uint256 public constant USDT_ABSOLUTE_ALLOWANCE = 500_000e6;
 
-  /// @notice Target allowance for stkwaEthUSDC.v1 rewards (USDC, 6 decimals).
-  uint256 public constant USDC_TARGET_ALLOWANCE = 475_000e6;
+  /// @notice Absolute allowance for stkwaEthUSDC.v1 rewards (USDC, 6 decimals).
+  uint256 public constant USDC_ABSOLUTE_ALLOWANCE = 475_000e6;
 
-  /// @notice Target allowance for stkwaEthWETH.v1 rewards (WETH, 18 decimals).
-  uint256 public constant WETH_TARGET_ALLOWANCE = 160 ether;
+  /// @notice Absolute allowance for stkwaEthWETH.v1 rewards (WETH, 18 decimals).
+  uint256 public constant WETH_ABSOLUTE_ALLOWANCE = 160 ether;
 
   /// @notice Renews the Collector -> Umbrella Rewards Controller allowances
   ///         by setting them to the absolute targets stated in the forum post,
@@ -34,19 +34,19 @@ contract AaveV3Ethereum_UmbrellaRenewAllowances_20260928 is IProposalGenericExec
     AaveV3Ethereum.COLLECTOR.approve(
       IERC20(AaveV3EthereumAssets.USDT_A_TOKEN),
       rewardsController,
-      USDT_TARGET_ALLOWANCE
+      USDT_ABSOLUTE_ALLOWANCE
     );
 
     AaveV3Ethereum.COLLECTOR.approve(
       IERC20(AaveV3EthereumAssets.USDC_A_TOKEN),
       rewardsController,
-      USDC_TARGET_ALLOWANCE
+      USDC_ABSOLUTE_ALLOWANCE
     );
 
     AaveV3Ethereum.COLLECTOR.approve(
       IERC20(AaveV3EthereumAssets.WETH_A_TOKEN),
       rewardsController,
-      WETH_TARGET_ALLOWANCE
+      WETH_ABSOLUTE_ALLOWANCE
     );
   }
 }

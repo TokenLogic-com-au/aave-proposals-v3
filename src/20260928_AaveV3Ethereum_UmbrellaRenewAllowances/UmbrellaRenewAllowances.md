@@ -14,6 +14,10 @@ Umbrella reward allowances are due for renewal. As stakers claim rewards, the Re
 
 This renewal accounts for rewards accrued by current and former stakers, together with emissions scheduled through 2 December 2026. The Collector holds sufficient balances of the reward assets to fund these payments.
 
+GHO emissions ended with AIP 507. The existing allowance of 52,730 GHO covers the 22,663 GHO still claimable and remains unchanged.
+
+A separate proposal will renew rewards ahead of 2 December 2026. That renewal will also account for any rewards still unclaimed at the time.
+
 ## Specification
 
 ### Proposed Allowances
@@ -27,10 +31,6 @@ The allowances are sized using unclaimed rewards as of 25 September 2026 and the
 | aEthWETH     | 67.26              | 87.53                              | 154.79                            | 160           |
 
 These amounts replace the remaining allowances; they are not additional amounts.
-
-GHO emissions ended with AIP 507. The existing allowance of 52,730 GHO covers the 22,663 GHO still claimable and remains unchanged.
-
-A separate proposal will renew rewards ahead of 2 December 2026. That renewal will also account for any rewards still unclaimed at the time.
 
 ## References
 
