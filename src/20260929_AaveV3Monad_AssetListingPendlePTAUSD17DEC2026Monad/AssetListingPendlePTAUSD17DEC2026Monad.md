@@ -11,7 +11,7 @@ This AIP lists PT-AUSD-17DEC2026, the Pendle Principal Token for AUSD maturing o
 
 ## Motivation
 
-PT-AUSD-8OCT2026 matures on 8 October 2026. This AIP lists the next maturity, PT-AUSD-17DEC2026, with the same launch parameters, so that users can roll fixed-yield AUSD positions used as collateral against stablecoin debt into the new maturity. PT-AUSD-8OCT2026 remains listed through its maturity, unchanged.
+PT-AUSD-8OCT2026 matures on 8th of October 2026. This AIP lists the next maturity, PT-AUSD-17DEC2026, with the same launch parameters, so that users can roll fixed-yield AUSD positions used as collateral against stablecoin debt into the new maturity. PT-AUSD-8OCT2026 remains listed through its maturity, unchanged.
 
 The PT is priced by a new linear discount oracle for the 17 December 2026 maturity (`PT Capped AUSD AUSD/USD linear discount 17DEC2026`), with `initialDiscountRatePerYear` 6.661% and `maxDiscountRatePerYear` 8.829%.
 
