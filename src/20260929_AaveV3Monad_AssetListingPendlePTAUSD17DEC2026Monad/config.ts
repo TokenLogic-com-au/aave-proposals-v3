@@ -11,6 +11,7 @@ export const config: ConfigFile = {
     discussion:
       'https://governance.aave.com/t/direct-to-aip-onboard-pt-ausd-17dec2026-to-aave-v3-monad-instance/25701',
     snapshot: 'Direct-to-AIP',
+    votingNetwork: 'AVALANCHE',
   },
   marketOptions: {
     AaveV3Monad: {
