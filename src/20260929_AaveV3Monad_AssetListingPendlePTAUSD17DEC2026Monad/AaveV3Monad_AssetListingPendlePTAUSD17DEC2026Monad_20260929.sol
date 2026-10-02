@@ -20,8 +20,8 @@ contract AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad_20260929 is AaveV3Pa
   // https://monadscan.com/address/0x8B562578b2f9Aa8C14cCda3c5d6CBCEaD3B06a57
   address public constant PT_AUSD_17DEC2026 = 0x8B562578b2f9Aa8C14cCda3c5d6CBCEaD3B06a57;
   uint256 public constant PT_AUSD_17DEC2026_SEED_AMOUNT = 100e6;
-  // https://monadscan.com/address/0x608250bbc11eeaeD31794f976946399eB49bd57c
-  address public constant PT_AUSD_17DEC2026_PRICE_FEED = 0x608250bbc11eeaeD31794f976946399eB49bd57c;
+  // https://monadscan.com/address/0x4dc9Ee8d739411242303f7F78C6610d5B0371a2C
+  address public constant PT_AUSD_17DEC2026_PRICE_FEED = 0x4dc9Ee8d739411242303f7F78C6610d5B0371a2C;
 
   function _postExecute() internal override {
     IERC20(PT_AUSD_17DEC2026).forceApprove(
@@ -49,7 +49,7 @@ contract AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad_20260929 is AaveV3Pa
       liqThreshold: 0,
       liqBonus: 0,
       reserveFactor: 20_00,
-      supplyCap: 20_000_000,
+      supplyCap: 30_000_000,
       borrowCap: 1,
       liqProtocolFee: 10_00,
       rateStrategyParams: IAaveV3ConfigEngine.InterestRateInputData({
@@ -73,20 +73,21 @@ contract AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad_20260929 is AaveV3Pa
       memory eModeCreations = new IAaveV3ConfigEngine.EModeCategoryCreation[](1);
 
     address[] memory collateralAssets_PT_AUSD_17DEC2026__Stablecoins = new address[](1);
-    address[] memory borrowableAssets_PT_AUSD_17DEC2026__Stablecoins = new address[](4);
+    address[] memory borrowableAssets_PT_AUSD_17DEC2026__Stablecoins = new address[](5);
 
     collateralAssets_PT_AUSD_17DEC2026__Stablecoins[0] = PT_AUSD_17DEC2026;
     borrowableAssets_PT_AUSD_17DEC2026__Stablecoins[0] = AaveV3MonadAssets.USDT0_UNDERLYING;
     borrowableAssets_PT_AUSD_17DEC2026__Stablecoins[1] = AaveV3MonadAssets.USDC_UNDERLYING;
     borrowableAssets_PT_AUSD_17DEC2026__Stablecoins[2] = AaveV3MonadAssets.GHO_UNDERLYING;
     borrowableAssets_PT_AUSD_17DEC2026__Stablecoins[3] = AaveV3MonadAssets.USDe_UNDERLYING;
+    borrowableAssets_PT_AUSD_17DEC2026__Stablecoins[4] = AaveV3MonadAssets.mUSD_UNDERLYING;
 
     eModeCreations[0] = IAaveV3ConfigEngine.EModeCategoryCreation({
       ltv: 93_00,
       liqThreshold: 95_00,
-      liqBonus: 2_44,
+      liqBonus: 2_62,
       label: 'PT_AUSD_17DEC2026__Stablecoins',
-      isolated: true,
+      isolated: false,
       collaterals: collateralAssets_PT_AUSD_17DEC2026__Stablecoins,
       borrowables: borrowableAssets_PT_AUSD_17DEC2026__Stablecoins
     });

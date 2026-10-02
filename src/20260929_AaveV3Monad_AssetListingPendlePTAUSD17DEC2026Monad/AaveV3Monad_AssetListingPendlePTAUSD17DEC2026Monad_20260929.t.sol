@@ -25,7 +25,7 @@ contract AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad_20260929_Test is Pro
   AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad_20260929 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('monad'), 109065127);
+    vm.createSelectFork(vm.rpcUrl('monad'), 109873906);
     proposal = new AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad_20260929();
   }
 
@@ -72,8 +72,8 @@ contract AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad_20260929_Test is Pro
     IPendlePriceCapAdapter adapter = IPendlePriceCapAdapter(
       proposal.PT_AUSD_17DEC2026_PRICE_FEED()
     );
-    assertEq(adapter.discountRatePerYear(), 66610000000000000);
-    assertEq(adapter.MAX_DISCOUNT_RATE_PER_YEAR(), 88290000000000000);
+    assertEq(adapter.discountRatePerYear(), 57450000000000000);
+    assertEq(adapter.MAX_DISCOUNT_RATE_PER_YEAR(), 88040000000000000);
     assertEq(adapter.MATURITY(), 1797465600);
     assertEq(adapter.PENDLE_PRINCIPAL_TOKEN(), proposal.PT_AUSD_17DEC2026());
     assertEq(adapter.ASSET_TO_USD_AGGREGATOR(), AaveV3MonadAssets.AUSD_ORACLE);
@@ -86,14 +86,14 @@ contract AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad_20260929_Test is Pro
       listing: IAaveV3ConfigEngine.Listing({
         asset: 0x8B562578b2f9Aa8C14cCda3c5d6CBCEaD3B06a57,
         assetSymbol: 'PT-AUSD-17DEC2026',
-        priceFeed: 0x608250bbc11eeaeD31794f976946399eB49bd57c,
+        priceFeed: 0x4dc9Ee8d739411242303f7F78C6610d5B0371a2C,
         enabledToBorrow: EngineFlags.DISABLED,
         flashloanable: EngineFlags.ENABLED,
         ltv: 0,
         liqThreshold: 0,
         liqBonus: 0,
         reserveFactor: 20_00,
-        supplyCap: 20_000_000,
+        supplyCap: 30_000_000,
         borrowCap: 1,
         liqProtocolFee: 10_00,
         rateStrategyParams: IAaveV3ConfigEngine.InterestRateInputData({
@@ -116,8 +116,8 @@ contract AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad_20260929_Test is Pro
       id: eMode_PT_AUSD_17DEC2026__Stablecoins,
       ltv: 93_00,
       liquidationThreshold: 95_00,
-      liquidationBonus: 100_00 + 2_44,
-      isolated: true
+      liquidationBonus: 100_00 + 2_62,
+      isolated: false
     });
 
     address[] memory collaterals_PT_AUSD_17DEC2026__Stablecoins = new address[](1);
@@ -127,11 +127,12 @@ contract AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad_20260929_Test is Pro
       _toBitmap(collaterals_PT_AUSD_17DEC2026__Stablecoins)
     );
 
-    address[] memory borrowables_PT_AUSD_17DEC2026__Stablecoins = new address[](4);
+    address[] memory borrowables_PT_AUSD_17DEC2026__Stablecoins = new address[](5);
     borrowables_PT_AUSD_17DEC2026__Stablecoins[0] = AaveV3MonadAssets.USDT0_UNDERLYING;
     borrowables_PT_AUSD_17DEC2026__Stablecoins[1] = AaveV3MonadAssets.USDC_UNDERLYING;
     borrowables_PT_AUSD_17DEC2026__Stablecoins[2] = AaveV3MonadAssets.GHO_UNDERLYING;
     borrowables_PT_AUSD_17DEC2026__Stablecoins[3] = AaveV3MonadAssets.USDe_UNDERLYING;
+    borrowables_PT_AUSD_17DEC2026__Stablecoins[4] = AaveV3MonadAssets.mUSD_UNDERLYING;
     assertEq(
       AaveV3Monad.POOL.getEModeCategoryBorrowableBitmap(eMode_PT_AUSD_17DEC2026__Stablecoins),
       _toBitmap(borrowables_PT_AUSD_17DEC2026__Stablecoins)

@@ -20,7 +20,7 @@ export const config: ConfigFile = {
           {
             assetSymbol: 'PT_AUSD_17DEC2026',
             decimals: 6,
-            priceFeed: '0x608250bbc11eeaeD31794f976946399eB49bd57c',
+            priceFeed: '0x4dc9Ee8d739411242303f7F78C6610d5B0371a2C',
             ltv: '0',
             liqThreshold: '0',
             liqBonus: '0',
@@ -28,7 +28,7 @@ export const config: ConfigFile = {
             enabledToBorrow: 'DISABLED',
             flashloanable: 'ENABLED',
             reserveFactor: '20',
-            supplyCap: '20000000',
+            supplyCap: '30000000',
             borrowCap: '1',
             rateStrategyParams: {
               optimalUtilizationRate: '45',
@@ -44,11 +44,11 @@ export const config: ConfigFile = {
           {
             ltv: '93',
             liqThreshold: '95',
-            liqBonus: '2.44',
+            liqBonus: '2.62',
             label: 'PT_AUSD_17DEC2026__Stablecoins',
-            isolated: 'ENABLED',
+            isolated: 'DISABLED',
             collateralAssets: ['PT_AUSD_17DEC2026'],
-            borrowableAssets: ['USDT0', 'USDC', 'GHO', 'USDe'],
+            borrowableAssets: ['USDT0', 'USDC', 'GHO', 'USDe', 'mUSD'],
           },
         ],
       },

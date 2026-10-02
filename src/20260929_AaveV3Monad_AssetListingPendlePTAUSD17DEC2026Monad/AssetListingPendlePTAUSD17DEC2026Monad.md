@@ -11,9 +11,9 @@ This AIP lists PT-AUSD-17DEC2026, the Pendle Principal Token for AUSD maturing o
 
 ## Motivation
 
-PT-AUSD-8OCT2026 matures on 8th of October 2026. This AIP lists the next maturity, PT-AUSD-17DEC2026, with the same launch parameters, so that users can roll fixed-yield AUSD positions used as collateral against stablecoin debt into the new maturity. PT-AUSD-8OCT2026 remains listed through its maturity, unchanged.
+PT-AUSD-8OCT2026 matures on 8th of October 2026. This AIP lists the next maturity, PT-AUSD-17DEC2026, with the launch parameters recommended by LlamaRisk, so that users can roll fixed-yield AUSD positions used as collateral against stablecoin debt into the new maturity. PT-AUSD-8OCT2026 remains listed through its maturity, unchanged.
 
-The PT is priced by a new linear discount oracle for the 17 December 2026 maturity (`PT Capped AUSD AUSD/USD linear discount 17DEC2026`), with `initialDiscountRatePerYear` 6.661% and `maxDiscountRatePerYear` 8.829%.
+The PT is priced by a new linear discount oracle for the 17 December 2026 maturity (`PT Capped AUSD AUSD/USD linear discount 17DEC2026`), with `initialDiscountRatePerYear` 5.745% and `maxDiscountRatePerYear` 8.804%.
 
 ## Specification
 
@@ -29,9 +29,9 @@ The PT is priced by a new linear discount oracle for the 17 December 2026 maturi
 
 **New eMode**:
 
-| eMode                            | Collateral        | Borrowable             | LTV | LT  | Liq. Bonus | Isolated |
-| -------------------------------- | ----------------- | ---------------------- | --- | --- | ---------- | -------- |
-| PT_AUSD_17DEC2026\_\_Stablecoins | PT-AUSD-17DEC2026 | USDT0, USDC, GHO, USDe | 93% | 95% | 2.44%      | Yes      |
+| eMode                            | Collateral        | Borrowable                   | LTV | LT  | Liq. Bonus | Isolated |
+| -------------------------------- | ----------------- | ---------------------------- | --- | --- | ---------- | -------- |
+| PT_AUSD_17DEC2026\_\_Stablecoins | PT-AUSD-17DEC2026 | USDT0, USDC, GHO, USDe, mUSD | 93% | 95% | 2.62%      | No       |
 
 The table below illustrates the configured risk parameters for **PT_AUSD_17DEC2026**
 
@@ -40,7 +40,7 @@ The table below illustrates the configured risk parameters for **PT_AUSD_17DEC20
 | Isolation Mode            |                                                                                                                     No |
 | Borrowable                |                                                                                                                     No |
 | Collateral Enabled        |                                                                                                       No (E-Mode only) |
-| Supply Cap                |                                                                                                             20,000,000 |
+| Supply Cap                |                                                                                                             30,000,000 |
 | Borrow Cap                |                                                                                                                      1 |
 | Debt Ceiling              |                                                                                                                    N/A |
 | LTV                       |                                                                                                                     0% |
@@ -53,15 +53,15 @@ The table below illustrates the configured risk parameters for **PT_AUSD_17DEC20
 | Variable Rate Slope 2     |                                                                                                                   300% |
 | Optimal Utilization       |                                                                                                                    45% |
 | Flashloanable             |                                                                                                                    Yes |
-| Oracle                    | [0x608250bbc11eeaeD31794f976946399eB49bd57c](https://monadscan.com/address/0x608250bbc11eeaeD31794f976946399eB49bd57c) |
+| Oracle                    | [0x4dc9Ee8d739411242303f7F78C6610d5B0371a2C](https://monadscan.com/address/0x4dc9Ee8d739411242303f7F78C6610d5B0371a2C) |
 
 **Linear Discount Rate Oracle**
 
 | Parameter                  | Value                                                                                                                  |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| initialDiscountRatePerYear | 6.661%                                                                                                                 |
-| maxDiscountRatePerYear     | 8.829%                                                                                                                 |
-| Oracle                     | [0x608250bbc11eeaeD31794f976946399eB49bd57c](https://monadscan.com/address/0x608250bbc11eeaeD31794f976946399eB49bd57c) |
+| initialDiscountRatePerYear | 5.745%                                                                                                                 |
+| maxDiscountRatePerYear     | 8.804%                                                                                                                 |
+| Oracle                     | [0x4dc9Ee8d739411242303f7F78C6610d5B0371a2C](https://monadscan.com/address/0x4dc9Ee8d739411242303f7F78C6610d5B0371a2C) |
 
 ## References
 
