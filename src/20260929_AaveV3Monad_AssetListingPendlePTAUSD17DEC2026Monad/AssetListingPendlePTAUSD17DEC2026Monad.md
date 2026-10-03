@@ -2,7 +2,6 @@
 title: "Onboard PT-AUSD-17DEC2026 to Aave V3 Monad"
 author: "@TokenLogic"
 discussions: "https://governance.aave.com/t/direct-to-aip-onboard-pt-ausd-17dec2026-to-aave-v3-monad-instance/25701"
-snapshot: "Direct-to-AIP"
 ---
 
 ## Simple Summary
