@@ -65,8 +65,8 @@ The table below illustrates the configured risk parameters for **PT_AUSD_17DEC20
 
 ## References
 
-- Implementation: [AaveV3Monad](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260929_AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad/AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad_20260929.sol)
-- Tests: [AaveV3Monad](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260929_AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad/AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad_20260929.t.sol)
+- Implementation: [AaveV3Monad](https://github.com/aave-dao/aave-proposals-v3/blob/f85e4661dfc815cb16b97865875bb0db814c957a/src/20260929_AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad/AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad_20260929.sol)
+- Tests: [AaveV3Monad](https://github.com/aave-dao/aave-proposals-v3/blob/f85e4661dfc815cb16b97865875bb0db814c957a/src/20260929_AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad/AaveV3Monad_AssetListingPendlePTAUSD17DEC2026Monad_20260929.t.sol)
 - [Snapshot](Direct-to-AIP)
 - [Discussion](https://governance.aave.com/t/direct-to-aip-onboard-pt-ausd-17dec2026-to-aave-v3-monad-instance/25701)
 
