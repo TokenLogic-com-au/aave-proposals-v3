@@ -18,7 +18,7 @@ contract AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907_Test is Protoc
   AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('mainnet'), 25927734);
+    vm.createSelectFork(vm.rpcUrl('mainnet'), 26140005);
     proposal = new AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907();
   }
 
@@ -296,7 +296,44 @@ contract AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907_Test is Protoc
       'pyUSD budget should be 0.2M'
     );
   }
+  function test_bugBounty() public {
+    uint256 balanceCollectorBefore = IERC20(AaveV3EthereumAssets.GHO_UNDERLYING).balanceOf(
+      address(AaveV3Ethereum.COLLECTOR)
+    );
 
+    // Validate the Collector has enough GHO tokens
+    assertGe(balanceCollectorBefore, proposal.BUGBOUNTY_AMOUNT() + proposal.BUGBOUNTY_FEE());
+
+    uint256 balanceBeforeRecipient = IERC20(AaveV3EthereumAssets.GHO_UNDERLYING).balanceOf(
+      proposal.BUGBOUNTY_RECEIVER()
+    );
+
+    uint256 balanceBeforeImmunefi = IERC20(AaveV3EthereumAssets.GHO_UNDERLYING).balanceOf(
+      proposal.IMMUNEFI()
+    );
+
+    executePayload(vm, address(proposal));
+
+    uint256 balanceAfterRecipient = IERC20(AaveV3EthereumAssets.GHO_UNDERLYING).balanceOf(
+      proposal.BUGBOUNTY_RECEIVER()
+    );
+
+    uint256 balanceAfterImmunefi = IERC20(AaveV3EthereumAssets.GHO_UNDERLYING).balanceOf(
+      proposal.IMMUNEFI()
+    );
+
+    assertEq(balanceAfterRecipient, balanceBeforeRecipient + proposal.BUGBOUNTY_AMOUNT());
+    assertEq(balanceAfterImmunefi, balanceBeforeImmunefi + proposal.BUGBOUNTY_FEE());
+
+    uint256 balanceCollectorAfter = IERC20(AaveV3EthereumAssets.GHO_UNDERLYING).balanceOf(
+      address(AaveV3Ethereum.COLLECTOR)
+    );
+
+    assertEq(
+      balanceCollectorAfter,
+      balanceCollectorBefore - proposal.BUGBOUNTY_AMOUNT() - proposal.BUGBOUNTY_FEE()
+    );
+  }
   function _budgetOf(address token) internal view returns (uint256) {
     return IMainnetSwapSteward(AaveV3Ethereum.COLLECTOR_SWAP_STEWARD).tokenBudget(token);
   }

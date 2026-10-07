@@ -129,6 +129,13 @@ Grant the `FUNDS_ADMIN` role on the Aave V3 Plasma Collector to the newly deploy
 
 Steward: `0xB5c5D35553826d681F3f3CC5Bae6cfA0446dE706`
 
+### Bug Bounty
+
+- 5,000 GHO to `0xf648b13390BBfC37924CdAFCa4DED0893587BF39`
+- $500 GHO to `0x7119f398b6C06095c6E8964C1f58e7C1BAa79E18` (immunefi.eth).
+
+Reference: https://governance.aave.com/t/aave-labs-request-for-bounty-payout-october-2026/25804
+
 ## References
 
 - Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260907_Multi_AugustSeptember2026FundingUpdate/AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907.sol), [AaveV3Base](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260907_Multi_AugustSeptember2026FundingUpdate/AaveV3Base_AugustSeptember2026FundingUpdate_20260907.sol), [AaveV3Monad](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260907_Multi_AugustSeptember2026FundingUpdate/AaveV3Monad_AugustSeptember2026FundingUpdate_20260907.sol), [AaveV3Plasma](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20260907_Multi_AugustSeptember2026FundingUpdate/AaveV3Plasma_AugustSeptember2026FundingUpdate_20260907.sol)

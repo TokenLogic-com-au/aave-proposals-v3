@@ -19,6 +19,14 @@ import {IMainnetSwapSteward} from 'src/interfaces/IMainnetSwapSteward.sol';
 contract AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907 is IProposalGenericExecutor {
   uint256 public constant REIMBURSEMENTS_GHO_AMOUNT = 69_939.27 ether;
 
+  // https://etherscan.io/address/0xf648b13390BBfC37924CdAFCa4DED0893587BF39
+  address public constant BUGBOUNTY_RECEIVER = 0xf648b13390BBfC37924CdAFCa4DED0893587BF39;
+
+  // https://etherscan.io/address/0x7119f398b6C06095c6E8964C1f58e7C1BAa79E18
+  address public constant IMMUNEFI = 0x7119f398b6C06095c6E8964C1f58e7C1BAa79E18;
+  uint256 public constant BUGBOUNTY_AMOUNT = 5_000 ether;
+  uint256 public constant BUGBOUNTY_FEE = 500 ether;
+
   uint256 public constant ALC_GHO_ALLOWANCE = 750_000 ether;
 
   uint256 public constant AFC_USDC_ALLOWANCE = 1_500_000e6;
@@ -40,6 +48,7 @@ contract AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907 is IProposalGe
     _growthAllowances();
     _reimbursements();
     _refreshSwapBudgets();
+    _bugBounty();
   }
 
   function _cancelAllowances() internal {
@@ -124,5 +133,19 @@ contract AaveV3Ethereum_AugustSeptember2026FundingUpdate_20260907 is IProposalGe
         budget - currentBudget
       );
     }
+  }
+
+  function _bugBounty() internal {
+    AaveV3Ethereum.COLLECTOR.transfer(
+      IERC20(AaveV3EthereumAssets.GHO_UNDERLYING),
+      BUGBOUNTY_RECEIVER,
+      BUGBOUNTY_AMOUNT
+    );
+
+    AaveV3Ethereum.COLLECTOR.transfer(
+      IERC20(AaveV3EthereumAssets.GHO_UNDERLYING),
+      IMMUNEFI,
+      BUGBOUNTY_FEE
+    );
   }
 }
