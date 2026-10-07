@@ -11,6 +11,7 @@ import {AaveV3Monad_AugustSeptember2026FundingUpdate_20260907} from './AaveV3Mon
 /**
  * @dev Test for AaveV3Monad_AugustSeptember2026FundingUpdate_20260907
  * command: FOUNDRY_PROFILE=test forge test --match-path=src/20260907_Multi_AugustSeptember2026FundingUpdate/AaveV3Monad_AugustSeptember2026FundingUpdate_20260907.t.sol -vv
+ * forge-config: default.networks.network = "monad"
  */
 contract AaveV3Monad_AugustSeptember2026FundingUpdate_20260907_Test is ProtocolV3TestBase {
   AaveV3Monad_AugustSeptember2026FundingUpdate_20260907 internal proposal;

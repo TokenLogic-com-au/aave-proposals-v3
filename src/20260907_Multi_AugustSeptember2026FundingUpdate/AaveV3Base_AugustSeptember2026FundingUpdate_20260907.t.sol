@@ -11,6 +11,9 @@ import {AaveV3Base_AugustSeptember2026FundingUpdate_20260907} from './AaveV3Base
 /**
  * @dev Test for AaveV3Base_AugustSeptember2026FundingUpdate_20260907
  * command: FOUNDRY_PROFILE=test forge test --match-path=src/20260907_Multi_AugustSeptember2026FundingUpdate/AaveV3Base_AugustSeptember2026FundingUpdate_20260907.t.sol -vv
+ * forge-config: default.networks.network = "base"
+ * forge-config: default.hardfork = "base:beryl"
+ * forge-config: default.isolate = false
  */
 contract AaveV3Base_AugustSeptember2026FundingUpdate_20260907_Test is ProtocolV3TestBase {
   AaveV3Base_AugustSeptember2026FundingUpdate_20260907 internal proposal;
