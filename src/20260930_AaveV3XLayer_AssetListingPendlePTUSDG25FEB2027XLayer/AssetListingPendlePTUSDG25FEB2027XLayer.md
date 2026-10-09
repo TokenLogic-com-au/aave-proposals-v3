@@ -24,7 +24,7 @@ PT-USDG-29OCT2026 keeps its existing parameters and eMode configurations during 
 
 | Field             | Value                                                                                                                           |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| Asset             | PT-USDG-25FEB2027                                                                                                               |
+| Asset             | [PT-USDG-25FEB2027](https://www.oklink.com/x-layer/address/0x5eA1F184af5Ced57725213D8267B5c4C834557D4)                          |
 | PT token          | [0x5eA1F184af5Ced57725213D8267B5c4C834557D4](https://www.oklink.com/x-layer/address/0x5eA1F184af5Ced57725213D8267B5c4C834557D4) |
 | Pendle market     | [0xb70BE417526707C8EBf5f1a79E4876557639B01d](https://www.oklink.com/x-layer/address/0xb70BE417526707C8EBf5f1a79E4876557639B01d) |
 | SY token          | [0x1F336F899f77B084133bc14a81170837ED618D1b](https://www.oklink.com/x-layer/address/0x1F336F899f77B084133bc14a81170837ED618D1b) |
