@@ -20,7 +20,7 @@ export const config: ConfigFile = {
           {
             assetSymbol: 'PT_USDG_25FEB2027',
             decimals: 6,
-            priceFeed: '0x6052839E52ab454F164ee5668e5B523cF5A389Fc',
+            priceFeed: '0xB81f0B2cCAC262288fED924DA750CFc7CC450530',
             ltv: '0',
             liqThreshold: '0',
             liqBonus: '0',
@@ -40,17 +40,19 @@ export const config: ConfigFile = {
             admin: '',
           },
         ],
-        EMODES_ASSETS: [
+        EMODES_CREATION: [
           {
-            asset: 'PT_USDG_25FEB2027',
-            eModeCategory: 'AaveV3XLayerEModes.PT_USDG_29OCT2026__USDT_USDG_GHO_USDC',
-            collateral: 'ENABLED',
-            borrowable: 'DISABLED',
-            ltvzero: 'DISABLED',
+            ltv: '91.48',
+            liqThreshold: '93.48',
+            liqBonus: '2.62',
+            label: 'PT_USDG_25FEB2027__Stablecoins',
+            isolated: 'DISABLED',
+            collateralAssets: ['PT_USDG_25FEB2027', 'PT_USDG_29OCT2026'],
+            borrowableAssets: ['USDT', 'GHO', 'USDC'],
           },
         ],
       },
-      cache: {blockNumber: 72026700},
+      cache: {blockNumber: 72750800},
     },
   },
 };

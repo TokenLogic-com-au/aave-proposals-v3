@@ -24,13 +24,15 @@ contract AaveV3XLayer_AssetListingPendlePTUSDG25FEB2027XLayer_20260930_Test is P
   AaveV3XLayer_AssetListingPendlePTUSDG25FEB2027XLayer_20260930 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('xlayer'), 72026700);
+    vm.createSelectFork(vm.rpcUrl('xlayer'), 72750800);
     proposal = new AaveV3XLayer_AssetListingPendlePTUSDG25FEB2027XLayer_20260930();
-    // I will change this when I do the prefunding
-    deal(
-      proposal.PT_USDG_25FEB2027(),
-      GovernanceV3XLayer.EXECUTOR_LVL_1,
-      proposal.PT_USDG_25FEB2027_SEED_AMOUNT()
+  }
+
+  function test_executorIsPrefunded() public view {
+    assertGe(
+      IERC20(proposal.PT_USDG_25FEB2027()).balanceOf(GovernanceV3XLayer.EXECUTOR_LVL_1),
+      proposal.PT_USDG_25FEB2027_SEED_AMOUNT(),
+      'executor should hold the seed amount before execution'
     );
   }
 
@@ -81,13 +83,13 @@ contract AaveV3XLayer_AssetListingPendlePTUSDG25FEB2027XLayer_20260930_Test is P
     );
     assertEq(
       adapter.discountRatePerYear(),
-      0.03106e18,
-      'initial discount rate should be 3.106% per LlamaRisk'
+      0.02953e18,
+      'initial discount rate should be 2.953% per LlamaRisk'
     );
     assertEq(
       adapter.MAX_DISCOUNT_RATE_PER_YEAR(),
-      0.1108e18,
-      'max discount rate should be 11.080% per LlamaRisk'
+      0.0791e18,
+      'max discount rate should be 7.910% per LlamaRisk'
     );
     assertEq(adapter.MATURITY(), 1803513600, 'maturity should be 25 February 2027 UTC');
     assertEq(
@@ -109,7 +111,7 @@ contract AaveV3XLayer_AssetListingPendlePTUSDG25FEB2027XLayer_20260930_Test is P
       listing: IAaveV3ConfigEngine.Listing({
         asset: 0x5eA1F184af5Ced57725213D8267B5c4C834557D4,
         assetSymbol: 'PT-USDG-25FEB2027',
-        priceFeed: 0x6052839E52ab454F164ee5668e5B523cF5A389Fc,
+        priceFeed: 0xB81f0B2cCAC262288fED924DA750CFc7CC450530,
         enabledToBorrow: EngineFlags.DISABLED,
         flashloanable: EngineFlags.ENABLED,
         ltv: 0,
@@ -131,79 +133,115 @@ contract AaveV3XLayer_AssetListingPendlePTUSDG25FEB2027XLayer_20260930_Test is P
   }
 
   function test_eModeConfiguration() public {
-    uint8 eMode_PTUSDGStablecoins = AaveV3XLayerEModes.PT_USDG_29OCT2026__USDT_USDG_GHO_USDC;
-    uint8 eMode_PTUSDGUSDG = AaveV3XLayerEModes.PT_USDG_29OCT2026__USDG;
-
-    address[] memory collateralsBefore = new address[](1);
-    collateralsBefore[0] = AaveV3XLayerAssets.PT_USDG_29OCT2026_UNDERLYING;
-    assertEq(
-      AaveV3XLayer.POOL.getEModeCategoryCollateralBitmap(eMode_PTUSDGStablecoins),
-      _toBitmap(collateralsBefore),
-      'eMode collateral bitmap should contain exactly PT-USDG-29OCT2026 before execution'
-    );
+    uint8[2] memory existingEModes = [
+      AaveV3XLayerEModes.PT_USDG_29OCT2026__USDT_USDG_GHO_USDC,
+      AaveV3XLayerEModes.PT_USDG_29OCT2026__USDG
+    ];
+    DataTypes.CollateralConfig[2] memory configsBefore;
+    uint128[2] memory collateralBitmapsBefore;
+    uint128[2] memory borrowableBitmapsBefore;
+    for (uint256 i = 0; i < existingEModes.length; i++) {
+      configsBefore[i] = AaveV3XLayer.POOL.getEModeCategoryCollateralConfig(existingEModes[i]);
+      collateralBitmapsBefore[i] = AaveV3XLayer.POOL.getEModeCategoryCollateralBitmap(
+        existingEModes[i]
+      );
+      borrowableBitmapsBefore[i] = AaveV3XLayer.POOL.getEModeCategoryBorrowableBitmap(
+        existingEModes[i]
+      );
+    }
 
     GovV3Helpers.executePayload(vm, address(proposal));
 
+    uint8 eMode_PTUSDG25FEB2027Stablecoins = _findEModeCategoryId('PT_USDG_25FEB2027__Stablecoins');
+    assertEq(eMode_PTUSDG25FEB2027Stablecoins, 9, 'eMode id should be 9 per LlamaRisk');
     _assertEModeCollateralConfig({
-      id: eMode_PTUSDGStablecoins,
-      ltv: 92_66,
-      liquidationThreshold: 94_66,
-      liquidationBonus: 100_00 + 2_34,
-      isolated: true
+      id: eMode_PTUSDG25FEB2027Stablecoins,
+      ltv: 91_48,
+      liquidationThreshold: 93_48,
+      liquidationBonus: 100_00 + 2_62,
+      isolated: false
     });
 
-    address[] memory collaterals_PTUSDGStablecoins = new address[](2);
-    collaterals_PTUSDGStablecoins[0] = AaveV3XLayerAssets.PT_USDG_29OCT2026_UNDERLYING;
-    collaterals_PTUSDGStablecoins[1] = proposal.PT_USDG_25FEB2027();
+    address[] memory collaterals = new address[](2);
+    collaterals[0] = proposal.PT_USDG_25FEB2027();
+    collaterals[1] = AaveV3XLayerAssets.PT_USDG_29OCT2026_UNDERLYING;
     assertEq(
-      AaveV3XLayer.POOL.getEModeCategoryCollateralBitmap(eMode_PTUSDGStablecoins),
-      _toBitmap(collaterals_PTUSDGStablecoins),
+      AaveV3XLayer.POOL.getEModeCategoryCollateralBitmap(eMode_PTUSDG25FEB2027Stablecoins),
+      _toBitmap(collaterals),
       'eMode collateral bitmap should contain exactly both PT-USDG maturities'
     );
 
-    address[] memory borrowables_PTUSDGStablecoins = new address[](4);
-    borrowables_PTUSDGStablecoins[0] = AaveV3XLayerAssets.USDT_UNDERLYING;
-    borrowables_PTUSDGStablecoins[1] = AaveV3XLayerAssets.USDG_UNDERLYING;
-    borrowables_PTUSDGStablecoins[2] = AaveV3XLayerAssets.GHO_UNDERLYING;
-    borrowables_PTUSDGStablecoins[3] = AaveV3XLayerAssets.USDC_UNDERLYING;
+    address[] memory borrowables = new address[](3);
+    borrowables[0] = AaveV3XLayerAssets.USDT_UNDERLYING;
+    borrowables[1] = AaveV3XLayerAssets.GHO_UNDERLYING;
+    borrowables[2] = AaveV3XLayerAssets.USDC_UNDERLYING;
     assertEq(
-      AaveV3XLayer.POOL.getEModeCategoryBorrowableBitmap(eMode_PTUSDGStablecoins),
-      _toBitmap(borrowables_PTUSDGStablecoins),
-      'eMode borrowable bitmap should contain exactly USDT0, USDG, GHO and USDC'
+      AaveV3XLayer.POOL.getEModeCategoryBorrowableBitmap(eMode_PTUSDG25FEB2027Stablecoins),
+      _toBitmap(borrowables),
+      'eMode borrowable bitmap should contain exactly USDT0, GHO and USDC'
     );
 
-    _assertEModeCollateralConfig({
-      id: eMode_PTUSDGUSDG,
-      ltv: 93_59,
-      liquidationThreshold: 95_59,
-      liquidationBonus: 100_00 + 1_34,
-      isolated: true
-    });
-
-    address[] memory collaterals_PTUSDGUSDG = new address[](1);
-    collaterals_PTUSDGUSDG[0] = AaveV3XLayerAssets.PT_USDG_29OCT2026_UNDERLYING;
-    assertEq(
-      AaveV3XLayer.POOL.getEModeCategoryCollateralBitmap(eMode_PTUSDGUSDG),
-      _toBitmap(collaterals_PTUSDGUSDG),
-      'PT-USDG/USDG eMode collateral bitmap should still contain exactly PT-USDG-29OCT2026'
-    );
-
-    address[] memory borrowables_PTUSDGUSDG = new address[](1);
-    borrowables_PTUSDGUSDG[0] = AaveV3XLayerAssets.USDG_UNDERLYING;
-    assertEq(
-      AaveV3XLayer.POOL.getEModeCategoryBorrowableBitmap(eMode_PTUSDGUSDG),
-      _toBitmap(borrowables_PTUSDGUSDG),
-      'PT-USDG/USDG eMode borrowable bitmap should still contain exactly USDG'
-    );
+    for (uint256 i = 0; i < existingEModes.length; i++) {
+      DataTypes.CollateralConfig memory cfg = AaveV3XLayer.POOL.getEModeCategoryCollateralConfig(
+        existingEModes[i]
+      );
+      assertEq(cfg.ltv, configsBefore[i].ltv, 'existing eMode ltv changed');
+      assertEq(
+        cfg.liquidationThreshold,
+        configsBefore[i].liquidationThreshold,
+        'existing eMode liquidation threshold changed'
+      );
+      assertEq(
+        cfg.liquidationBonus,
+        configsBefore[i].liquidationBonus,
+        'existing eMode liquidation bonus changed'
+      );
+      assertEq(
+        AaveV3XLayer.POOL.getEModeCategoryCollateralBitmap(existingEModes[i]),
+        collateralBitmapsBefore[i],
+        'existing eMode collateral bitmap changed'
+      );
+      assertEq(
+        AaveV3XLayer.POOL.getEModeCategoryBorrowableBitmap(existingEModes[i]),
+        borrowableBitmapsBefore[i],
+        'existing eMode borrowable bitmap changed'
+      );
+    }
   }
 
-  function test_eMode_PTUSDGStablecoins_supplyAndBorrow() public {
+  function test_eMode_PT_USDG_25FEB2027_supplyAndBorrow() public {
     GovV3Helpers.executePayload(vm, address(proposal));
     _supplyAndBorrowInEMode(
-      AaveV3XLayerEModes.PT_USDG_29OCT2026__USDT_USDG_GHO_USDC,
+      'PT_USDG_25FEB2027__Stablecoins',
       proposal.PT_USDG_25FEB2027(),
       AaveV3XLayerAssets.USDT_UNDERLYING
     );
+  }
+
+  function test_eMode_PT_USDG_29OCT2026_supplyAndBorrow() public {
+    GovV3Helpers.executePayload(vm, address(proposal));
+    _supplyAndBorrowInEMode(
+      'PT_USDG_25FEB2027__Stablecoins',
+      AaveV3XLayerAssets.PT_USDG_29OCT2026_UNDERLYING,
+      AaveV3XLayerAssets.USDC_UNDERLYING
+    );
+  }
+
+  function test_eMode_USDGNotBorrowable() public {
+    GovV3Helpers.executePayload(vm, address(proposal));
+
+    address user = makeAddr('usdgBorrowUser');
+    uint256 supplyAmount = 1_000 * 10 ** IERC20Metadata(proposal.PT_USDG_25FEB2027()).decimals();
+    deal(proposal.PT_USDG_25FEB2027(), user, supplyAmount);
+
+    vm.startPrank(user);
+    AaveV3XLayer.POOL.setUserEMode(_findEModeCategoryId('PT_USDG_25FEB2027__Stablecoins'));
+    IERC20(proposal.PT_USDG_25FEB2027()).approve(address(AaveV3XLayer.POOL), supplyAmount);
+    AaveV3XLayer.POOL.supply(proposal.PT_USDG_25FEB2027(), supplyAmount, user, 0);
+
+    vm.expectRevert(Errors.NotBorrowableInEMode.selector);
+    AaveV3XLayer.POOL.borrow(AaveV3XLayerAssets.USDG_UNDERLYING, 1e6, 2, 0, user);
+    vm.stopPrank();
   }
 
   function test_PT_USDG_25FEB2027BorrowWithoutEModeReverts() public {
@@ -223,6 +261,15 @@ contract AaveV3XLayer_AssetListingPendlePTUSDG25FEB2027XLayer_20260930_Test is P
     AaveV3XLayer.POOL.borrow(AaveV3XLayerAssets.USDT_UNDERLYING, 1, 2, 0, user);
 
     vm.stopPrank();
+  }
+
+  function _findEModeCategoryId(string memory label) internal view returns (uint8) {
+    for (uint8 i = 1; i < 255; i++) {
+      if (keccak256(bytes(AaveV3XLayer.POOL.getEModeCategoryLabel(i))) == keccak256(bytes(label))) {
+        return i;
+      }
+    }
+    revert('eMode category not found');
   }
 
   function _assertEModeCollateralConfig(
@@ -254,10 +301,11 @@ contract AaveV3XLayer_AssetListingPendlePTUSDG25FEB2027XLayer_20260930_Test is P
   }
 
   function _supplyAndBorrowInEMode(
-    uint8 eModeId,
+    string memory label,
     address collateral,
     address borrowAsset
   ) internal {
+    uint8 eModeId = _findEModeCategoryId(label);
     address user = makeAddr('eModeUser');
     uint256 supplyAmount = 1_000 * 10 ** IERC20Metadata(collateral).decimals();
     deal(collateral, user, supplyAmount);

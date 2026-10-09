@@ -6,15 +6,19 @@ discussions: "https://governance.aave.com/t/direct-to-aip-onboard-pt-usdg-25feb2
 
 ## Simple Summary
 
-This AIP lists PT-USDG-25FEB2027, the Pendle Principal Token for USDG maturing on 25 February 2027, on the Aave V3 X Layer instance as a non-borrowable asset, and adds it as collateral to the existing PT_USDG\_\_Stablecoins eMode alongside PT-USDG-29OCT2026.
+This AIP lists PT-USDG-25FEB2027, the Pendle Principal Token for USDG maturing on 25 February 2027, on the Aave V3 X Layer instance as a non-borrowable asset, and creates a new PT_USDG_25FEB2027\_\_Stablecoins eMode with PT-USDG-25FEB2027 and PT-USDG-29OCT2026 as collateral.
 
 ## Motivation
 
 PT-USDG-29OCT2026 matures on 29 October 2026. Pendle has launched a new USDG PT maturing on 25 February 2027, which lets users continue using fixed-yield USDG positions as collateral on Aave.
 
-Most PT-USDG positions on X Layer borrow stablecoins such as USDT0 against their PT collateral. Keeping both maturities in the same eMode during the rollover period lets OKX build a rollover flow that moves users to the new PT in a single transaction while keeping their stablecoin borrowing position. This proposal covers the Aave listing and eMode configuration needed for that flow; OKX develops the rollover integration separately.
+Most PT-USDG positions on X Layer borrow stablecoins such as USDT0 against their PT collateral. Having both maturities as collateral in the same eMode during the rollover period lets OKX build a rollover flow that moves users to the new PT in a single transaction while keeping their stablecoin borrowing position. This proposal covers the Aave listing and eMode configuration needed for that flow; OKX develops the rollover integration separately.
 
-The listing uses the initial parameters recommended by LlamaRisk for PT-USDG-29OCT2026, including the linear discount oracle rates `initialDiscountRatePerYear` 3.106% and `maxDiscountRatePerYear` 11.080%. PT-USDG-29OCT2026 keeps its existing parameters during the migration period; its LTV will be reduced to 0% after maturity in a separate proposal.
+Final risk parameters were provided by [LlamaRisk in the discussion thread](https://governance.aave.com/t/direct-to-aip-onboard-pt-usdg-25feb2027-on-x-layer/25733/2). Following their recommendation, PT-USDG-25FEB2027 is not added to the existing PT_USDG\_\_Stablecoins eMode, whose 94.66% liquidation threshold is above the level recommended for the longer maturity. A new eMode (id 9) is created instead, with PT-USDG-29OCT2026 also enabled as collateral so users can migrate without closing their positions.
+
+The PT is priced via the deployed linear discount oracle [0xB81f0B2cCAC262288fED924DA750CFc7CC450530](https://www.oklink.com/x-layer/address/0xB81f0B2cCAC262288fED924DA750CFc7CC450530) (`PT Capped USDG USDG/USD linear discount 25FEB2027`), with the rates recommended by LlamaRisk: `initialDiscountRatePerYear` 2.953% and `maxDiscountRatePerYear` 7.910%.
+
+PT-USDG-29OCT2026 keeps its existing parameters and eMode configurations during the migration period; its LTV will be reduced to 0% after maturity in a separate proposal.
 
 ## Specification
 
@@ -28,11 +32,11 @@ The listing uses the initial parameters recommended by LlamaRisk for PT-USDG-29O
 | Underlying (USDG) | [0x4ae46a509F6b1D9056937BA4500cb143933D2dc8](https://www.oklink.com/x-layer/address/0x4ae46a509F6b1D9056937BA4500cb143933D2dc8) |
 | Maturity          | 25 February 2027                                                                                                                |
 
-**eMode update**: PT-USDG-25FEB2027 is added as collateral to the existing PT_USDG\_\_Stablecoins eMode. The eMode parameters and the PT_USDG\_\_USDG eMode are not modified.
+**New eMode** (per LlamaRisk's final recommendation). The existing PT_USDG\_\_Stablecoins and PT_USDG\_\_USDG eModes are not modified.
 
-| eMode                  | Collateral                           | Borrowable             | LTV    | LT     | Liq. Bonus | Isolated |
-| ---------------------- | ------------------------------------ | ---------------------- | ------ | ------ | ---------- | -------- |
-| PT_USDG\_\_Stablecoins | PT-USDG-29OCT2026, PT-USDG-25FEB2027 | USDT0, USDG, GHO, USDC | 92.66% | 94.66% | 2.34%      | Yes      |
+| eMode                            | Collateral                           | Borrowable       | LTV    | LT     | Liq. Bonus | Isolated |
+| -------------------------------- | ------------------------------------ | ---------------- | ------ | ------ | ---------- | -------- |
+| PT_USDG_25FEB2027\_\_Stablecoins | PT-USDG-25FEB2027, PT-USDG-29OCT2026 | USDT0, GHO, USDC | 91.48% | 93.48% | 2.62%      | No       |
 
 The table below illustrates the configured risk parameters for **PT_USDG_25FEB2027**
 
@@ -54,15 +58,18 @@ The table below illustrates the configured risk parameters for **PT_USDG_25FEB20
 | Variable Rate Slope 2     |                                                                                                                            300% |
 | Optimal Utilization       |                                                                                                                             45% |
 | Flashloanable             |                                                                                                                             Yes |
-| Oracle                    | [0x6052839E52ab454F164ee5668e5B523cF5A389Fc](https://www.oklink.com/x-layer/address/0x6052839E52ab454F164ee5668e5B523cF5A389Fc) |
+| Oracle                    | [0xB81f0B2cCAC262288fED924DA750CFc7CC450530](https://www.oklink.com/x-layer/address/0xB81f0B2cCAC262288fED924DA750CFc7CC450530) |
 
 **Linear Discount Rate Oracle**
 
+The price feed applies a linear discount, decreasing to zero at maturity, on top of the Capped USDG/USD feed.
+
 | Parameter                  | Value                                                                                                                           |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| initialDiscountRatePerYear | 3.106%                                                                                                                          |
-| maxDiscountRatePerYear     | 11.080%                                                                                                                         |
-| Oracle                     | [0x6052839E52ab454F164ee5668e5B523cF5A389Fc](https://www.oklink.com/x-layer/address/0x6052839E52ab454F164ee5668e5B523cF5A389Fc) |
+| initialDiscountRatePerYear | 2.953%                                                                                                                          |
+| maxDiscountRatePerYear     | 7.910%                                                                                                                          |
+| Underlying feed            | [Capped USDG/USD](https://www.oklink.com/x-layer/address/0xe00B2732396a1f047d4A00e0165025A9cF400245)                            |
+| Oracle                     | [0xB81f0B2cCAC262288fED924DA750CFc7CC450530](https://www.oklink.com/x-layer/address/0xB81f0B2cCAC262288fED924DA750CFc7CC450530) |
 
 ## References
 
