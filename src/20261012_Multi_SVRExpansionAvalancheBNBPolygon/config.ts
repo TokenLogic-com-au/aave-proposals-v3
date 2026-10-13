@@ -14,6 +14,6 @@ export const config: ConfigFile = {
   marketOptions: {
     AaveV3Polygon: {configs: {OTHERS: {}}, cache: {blockNumber: 95412356}},
     AaveV3Avalanche: {configs: {OTHERS: {}}, cache: {blockNumber: 97376552}},
-    AaveV3BNB: {configs: {OTHERS: {}}, cache: {blockNumber: 127245802}},
+    AaveV3BNB: {configs: {OTHERS: {}}, cache: {blockNumber: 127465400}},
   },
 };

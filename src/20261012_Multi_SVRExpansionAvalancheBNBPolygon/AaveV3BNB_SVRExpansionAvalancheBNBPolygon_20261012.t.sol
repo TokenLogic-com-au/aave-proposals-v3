@@ -15,7 +15,7 @@ contract AaveV3BNB_SVRExpansionAvalancheBNBPolygon_20261012_Test is ProtocolV3Te
   AaveV3BNB_SVRExpansionAvalancheBNBPolygon_20261012 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('bnb'), 127245802);
+    vm.createSelectFork(vm.rpcUrl('bnb'), 127465400);
     proposal = new AaveV3BNB_SVRExpansionAvalancheBNBPolygon_20261012();
   }
 
@@ -24,9 +24,6 @@ contract AaveV3BNB_SVRExpansionAvalancheBNBPolygon_20261012_Test is ProtocolV3Te
    * forge-config: default.isolate = true
    */
   function test_defaultProposalExecution() public {
-    // TODO: remove once the steward and SVR oracle addresses are set
-    vm.skip(true);
-
     defaultTest(
       'AaveV3BNB_SVRExpansionAvalancheBNBPolygon_20261012',
       AaveV3BNB.POOL,
@@ -35,9 +32,6 @@ contract AaveV3BNB_SVRExpansionAvalancheBNBPolygon_20261012_Test is ProtocolV3Te
   }
 
   function test_activation() public {
-    // TODO: remove once the steward and SVR oracle addresses are set
-    vm.skip(true);
-
     ISvrOracleSteward.AssetOracle[] memory cfg = proposal.getSvrOracles();
 
     for (uint256 i = 0; i < cfg.length; i++) {

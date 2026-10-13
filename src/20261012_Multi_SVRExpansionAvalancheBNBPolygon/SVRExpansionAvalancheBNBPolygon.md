@@ -21,7 +21,7 @@ After a successful implementation of SVR on Ethereum, Base and Arbitrum, we aim 
 - **Polygon**: Grants the SVR Oracle Steward (TODO) the `AssetListingAdmin` role and enables SVR oracles for the following 12 assets:
   WBTC, USDT0, USDCn, WETH, wstETH, WPOL, USDC, DAI, AAVE, EURS, LINK, MaticX.
 
-- **BNB**: Grants the SVR Oracle Steward (TODO) the `AssetListingAdmin` role and enables SVR oracles for the following 8 assets:
+- **BNB**: Grants the SVR Oracle Steward ([`0x65105C82DDd10Ad37DCBe7a3A137E008CC456754`](https://bscscan.com/address/0x65105C82DDd10Ad37DCBe7a3A137E008CC456754)) the `AssetListingAdmin` role and enables SVR oracles for the following 8 assets:
   WBNB, BTCB, USDT, USDC, ETH, wstETH, FDUSD, Cake.
 
 ## References
