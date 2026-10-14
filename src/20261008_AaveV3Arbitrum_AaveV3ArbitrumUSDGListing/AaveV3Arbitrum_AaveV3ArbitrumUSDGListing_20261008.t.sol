@@ -6,10 +6,12 @@ import {AaveV3Arbitrum} from 'aave-address-book/AaveV3Arbitrum.sol';
 import {EngineFlags} from 'aave-v3-origin/contracts/extensions/v3-config-engine/EngineFlags.sol';
 import {IAaveV3ConfigEngine} from 'aave-v3-origin/contracts/extensions/v3-config-engine/IAaveV3ConfigEngine.sol';
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
+import {IDefaultInterestRateStrategyV2} from 'aave-v3-origin/contracts/interfaces/IDefaultInterestRateStrategyV2.sol';
 
 import 'forge-std/Test.sol';
-import {ProtocolV3TestBase, ReserveConfig, ExpectedListing} from 'aave-helpers/src/ProtocolV3TestBase.sol';
+import {ProtocolV3TestBase, ExpectedListing} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {AaveV3Arbitrum_AaveV3ArbitrumUSDGListing_20261008} from './AaveV3Arbitrum_AaveV3ArbitrumUSDGListing_20261008.sol';
+import {IPriceCapAdapterStable} from '../interfaces/IPriceCapAdapterStable.sol';
 
 /**
  * @dev Test for AaveV3Arbitrum_AaveV3ArbitrumUSDGListing_20261008
@@ -51,6 +53,46 @@ contract AaveV3Arbitrum_AaveV3ArbitrumUSDGListing_20261008_Test is ProtocolV3Tes
       IERC20(aTokenAddress).balanceOf(address(AaveV3Arbitrum.DUST_BIN)),
       proposal.USDG_SEED_AMOUNT(),
       'dust bin should hold at least the seeded aUSDG amount'
+    );
+  }
+
+  function test_priceFeed() public {
+    GovV3Helpers.executePayload(vm, address(proposal));
+    address adapter = 0xf6bDD632625425cE368Bb19Af5A01C3C0344EB1D;
+    _validateAssetSourceOnOracle(AaveV3Arbitrum.POOL_ADDRESSES_PROVIDER, proposal.USDG(), adapter);
+
+    uint256 price = AaveV3Arbitrum.ORACLE.getAssetPrice(proposal.USDG());
+    assertGt(price, 0.95e8, 'USDG price should trade near 1 USD');
+    assertLt(price, 1.05e8, 'USDG price should trade near 1 USD');
+
+    assertEq(IPriceCapAdapterStable(adapter).getPriceCap(), 1.04e8, 'price cap should be 1.04 USD');
+    assertEq(
+      IPriceCapAdapterStable(adapter).ASSET_TO_USD_AGGREGATOR(),
+      0xE9Bd4Ca2CDacb56cd06c9C4C5231e69c33340B3c,
+      'underlying aggregator should be the USDG / USD feed'
+    );
+  }
+
+  function test_rates() public {
+    GovV3Helpers.executePayload(vm, address(proposal));
+    _validateInterestRateStrategy(
+      proposal.USDG(),
+      AaveV3Arbitrum.POOL.getReserveData(proposal.USDG()).interestRateStrategyAddress,
+      AaveV3Arbitrum.POOL.RESERVE_INTEREST_RATE_STRATEGY(),
+      IDefaultInterestRateStrategyV2.InterestRateDataRay({
+        optimalUsageRatio: 0.9e27,
+        baseVariableBorrowRate: 0,
+        variableRateSlope1: 0.04e27,
+        variableRateSlope2: 0.3e27
+      })
+    );
+  }
+
+  function test_liquidationProtocolFee() public {
+    GovV3Helpers.executePayload(vm, address(proposal));
+    assertEq(
+      AaveV3Arbitrum.AAVE_PROTOCOL_DATA_PROVIDER.getLiquidationProtocolFee(proposal.USDG()),
+      10_00
     );
   }
 
