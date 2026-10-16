@@ -13,19 +13,19 @@ import {Errors} from 'aave-v3-origin/contracts/protocol/libraries/helpers/Errors
 
 import 'forge-std/Test.sol';
 import {ProtocolV3TestBase, ExpectedListing} from 'aave-helpers/src/ProtocolV3TestBase.sol';
-import {AaveV3XLayer_AaveV3XLayerSyrupUSDGListing_20261014} from './AaveV3XLayer_AaveV3XLayerSyrupUSDGListing_20261014.sol';
+import {AaveV3XLayer_AaveV3XLayerSyrupUSDCListing_20261016} from './AaveV3XLayer_AaveV3XLayerSyrupUSDCListing_20261016.sol';
 import {IPriceCapAdapter} from '../interfaces/IPriceCapAdapter.sol';
 
 /**
- * @dev Test for AaveV3XLayer_AaveV3XLayerSyrupUSDGListing_20261014
- * command: FOUNDRY_PROFILE=test forge test --match-path=src/20261014_AaveV3XLayer_AaveV3XLayerSyrupUSDGListing/AaveV3XLayer_AaveV3XLayerSyrupUSDGListing_20261014.t.sol -vv
+ * @dev Test for AaveV3XLayer_AaveV3XLayerSyrupUSDCListing_20261016
+ * command: FOUNDRY_PROFILE=test forge test --match-path=src/20261016_AaveV3XLayer_AaveV3XLayerSyrupUSDCListing/AaveV3XLayer_AaveV3XLayerSyrupUSDCListing_20261016.t.sol -vv
  */
-contract AaveV3XLayer_AaveV3XLayerSyrupUSDGListing_20261014_Test is ProtocolV3TestBase {
-  AaveV3XLayer_AaveV3XLayerSyrupUSDGListing_20261014 internal proposal;
+contract AaveV3XLayer_AaveV3XLayerSyrupUSDCListing_20261016_Test is ProtocolV3TestBase {
+  AaveV3XLayer_AaveV3XLayerSyrupUSDCListing_20261016 internal proposal;
 
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('xlayer'), 73147962);
-    proposal = new AaveV3XLayer_AaveV3XLayerSyrupUSDGListing_20261014();
+    proposal = new AaveV3XLayer_AaveV3XLayerSyrupUSDCListing_20261016();
   }
 
   /**
@@ -34,7 +34,7 @@ contract AaveV3XLayer_AaveV3XLayerSyrupUSDGListing_20261014_Test is ProtocolV3Te
    */
   function test_defaultProposalExecution() public {
     defaultTest(
-      'AaveV3XLayer_AaveV3XLayerSyrupUSDGListing_20261014',
+      'AaveV3XLayer_AaveV3XLayerSyrupUSDCListing_20261016',
       AaveV3XLayer.POOL,
       address(proposal)
     );
@@ -49,20 +49,20 @@ contract AaveV3XLayer_AaveV3XLayerSyrupUSDGListing_20261014_Test is ProtocolV3Te
     reserveConfigChangesTest(AaveV3XLayer.POOL, address(proposal), updatedAssets);
   }
 
-  function test_dustBinHasSyrupUSDGFunds() public {
+  function test_dustBinHasSyrupUSDCFunds() public {
     GovV3Helpers.executePayload(vm, address(proposal));
-    address aTokenAddress = AaveV3XLayer.POOL.getReserveAToken(proposal.syrupUSDG());
+    address aTokenAddress = AaveV3XLayer.POOL.getReserveAToken(proposal.syrupUSDC());
     assertGe(
       IERC20(aTokenAddress).balanceOf(address(AaveV3XLayer.DUST_BIN)),
-      proposal.syrupUSDG_SEED_AMOUNT(),
-      'dust bin should hold at least the seeded asyrupUSDG amount'
+      proposal.syrupUSDC_SEED_AMOUNT(),
+      'dust bin should hold at least the seeded asyrupUSDC amount'
     );
   }
 
   function test_liquidationProtocolFee() public {
     GovV3Helpers.executePayload(vm, address(proposal));
     assertEq(
-      AaveV3XLayer.AAVE_PROTOCOL_DATA_PROVIDER.getLiquidationProtocolFee(proposal.syrupUSDG()),
+      AaveV3XLayer.AAVE_PROTOCOL_DATA_PROVIDER.getLiquidationProtocolFee(proposal.syrupUSDC()),
       10_00
     );
   }
@@ -72,30 +72,35 @@ contract AaveV3XLayer_AaveV3XLayerSyrupUSDGListing_20261014_Test is ProtocolV3Te
     address adapterAddress = 0x0000000000000000000000000000000000000000;
     _validateAssetSourceOnOracle(
       AaveV3XLayer.POOL_ADDRESSES_PROVIDER,
-      proposal.syrupUSDG(),
+      proposal.syrupUSDC(),
       adapterAddress
     );
-    assertEq(proposal.syrupUSDG_PRICE_FEED(), adapterAddress);
+    assertEq(proposal.syrupUSDC_PRICE_FEED(), adapterAddress);
 
     IPriceCapAdapter adapter = IPriceCapAdapter(adapterAddress);
     assertEq(
       address(adapter.BASE_TO_USD_AGGREGATOR()),
-      0xe00B2732396a1f047d4A00e0165025A9cF400245,
-      'base feed should be the Capped USDG / USD adapter'
+      0x26AD1207EAA39F74FAC725599ce1c431C80eF6cC,
+      'base feed should be the Capped USDC / USD adapter'
+    );
+    assertEq(
+      adapter.RATIO_PROVIDER(),
+      0x04c00259887Cc94764DF190c8D3663c765618204,
+      'ratio provider should be the Chainlink syrupUSDC / USDC exchange rate feed'
     );
     assertEq(adapter.decimals(), 8);
 
-    uint256 price = AaveV3XLayer.ORACLE.getAssetPrice(proposal.syrupUSDG());
-    assertGe(price, 1e8, 'syrupUSDG should price at or above 1 USD');
-    assertLe(price, 1.2e8, 'syrupUSDG price is implausibly high');
+    uint256 price = AaveV3XLayer.ORACLE.getAssetPrice(proposal.syrupUSDC());
+    assertGe(price, 1.15e8, 'syrupUSDC price is implausibly low');
+    assertLe(price, 1.25e8, 'syrupUSDC price is implausibly high');
   }
 
   function test_rates() public {
     GovV3Helpers.executePayload(vm, address(proposal));
     address strategy = AaveV3XLayer.POOL.RESERVE_INTEREST_RATE_STRATEGY();
     _validateInterestRateStrategy(
-      proposal.syrupUSDG(),
-      AaveV3XLayer.POOL.getReserveData(proposal.syrupUSDG()).interestRateStrategyAddress,
+      proposal.syrupUSDC(),
+      AaveV3XLayer.POOL.getReserveData(proposal.syrupUSDC()).interestRateStrategyAddress,
       strategy,
       IDefaultInterestRateStrategyV2.InterestRateDataRay({
         optimalUsageRatio: 0.45e27,
@@ -112,7 +117,7 @@ contract AaveV3XLayer_AaveV3XLayerSyrupUSDGListing_20261014_Test is ProtocolV3Te
     listings[0] = ExpectedListing({
       listing: IAaveV3ConfigEngine.Listing({
         asset: 0x0000000000000000000000000000000000000000,
-        assetSymbol: 'syrupUSDG',
+        assetSymbol: 'syrupUSDC',
         priceFeed: 0x0000000000000000000000000000000000000000,
         enabledToBorrow: EngineFlags.DISABLED,
         flashloanable: EngineFlags.DISABLED,
@@ -136,30 +141,30 @@ contract AaveV3XLayer_AaveV3XLayerSyrupUSDGListing_20261014_Test is ProtocolV3Te
 
   function test_eModeConfiguration() public {
     GovV3Helpers.executePayload(vm, address(proposal));
-    uint8 eMode_SyrupUSDG__Stablecoins = _findEModeCategoryId('syrupUSDG__Stablecoins');
+    uint8 eMode_SyrupUSDC__Stablecoins = _findEModeCategoryId('syrupUSDC__Stablecoins');
     _assertEModeCollateralConfig({
-      id: eMode_SyrupUSDG__Stablecoins,
+      id: eMode_SyrupUSDC__Stablecoins,
       ltv: 90_00,
       liquidationThreshold: 92_00,
       liquidationBonus: 100_00 + 4_00,
       isolated: false
     });
 
-    address[] memory collaterals_SyrupUSDG__Stablecoins = new address[](1);
-    collaterals_SyrupUSDG__Stablecoins[0] = proposal.syrupUSDG();
+    address[] memory collaterals_SyrupUSDC__Stablecoins = new address[](1);
+    collaterals_SyrupUSDC__Stablecoins[0] = proposal.syrupUSDC();
     assertEq(
-      AaveV3XLayer.POOL.getEModeCategoryCollateralBitmap(eMode_SyrupUSDG__Stablecoins),
-      _toBitmap(collaterals_SyrupUSDG__Stablecoins)
+      AaveV3XLayer.POOL.getEModeCategoryCollateralBitmap(eMode_SyrupUSDC__Stablecoins),
+      _toBitmap(collaterals_SyrupUSDC__Stablecoins)
     );
 
-    address[] memory borrowables_SyrupUSDG__Stablecoins = new address[](4);
-    borrowables_SyrupUSDG__Stablecoins[0] = AaveV3XLayerAssets.USDT_UNDERLYING;
-    borrowables_SyrupUSDG__Stablecoins[1] = AaveV3XLayerAssets.USDG_UNDERLYING;
-    borrowables_SyrupUSDG__Stablecoins[2] = AaveV3XLayerAssets.USDC_UNDERLYING;
-    borrowables_SyrupUSDG__Stablecoins[3] = AaveV3XLayerAssets.GHO_UNDERLYING;
+    address[] memory borrowables_SyrupUSDC__Stablecoins = new address[](4);
+    borrowables_SyrupUSDC__Stablecoins[0] = AaveV3XLayerAssets.USDT_UNDERLYING;
+    borrowables_SyrupUSDC__Stablecoins[1] = AaveV3XLayerAssets.USDG_UNDERLYING;
+    borrowables_SyrupUSDC__Stablecoins[2] = AaveV3XLayerAssets.USDC_UNDERLYING;
+    borrowables_SyrupUSDC__Stablecoins[3] = AaveV3XLayerAssets.GHO_UNDERLYING;
     assertEq(
-      AaveV3XLayer.POOL.getEModeCategoryBorrowableBitmap(eMode_SyrupUSDG__Stablecoins),
-      _toBitmap(borrowables_SyrupUSDG__Stablecoins)
+      AaveV3XLayer.POOL.getEModeCategoryBorrowableBitmap(eMode_SyrupUSDC__Stablecoins),
+      _toBitmap(borrowables_SyrupUSDC__Stablecoins)
     );
   }
 
@@ -179,20 +184,20 @@ contract AaveV3XLayer_AaveV3XLayerSyrupUSDGListing_20261014_Test is ProtocolV3Te
     }
   }
 
-  function test_eMode_SyrupUSDG__Stablecoins_supplyAndBorrow() public {
+  function test_eMode_SyrupUSDC__Stablecoins_supplyAndBorrow() public {
     GovV3Helpers.executePayload(vm, address(proposal));
     _supplyAndBorrowInEMode(
-      'syrupUSDG__Stablecoins',
-      proposal.syrupUSDG(),
+      'syrupUSDC__Stablecoins',
+      proposal.syrupUSDC(),
       AaveV3XLayerAssets.USDT_UNDERLYING
     );
   }
 
-  function test_syrupUSDGBorrowWithoutEModeReverts() public {
+  function test_syrupUSDCBorrowWithoutEModeReverts() public {
     GovV3Helpers.executePayload(vm, address(proposal));
 
-    address syrupUSDG = proposal.syrupUSDG();
-    address user = makeAddr('borrowSyrupUSDGUser');
+    address syrupUSDC = proposal.syrupUSDC();
+    address user = makeAddr('borrowSyrupUSDCUser');
     uint256 supplyAmount = 1_000 *
       10 ** IERC20Metadata(AaveV3XLayerAssets.USDC_UNDERLYING).decimals();
     deal(AaveV3XLayerAssets.USDC_UNDERLYING, user, supplyAmount);
@@ -202,38 +207,38 @@ contract AaveV3XLayer_AaveV3XLayerSyrupUSDGListing_20261014_Test is ProtocolV3Te
     AaveV3XLayer.POOL.supply(AaveV3XLayerAssets.USDC_UNDERLYING, supplyAmount, user, 0);
 
     vm.expectRevert(abi.encodeWithSelector(Errors.BorrowingNotEnabled.selector));
-    AaveV3XLayer.POOL.borrow(syrupUSDG, 1, 2, 0, user);
+    AaveV3XLayer.POOL.borrow(syrupUSDC, 1, 2, 0, user);
     vm.stopPrank();
   }
 
-  function test_syrupUSDGBorrowInEModeReverts() public {
+  function test_syrupUSDCBorrowInEModeReverts() public {
     GovV3Helpers.executePayload(vm, address(proposal));
 
-    address syrupUSDG = proposal.syrupUSDG();
-    address user = makeAddr('borrowSyrupUSDGInEModeUser');
-    uint256 supplyAmount = 1_000 * 10 ** IERC20Metadata(syrupUSDG).decimals();
-    deal(syrupUSDG, user, supplyAmount);
+    address syrupUSDC = proposal.syrupUSDC();
+    address user = makeAddr('borrowSyrupUSDCInEModeUser');
+    uint256 supplyAmount = 1_000 * 10 ** IERC20Metadata(syrupUSDC).decimals();
+    deal(syrupUSDC, user, supplyAmount);
 
     vm.startPrank(user);
-    AaveV3XLayer.POOL.setUserEMode(_findEModeCategoryId('syrupUSDG__Stablecoins'));
-    IERC20(syrupUSDG).approve(address(AaveV3XLayer.POOL), supplyAmount);
-    AaveV3XLayer.POOL.supply(syrupUSDG, supplyAmount, user, 0);
+    AaveV3XLayer.POOL.setUserEMode(_findEModeCategoryId('syrupUSDC__Stablecoins'));
+    IERC20(syrupUSDC).approve(address(AaveV3XLayer.POOL), supplyAmount);
+    AaveV3XLayer.POOL.supply(syrupUSDC, supplyAmount, user, 0);
 
     vm.expectRevert(abi.encodeWithSelector(Errors.NotBorrowableInEMode.selector));
-    AaveV3XLayer.POOL.borrow(syrupUSDG, 1, 2, 0, user);
+    AaveV3XLayer.POOL.borrow(syrupUSDC, 1, 2, 0, user);
     vm.stopPrank();
   }
 
-  function test_syrupUSDGCollateralOutsideEModeHasNoBorrowPower() public {
+  function test_syrupUSDCCollateralOutsideEModeHasNoBorrowPower() public {
     GovV3Helpers.executePayload(vm, address(proposal));
 
     address user = makeAddr('borrowWithoutEModeUser');
-    uint256 supplyAmount = 1_000 * 10 ** IERC20Metadata(proposal.syrupUSDG()).decimals();
-    deal(proposal.syrupUSDG(), user, supplyAmount);
+    uint256 supplyAmount = 1_000 * 10 ** IERC20Metadata(proposal.syrupUSDC()).decimals();
+    deal(proposal.syrupUSDC(), user, supplyAmount);
 
     vm.startPrank(user);
-    IERC20(proposal.syrupUSDG()).approve(address(AaveV3XLayer.POOL), supplyAmount);
-    AaveV3XLayer.POOL.supply(proposal.syrupUSDG(), supplyAmount, user, 0);
+    IERC20(proposal.syrupUSDC()).approve(address(AaveV3XLayer.POOL), supplyAmount);
+    AaveV3XLayer.POOL.supply(proposal.syrupUSDC(), supplyAmount, user, 0);
 
     (, , uint256 availableBorrowsBase, , uint256 ltv, ) = AaveV3XLayer.POOL.getUserAccountData(
       user

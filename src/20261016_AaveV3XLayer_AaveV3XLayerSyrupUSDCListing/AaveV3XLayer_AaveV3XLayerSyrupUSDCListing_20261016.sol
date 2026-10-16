@@ -9,30 +9,30 @@ import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 import {SafeERC20} from 'openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol';
 
 /**
- * @title Onboard syrupUSDG to Aave V3 X Layer
+ * @title Onboard syrupUSDC to Aave V3 X Layer
  * @author @TokenLogic
  * - Snapshot: Direct-to-AIP
- * - Discussion: https://governance.aave.com/t/direct-to-aip-asset-listing-syrupusdg-x-layer/25855
+ * - Discussion: TODO
  */
-contract AaveV3XLayer_AaveV3XLayerSyrupUSDGListing_20261014 is AaveV3PayloadXLayer {
+contract AaveV3XLayer_AaveV3XLayerSyrupUSDCListing_20261016 is AaveV3PayloadXLayer {
   using SafeERC20 for IERC20;
 
-  address public constant syrupUSDG = 0x0000000000000000000000000000000000000000;
-  uint256 public constant syrupUSDG_SEED_AMOUNT = 150e6;
-  address public constant syrupUSDG_PRICE_FEED = 0x0000000000000000000000000000000000000000;
+  address public constant syrupUSDC = 0x0000000000000000000000000000000000000000;
+  uint256 public constant syrupUSDC_SEED_AMOUNT = 150e6;
+  address public constant syrupUSDC_PRICE_FEED = 0x0000000000000000000000000000000000000000;
 
   function _postExecute() internal override {
-    IERC20(syrupUSDG).forceApprove(address(AaveV3XLayer.POOL), syrupUSDG_SEED_AMOUNT);
-    AaveV3XLayer.POOL.supply(syrupUSDG, syrupUSDG_SEED_AMOUNT, address(AaveV3XLayer.DUST_BIN), 0);
+    IERC20(syrupUSDC).forceApprove(address(AaveV3XLayer.POOL), syrupUSDC_SEED_AMOUNT);
+    AaveV3XLayer.POOL.supply(syrupUSDC, syrupUSDC_SEED_AMOUNT, address(AaveV3XLayer.DUST_BIN), 0);
   }
 
   function newListings() public pure override returns (IAaveV3ConfigEngine.Listing[] memory) {
     IAaveV3ConfigEngine.Listing[] memory listings = new IAaveV3ConfigEngine.Listing[](1);
 
     listings[0] = IAaveV3ConfigEngine.Listing({
-      asset: syrupUSDG,
-      assetSymbol: 'syrupUSDG',
-      priceFeed: syrupUSDG_PRICE_FEED,
+      asset: syrupUSDC,
+      assetSymbol: 'syrupUSDC',
+      priceFeed: syrupUSDC_PRICE_FEED,
       enabledToBorrow: EngineFlags.DISABLED,
       flashloanable: EngineFlags.DISABLED,
       ltv: 0,
@@ -62,23 +62,23 @@ contract AaveV3XLayer_AaveV3XLayerSyrupUSDGListing_20261014 is AaveV3PayloadXLay
     IAaveV3ConfigEngine.EModeCategoryCreation[]
       memory eModeCreations = new IAaveV3ConfigEngine.EModeCategoryCreation[](1);
 
-    address[] memory collateralAssets_SyrupUSDG__Stablecoins = new address[](1);
-    address[] memory borrowableAssets_SyrupUSDG__Stablecoins = new address[](4);
+    address[] memory collateralAssets_SyrupUSDC__Stablecoins = new address[](1);
+    address[] memory borrowableAssets_SyrupUSDC__Stablecoins = new address[](4);
 
-    collateralAssets_SyrupUSDG__Stablecoins[0] = syrupUSDG;
-    borrowableAssets_SyrupUSDG__Stablecoins[0] = AaveV3XLayerAssets.USDT_UNDERLYING;
-    borrowableAssets_SyrupUSDG__Stablecoins[1] = AaveV3XLayerAssets.USDG_UNDERLYING;
-    borrowableAssets_SyrupUSDG__Stablecoins[2] = AaveV3XLayerAssets.USDC_UNDERLYING;
-    borrowableAssets_SyrupUSDG__Stablecoins[3] = AaveV3XLayerAssets.GHO_UNDERLYING;
+    collateralAssets_SyrupUSDC__Stablecoins[0] = syrupUSDC;
+    borrowableAssets_SyrupUSDC__Stablecoins[0] = AaveV3XLayerAssets.USDT_UNDERLYING;
+    borrowableAssets_SyrupUSDC__Stablecoins[1] = AaveV3XLayerAssets.USDG_UNDERLYING;
+    borrowableAssets_SyrupUSDC__Stablecoins[2] = AaveV3XLayerAssets.USDC_UNDERLYING;
+    borrowableAssets_SyrupUSDC__Stablecoins[3] = AaveV3XLayerAssets.GHO_UNDERLYING;
 
     eModeCreations[0] = IAaveV3ConfigEngine.EModeCategoryCreation({
       ltv: 90_00,
       liqThreshold: 92_00,
       liqBonus: 4_00,
-      label: 'syrupUSDG__Stablecoins',
+      label: 'syrupUSDC__Stablecoins',
       isolated: false,
-      collaterals: collateralAssets_SyrupUSDG__Stablecoins,
-      borrowables: borrowableAssets_SyrupUSDG__Stablecoins
+      collaterals: collateralAssets_SyrupUSDC__Stablecoins,
+      borrowables: borrowableAssets_SyrupUSDC__Stablecoins
     });
 
     return eModeCreations;

@@ -1,13 +1,13 @@
 import {ConfigFile} from '../../generator/types';
 export const config: ConfigFile = {
   rootOptions: {
-    configFile: 'src/20261014_AaveV3XLayer_AaveV3XLayerSyrupUSDGListing/config.ts',
+    configFile: 'src/20261016_AaveV3XLayer_AaveV3XLayerSyrupUSDCListing/config.ts',
     markets: ['AaveV3XLayer'],
-    title: 'Onboard syrupUSDG to Aave V3 X Layer',
-    shortName: 'AaveV3XLayerSyrupUSDGListing',
-    date: '20261014',
+    title: 'Onboard syrupUSDC to Aave V3 X Layer',
+    shortName: 'AaveV3XLayerSyrupUSDCListing',
+    date: '20261016',
     author: '@TokenLogic',
-    discussion: 'https://governance.aave.com/t/direct-to-aip-asset-listing-syrupusdg-x-layer/25855',
+    discussion: '',
     snapshot: 'Direct-to-AIP',
     votingNetwork: 'AVALANCHE',
   },
@@ -16,7 +16,7 @@ export const config: ConfigFile = {
       configs: {
         ASSET_LISTING: [
           {
-            assetSymbol: 'syrupUSDG',
+            assetSymbol: 'syrupUSDC',
             decimals: 6,
             priceFeed: '0x0000000000000000000000000000000000000000',
             ltv: '0',
@@ -43,9 +43,9 @@ export const config: ConfigFile = {
             ltv: '90',
             liqThreshold: '92',
             liqBonus: '4',
-            label: 'syrupUSDG__Stablecoins',
+            label: 'syrupUSDC__Stablecoins',
             isolated: 'DISABLED',
-            collateralAssets: ['syrupUSDG'],
+            collateralAssets: ['syrupUSDC'],
             borrowableAssets: ['USDT', 'USDG', 'USDC', 'GHO'],
           },
         ],

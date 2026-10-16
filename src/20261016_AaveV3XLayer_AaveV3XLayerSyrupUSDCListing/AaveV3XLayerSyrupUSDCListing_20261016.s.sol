@@ -5,18 +5,18 @@ import {GovV3Helpers, IPayloadsControllerCore, PayloadsControllerUtils} from 'aa
 import {GovernanceV3Ethereum} from 'aave-address-book/GovernanceV3Ethereum.sol';
 
 import {EthereumScript, XLayerScript} from 'solidity-utils/contracts/utils/ScriptUtils.sol';
-import {AaveV3XLayer_AaveV3XLayerSyrupUSDGListing_20261014} from './AaveV3XLayer_AaveV3XLayerSyrupUSDGListing_20261014.sol';
+import {AaveV3XLayer_AaveV3XLayerSyrupUSDCListing_20261016} from './AaveV3XLayer_AaveV3XLayerSyrupUSDCListing_20261016.sol';
 
 /**
  * @dev Deploy XLayer
- * deploy-command: make deploy-ledger contract=src/20261014_AaveV3XLayer_AaveV3XLayerSyrupUSDGListing/AaveV3XLayerSyrupUSDGListing_20261014.s.sol:DeployXLayer chain=xlayer
- * verify-command: FOUNDRY_PROFILE=deploy npx catapulta-verify -b broadcast/AaveV3XLayerSyrupUSDGListing_20261014.s.sol/196/run-latest.json
+ * deploy-command: make deploy-ledger contract=src/20261016_AaveV3XLayer_AaveV3XLayerSyrupUSDCListing/AaveV3XLayerSyrupUSDCListing_20261016.s.sol:DeployXLayer chain=xlayer
+ * verify-command: FOUNDRY_PROFILE=deploy npx catapulta-verify -b broadcast/AaveV3XLayerSyrupUSDCListing_20261016.s.sol/196/run-latest.json
  */
 contract DeployXLayer is XLayerScript {
   function run() external broadcast {
     // deploy payloads
     address payload0 = GovV3Helpers.deployDeterministic(
-      type(AaveV3XLayer_AaveV3XLayerSyrupUSDGListing_20261014).creationCode
+      type(AaveV3XLayer_AaveV3XLayerSyrupUSDCListing_20261016).creationCode
     );
 
     // compose action
@@ -31,7 +31,7 @@ contract DeployXLayer is XLayerScript {
 
 /**
  * @dev Create Proposal
- * command: make deploy-ledger contract=src/20261014_AaveV3XLayer_AaveV3XLayerSyrupUSDGListing/AaveV3XLayerSyrupUSDGListing_20261014.s.sol:CreateProposal chain=mainnet
+ * command: make deploy-ledger contract=src/20261016_AaveV3XLayer_AaveV3XLayerSyrupUSDCListing/AaveV3XLayerSyrupUSDCListing_20261016.s.sol:CreateProposal chain=mainnet
  */
 contract CreateProposal is EthereumScript {
   function run() external {
@@ -43,7 +43,7 @@ contract CreateProposal is EthereumScript {
       IPayloadsControllerCore.ExecutionAction[]
         memory actionsXLayer = new IPayloadsControllerCore.ExecutionAction[](1);
       actionsXLayer[0] = GovV3Helpers.buildAction(
-        type(AaveV3XLayer_AaveV3XLayerSyrupUSDGListing_20261014).creationCode
+        type(AaveV3XLayer_AaveV3XLayerSyrupUSDCListing_20261016).creationCode
       );
       payloads[0] = GovV3Helpers.buildXLayerPayload(vm, actionsXLayer);
     }
@@ -56,7 +56,7 @@ contract CreateProposal is EthereumScript {
       GovernanceV3Ethereum.VOTING_PORTAL_ETH_AVAX,
       GovV3Helpers.ipfsHashFile(
         vm,
-        'src/20261014_AaveV3XLayer_AaveV3XLayerSyrupUSDGListing/AaveV3XLayerSyrupUSDGListing.md'
+        'src/20261016_AaveV3XLayer_AaveV3XLayerSyrupUSDCListing/AaveV3XLayerSyrupUSDCListing.md'
       )
     );
   }
