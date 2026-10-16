@@ -1,7 +1,7 @@
 import {ConfigFile} from '../../generator/types';
 export const config: ConfigFile = {
   rootOptions: {
-    markets: ['AaveV3BNB'],
+    markets: ['AaveV3BNB', 'AaveV3Arbitrum', 'AaveV3Base'],
     title: 'SVR Expansion (BNB)',
     shortName: 'SVRExpansionBNB',
     date: '20261012',
@@ -13,5 +13,7 @@ export const config: ConfigFile = {
   },
   marketOptions: {
     AaveV3BNB: {configs: {OTHERS: {}}, cache: {blockNumber: 127465400}},
+    AaveV3Arbitrum: {configs: {OTHERS: {}}, cache: {blockNumber: 515457000}},
+    AaveV3Base: {configs: {OTHERS: {}}, cache: {blockNumber: 52693200}},
   },
 };

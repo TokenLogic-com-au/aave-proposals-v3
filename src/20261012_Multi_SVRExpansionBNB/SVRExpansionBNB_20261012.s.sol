@@ -4,8 +4,10 @@ pragma solidity ^0.8.0;
 import {GovV3Helpers, IPayloadsControllerCore, PayloadsControllerUtils} from 'aave-helpers/src/GovV3Helpers.sol';
 import {GovernanceV3Ethereum} from 'aave-address-book/GovernanceV3Ethereum.sol';
 
-import {EthereumScript, BNBScript} from 'solidity-utils/contracts/utils/ScriptUtils.sol';
+import {EthereumScript, BNBScript, ArbitrumScript, BaseScript} from 'solidity-utils/contracts/utils/ScriptUtils.sol';
 import {AaveV3BNB_SVRExpansionBNB_20261012} from './AaveV3BNB_SVRExpansionBNB_20261012.sol';
+import {AaveV3Arbitrum_SVRExpansionBNB_20261012} from './AaveV3Arbitrum_SVRExpansionBNB_20261012.sol';
+import {AaveV3Base_SVRExpansionBNB_20261012} from './AaveV3Base_SVRExpansionBNB_20261012.sol';
 
 /**
  * @dev Deploy BNB
@@ -30,13 +32,57 @@ contract DeployBNB is BNBScript {
 }
 
 /**
+ * @dev Deploy Arbitrum
+ * deploy-command: make deploy-ledger contract=src/20261012_Multi_SVRExpansionBNB/SVRExpansionBNB_20261012.s.sol:DeployArbitrum chain=arbitrum
+ * verify-command: FOUNDRY_PROFILE=deploy npx catapulta-verify -b broadcast/SVRExpansionBNB_20261012.s.sol/42161/run-latest.json
+ */
+contract DeployArbitrum is ArbitrumScript {
+  function run() external broadcast {
+    // deploy payloads
+    address payload0 = GovV3Helpers.deployDeterministic(
+      type(AaveV3Arbitrum_SVRExpansionBNB_20261012).creationCode
+    );
+
+    // compose action
+    IPayloadsControllerCore.ExecutionAction[]
+      memory actions = new IPayloadsControllerCore.ExecutionAction[](1);
+    actions[0] = GovV3Helpers.buildAction(payload0);
+
+    // register action at payloadsController
+    GovV3Helpers.createPayload(actions);
+  }
+}
+
+/**
+ * @dev Deploy Base
+ * deploy-command: make deploy-ledger contract=src/20261012_Multi_SVRExpansionBNB/SVRExpansionBNB_20261012.s.sol:DeployBase chain=base
+ * verify-command: FOUNDRY_PROFILE=deploy npx catapulta-verify -b broadcast/SVRExpansionBNB_20261012.s.sol/8453/run-latest.json
+ */
+contract DeployBase is BaseScript {
+  function run() external broadcast {
+    // deploy payloads
+    address payload0 = GovV3Helpers.deployDeterministic(
+      type(AaveV3Base_SVRExpansionBNB_20261012).creationCode
+    );
+
+    // compose action
+    IPayloadsControllerCore.ExecutionAction[]
+      memory actions = new IPayloadsControllerCore.ExecutionAction[](1);
+    actions[0] = GovV3Helpers.buildAction(payload0);
+
+    // register action at payloadsController
+    GovV3Helpers.createPayload(actions);
+  }
+}
+
+/**
  * @dev Create Proposal
  * command: make deploy-ledger contract=src/20261012_Multi_SVRExpansionBNB/SVRExpansionBNB_20261012.s.sol:CreateProposal chain=mainnet
  */
 contract CreateProposal is EthereumScript {
   function run() external {
     // create payloads
-    PayloadsControllerUtils.Payload[] memory payloads = new PayloadsControllerUtils.Payload[](1);
+    PayloadsControllerUtils.Payload[] memory payloads = new PayloadsControllerUtils.Payload[](3);
 
     // compose actions for validation
     {
@@ -46,6 +92,24 @@ contract CreateProposal is EthereumScript {
         type(AaveV3BNB_SVRExpansionBNB_20261012).creationCode
       );
       payloads[0] = GovV3Helpers.buildBNBPayload(vm, actionsBNB);
+    }
+
+    {
+      IPayloadsControllerCore.ExecutionAction[]
+        memory actionsArbitrum = new IPayloadsControllerCore.ExecutionAction[](1);
+      actionsArbitrum[0] = GovV3Helpers.buildAction(
+        type(AaveV3Arbitrum_SVRExpansionBNB_20261012).creationCode
+      );
+      payloads[1] = GovV3Helpers.buildArbitrumPayload(vm, actionsArbitrum);
+    }
+
+    {
+      IPayloadsControllerCore.ExecutionAction[]
+        memory actionsBase = new IPayloadsControllerCore.ExecutionAction[](1);
+      actionsBase[0] = GovV3Helpers.buildAction(
+        type(AaveV3Base_SVRExpansionBNB_20261012).creationCode
+      );
+      payloads[2] = GovV3Helpers.buildBasePayload(vm, actionsBase);
     }
 
     // create proposal
