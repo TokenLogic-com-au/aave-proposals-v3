@@ -6,12 +6,12 @@ import {AaveV3BNB, AaveV3BNBAssets} from 'aave-address-book/AaveV3BNB.sol';
 import {ISvrOracleSteward} from '../interfaces/ISvrOracleSteward.sol';
 
 /**
- * @title SVR Expansion (Avalanche, BNB, Polygon)
+ * @title SVR Expansion (BNB)
  * @author TokenLogic
  * - Snapshot: TODO
  * - Discussion: https://governance.aave.com/t/arfc-svr-expansion-next-phase-of-multi-network-expansion/25332
  */
-contract AaveV3BNB_SVRExpansionAvalancheBNBPolygon_20261012 is IProposalGenericExecutor {
+contract AaveV3BNB_SVRExpansionBNB_20261012 is IProposalGenericExecutor {
   // https://bscscan.com/address/0x65105C82DDd10Ad37DCBe7a3A137E008CC456754
   address public constant STEWARD = 0x65105C82DDd10Ad37DCBe7a3A137E008CC456754;
 

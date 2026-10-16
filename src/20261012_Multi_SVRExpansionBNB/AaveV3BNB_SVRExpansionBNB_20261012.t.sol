@@ -5,18 +5,18 @@ import {AaveV3BNB} from 'aave-address-book/AaveV3BNB.sol';
 import {ISvrOracleSteward} from '../interfaces/ISvrOracleSteward.sol';
 import 'forge-std/Test.sol';
 import {ProtocolV3TestBase, ReserveConfig} from 'aave-helpers/src/ProtocolV3TestBase.sol';
-import {AaveV3BNB_SVRExpansionAvalancheBNBPolygon_20261012} from './AaveV3BNB_SVRExpansionAvalancheBNBPolygon_20261012.sol';
+import {AaveV3BNB_SVRExpansionBNB_20261012} from './AaveV3BNB_SVRExpansionBNB_20261012.sol';
 
 /**
- * @dev Test for AaveV3BNB_SVRExpansionAvalancheBNBPolygon_20261012
- * command: FOUNDRY_PROFILE=test forge test --match-path=src/20261012_Multi_SVRExpansionAvalancheBNBPolygon/AaveV3BNB_SVRExpansionAvalancheBNBPolygon_20261012.t.sol -vv
+ * @dev Test for AaveV3BNB_SVRExpansionBNB_20261012
+ * command: FOUNDRY_PROFILE=test forge test --match-path=src/20261012_Multi_SVRExpansionBNB/AaveV3BNB_SVRExpansionBNB_20261012.t.sol -vv
  */
-contract AaveV3BNB_SVRExpansionAvalancheBNBPolygon_20261012_Test is ProtocolV3TestBase {
-  AaveV3BNB_SVRExpansionAvalancheBNBPolygon_20261012 internal proposal;
+contract AaveV3BNB_SVRExpansionBNB_20261012_Test is ProtocolV3TestBase {
+  AaveV3BNB_SVRExpansionBNB_20261012 internal proposal;
 
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('bnb'), 127465400);
-    proposal = new AaveV3BNB_SVRExpansionAvalancheBNBPolygon_20261012();
+    proposal = new AaveV3BNB_SVRExpansionBNB_20261012();
   }
 
   /**
@@ -24,11 +24,7 @@ contract AaveV3BNB_SVRExpansionAvalancheBNBPolygon_20261012_Test is ProtocolV3Te
    * forge-config: default.isolate = true
    */
   function test_defaultProposalExecution() public {
-    defaultTest(
-      'AaveV3BNB_SVRExpansionAvalancheBNBPolygon_20261012',
-      AaveV3BNB.POOL,
-      address(proposal)
-    );
+    defaultTest('AaveV3BNB_SVRExpansionBNB_20261012', AaveV3BNB.POOL, address(proposal));
   }
 
   function test_activation() public {
