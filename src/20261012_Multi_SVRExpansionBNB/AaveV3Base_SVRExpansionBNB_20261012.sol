@@ -12,9 +12,9 @@ import {AaveV3Base} from 'aave-address-book/AaveV3Base.sol';
  */
 contract AaveV3Base_SVRExpansionBNB_20261012 is IProposalGenericExecutor {
   // https://basescan.org/address/0x4B09DAEAe857b93c9103392028294F0602C5fD5b
-  address public constant STEWARD = 0x4B09DAEAe857b93c9103392028294F0602C5fD5b;
+  address public constant SVR_ORACLE_STEWARD = 0x4B09DAEAe857b93c9103392028294F0602C5fD5b;
 
   function execute() external {
-    AaveV3Base.ACL_MANAGER.removeAssetListingAdmin(STEWARD);
+    AaveV3Base.ACL_MANAGER.removeAssetListingAdmin(SVR_ORACLE_STEWARD);
   }
 }

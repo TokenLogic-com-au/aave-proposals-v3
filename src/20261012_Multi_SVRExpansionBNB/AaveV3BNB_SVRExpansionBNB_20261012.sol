@@ -13,7 +13,7 @@ import {ISvrOracleSteward} from '../interfaces/ISvrOracleSteward.sol';
  */
 contract AaveV3BNB_SVRExpansionBNB_20261012 is IProposalGenericExecutor {
   // https://bscscan.com/address/0x65105C82DDd10Ad37DCBe7a3A137E008CC456754
-  address public constant STEWARD = 0x65105C82DDd10Ad37DCBe7a3A137E008CC456754;
+  address public constant SVR_ORACLE_STEWARD = 0x65105C82DDd10Ad37DCBe7a3A137E008CC456754;
 
   // https://bscscan.com/address/0xdca984ba9029188C8bcF494B0541A8A620e71b76
   address public constant SVR_BNB_USD = 0xdca984ba9029188C8bcF494B0541A8A620e71b76;
@@ -40,10 +40,10 @@ contract AaveV3BNB_SVRExpansionBNB_20261012 is IProposalGenericExecutor {
   address public constant SVR_CAKE_USD = 0xFE6C88dE04c3088d7C9B92153E92D555DC0EbE92;
 
   function execute() external {
-    AaveV3BNB.ACL_MANAGER.addAssetListingAdmin(STEWARD);
+    AaveV3BNB.ACL_MANAGER.addAssetListingAdmin(SVR_ORACLE_STEWARD);
     ISvrOracleSteward.AssetOracle[] memory configInput = getSvrOracles();
 
-    ISvrOracleSteward(STEWARD).enableSvrOracles(configInput);
+    ISvrOracleSteward(SVR_ORACLE_STEWARD).enableSvrOracles(configInput);
   }
 
   function getSvrOracles() public pure returns (ISvrOracleSteward.AssetOracle[] memory) {

@@ -12,9 +12,9 @@ import {AaveV3Arbitrum} from 'aave-address-book/AaveV3Arbitrum.sol';
  */
 contract AaveV3Arbitrum_SVRExpansionBNB_20261012 is IProposalGenericExecutor {
   // https://arbiscan.io/address/0x94E54D858e9293964b4ACd6f8938c831827a31F4
-  address public constant STEWARD = 0x94E54D858e9293964b4ACd6f8938c831827a31F4;
+  address public constant SVR_ORACLE_STEWARD = 0x94E54D858e9293964b4ACd6f8938c831827a31F4;
 
   function execute() external {
-    AaveV3Arbitrum.ACL_MANAGER.removeAssetListingAdmin(STEWARD);
+    AaveV3Arbitrum.ACL_MANAGER.removeAssetListingAdmin(SVR_ORACLE_STEWARD);
   }
 }

@@ -28,10 +28,10 @@ contract AaveV3Base_SVRExpansionBNB_20261012_Test is ProtocolV3TestBase {
   }
 
   function test_stewardRemoved() public {
-    assertTrue(AaveV3Base.ACL_MANAGER.isAssetListingAdmin(proposal.STEWARD()));
+    assertTrue(AaveV3Base.ACL_MANAGER.isAssetListingAdmin(proposal.SVR_ORACLE_STEWARD()));
 
     executePayload(vm, address(proposal), AaveV3Base.POOL);
 
-    assertFalse(AaveV3Base.ACL_MANAGER.isAssetListingAdmin(proposal.STEWARD()));
+    assertFalse(AaveV3Base.ACL_MANAGER.isAssetListingAdmin(proposal.SVR_ORACLE_STEWARD()));
   }
 }
