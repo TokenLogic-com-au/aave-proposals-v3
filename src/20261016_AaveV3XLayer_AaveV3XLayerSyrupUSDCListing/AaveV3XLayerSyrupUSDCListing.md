@@ -1,7 +1,7 @@
 ---
 title: "Onboard syrupUSDC to Aave V3 X Layer"
 author: "@TokenLogic"
-discussions: TODO
+discussions: https://governance.aave.com/t/direct-to-aip-asset-listing-syrupusdc-x-layer/25855
 ---
 
 ## Simple Summary
@@ -140,7 +140,7 @@ The CAPO parameters will be set by the Risk Service Providers. The final oracle 
 
 - Implementation: [AaveV3XLayer](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20261016_AaveV3XLayer_AaveV3XLayerSyrupUSDCListing/AaveV3XLayer_AaveV3XLayerSyrupUSDCListing_20261016.sol)
 - Tests: [AaveV3XLayer](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20261016_AaveV3XLayer_AaveV3XLayerSyrupUSDCListing/AaveV3XLayer_AaveV3XLayerSyrupUSDCListing_20261016.t.sol)
-- [Discussion](TODO)
+- [Discussion](https://governance.aave.com/t/direct-to-aip-asset-listing-syrupusdc-x-layer/25855)
 
 ## Copyright
 

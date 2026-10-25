@@ -7,7 +7,7 @@ export const config: ConfigFile = {
     shortName: 'AaveV3XLayerSyrupUSDCListing',
     date: '20261016',
     author: '@TokenLogic',
-    discussion: '',
+    discussion: 'https://governance.aave.com/t/direct-to-aip-asset-listing-syrupusdc-x-layer/25855',
     snapshot: 'Direct-to-AIP',
     votingNetwork: 'AVALANCHE',
   },

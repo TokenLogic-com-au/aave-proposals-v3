@@ -12,7 +12,7 @@ import {SafeERC20} from 'openzeppelin-contracts/contracts/token/ERC20/utils/Safe
  * @title Onboard syrupUSDC to Aave V3 X Layer
  * @author @TokenLogic
  * - Snapshot: Direct-to-AIP
- * - Discussion: TODO
+ * - Discussion: https://governance.aave.com/t/direct-to-aip-asset-listing-syrupusdc-x-layer/25855
  */
 contract AaveV3XLayer_AaveV3XLayerSyrupUSDCListing_20261016 is AaveV3PayloadXLayer {
   using SafeERC20 for IERC20;
