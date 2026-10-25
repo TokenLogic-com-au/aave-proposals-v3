@@ -27,11 +27,11 @@ export const config: ConfigFile = {
             flashloanable: 'ENABLED',
             reserveFactor: '10',
             supplyCap: '30000000',
-            borrowCap: '27600000',
+            borrowCap: '27000000',
             rateStrategyParams: {
               optimalUtilizationRate: '90',
               baseVariableBorrowRate: '0',
-              variableRateSlope1: '4',
+              variableRateSlope1: '4.5',
               variableRateSlope2: '30',
             },
             asset: '0x004B506865409877C9fA29bfb1ebA929984B9bbC',

@@ -42,12 +42,12 @@ contract AaveV3Arbitrum_AaveV3ArbitrumUSDGListing_20261008 is AaveV3PayloadArbit
       liqBonus: 0,
       reserveFactor: 10_00,
       supplyCap: 30_000_000,
-      borrowCap: 27_600_000,
+      borrowCap: 27_000_000,
       liqProtocolFee: 10_00,
       rateStrategyParams: IAaveV3ConfigEngine.InterestRateInputData({
         optimalUsageRatio: 90_00,
         baseVariableBorrowRate: 0,
-        variableRateSlope1: 4_00,
+        variableRateSlope1: 4_50,
         variableRateSlope2: 30_00
       })
     });

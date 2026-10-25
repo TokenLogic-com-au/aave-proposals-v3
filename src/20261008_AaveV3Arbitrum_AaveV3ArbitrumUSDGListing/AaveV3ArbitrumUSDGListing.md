@@ -34,7 +34,7 @@ The address above represents Paxos's USDG deployment on Arbitrum.
 
 ### Proposed Market Configuration
 
-We propose initially configuring USDG with the following parameters, subject to final recommendations from Aave Risk Service Providers.
+The parameters below follow the [LlamaRisk recommendation](https://governance.aave.com/t/direct-to-aip-asset-listing-usdg-arbitrum/25811/2).
 
 | **Parameter**            | **Value**  |
 | ------------------------ | ---------- |
@@ -43,14 +43,14 @@ We propose initially configuring USDG with the following parameters, subject to 
 | Borrowable               | Yes        |
 | Collateral Enabled       | No         |
 | Supply Cap               | 30,000,000 |
-| Borrow Cap               | 27,600,000 |
+| Borrow Cap               | 27,000,000 |
 | Debt Ceiling             | -          |
 | LTV                      | 0.00%      |
 | LT                       | 0.00%      |
 | Liquidation Bonus        | 0.00%      |
 | Liquidation Protocol Fee | 10%        |
 | Variable Base            | 0.00%      |
-| Variable Slope 1         | 4.00%      |
+| Variable Slope 1         | 4.50%      |
 | Variable Slope 2         | 30.00%     |
 | Uoptimal                 | 90.00%     |
 | Reserve Factor           | 10%        |
@@ -60,11 +60,9 @@ We propose initially configuring USDG with the following parameters, subject to 
 | Borrowable in Isolation  | Yes        |
 | eModes                   | -          |
 
-The proposed configuration excludes USDG from collateral use, consistent with its listings on the other Aave instances. It uses the same interest rate curve as the USDC reserve on Aave V3 Arbitrum and sets a 10% reserve factor, matching USDC and USD₮0 on Arbitrum and USDG on X Layer and Ink.
+The proposed configuration excludes USDG from collateral use, consistent with its listings on the other Aave instances. It sets a 10% reserve factor, matching USDC and USD₮0 on Arbitrum and USDG on X Layer and Ink.
 
 We consider USDG's secondary-market liquidity on Arbitrum, concentrated in the Fluid USDG/USDC pool, sufficient for an initial listing.
-
-Final onboarding parameters remain subject to review and recommendations from Aave's Risk Service Providers.
 
 ## Oracle
 
