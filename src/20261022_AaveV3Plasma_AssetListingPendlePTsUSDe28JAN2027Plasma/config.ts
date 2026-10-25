@@ -7,7 +7,8 @@ export const config: ConfigFile = {
     shortName: 'AssetListingPendlePTsUSDe28JAN2027Plasma',
     date: '20261022',
     author: '@TokenLogic',
-    discussion: 'TODO',
+    discussion:
+      'https://governance.aave.com/t/direct-to-aip-onboard-pt-susde-28jan2027-to-aave-v3-plasma-instance/25902',
     snapshot: 'Direct-to-AIP',
     votingNetwork: 'AVALANCHE',
   },

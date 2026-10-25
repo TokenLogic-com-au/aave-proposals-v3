@@ -1,7 +1,7 @@
 ---
 title: "Asset Listing - Pendle PT-sUSDe-28JAN2027 Plasma"
 author: "@TokenLogic"
-discussions: "TODO"
+discussions: "https://governance.aave.com/t/direct-to-aip-onboard-pt-susde-28jan2027-to-aave-v3-plasma-instance/25902"
 ---
 
 ## Simple Summary
@@ -76,7 +76,7 @@ The price feed applies a linear discount, decreasing to zero at maturity, on top
 
 - Implementation: [AaveV3Plasma](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20261022_AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma/AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022.sol)
 - Tests: [AaveV3Plasma](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20261022_AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma/AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022.t.sol)
-- [Discussion](TODO)
+- [Discussion](https://governance.aave.com/t/direct-to-aip-onboard-pt-susde-28jan2027-to-aave-v3-plasma-instance/25902)
 
 ## Copyright
 

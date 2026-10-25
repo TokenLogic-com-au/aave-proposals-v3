@@ -12,7 +12,7 @@ import {SafeERC20} from 'openzeppelin-contracts/contracts/token/ERC20/utils/Safe
  * @title Asset Listing - Pendle PT-sUSDe-28JAN2027 Plasma
  * @author @TokenLogic
  * - Snapshot: Direct-to-AIP
- * - Discussion: TODO
+ * - Discussion: https://governance.aave.com/t/direct-to-aip-onboard-pt-susde-28jan2027-to-aave-v3-plasma-instance/25902
  */
 contract AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022 is AaveV3PayloadPlasma {
   using SafeERC20 for IERC20;
