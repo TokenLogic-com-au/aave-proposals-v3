@@ -82,7 +82,7 @@ contract AaveV3Arbitrum_AaveV3ArbitrumUSDGListing_20261008_Test is ProtocolV3Tes
       IDefaultInterestRateStrategyV2.InterestRateDataRay({
         optimalUsageRatio: 0.9e27,
         baseVariableBorrowRate: 0,
-        variableRateSlope1: 0.04e27,
+        variableRateSlope1: 0.045e27,
         variableRateSlope2: 0.3e27
       })
     );
@@ -111,12 +111,12 @@ contract AaveV3Arbitrum_AaveV3ArbitrumUSDGListing_20261008_Test is ProtocolV3Tes
         liqBonus: 0,
         reserveFactor: 10_00,
         supplyCap: 30_000_000,
-        borrowCap: 27_600_000,
+        borrowCap: 27_000_000,
         liqProtocolFee: 10_00,
         rateStrategyParams: IAaveV3ConfigEngine.InterestRateInputData({
           optimalUsageRatio: 90_00,
           baseVariableBorrowRate: 0,
-          variableRateSlope1: 4_00,
+          variableRateSlope1: 4_50,
           variableRateSlope2: 30_00
         })
       }),
