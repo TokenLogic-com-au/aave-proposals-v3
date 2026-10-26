@@ -28,7 +28,7 @@ The listing would bring a Paxos-issued stablecoin to Arbitrum and give USDG hold
 
 ## Specification
 
-USDG Contract Address
+USDG Contract Address: [0x004B506865409877C9fA29bfb1ebA929984B9bbC](https://arbiscan.io/address/0x004B506865409877C9fA29bfb1ebA929984B9bbC)
 
 The address above represents Paxos's USDG deployment on Arbitrum.
 
@@ -39,12 +39,10 @@ The parameters below follow the [LlamaRisk recommendation](https://governance.aa
 | **Parameter**            | **Value**  |
 | ------------------------ | ---------- |
 | Asset                    | USDG       |
-| Isolation Mode           | No         |
 | Borrowable               | Yes        |
 | Collateral Enabled       | No         |
 | Supply Cap               | 30,000,000 |
 | Borrow Cap               | 27,000,000 |
-| Debt Ceiling             | -          |
 | LTV                      | 0.00%      |
 | LT                       | 0.00%      |
 | Liquidation Bonus        | 0.00%      |
@@ -54,13 +52,10 @@ The parameters below follow the [LlamaRisk recommendation](https://governance.aa
 | Variable Slope 2         | 30.00%     |
 | Uoptimal                 | 90.00%     |
 | Reserve Factor           | 10%        |
-| Stable Borrowing         | Disabled   |
 | Flashloanable            | Yes        |
-| Siloed Borrowing         | No         |
-| Borrowable in Isolation  | Yes        |
 | eModes                   | -          |
 
-The proposed configuration excludes USDG from collateral use, consistent with its listings on the other Aave instances. It sets a 10% reserve factor, matching USDC and USD₮0 on Arbitrum and USDG on X Layer and Ink.
+The configuration excludes USDG from collateral use, consistent with its listings on the other Aave instances. It sets a 10% reserve factor, matching USDC and USD₮0 on Arbitrum and USDG on X Layer and Ink.
 
 We consider USDG's secondary-market liquidity on Arbitrum, concentrated in the Fluid USDG/USDC pool, sufficient for an initial listing.
 
@@ -70,7 +65,11 @@ A Chainlink **USDG/USD Price Feed** is available on Arbitrum.
 
 Consistent with the oracle configuration USDG uses on Aave V3 Ethereum Core, Ink, and X Layer, we propose pricing USDG with the Chainlink USDG/USD feed, along with a Capped USDG/USD adapter at a 1.04 price cap.
 
-The final oracle contract, adapter deployment, and configuration remain subject to confirmation by the relevant Aave Risk and Technical Service Providers.
+| **Component**                                     | **Value**                                                                                                            |
+| ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Chainlink USDG/USD feed                           | [0xE9Bd4Ca2CDacb56cd06c9C4C5231e69c33340B3c](https://arbiscan.io/address/0xE9Bd4Ca2CDacb56cd06c9C4C5231e69c33340B3c) |
+| Capped USDG/USD adapter (`PriceCapAdapterStable`) | [0xf6bDD632625425cE368Bb19Af5A01C3C0344EB1D](https://arbiscan.io/address/0xf6bDD632625425cE368Bb19Af5A01C3C0344EB1D) |
+| Price cap                                         | 1.04 USD                                                                                                             |
 
 ## Next Steps
 
