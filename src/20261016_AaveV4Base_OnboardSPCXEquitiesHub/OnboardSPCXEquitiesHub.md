@@ -58,8 +58,8 @@ This proposal was prepared by Aave Labs in its capacity as a contributor to the 
 
 ## References
 
-- Implementation: [AaveV4Base](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20261016_AaveV4Base_OnboardSPCXEquitiesHub/AaveV4Base_OnboardSPCXEquitiesHub_20261016.sol)
-- Tests: [AaveV4Base](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20261016_AaveV4Base_OnboardSPCXEquitiesHub/AaveV4Base_OnboardSPCXEquitiesHub_20261016.t.sol)
+- Implementation: [AaveV4Base](https://github.com/aave-dao/aave-proposals-v3/blob/b8b82d65e2cf3f4da951c6dc43b2ebec623fb7b3/src/20261016_AaveV4Base_OnboardSPCXEquitiesHub/AaveV4Base_OnboardSPCXEquitiesHub_20261016.sol)
+- Tests: [AaveV4Base](https://github.com/aave-dao/aave-proposals-v3/blob/b8b82d65e2cf3f4da951c6dc43b2ebec623fb7b3/src/20261016_AaveV4Base_OnboardSPCXEquitiesHub/AaveV4Base_OnboardSPCXEquitiesHub_20261016.t.sol)
 - [Discussion](https://governance.aave.com/t/direct-to-aip-asset-listing-spcx-to-the-aave-v4-equities-hub-on-base/25850)
 - [Risk parameters](https://governance.aave.com/t/25850/2)
 
