@@ -82,7 +82,7 @@ Both predeployed agents are verified deployments of the stock implementations fr
 ## References
 
 - Agent implementations: [aave-dao/aave-risk-agents](https://github.com/aave-dao/aave-risk-agents)
-- Implementation: [AaveV3XLayer](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20261021_AaveV3XLayer_Onboard_PTUSDG25FEB2027_Oracle/AaveV3XLayer_Onboard_PTUSDG25FEB2027_Oracle_20261021.sol)
+- Implementation: [AaveV3XLayer](https://github.com/aave-dao/aave-proposals-v3/blob/ac40785eb1e3921061d7781acd5e01168ba082d7/src/20261021_AaveV3XLayer_Onboard_PTUSDG25FEB2027_Oracle/AaveV3XLayer_Onboard_PTUSDG25FEB2027_Oracle_20261021.sol)
 - Tests: [AaveV3XLayer](https://github.com/aave-dao/aave-proposals-v3/blob/27cb6948f818712371dfb203afd30733fca50c65/src/20261021_AaveV3XLayer_Onboard_PTUSDG25FEB2027_Oracle/AaveV3XLayer_Onboard_PTUSDG25FEB2027_Oracle_20261021.t.sol)
 - Snapshot: Direct-to-AIP
 - [Discussion](https://governance.aave.com/t/arfc-upgrade-pt-risk-oracle-to-protocol-owned-infrastructure-on-cre/25119/7)
