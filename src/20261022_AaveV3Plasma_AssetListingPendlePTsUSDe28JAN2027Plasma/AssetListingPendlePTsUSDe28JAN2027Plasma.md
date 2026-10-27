@@ -70,7 +70,7 @@ The price feed applies a linear discount, decreasing to zero at maturity, on top
 | Underlying feed            | [Capped USDT0/USD](https://plasmascan.to/address/0xdBbB0b5DD13E7AC9C56624834ef193df87b022c3) |
 | Oracle                     | Pending deployment                                                                           |
 
-**Seed deposit.** The Aave Short Executor is funded with 160 PT-sUSDe-28JAN2027 before execution. The payload supplies them to the Aave DustBin.
+**Seed deposit.** The Aave Short Executor is funded with 100 PT-sUSDe-28JAN2027 before execution. The payload supplies them to the Aave DustBin.
 
 ## References
 

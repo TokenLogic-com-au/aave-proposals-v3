@@ -19,7 +19,7 @@ contract AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022 is AaveV
 
   // https://plasmascan.to/address/0x257561233419039BeC3a28be717d14B4f490883D
   address public constant PT_sUSDE_28JAN2027 = 0x257561233419039BeC3a28be717d14B4f490883D;
-  uint256 public constant PT_sUSDE_28JAN2027_SEED_AMOUNT = 160e18;
+  uint256 public constant PT_sUSDE_28JAN2027_SEED_AMOUNT = 100e18;
   address public constant PT_sUSDE_28JAN2027_PRICE_FEED = address(0);
 
   function _postExecute() internal override {

@@ -27,6 +27,7 @@ contract AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022_Test is 
     bool isolated;
     uint128 collateralBitmap;
     uint128 borrowableBitmap;
+    uint128 ltvzeroBitmap;
   }
 
   AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022 internal proposal;
@@ -68,10 +69,10 @@ contract AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022_Test is 
   function test_dustBinHasPT_sUSDE_28JAN2027Funds() public {
     GovV3Helpers.executePayload(vm, address(proposal));
     address aTokenAddress = AaveV3Plasma.POOL.getReserveAToken(proposal.PT_sUSDE_28JAN2027());
-    assertGe(
+    assertEq(
       IERC20(aTokenAddress).balanceOf(address(AaveV3Plasma.DUST_BIN)),
       proposal.PT_sUSDE_28JAN2027_SEED_AMOUNT(),
-      'DustBin should hold at least the seed amount'
+      'DustBin should hold exactly the seed amount'
     );
   }
 
@@ -198,6 +199,17 @@ contract AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022_Test is 
       _toBitmap(borrowables_SUSDe_PT_sUSDe_28JAN2027__USDe)
     );
 
+    assertEq(
+      AaveV3Plasma.POOL.getEModeCategoryLtvzeroBitmap(eMode_SUSDe_PT_sUSDe_28JAN2027__Stablecoins),
+      0,
+      'new Stablecoins eMode ltvzero bitmap'
+    );
+    assertEq(
+      AaveV3Plasma.POOL.getEModeCategoryLtvzeroBitmap(eMode_SUSDe_PT_sUSDe_28JAN2027__USDe),
+      0,
+      'new USDe eMode ltvzero bitmap'
+    );
+
     for (uint8 i = 0; i < before_.length; i++) {
       _assertEModeUnchanged(i + 1, before_[i]);
     }
@@ -269,7 +281,8 @@ contract AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022_Test is 
         collateralConfig: AaveV3Plasma.POOL.getEModeCategoryCollateralConfig(id),
         isolated: AaveV3Plasma.POOL.getIsEModeCategoryIsolated(id),
         collateralBitmap: AaveV3Plasma.POOL.getEModeCategoryCollateralBitmap(id),
-        borrowableBitmap: AaveV3Plasma.POOL.getEModeCategoryBorrowableBitmap(id)
+        borrowableBitmap: AaveV3Plasma.POOL.getEModeCategoryBorrowableBitmap(id),
+        ltvzeroBitmap: AaveV3Plasma.POOL.getEModeCategoryLtvzeroBitmap(id)
       });
     }
   }
@@ -298,6 +311,11 @@ contract AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022_Test is 
       AaveV3Plasma.POOL.getEModeCategoryBorrowableBitmap(id),
       snap.borrowableBitmap,
       'existing eMode borrowable bitmap changed'
+    );
+    assertEq(
+      AaveV3Plasma.POOL.getEModeCategoryLtvzeroBitmap(id),
+      snap.ltvzeroBitmap,
+      'existing eMode ltvzero bitmap changed'
     );
   }
 
