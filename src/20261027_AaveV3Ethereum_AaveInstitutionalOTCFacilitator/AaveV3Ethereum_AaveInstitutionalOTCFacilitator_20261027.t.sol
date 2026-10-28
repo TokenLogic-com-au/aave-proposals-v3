@@ -106,10 +106,21 @@ contract AaveV3Ethereum_AaveInstitutionalOTCFacilitator_20261027_Test is Protoco
   }
 
   function test_mint() public {
+    uint256 amount = proposal.AAVE_INSTITUTIONAL_FACILITATOR_CAPACITY();
+    assertEq(amount, 25_000_000 ether);
+
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        IAccessControl.AccessControlUnauthorizedAccount.selector,
+        GhoEthereum.RISK_COUNCIL,
+        facilitator.MINTER_ROLE()
+      )
+    );
+    vm.prank(GhoEthereum.RISK_COUNCIL);
+    facilitator.mint(recipient, amount);
+
     executePayload(vm, address(proposal));
     uint256 supplyBefore = gho.totalSupply();
-
-    uint256 amount = proposal.AAVE_INSTITUTIONAL_FACILITATOR_CAPACITY();
 
     vm.prank(GhoEthereum.RISK_COUNCIL);
     facilitator.mint(recipient, amount);
@@ -146,8 +157,19 @@ contract AaveV3Ethereum_AaveInstitutionalOTCFacilitator_20261027_Test is Protoco
   }
 
   function test_burn() public {
-    executePayload(vm, address(proposal));
     uint256 amount = 1_000_000e18;
+
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        IAccessControl.AccessControlUnauthorizedAccount.selector,
+        GhoEthereum.RISK_COUNCIL,
+        facilitator.BURNER_ROLE()
+      )
+    );
+    vm.prank(GhoEthereum.RISK_COUNCIL);
+    facilitator.burn(amount);
+
+    executePayload(vm, address(proposal));
 
     vm.prank(GhoEthereum.RISK_COUNCIL);
     facilitator.mint(recipient, amount);

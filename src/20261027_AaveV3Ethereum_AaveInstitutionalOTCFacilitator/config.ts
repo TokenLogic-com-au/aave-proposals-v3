@@ -11,5 +11,5 @@ export const config: ConfigFile = {
       'https://snapshot.org/#/s:aavedao.eth/proposal/0x194bd11500117aa7e0940bd0886a421a7658888af2cd04d82e07848afb8e3b79',
     votingNetwork: 'AVALANCHE',
   },
-  marketOptions: {AaveV3Ethereum: {configs: {OTHERS: {}}, cache: {blockNumber: 26286810}}},
+  marketOptions: {AaveV3Ethereum: {configs: {OTHERS: {}}, cache: {blockNumber: 26287087}}},
 };

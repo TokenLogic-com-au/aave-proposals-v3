@@ -7,7 +7,7 @@ snapshot: "https://snapshot.box/#/s:aavedao.eth/proposal/0x194bd11500117aa7e0940
 
 ## Simple Summary
 
-This AIP registers a new GHO facilitator for Aave Institutional on Ethereum with an initial bucket capacity of 25M GHO, places it under the GHO Bucket Steward, and grants the GHO Stewards the right to mint and burn GHO through it. It also authorises the pledging of DAO balance-sheet assets on Aave V3 to borrow up to $25M of USDC or USDT for loan funding, as set out in the ARFC.
+This AIP registers a new GHO facilitator for Aave Institutional on Ethereum with an initial bucket capacity of 25M GHO, places it under the GHO Bucket Steward, and grants the GHO Stewards the right to mint and burn GHO through it.
 
 ## Motivation
 
@@ -19,7 +19,7 @@ The ARFC approved two funding sources running in parallel: a new GHO facilitator
 
 ### GHO facilitator
 
-The facilitator is a new, immutable instance of `GhoDirectFacilitator` from aave-dao/gho-origin, with the same bytecode as the GhoDirectFacilitator GSM Arbitrum instance registered by governance. TokenLogic deployed it with the Governance V3 Level 1 executor as admin.
+The facilitator is a new, immutable instance of `GhoDirectFacilitator` from aave-dao/gho-origin. TokenLogic deployed it with the Governance V3 Level 1 executor as admin.
 
 | Parameter                                        | Value                                                                                                                 |
 | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
