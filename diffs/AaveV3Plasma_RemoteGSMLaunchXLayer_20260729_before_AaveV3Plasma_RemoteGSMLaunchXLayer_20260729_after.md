@@ -20,14 +20,6 @@
 
 ## Raw storage changes
 
-### 0x4e13adcbdf4a388650fb280715b3391f89619397
-
-**Nonce diff**: 0 → 1
-
-### 0x4e59b44847b379578588920ca78fbf26c0b4956c
-
-**Nonce diff**: 2 → 0
-
 ### 0xb77e872a68c62cfc0dfb02c067ecc3da23b4bbf3 (AaveV3Plasma.ASSETS.GHO.UNDERLYING, GhoPlasma.GHO_TOKEN)
 
 | slot | previous value | new value |

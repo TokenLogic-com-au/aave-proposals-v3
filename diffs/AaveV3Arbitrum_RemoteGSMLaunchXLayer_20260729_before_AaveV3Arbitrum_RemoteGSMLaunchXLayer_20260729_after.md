@@ -20,14 +20,6 @@
 
 ## Raw storage changes
 
-### 0x4e13adcbdf4a388650fb280715b3391f89619397
-
-**Nonce diff**: 0 → 1
-
-### 0x4e59b44847b379578588920ca78fbf26c0b4956c
-
-**Nonce diff**: 2 → 0
-
 ### 0x7dff72693f6a4149b17e7c6314655f6a9f7c8b33 (AaveV3Arbitrum.ASSETS.GHO.UNDERLYING, GhoArbitrum.GHO_TOKEN)
 
 | slot | previous value | new value |
