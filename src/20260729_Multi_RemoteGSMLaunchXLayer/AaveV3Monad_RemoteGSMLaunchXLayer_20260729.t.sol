@@ -10,6 +10,7 @@ import {RemoteGSMLaunchXLayerFacilitatorProposalBaseTest} from './setup/RemoteGS
 /**
  * @dev Test for AaveV3Monad_RemoteGSMLaunchXLayer_20260729
  * command: FOUNDRY_PROFILE=test forge test --match-path=src/20260729_Multi_RemoteGSMLaunchXLayer/AaveV3Monad_RemoteGSMLaunchXLayer_20260729.t.sol -vv
+ * forge-config: default.networks.network = "monad"
  */
 contract AaveV3Monad_RemoteGSMLaunchXLayer_20260729_Test is
   RemoteGSMLaunchXLayerFacilitatorProposalBaseTest
