@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {console} from 'forge-std/console.sol';
+import {stdError} from 'forge-std/StdError.sol';
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 import {IAccessControl} from 'openzeppelin-contracts/contracts/access/IAccessControl.sol';
 import {IExecutor} from 'aave-address-book/governance-v3/IExecutor.sol';
@@ -33,6 +34,8 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
 {
   uint256 internal constant FORK_BLOCK = 99859000;
   uint256 internal constant SWAP_AMOUNT = 1_000e6;
+  // Governance v3 Executor revert reason for a failed delegatecall
+  string internal constant EXECUTOR_FAILED_ACTION = '29';
 
   AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part1 internal part1;
   AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2 internal proposal;
@@ -88,8 +91,21 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
       Setup.GHO_BRIDGE_AMOUNT
     );
 
+    address reserve = address(proposal.GHO_RESERVE());
+    IERC20 gho = IERC20(GhoAvalanche.GHO_TOKEN);
+
+    // The GHO transfer out of the Collector underflows
+    vm.prank(GovernanceV3Avalanche.EXECUTOR_LVL_1);
+    vm.expectRevert(stdError.arithmeticError);
+    AaveV3Avalanche.COLLECTOR.transfer(gho, reserve, Setup.GHO_BRIDGE_AMOUNT);
+
+    // The executor wraps every failed action as '29'; expectCall pins the failure to that exact transfer
+    vm.expectCall(
+      address(AaveV3Avalanche.COLLECTOR),
+      abi.encodeCall(AaveV3Avalanche.COLLECTOR.transfer, (gho, reserve, Setup.GHO_BRIDGE_AMOUNT))
+    );
     vm.prank(address(GovernanceV3Avalanche.PAYLOADS_CONTROLLER));
-    vm.expectRevert();
+    vm.expectRevert(bytes(EXECUTOR_FAILED_ACTION));
     IExecutor(GovernanceV3Avalanche.EXECUTOR_LVL_1).executeTransaction(
       address(proposal),
       0,
@@ -171,9 +187,10 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
   function test_stewardCannotSetFeesWithoutStrategy() public deployed {
     executePayload(vm, address(proposal));
 
+    IGsmSteward steward = IGsmSteward(proposal.GHO_GSM_STEWARD());
     vm.prank(GhoAvalanche.RISK_COUNCIL);
     vm.expectRevert(bytes('FIXED_FEE_STRATEGY_NOT_FOUND'));
-    IGsmSteward(proposal.GHO_GSM_STEWARD()).updateGsmBuySellFees(address(gsm), 10, 0);
+    steward.updateGsmBuySellFees(address(gsm), 10, 0);
   }
 
   function test_permissionedSwap() public deployed {
@@ -213,14 +230,18 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
     deal(gsm.UNDERLYING_ASSET(), stranger, SWAP_AMOUNT);
     deal(GhoAvalanche.GHO_TOKEN, stranger, ghoAmount);
 
+    IERC20 underlying = IERC20(gsm.UNDERLYING_ASSET());
+    bytes32 sellRole = gsm.SELL_ASSET_ROLE();
+    bytes32 buyRole = gsm.BUY_ASSET_ROLE();
+
     vm.startPrank(stranger);
-    IERC20(gsm.UNDERLYING_ASSET()).approve(address(gsm), SWAP_AMOUNT);
+    underlying.approve(address(gsm), SWAP_AMOUNT);
     IERC20(GhoAvalanche.GHO_TOKEN).approve(address(gsm), ghoAmount);
     vm.expectRevert(
       abi.encodeWithSelector(
         IAccessControl.AccessControlUnauthorizedAccount.selector,
         stranger,
-        gsm.SELL_ASSET_ROLE()
+        sellRole
       )
     );
     gsm.sellAsset(SWAP_AMOUNT, stranger);
@@ -228,7 +249,7 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
       abi.encodeWithSelector(
         IAccessControl.AccessControlUnauthorizedAccount.selector,
         stranger,
-        gsm.BUY_ASSET_ROLE()
+        buyRole
       )
     );
     gsm.buyAsset(SWAP_AMOUNT, stranger);
@@ -256,8 +277,9 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
     executePayload(vm, address(proposal));
 
     uint128 newCap = Setup.GSM_EXPOSURE_CAP * 2;
+    IGsmSteward steward = IGsmSteward(proposal.GHO_GSM_STEWARD());
     vm.prank(GhoAvalanche.RISK_COUNCIL);
-    IGsmSteward(proposal.GHO_GSM_STEWARD()).updateGsmExposureCap(address(gsm), newCap);
+    steward.updateGsmExposureCap(address(gsm), newCap);
     assertEq(gsm.getExposureCap(), newCap);
   }
 
