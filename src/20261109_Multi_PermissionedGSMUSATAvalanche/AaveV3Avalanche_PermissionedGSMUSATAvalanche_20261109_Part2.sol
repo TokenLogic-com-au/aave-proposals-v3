@@ -9,7 +9,6 @@ import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGen
 
 import {CCIPChainSelectors} from 'src/helpers/gho-launch/constants/CCIPChainSelectors.sol';
 import {IGhoReserve} from 'src/interfaces/IGhoReserve.sol';
-import {IGsmRegistry} from 'src/interfaces/IGsmRegistry.sol';
 import {IPermissionedGsm} from 'src/interfaces/IPermissionedGsm.sol';
 
 import {PermissionedGSMUSATAvalancheSetup as Setup} from './setup/PermissionedGSMUSATAvalancheSetup.sol';
@@ -21,16 +20,16 @@ import {PermissionedGSMUSATAvalancheSetup as Setup} from './setup/PermissionedGS
  * - Discussion: https://governance.aave.com/t/arfc-permissioned-gsm-usat-aave-v4-avalanche/25852
  *
  * @dev Reverts until the bridged GHO has reached the Avalanche Collector.
- * Swap fees are 0/0, so no fee strategy is attached (FixedFeeStrategy rejects 0/0).
+ * The GSM is deployed with its GhoReserve and the 20M exposure cap already set, and with no fee
+ * strategy: fees are 0/0 and FixedFeeStrategy rejects 0/0. No oracle swap freezer: the Aave V3
+ * Avalanche oracle has no USAT source. No GsmRegistry exists on Avalanche.
  */
 contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2 is IProposalGenericExecutor {
-  // Pending deployment (gho-deploy): every address below is zero until the contracts exist on Avalanche.
+  // Pending deployment (gho-deploy DeployPermissionedGsmUsatAvalanche): zero until the suite exists on Avalanche.
   IGhoReserve public constant GHO_RESERVE = IGhoReserve(address(0));
   address public constant GHO_GSM_STEWARD = address(0);
-  address public constant GSM_REGISTRY = address(0);
   // PermissionedGsm4626, underlying waCoreUSAT
   IPermissionedGsm public constant GSM_USAT = IPermissionedGsm(address(0));
-  address public constant USAT_ORACLE_SWAP_FREEZER = address(0);
 
   // Approved commercial counterparty, pending
   address public constant APPROVED_COUNTERPARTY = address(0);
@@ -41,19 +40,11 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2 is IProposa
 
   function execute() external {
     GHO_RESERVE.grantRole(GHO_RESERVE.LIMIT_MANAGER_ROLE(), GhoAvalanche.RISK_COUNCIL);
-
-    GSM_USAT.updateGhoReserve(address(GHO_RESERVE));
     GHO_RESERVE.addEntity(address(GSM_USAT));
     GHO_RESERVE.setLimit(address(GSM_USAT), Setup.GSM_RESERVE_LIMIT);
 
-    bytes32 swapFreezerRole = GSM_USAT.SWAP_FREEZER_ROLE();
-    GSM_USAT.grantRole(swapFreezerRole, USAT_ORACLE_SWAP_FREEZER);
-    GSM_USAT.grantRole(swapFreezerRole, GovernanceV3Avalanche.EXECUTOR_LVL_1);
-
-    IGsmRegistry(GSM_REGISTRY).addGsm(address(GSM_USAT));
-
+    GSM_USAT.grantRole(GSM_USAT.SWAP_FREEZER_ROLE(), GovernanceV3Avalanche.EXECUTOR_LVL_1);
     GSM_USAT.grantRole(GSM_USAT.CONFIGURATOR_ROLE(), GHO_GSM_STEWARD);
-    GSM_USAT.updateExposureCap(Setup.GSM_EXPOSURE_CAP);
 
     // SWAP_ACCESS_MANAGER_ROLE administers BUY_ASSET_ROLE and SELL_ASSET_ROLE; the executor needs it to grant them
     bytes32 accessManagerRole = GSM_USAT.SWAP_ACCESS_MANAGER_ROLE();

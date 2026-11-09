@@ -12,8 +12,6 @@ import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/I
 import {CCIPChainSelectors} from 'src/helpers/gho-launch/constants/CCIPChainSelectors.sol';
 import {GhoCCIPChains} from 'src/helpers/gho-launch/constants/GhoCCIPChains.sol';
 import {IGsmSteward} from 'src/interfaces/IGsmSteward.sol';
-import {IGsmRegistry} from 'src/interfaces/IGsmRegistry.sol';
-import {IOracleSwapFreezer} from 'src/interfaces/IOracleSwapFreezer.sol';
 import {IPermissionedGsm} from 'src/interfaces/IPermissionedGsm.sol';
 
 import {AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part1} from './AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part1.sol';
@@ -34,12 +32,6 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
 {
   uint256 internal constant FORK_BLOCK = 99859000;
   uint256 internal constant SWAP_AMOUNT = 1_000e6;
-
-  // OracleSwapFreezer bounds, 8 decimals, same as the Ethereum USDC/USDT GSM freezers
-  uint128 internal constant FREEZE_LOWER_BOUND = 0.99e8;
-  uint128 internal constant FREEZE_UPPER_BOUND = 1.01e8;
-  uint128 internal constant UNFREEZE_LOWER_BOUND = 0.995e8;
-  uint128 internal constant UNFREEZE_UPPER_BOUND = 1.005e8;
 
   AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part1 internal part1;
   AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2 internal proposal;
@@ -117,9 +109,6 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
     assertFalse(gsm.getIsSeized());
     assertFalse(gsm.getIsBuyAccessOpen());
     assertFalse(gsm.getIsSellAccessOpen());
-
-    IGsmRegistry registry = IGsmRegistry(proposal.GSM_REGISTRY());
-    assertEq(registry.getGsmAtIndex(registry.getGsmListLength() - 1), address(gsm));
   }
 
   function test_roles() public deployed {
@@ -131,7 +120,6 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
     );
 
     assertTrue(gsm.hasRole(gsm.CONFIGURATOR_ROLE(), proposal.GHO_GSM_STEWARD()));
-    assertTrue(gsm.hasRole(gsm.SWAP_FREEZER_ROLE(), proposal.USAT_ORACLE_SWAP_FREEZER()));
     assertTrue(gsm.hasRole(gsm.SWAP_FREEZER_ROLE(), GovernanceV3Avalanche.EXECUTOR_LVL_1));
     assertTrue(gsm.hasRole(gsm.SWAP_ACCESS_MANAGER_ROLE(), GovernanceV3Avalanche.EXECUTOR_LVL_1));
     assertTrue(gsm.hasRole(gsm.SWAP_ACCESS_MANAGER_ROLE(), GhoAvalanche.RISK_COUNCIL));
@@ -143,15 +131,27 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
     }
   }
 
-  function test_oracleSwapFreezer() public deployed {
-    IOracleSwapFreezer freezer = IOracleSwapFreezer(proposal.USAT_ORACLE_SWAP_FREEZER());
-    assertEq(freezer.GSM(), address(gsm));
-    (uint128 freezeLower, uint128 freezeUpper) = freezer.getFreezeBound();
-    (uint128 unfreezeLower, uint128 unfreezeUpper) = freezer.getUnfreezeBound();
-    assertEq(freezeLower, FREEZE_LOWER_BOUND);
-    assertEq(freezeUpper, FREEZE_UPPER_BOUND);
-    assertEq(unfreezeLower, UNFREEZE_LOWER_BOUND);
-    assertEq(unfreezeUpper, UNFREEZE_UPPER_BOUND);
+  /// @dev The GSM is deployed already pointing at the reserve with the 20M cap; the payload does not set them
+  function test_deploymentState() public deployed {
+    assertEq(gsm.getGhoReserve(), address(proposal.GHO_RESERVE()));
+    assertEq(gsm.getExposureCap(), Setup.GSM_EXPOSURE_CAP);
+    assertEq(gsm.getFeeStrategy(), address(0));
+    assertTrue(gsm.hasRole(bytes32(0), GovernanceV3Avalanche.EXECUTOR_LVL_1));
+    assertTrue(
+      IAccessControl(address(proposal.GHO_RESERVE())).hasRole(
+        bytes32(0),
+        GovernanceV3Avalanche.EXECUTOR_LVL_1
+      )
+    );
+  }
+
+  /// @dev With no fee strategy, the steward cannot set fees; governance must call updateFeeStrategy first
+  function test_stewardCannotSetFeesWithoutStrategy() public deployed {
+    executePayload(vm, address(proposal));
+
+    vm.prank(GhoAvalanche.RISK_COUNCIL);
+    vm.expectRevert(bytes('FIXED_FEE_STRATEGY_NOT_FOUND'));
+    IGsmSteward(proposal.GHO_GSM_STEWARD()).updateGsmBuySellFees(address(gsm), 10, 0);
   }
 
   function test_permissionedSwap() public deployed {
@@ -261,20 +261,16 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
   }
 
   function _missingAddresses() internal view returns (string[] memory) {
-    string[6] memory names = [
+    string[4] memory names = [
       'GHO_RESERVE',
       'GHO_GSM_STEWARD',
-      'GSM_REGISTRY',
       'GSM_USAT',
-      'USAT_ORACLE_SWAP_FREEZER',
       'APPROVED_COUNTERPARTY'
     ];
-    address[6] memory values = [
+    address[4] memory values = [
       address(proposal.GHO_RESERVE()),
       proposal.GHO_GSM_STEWARD(),
-      proposal.GSM_REGISTRY(),
       address(proposal.GSM_USAT()),
-      proposal.USAT_ORACLE_SWAP_FREEZER(),
       proposal.APPROVED_COUNTERPARTY()
     ];
     uint256 count;

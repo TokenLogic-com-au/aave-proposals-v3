@@ -31,13 +31,13 @@ No other CCIP lane is modified.
 
 ### Wire up the USAT Permissioned GSM
 
+The GSM, its `GhoReserve` and the `GhoGsmSteward` are deployed beforehand with the Avalanche executor as admin. The GSM is deployed already pointing at the `GhoReserve` with a 20M waCoreUSAT exposure cap (6 decimals).
+
 On Avalanche, Part 2:
 
-- Point the GSM at the `GhoReserve`, add it as an entity with a 25M GHO limit, and grant `LIMIT_MANAGER_ROLE` on the reserve to the GHO Risk Council.
-- Grant `SWAP_FREEZER_ROLE` to the USAT `OracleSwapFreezer` and to the Avalanche executor.
-- Register the GSM in the `GsmRegistry` and grant `CONFIGURATOR_ROLE` to the `GhoGsmSteward`.
-- Set the exposure cap to 20M waCoreUSAT (6 decimals).
-- Swap fees are 0% on both sides, so no fee strategy is attached.
+- Add the GSM as an entity of the `GhoReserve` with a 25M GHO limit, and grant `LIMIT_MANAGER_ROLE` on the reserve to the GHO Risk Council.
+- Grant `SWAP_FREEZER_ROLE` to the Avalanche executor.
+- Grant `CONFIGURATOR_ROLE` to the `GhoGsmSteward`, so the GHO Risk Council can adjust the exposure cap.
 - Grant `SWAP_ACCESS_MANAGER_ROLE` to the Avalanche executor and to the GHO Risk Council. This role administers `BUY_ASSET_ROLE` and `SELL_ASSET_ROLE`.
 - Grant `BUY_ASSET_ROLE` and `SELL_ASSET_ROLE` to the Aave DAO Safe and to the approved counterparty.
 
@@ -48,6 +48,12 @@ On Avalanche, Part 2:
 | Exposure cap       | 20,000,000 waCoreUSAT                |
 | Sell fee / Buy fee | 0% / 0%                              |
 | Approved swappers  | Aave DAO Safe, approved counterparty |
+
+### Deviations from the ARFC
+
+- No fee strategy. Swap fees are 0% on both sides, and `FixedFeeStrategy` rejects a 0/0 configuration, so the GSM runs with no fee strategy and charges no fees. The `GhoGsmSteward` can only change fees on a GSM that already has a fee strategy, so any future fee change first needs a governance proposal that calls `updateFeeStrategy`.
+- No `OracleSwapFreezer`. The freezer reads the Aave V3 Avalanche oracle, which has no USAT price source, and the USAT feed returns a constant 1 USD, so 0.99 / 1.01 freeze bands could never trigger. Swaps can still be frozen by the Avalanche executor, which holds `SWAP_FREEZER_ROLE`.
+- No `GsmRegistry` registration. No `GsmRegistry` is deployed on Avalanche.
 
 ### Access management after execution
 
