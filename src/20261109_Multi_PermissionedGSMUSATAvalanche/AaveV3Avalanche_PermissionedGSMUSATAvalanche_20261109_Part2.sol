@@ -5,6 +5,7 @@ import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 import {GhoAvalanche} from 'aave-address-book/GhoAvalanche.sol';
 import {AaveV3Avalanche} from 'aave-address-book/AaveV3Avalanche.sol';
 import {GovernanceV3Avalanche} from 'aave-address-book/GovernanceV3Avalanche.sol';
+import {MiscAvalanche} from 'aave-address-book/MiscAvalanche.sol';
 import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGenericExecutor.sol';
 
 import {CCIPChainSelectors} from 'src/helpers/gho-launch/constants/CCIPChainSelectors.sol';
@@ -35,8 +36,7 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2 is IProposa
   address public constant APPROVED_COUNTERPARTY = address(0);
 
   // Approved Aave DAO Safe, controlled by the Aave Finance Committee (same 2/3 signers as GhoAvalanche.RISK_COUNCIL)
-  // https://snowscan.xyz/address/0x22740deBa78d5a0c24C58C740e3715ec29de1bFa
-  address public constant APPROVED_DAO_SAFE = 0x22740deBa78d5a0c24C58C740e3715ec29de1bFa;
+  address public constant APPROVED_DAO_SAFE = MiscAvalanche.AFC_SAFE;
 
   function execute() external {
     GHO_RESERVE.grantRole(GHO_RESERVE.LIMIT_MANAGER_ROLE(), GhoAvalanche.RISK_COUNCIL);

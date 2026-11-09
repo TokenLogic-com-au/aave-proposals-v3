@@ -19,12 +19,12 @@ The permissioned GSM lets the Aave DAO offer GHO liquidity against USAT to a kno
 
 On Ethereum:
 
-- Part 1: raise the GHO CCIP bridge limit by 65M (the bridged amount stays locked in the token pool) and temporarily widen the Ethereum to Avalanche outbound rate limiter to 66M.
+- Part 1: raise the GHO CCIP bridge limit by 65M (the bridged amount stays locked in the token pool) and temporarily widen the Ethereum to Avalanche outbound rate limiter to 66M capacity with a refill rate of the capacity minus 1 wei per second.
 - Part 2: register a `GhoDirectFacilitator` with a 65M bucket, mint 65M GHO, configure the Avalanche destination on the `AaveGhoCcipBridge` (gas limit 450,000), bridge the 65M GHO to the Avalanche `AaveGhoCcipBridge` (fee paid in LINK held by the bridge), then restore the Ethereum to Avalanche lane to 5M capacity and 1,000 GHO/s refill in both directions.
 
 On Avalanche:
 
-- Part 1: raise the CCIP token pool facilitator bucket by 65M and temporarily widen the Ethereum to Avalanche inbound rate limiter to 66M. The Avalanche `AaveGhoCcipBridge` forwards the received GHO to the Collector.
+- Part 1: raise the CCIP token pool facilitator bucket by 65M and temporarily widen the Ethereum to Avalanche inbound rate limiter to 66M capacity with a refill rate of the capacity minus 1 wei per second. The Avalanche `AaveGhoCcipBridge` forwards the received GHO to the Collector.
 - Part 2: move the 65M GHO from the Collector to the `GhoReserve`, then restore the Avalanche to Ethereum lane to 5M capacity and 1,000 GHO/s refill in both directions.
 
 No other CCIP lane is modified.
@@ -52,8 +52,19 @@ On Avalanche, Part 2:
 ### Deviations from the ARFC
 
 - No fee strategy. Swap fees are 0% on both sides, and `FixedFeeStrategy` rejects a 0/0 configuration, so the GSM runs with no fee strategy and charges no fees. The `GhoGsmSteward` can only change fees on a GSM that already has a fee strategy, so any future fee change first needs a governance proposal that calls `updateFeeStrategy`.
-- No `OracleSwapFreezer`. The freezer reads the Aave V3 Avalanche oracle, which has no USAT price source, and the USAT feed returns a constant 1 USD, so 0.99 / 1.01 freeze bands could never trigger. Swaps can still be frozen by the Avalanche executor, which holds `SWAP_FREEZER_ROLE`.
+- No `OracleSwapFreezer`. The freezer reads the Aave V3 Avalanche oracle, which has no USAT price source, and the USAT feed returns a constant 1 USD, so 0.99 / 1.01 freeze bands could never trigger. There is no fast freezer: the Avalanche executor holds `SWAP_FREEZER_ROLE`, so swaps can only be frozen through a full governance vote.
 - No `GsmRegistry` registration. No `GsmRegistry` is deployed on Avalanche.
+- The GHO Risk Council receives `SWAP_ACCESS_MANAGER_ROLE`. This is an addition to the ARFC.
+- Open item, Avalanche token pool bucket: the ARFC states 250M. The on-chain bucket is 200M today, and Avalanche Part 1 adds 65M, giving 265M. To be confirmed before Snapshot.
+
+### Risks and dependencies
+
+- The USAT listing on Aave V4 Avalanche (aave-proposals-v3 PR 1236) is a prerequisite: it creates waCoreUSAT and must execute before this proposal.
+- PR 1236 sets the waCoreUSAT tokenization cap to 1.5M USAT. Until that cap is raised, it limits the effective size of the GSM, not the 20M exposure cap.
+- The exposure cap is counted in waCoreUSAT shares. As the share price grows, the GHO value of a full 20M cap drifts above 20M GHO.
+- The GHO Risk Council holds `LIMIT_MANAGER_ROLE` on the `GhoReserve`, so it can raise the GSM limit from 25M up to the 65M funded without a vote.
+- To wind the GSM down, first set the exposure cap to 0 with `updateExposureCap(0)`, then lower the reserve limit (Pashov I-03).
+- Avalanche Part 2 can be retried only until the payload expires. If the bridged GHO has not reached the Collector by then, a new payload is needed.
 
 ### Access management after execution
 

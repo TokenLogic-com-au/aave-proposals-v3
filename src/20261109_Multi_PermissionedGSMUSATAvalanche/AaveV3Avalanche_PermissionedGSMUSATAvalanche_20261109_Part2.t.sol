@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 import {console} from 'forge-std/console.sol';
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 import {IAccessControl} from 'openzeppelin-contracts/contracts/access/IAccessControl.sol';
+import {IExecutor} from 'aave-address-book/governance-v3/IExecutor.sol';
 import {AaveV3Avalanche} from 'aave-address-book/AaveV3Avalanche.sol';
 import {GhoAvalanche} from 'aave-address-book/GhoAvalanche.sol';
 import {GovernanceV3Avalanche} from 'aave-address-book/GovernanceV3Avalanche.sol';
@@ -38,6 +39,7 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
   IUpgradeableBurnMintTokenPool internal pool =
     IUpgradeableBurnMintTokenPool(GhoAvalanche.GHO_CCIP_TOKEN_POOL);
   IPermissionedGsm internal gsm;
+  uint256 internal preDeliveryState;
 
   modifier deployed() {
     if (_missingAddresses().length != 0) {
@@ -54,6 +56,7 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
 
     executePayload(vm, address(part1));
     vm.warp(block.timestamp + 1); // inbound bucket refill
+    preDeliveryState = vm.snapshotState();
     _deliverToAvalancheCollector(Setup.GHO_BRIDGE_AMOUNT);
   }
 
@@ -74,6 +77,25 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
       'AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2',
       AaveV3Avalanche.POOL,
       address(proposal)
+    );
+  }
+
+  /// @dev Part 2 reverts while the bridged GHO has not reached the Collector
+  function test_executionFailsNoFunds() public deployed {
+    vm.revertToState(preDeliveryState);
+    assertLt(
+      IERC20(GhoAvalanche.GHO_TOKEN).balanceOf(address(AaveV3Avalanche.COLLECTOR)),
+      Setup.GHO_BRIDGE_AMOUNT
+    );
+
+    vm.prank(address(GovernanceV3Avalanche.PAYLOADS_CONTROLLER));
+    vm.expectRevert();
+    IExecutor(GovernanceV3Avalanche.EXECUTOR_LVL_1).executeTransaction(
+      address(proposal),
+      0,
+      'execute()',
+      '',
+      true
     );
   }
 
@@ -179,14 +201,36 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
   function test_unapprovedCallerCannotSwap() public deployed {
     executePayload(vm, address(proposal));
 
+    // Fund the GSM so buyAsset has liquidity, and the stranger with both tokens, so only the role check can revert
+    address safe = proposal.APPROVED_DAO_SAFE();
+    deal(gsm.UNDERLYING_ASSET(), safe, SWAP_AMOUNT);
+    vm.startPrank(safe);
+    IERC20(gsm.UNDERLYING_ASSET()).approve(address(gsm), SWAP_AMOUNT);
+    (, uint256 ghoAmount) = gsm.sellAsset(SWAP_AMOUNT, safe);
+    vm.stopPrank();
+
     address stranger = makeAddr('stranger');
     deal(gsm.UNDERLYING_ASSET(), stranger, SWAP_AMOUNT);
+    deal(GhoAvalanche.GHO_TOKEN, stranger, ghoAmount);
 
     vm.startPrank(stranger);
     IERC20(gsm.UNDERLYING_ASSET()).approve(address(gsm), SWAP_AMOUNT);
-    vm.expectRevert();
+    IERC20(GhoAvalanche.GHO_TOKEN).approve(address(gsm), ghoAmount);
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        IAccessControl.AccessControlUnauthorizedAccount.selector,
+        stranger,
+        gsm.SELL_ASSET_ROLE()
+      )
+    );
     gsm.sellAsset(SWAP_AMOUNT, stranger);
-    vm.expectRevert();
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        IAccessControl.AccessControlUnauthorizedAccount.selector,
+        stranger,
+        gsm.BUY_ASSET_ROLE()
+      )
+    );
     gsm.buyAsset(SWAP_AMOUNT, stranger);
     vm.stopPrank();
   }

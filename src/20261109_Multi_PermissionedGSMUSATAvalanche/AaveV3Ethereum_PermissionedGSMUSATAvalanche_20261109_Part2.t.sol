@@ -28,6 +28,10 @@ import {PermissionedGSMUSATAvalancheSetup as Setup} from './setup/PermissionedGS
 contract AaveV3Ethereum_PermissionedGSMUSATAvalanche_20261109_Part2_Test is ProtocolV3TestBase {
   AaveV3Ethereum_PermissionedGSMUSATAvalanche_20261109_Part1 internal part1;
   AaveV3Ethereum_PermissionedGSMUSATAvalanche_20261109_Part2 internal proposal;
+  // GhoDirectFacilitator registered for the Monad remote GSM (aave-proposals-v3 PR 1158)
+  // https://etherscan.io/address/0x0cB7C2A2Ab38Aed3e6096631D7Dba3DaBf237134
+  address internal constant MONAD_DIRECT_FACILITATOR = 0x0cB7C2A2Ab38Aed3e6096631D7Dba3DaBf237134;
+
   IUpgradeableLockReleaseTokenPool internal pool =
     IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL);
 
@@ -67,6 +71,11 @@ contract AaveV3Ethereum_PermissionedGSMUSATAvalanche_20261109_Part2_Test is Prot
     IGhoDirectFacilitator facilitator = IGhoDirectFacilitator(proposal.DIRECT_FACILITATOR());
     assertTrue(facilitator.hasRole(bytes32(0), GovernanceV3Ethereum.EXECUTOR_LVL_1));
     assertTrue(facilitator.hasRole(facilitator.MINTER_ROLE(), GovernanceV3Ethereum.EXECUTOR_LVL_1));
+    assertEq(
+      address(facilitator).codehash,
+      MONAD_DIRECT_FACILITATOR.codehash,
+      'bytecode differs from the governance-registered Monad facilitator'
+    );
   }
 
   function test_ccipBridgeIdentity() public view {

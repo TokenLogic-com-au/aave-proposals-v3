@@ -5,15 +5,12 @@ import {Test} from 'forge-std/Test.sol';
 import {GhoAvalanche} from 'aave-address-book/GhoAvalanche.sol';
 import {GhoEthereum} from 'aave-address-book/GhoEthereum.sol';
 import {Client} from 'aave-helpers/src/dependencies/chainlink/libraries/Client.sol';
+import {IAny2EVMMessageReceiver} from 'aave-helpers/src/dependencies/chainlink/interfaces/IAny2EVMMessageReceiver.sol';
 import {IUpgradeableBurnMintTokenPool_1_5_1} from 'src/interfaces/ccip/tokenPool/IUpgradeableBurnMintTokenPool.sol';
 import {IPool as IPool_CCIP} from 'src/interfaces/ccip/tokenPool/IPool.sol';
 import {IRouter} from 'src/interfaces/ccip/IRouter.sol';
 import {CCIPChainSelectors} from 'src/helpers/gho-launch/constants/CCIPChainSelectors.sol';
 import {CCIPChainRouters} from 'src/helpers/gho-launch/constants/CCIPChainRouters.sol';
-
-interface ICcipReceiver {
-  function ccipReceive(Client.Any2EVMMessage calldata message) external;
-}
 
 /**
  * @dev Simulates the Ethereum -> Avalanche delivery of the bridged GHO: the OffRamp mints through the
@@ -50,7 +47,7 @@ abstract contract AvalancheCcipDelivery is Test {
     tokenAmounts[0] = Client.EVMTokenAmount({token: GhoAvalanche.GHO_TOKEN, amount: amount});
 
     vm.prank(CCIPChainRouters.AVALANCHE);
-    ICcipReceiver(GhoAvalanche.GHO_CCIP_BRIDGE).ccipReceive(
+    IAny2EVMMessageReceiver(GhoAvalanche.GHO_CCIP_BRIDGE).ccipReceive(
       Client.Any2EVMMessage({
         messageId: keccak256('usat-gsm-funding'),
         sourceChainSelector: CCIPChainSelectors.ETHEREUM,
