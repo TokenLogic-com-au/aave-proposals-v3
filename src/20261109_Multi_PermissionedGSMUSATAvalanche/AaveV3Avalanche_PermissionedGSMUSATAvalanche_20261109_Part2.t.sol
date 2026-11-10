@@ -35,7 +35,7 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
   ProtocolV3TestBase,
   AvalancheCcipDelivery
 {
-  uint256 internal constant FORK_BLOCK = 99859000;
+  uint256 internal constant FORK_BLOCK = 99954000;
   uint256 internal constant SWAP_AMOUNT = 1_000e6;
   // Governance v3 Executor revert reason for a failed delegatecall
   string internal constant EXECUTOR_FAILED_ACTION = '29';
