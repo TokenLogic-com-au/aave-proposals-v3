@@ -11,6 +11,7 @@ import {AaveV3Avalanche} from 'aave-address-book/AaveV3Avalanche.sol';
 import {GhoAvalanche} from 'aave-address-book/GhoAvalanche.sol';
 import {GovernanceV3Avalanche} from 'aave-address-book/GovernanceV3Avalanche.sol';
 import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
+import {ProxyHelpers} from 'aave-v3-origin-tests/utils/ProxyHelpers.sol';
 import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
 import {CCIPChainSelectors} from 'src/helpers/gho-launch/constants/CCIPChainSelectors.sol';
 import {GhoCCIPChains} from 'src/helpers/gho-launch/constants/GhoCCIPChains.sol';
@@ -176,6 +177,15 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
     assertEq(gsm.getGhoReserve(), address(proposal.GHO_RESERVE()));
     assertEq(gsm.getExposureCap(), Setup.GSM_EXPOSURE_CAP);
     assertEq(gsm.getFeeStrategy(), address(0));
+    assertEq(gsm.getGhoTreasury(), address(AaveV3Avalanche.COLLECTOR));
+    assertEq(
+      Ownable(ProxyHelpers.getOzV5ProxyAdminAddress(address(gsm))).owner(),
+      GovernanceV3Avalanche.EXECUTOR_LVL_1
+    );
+    assertEq(
+      Ownable(ProxyHelpers.getOzV5ProxyAdminAddress(address(proposal.GHO_RESERVE()))).owner(),
+      GovernanceV3Avalanche.EXECUTOR_LVL_1
+    );
     assertTrue(gsm.hasRole(bytes32(0), GovernanceV3Avalanche.EXECUTOR_LVL_1));
     assertTrue(
       IAccessControl(address(proposal.GHO_RESERVE())).hasRole(
