@@ -10,6 +10,7 @@ import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGen
 
 import {CCIPChainSelectors} from 'src/helpers/gho-launch/constants/CCIPChainSelectors.sol';
 import {IGhoReserve} from 'src/interfaces/IGhoReserve.sol';
+import {IGsmRegistry} from 'src/interfaces/IGsmRegistry.sol';
 import {IPermissionedGsm} from 'src/interfaces/IPermissionedGsm.sol';
 
 import {PermissionedGSMUSATAvalancheSetup as Setup} from './setup/PermissionedGSMUSATAvalancheSetup.sol';
@@ -23,12 +24,13 @@ import {PermissionedGSMUSATAvalancheSetup as Setup} from './setup/PermissionedGS
  * @dev Reverts until the bridged GHO has reached the Avalanche Collector.
  * The GSM is deployed with its GhoReserve and the 20M exposure cap already set, and with no fee
  * strategy: fees are 0/0 and FixedFeeStrategy rejects 0/0. No oracle swap freezer: the Aave V3
- * Avalanche oracle has no USAT source. No GsmRegistry exists on Avalanche.
+ * Avalanche oracle has no USAT source.
  */
 contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2 is IProposalGenericExecutor {
-  // Pending deployment (gho-deploy DeployPermissionedGsmUsatAvalanche): zero until the suite exists on Avalanche.
+  // Pending deployment (gho-deploy DeployGsmSuite, steward from DeployStewards): zero until deployed on Avalanche.
   IGhoReserve public constant GHO_RESERVE = IGhoReserve(address(0));
   address public constant GHO_GSM_STEWARD = address(0);
+  address public constant GSM_REGISTRY = address(0);
   // PermissionedGsm4626, underlying waCoreUSAT
   IPermissionedGsm public constant GSM_USAT = IPermissionedGsm(address(0));
 
@@ -44,6 +46,9 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2 is IProposa
     GHO_RESERVE.setLimit(address(GSM_USAT), Setup.GSM_RESERVE_LIMIT);
 
     GSM_USAT.grantRole(GSM_USAT.SWAP_FREEZER_ROLE(), GovernanceV3Avalanche.EXECUTOR_LVL_1);
+
+    IGsmRegistry(GSM_REGISTRY).addGsm(address(GSM_USAT));
+
     GSM_USAT.grantRole(GSM_USAT.CONFIGURATOR_ROLE(), GHO_GSM_STEWARD);
 
     // SWAP_ACCESS_MANAGER_ROLE administers BUY_ASSET_ROLE and SELL_ASSET_ROLE; the executor needs it to grant them

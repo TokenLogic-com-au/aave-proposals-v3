@@ -31,12 +31,13 @@ No other CCIP lane is modified.
 
 ### Wire up the USAT Permissioned GSM
 
-The GSM, its `GhoReserve` and the `GhoGsmSteward` are deployed beforehand with the Avalanche executor as admin. The GSM is deployed already pointing at the `GhoReserve` with a 20M waCoreUSAT exposure cap (6 decimals).
+The GSM, its `GhoReserve`, the `GhoGsmSteward` and a `GsmRegistry` are deployed beforehand with the Avalanche executor as admin. The GSM is deployed already pointing at the `GhoReserve` with a 20M waCoreUSAT exposure cap (6 decimals).
 
 On Avalanche, Part 2:
 
 - Add the GSM as an entity of the `GhoReserve` with a 25M GHO limit, and grant `LIMIT_MANAGER_ROLE` on the reserve to the GHO Risk Council.
 - Grant `SWAP_FREEZER_ROLE` to the Avalanche executor.
+- Register the GSM in the Avalanche `GsmRegistry`.
 - Grant `CONFIGURATOR_ROLE` to the `GhoGsmSteward`, so the GHO Risk Council can adjust the exposure cap.
 - Grant `SWAP_ACCESS_MANAGER_ROLE` to the Avalanche executor and to the GHO Risk Council. This role administers `BUY_ASSET_ROLE` and `SELL_ASSET_ROLE`.
 - Grant `BUY_ASSET_ROLE` and `SELL_ASSET_ROLE` to the Aave DAO Safe and to the approved counterparty.
@@ -53,7 +54,6 @@ On Avalanche, Part 2:
 
 - No fee strategy. Swap fees are 0% on both sides, and `FixedFeeStrategy` rejects a 0/0 configuration, so the GSM runs with no fee strategy and charges no fees. The `GhoGsmSteward` can only change fees on a GSM that already has a fee strategy, so any future fee change first needs a governance proposal that calls `updateFeeStrategy`.
 - No `OracleSwapFreezer`. The freezer reads the Aave V3 Avalanche oracle, which has no USAT price source, and the USAT feed returns a constant 1 USD, so 0.99 / 1.01 freeze bands could never trigger. There is no fast freezer: the Avalanche executor holds `SWAP_FREEZER_ROLE`, so swaps can only be frozen through a full governance vote.
-- No `GsmRegistry` registration. No `GsmRegistry` is deployed on Avalanche.
 - The GHO Risk Council receives `SWAP_ACCESS_MANAGER_ROLE`. This is an addition to the ARFC.
 - Open item, Avalanche token pool bucket: the ARFC states 250M. The on-chain bucket is 200M today, and Avalanche Part 1 adds 65M, giving 265M. To be confirmed before Snapshot.
 

@@ -5,6 +5,7 @@ import {console} from 'forge-std/console.sol';
 import {stdError} from 'forge-std/StdError.sol';
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 import {IAccessControl} from 'openzeppelin-contracts/contracts/access/IAccessControl.sol';
+import {Ownable} from 'openzeppelin-contracts/contracts/access/Ownable.sol';
 import {IExecutor} from 'aave-address-book/governance-v3/IExecutor.sol';
 import {AaveV3Avalanche} from 'aave-address-book/AaveV3Avalanche.sol';
 import {GhoAvalanche} from 'aave-address-book/GhoAvalanche.sol';
@@ -14,6 +15,7 @@ import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/I
 import {CCIPChainSelectors} from 'src/helpers/gho-launch/constants/CCIPChainSelectors.sol';
 import {GhoCCIPChains} from 'src/helpers/gho-launch/constants/GhoCCIPChains.sol';
 import {IGsmSteward} from 'src/interfaces/IGsmSteward.sol';
+import {IGsmRegistry} from 'src/interfaces/IGsmRegistry.sol';
 import {IPermissionedGsm} from 'src/interfaces/IPermissionedGsm.sol';
 
 import {AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part1} from './AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part1.sol';
@@ -181,6 +183,21 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
         GovernanceV3Avalanche.EXECUTOR_LVL_1
       )
     );
+    assertEq(Ownable(proposal.GSM_REGISTRY()).owner(), GovernanceV3Avalanche.EXECUTOR_LVL_1);
+  }
+
+  function test_gsmIsRegisteredUnderGsmRegistry() public deployed {
+    IGsmRegistry registry = IGsmRegistry(proposal.GSM_REGISTRY());
+
+    assertEq(registry.getGsmListLength(), 0);
+
+    vm.expectRevert('INVALID_INDEX');
+    registry.getGsmAtIndex(0);
+
+    executePayload(vm, address(proposal));
+
+    assertEq(registry.getGsmListLength(), 1);
+    assertEq(registry.getGsmAtIndex(0), address(gsm));
   }
 
   /// @dev With no fee strategy, the steward cannot set fees; governance must call updateFeeStrategy first
@@ -327,15 +344,17 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
   }
 
   function _missingAddresses() internal view returns (string[] memory) {
-    string[4] memory names = [
+    string[5] memory names = [
       'GHO_RESERVE',
       'GHO_GSM_STEWARD',
+      'GSM_REGISTRY',
       'GSM_USAT',
       'APPROVED_COUNTERPARTY'
     ];
-    address[4] memory values = [
+    address[5] memory values = [
       address(proposal.GHO_RESERVE()),
       proposal.GHO_GSM_STEWARD(),
+      proposal.GSM_REGISTRY(),
       address(proposal.GSM_USAT()),
       proposal.APPROVED_COUNTERPARTY()
     ];
