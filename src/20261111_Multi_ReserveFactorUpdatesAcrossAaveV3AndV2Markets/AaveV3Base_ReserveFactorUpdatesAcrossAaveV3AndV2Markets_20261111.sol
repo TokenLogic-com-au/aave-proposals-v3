@@ -10,7 +10,7 @@ import {IAaveV3ConfigEngine} from 'aave-v3-origin/contracts/extensions/v3-config
  * @title Reserve Factor Updates Across Aave V3 and V2 Markets
  * @author @TokenLogic
  * - Snapshot: Direct-to-AIP
- * - Discussion: pending forum post link
+ * - Discussion: https://governance.aave.com/t/direct-to-aip-reserve-factor-updates-across-aave-v3-and-v2-markets/26249
  */
 contract AaveV3Base_ReserveFactorUpdatesAcrossAaveV3AndV2Markets_20261111 is AaveV3PayloadBase {
   function borrowsUpdates()

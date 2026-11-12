@@ -23,7 +23,8 @@ export const config: ConfigFile = {
     shortName: 'ReserveFactorUpdatesAcrossAaveV3AndV2Markets',
     date: '20261111',
     author: '@TokenLogic',
-    discussion: 'pending forum post link',
+    discussion:
+      'https://governance.aave.com/t/direct-to-aip-reserve-factor-updates-across-aave-v3-and-v2-markets/26249',
     snapshot: 'Direct-to-AIP',
     votingNetwork: 'AVALANCHE',
   },
