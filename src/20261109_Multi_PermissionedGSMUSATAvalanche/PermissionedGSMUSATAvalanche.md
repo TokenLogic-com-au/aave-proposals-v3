@@ -19,7 +19,7 @@ Some institutional arrangements require GHO liquidity restricted to approved cou
 
 On Ethereum:
 
-- Part 1: raise the GHO CCIP bridge limit by 65M to 265M (the bridged amount stays locked in the token pool) and temporarily set the Ethereum to Avalanche outbound rate limiter to 71,500,000 GHO capacity (initial funding * 110%) with a refill rate of 64,999,999 GHO/s. The inbound side stays at 5M capacity and 1,000 GHO/s.
+- Part 1: raise the GHO CCIP bridge limit by 65M to 265M (the bridged amount stays locked in the token pool) and temporarily set the Ethereum to Avalanche outbound rate limiter to 71,500,000 GHO capacity (initial funding \* 110%) with a refill rate of 64,999,999 GHO/s. The inbound side stays at 5M capacity and 1,000 GHO/s.
 - Part 2: register a new `GhoDirectFacilitator` with a 65M bucket, mint 65M GHO, configure the Avalanche destination on the `AaveGhoCcipBridge` (gas limit 450,000), bridge the 65M GHO to the Avalanche `AaveGhoCcipBridge` (fee paid in LINK held by the bridge), then set every GHO lane of the Ethereum token pool to the ongoing configuration.
 
 On Avalanche:

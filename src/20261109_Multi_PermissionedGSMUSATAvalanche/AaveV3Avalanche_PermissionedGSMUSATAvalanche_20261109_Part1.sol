@@ -31,18 +31,18 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part1 is IProposa
 
     // Temporary inbound widening (counterpart of the Ethereum Part 1 outbound step); Part 2 resets every lane.
     // Outbound is rewritten to its current (ongoing) value.
-    IUpgradeableBurnMintTokenPool(GhoAvalanche.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
-      CCIPChainSelectors.ETHEREUM,
-      IRateLimiter.Config({
+    IUpgradeableBurnMintTokenPool(GhoAvalanche.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig({
+      remoteChainSelector: CCIPChainSelectors.ETHEREUM,
+      outboundConfig: IRateLimiter.Config({
         isEnabled: true,
         capacity: Setup.DEFAULT_RATE_LIMITER_CAPACITY,
         rate: Setup.DEFAULT_LIMITER_RATE
       }),
-      IRateLimiter.Config({
+      inboundConfig: IRateLimiter.Config({
         isEnabled: true,
         capacity: Setup.TEMP_BRIDGE_CAPACITY,
         rate: Setup.TEMP_BRIDGE_RATE
       })
-    );
+    });
   }
 }

@@ -60,11 +60,11 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2 is IProposa
     GSM_USAT.grantRole(GSM_USAT.BUY_ASSET_ROLE(), MiscAvalanche.AFC_SAFE);
     GSM_USAT.grantRole(GSM_USAT.SELL_ASSET_ROLE(), MiscAvalanche.AFC_SAFE);
 
-    AaveV3Avalanche.COLLECTOR.transfer(
-      IERC20(GhoAvalanche.GHO_TOKEN),
-      address(GHO_RESERVE),
-      Setup.GHO_BRIDGE_AMOUNT
-    );
+    AaveV3Avalanche.COLLECTOR.transfer({
+      token: IERC20(GhoAvalanche.GHO_TOKEN),
+      recipient: address(GHO_RESERVE),
+      amount: Setup.GHO_BRIDGE_AMOUNT
+    });
 
     Setup.normalizeIORateLimitsForAllNetworks(GhoAvalanche.GHO_CCIP_TOKEN_POOL);
   }

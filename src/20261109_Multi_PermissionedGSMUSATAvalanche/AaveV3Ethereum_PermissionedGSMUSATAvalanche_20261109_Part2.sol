@@ -31,11 +31,11 @@ contract AaveV3Ethereum_PermissionedGSMUSATAvalanche_20261109_Part2 is IProposal
   uint32 public constant AVALANCHE_BRIDGE_GAS_LIMIT = 450_000;
 
   function execute() external {
-    IGhoToken(AaveV3EthereumAssets.GHO_UNDERLYING).addFacilitator(
-      DIRECT_FACILITATOR,
-      DIRECT_FACILITATOR_NAME,
-      Setup.DIRECT_FACILITATOR_CAPACITY
-    );
+    IGhoToken(AaveV3EthereumAssets.GHO_UNDERLYING).addFacilitator({
+      facilitatorAddress: DIRECT_FACILITATOR,
+      facilitatorLabel: DIRECT_FACILITATOR_NAME,
+      bucketCapacity: Setup.DIRECT_FACILITATOR_CAPACITY
+    });
 
     IGhoDirectFacilitator(DIRECT_FACILITATOR).mint(address(this), Setup.GHO_BRIDGE_AMOUNT);
 
@@ -45,19 +45,19 @@ contract AaveV3Ethereum_PermissionedGSMUSATAvalanche_20261109_Part2 is IProposal
     );
 
     // The Avalanche bridge already trusts this bridge as its Ethereum source and forwards GHO to the Avalanche Collector
-    IAaveGhoCcipBridge(GhoEthereum.GHO_CCIP_BRIDGE).setDestinationChain(
-      CCIPChainSelectors.AVALANCHE,
-      abi.encode(GhoAvalanche.GHO_CCIP_BRIDGE),
-      bytes(''),
-      AVALANCHE_BRIDGE_GAS_LIMIT
-    );
+    IAaveGhoCcipBridge(GhoEthereum.GHO_CCIP_BRIDGE).setDestinationChain({
+      chainSelector: CCIPChainSelectors.AVALANCHE,
+      destination: abi.encode(GhoAvalanche.GHO_CCIP_BRIDGE),
+      extraArgs: bytes(''),
+      gasLimit: AVALANCHE_BRIDGE_GAS_LIMIT
+    });
 
     // Fee paid from the bridge's LINK balance; reverts within the same second as Part 1 (outbound bucket refill)
-    IAaveGhoCcipBridge(GhoEthereum.GHO_CCIP_BRIDGE).send(
-      CCIPChainSelectors.AVALANCHE,
-      Setup.GHO_BRIDGE_AMOUNT,
-      AaveV3EthereumAssets.LINK_UNDERLYING
-    );
+    IAaveGhoCcipBridge(GhoEthereum.GHO_CCIP_BRIDGE).send({
+      chainSelector: CCIPChainSelectors.AVALANCHE,
+      amount: Setup.GHO_BRIDGE_AMOUNT,
+      feeToken: AaveV3EthereumAssets.LINK_UNDERLYING
+    });
 
     Setup.normalizeIORateLimitsForAllNetworks(GhoEthereum.GHO_CCIP_TOKEN_POOL);
   }

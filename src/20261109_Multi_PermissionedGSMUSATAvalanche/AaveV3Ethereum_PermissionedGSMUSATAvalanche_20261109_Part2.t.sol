@@ -85,12 +85,12 @@ contract AaveV3Ethereum_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
     IAaveGhoCcipBridge bridge = IAaveGhoCcipBridge(GhoEthereum.GHO_CCIP_BRIDGE);
     uint32 gasLimit = proposal.AVALANCHE_BRIDGE_GAS_LIMIT();
     vm.prank(GovernanceV3Ethereum.EXECUTOR_LVL_1);
-    bridge.setDestinationChain(
-      CCIPChainSelectors.AVALANCHE,
-      abi.encode(GhoAvalanche.GHO_CCIP_BRIDGE),
-      bytes(''),
-      gasLimit
-    );
+    bridge.setDestinationChain({
+      chainSelector: CCIPChainSelectors.AVALANCHE,
+      destination: abi.encode(GhoAvalanche.GHO_CCIP_BRIDGE),
+      extraArgs: bytes(''),
+      gasLimit: gasLimit
+    });
 
     uint256 fee = bridge.quoteBridge(
       CCIPChainSelectors.AVALANCHE,

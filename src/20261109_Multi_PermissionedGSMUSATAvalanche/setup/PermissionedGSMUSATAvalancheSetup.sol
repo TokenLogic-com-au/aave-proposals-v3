@@ -47,11 +47,11 @@ library PermissionedGSMUSATAvalancheSetup {
     });
 
     for (uint256 i = 0; i < chains.length; i++) {
-      IUpgradeableLockReleaseTokenPool(tokenPool).setChainRateLimiterConfig(
-        chains[i],
-        defaultConfig,
-        defaultConfig
-      );
+      IUpgradeableLockReleaseTokenPool(tokenPool).setChainRateLimiterConfig({
+        remoteChainSelector: chains[i],
+        outboundConfig: defaultConfig,
+        inboundConfig: defaultConfig
+      });
     }
   }
 }

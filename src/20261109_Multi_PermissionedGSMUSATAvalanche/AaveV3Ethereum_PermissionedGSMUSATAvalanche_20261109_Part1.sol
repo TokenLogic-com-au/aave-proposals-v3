@@ -26,18 +26,18 @@ contract AaveV3Ethereum_PermissionedGSMUSATAvalanche_20261109_Part1 is IProposal
 
     // Temporary outbound widening for the one-off transfer; Part 2 resets every lane.
     // Inbound is rewritten to its current (ongoing) value.
-    pool.setChainRateLimiterConfig(
-      CCIPChainSelectors.AVALANCHE,
-      IRateLimiter.Config({
+    pool.setChainRateLimiterConfig({
+      remoteChainSelector: CCIPChainSelectors.AVALANCHE,
+      outboundConfig: IRateLimiter.Config({
         isEnabled: true,
         capacity: Setup.TEMP_BRIDGE_CAPACITY,
         rate: Setup.TEMP_BRIDGE_RATE
       }),
-      IRateLimiter.Config({
+      inboundConfig: IRateLimiter.Config({
         isEnabled: true,
         capacity: Setup.DEFAULT_RATE_LIMITER_CAPACITY,
         rate: Setup.DEFAULT_LIMITER_RATE
       })
-    );
+    });
   }
 }
