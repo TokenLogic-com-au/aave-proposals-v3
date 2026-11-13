@@ -8,7 +8,6 @@ import {GovernanceV3Avalanche} from 'aave-address-book/GovernanceV3Avalanche.sol
 import {MiscAvalanche} from 'aave-address-book/MiscAvalanche.sol';
 import {IProposalGenericExecutor} from 'aave-helpers/src/interfaces/IProposalGenericExecutor.sol';
 
-import {CCIPChainSelectors} from 'src/helpers/gho-launch/constants/CCIPChainSelectors.sol';
 import {IGhoReserve} from 'src/interfaces/IGhoReserve.sol';
 import {IGsmRegistry} from 'src/interfaces/IGsmRegistry.sol';
 import {IPermissionedGsm} from 'src/interfaces/IPermissionedGsm.sol';
@@ -21,7 +20,8 @@ import {PermissionedGSMUSATAvalancheSetup as Setup} from './setup/PermissionedGS
  * - Snapshot: TBA
  * - Discussion: https://governance.aave.com/t/arfc-permissioned-gsm-usat-aave-v4-avalanche/25852
  *
- * @dev Reverts until the bridged GHO has reached the Avalanche Collector.
+ * @dev Executes after aave-proposals-v3 PR 1236, which creates waCoreUSAT, the GSM underlying.
+ * Reverts until the bridged GHO has reached the Avalanche Collector.
  * The GSM is deployed with its GhoReserve and the 20M exposure cap already set, and with no fee
  * strategy: fees are 0/0 and FixedFeeStrategy rejects 0/0. No oracle swap freezer: the Aave V3
  * Avalanche oracle has no USAT source.
@@ -41,12 +41,6 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2 is IProposa
   IPermissionedGsm public constant GSM_USAT =
     IPermissionedGsm(0xF6b70344b92cAb2D23c96eA834bbb45ADbdd6c40);
 
-  // Approved commercial counterparty, pending
-  address public constant APPROVED_COUNTERPARTY = address(0);
-
-  // Approved Aave DAO Safe, controlled by the Aave Finance Committee (same 2/3 signers as GhoAvalanche.RISK_COUNCIL)
-  address public constant APPROVED_DAO_SAFE = MiscAvalanche.AFC_SAFE;
-
   function execute() external {
     GHO_RESERVE.grantRole(GHO_RESERVE.LIMIT_MANAGER_ROLE(), GhoAvalanche.RISK_COUNCIL);
     GHO_RESERVE.addEntity(address(GSM_USAT));
@@ -62,8 +56,9 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2 is IProposa
     bytes32 accessManagerRole = GSM_USAT.SWAP_ACCESS_MANAGER_ROLE();
     GSM_USAT.grantRole(accessManagerRole, GovernanceV3Avalanche.EXECUTOR_LVL_1);
     GSM_USAT.grantRole(accessManagerRole, GhoAvalanche.RISK_COUNCIL);
-    _approveSwapper(APPROVED_DAO_SAFE);
-    _approveSwapper(APPROVED_COUNTERPARTY);
+    // Aave DAO Safe controlled by the Aave Finance Committee, the only swapper at launch
+    GSM_USAT.grantRole(GSM_USAT.BUY_ASSET_ROLE(), MiscAvalanche.AFC_SAFE);
+    GSM_USAT.grantRole(GSM_USAT.SELL_ASSET_ROLE(), MiscAvalanche.AFC_SAFE);
 
     AaveV3Avalanche.COLLECTOR.transfer(
       IERC20(GhoAvalanche.GHO_TOKEN),
@@ -71,11 +66,6 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2 is IProposa
       Setup.GHO_BRIDGE_AMOUNT
     );
 
-    Setup.restoreLaneRateLimitConfig(GhoAvalanche.GHO_CCIP_TOKEN_POOL, CCIPChainSelectors.ETHEREUM);
-  }
-
-  function _approveSwapper(address swapper) internal {
-    GSM_USAT.grantRole(GSM_USAT.BUY_ASSET_ROLE(), swapper);
-    GSM_USAT.grantRole(GSM_USAT.SELL_ASSET_ROLE(), swapper);
+    Setup.normalizeIORateLimitsForAllNetworks(GhoAvalanche.GHO_CCIP_TOKEN_POOL);
   }
 }

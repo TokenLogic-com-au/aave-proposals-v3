@@ -20,7 +20,7 @@ contract AaveV3Ethereum_PermissionedGSMUSATAvalanche_20261109_Part1_Test is Prot
     IUpgradeableLockReleaseTokenPool(GhoEthereum.GHO_CCIP_TOKEN_POOL);
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('mainnet'), 26378000);
+    vm.createSelectFork(vm.rpcUrl('mainnet'), 26405330);
     proposal = new AaveV3Ethereum_PermissionedGSMUSATAvalanche_20261109_Part1();
   }
 
@@ -42,6 +42,7 @@ contract AaveV3Ethereum_PermissionedGSMUSATAvalanche_20261109_Part1_Test is Prot
     executePayload(vm, address(proposal));
 
     assertEq(pool.getBridgeLimit(), bridgeLimitBefore + Setup.GHO_BRIDGE_AMOUNT);
+    assertEq(pool.getBridgeLimit(), Setup.EXPECTED_BUCKET_CAPACITY);
   }
 
   function test_outboundRateLimiter() public {
@@ -56,15 +57,19 @@ contract AaveV3Ethereum_PermissionedGSMUSATAvalanche_20261109_Part1_Test is Prot
 
     bucket = pool.getCurrentOutboundRateLimiterState(CCIPChainSelectors.AVALANCHE);
     assertEq(bucket.capacity, Setup.TEMP_BRIDGE_CAPACITY);
-    assertEq(bucket.rate, Setup.TEMP_BRIDGE_CAPACITY - 1);
+    assertEq(bucket.rate, Setup.TEMP_BRIDGE_RATE);
     assertTrue(bucket.isEnabled);
     assertEq(bucket.tokens, tokensBefore, 'tokens do not refill in the execution second');
 
     vm.warp(block.timestamp + 1);
 
     bucket = pool.getCurrentOutboundRateLimiterState(CCIPChainSelectors.AVALANCHE);
-    assertEq(bucket.tokens, Setup.TEMP_BRIDGE_CAPACITY, 'tokens refill to capacity after 1s');
+    assertEq(bucket.tokens, tokensBefore + Setup.TEMP_BRIDGE_RATE, 'one second of refill');
     assertGe(bucket.tokens, Setup.GHO_BRIDGE_AMOUNT);
+
+    // From an empty bucket, one second refills 1 GHO short of the transfer; two seconds cover it
+    assertLt(Setup.TEMP_BRIDGE_RATE, Setup.GHO_BRIDGE_AMOUNT);
+    assertGe(2 * uint256(Setup.TEMP_BRIDGE_RATE), Setup.GHO_BRIDGE_AMOUNT);
   }
 
   function test_inboundRateLimiterUnchanged() public {

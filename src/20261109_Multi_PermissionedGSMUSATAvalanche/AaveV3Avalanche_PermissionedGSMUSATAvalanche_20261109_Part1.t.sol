@@ -53,6 +53,7 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part1_Test is
     (uint256 capacityAfter, uint256 levelAfter) = IGhoToken(GhoAvalanche.GHO_TOKEN)
       .getFacilitatorBucket(GhoAvalanche.GHO_CCIP_TOKEN_POOL);
     assertEq(capacityAfter, capacityBefore + Setup.GHO_BRIDGE_AMOUNT);
+    assertEq(capacityAfter, Setup.EXPECTED_BUCKET_CAPACITY);
     assertEq(levelAfter, levelBefore);
   }
 
@@ -66,7 +67,7 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part1_Test is
     );
     assertTrue(bucket.isEnabled);
     assertEq(bucket.capacity, Setup.TEMP_BRIDGE_CAPACITY);
-    assertEq(bucket.rate, Setup.TEMP_BRIDGE_CAPACITY - 1);
+    assertEq(bucket.rate, Setup.TEMP_BRIDGE_RATE);
   }
 
   function test_outboundRateLimiterUnchanged() public {

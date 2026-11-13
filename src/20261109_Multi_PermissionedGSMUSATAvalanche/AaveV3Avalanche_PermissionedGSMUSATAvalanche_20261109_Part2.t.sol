@@ -1,15 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {console} from 'forge-std/console.sol';
 import {stdError} from 'forge-std/StdError.sol';
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
+import {IERC4626} from 'openzeppelin-contracts/contracts/interfaces/IERC4626.sol';
 import {IAccessControl} from 'openzeppelin-contracts/contracts/access/IAccessControl.sol';
 import {Ownable} from 'openzeppelin-contracts/contracts/access/Ownable.sol';
 import {IExecutor} from 'aave-address-book/governance-v3/IExecutor.sol';
 import {AaveV3Avalanche} from 'aave-address-book/AaveV3Avalanche.sol';
 import {GhoAvalanche} from 'aave-address-book/GhoAvalanche.sol';
 import {GovernanceV3Avalanche} from 'aave-address-book/GovernanceV3Avalanche.sol';
+import {MiscAvalanche} from 'aave-address-book/MiscAvalanche.sol';
 import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {ProxyHelpers} from 'aave-v3-origin-tests/utils/ProxyHelpers.sol';
 import {IUpgradeableBurnMintTokenPool, IRateLimiter} from 'src/interfaces/ccip/IUpgradeableBurnMintTokenPool.sol';
@@ -18,27 +19,42 @@ import {GhoCCIPChains} from 'src/helpers/gho-launch/constants/GhoCCIPChains.sol'
 import {IGsmSteward} from 'src/interfaces/IGsmSteward.sol';
 import {IGsmRegistry} from 'src/interfaces/IGsmRegistry.sol';
 import {IPermissionedGsm} from 'src/interfaces/IPermissionedGsm.sol';
+import {IFixedPriceStrategy4626} from 'src/interfaces/IFixedPriceStrategy4626.sol';
 
 import {AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part1} from './AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part1.sol';
 import {AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2} from './AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2.sol';
 import {PermissionedGSMUSATAvalancheSetup as Setup} from './setup/PermissionedGSMUSATAvalancheSetup.sol';
 import {AvalancheCcipDelivery} from './setup/AvalancheCcipDelivery.sol';
+import {SupportedChainsCheck} from './setup/SupportedChainsCheck.sol';
 
 /**
  * @dev Test for AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2
  * command: FOUNDRY_PROFILE=test forge test --match-path=src/20261109_Multi_PermissionedGSMUSATAvalanche/AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2.t.sol -vv
  *
- * Tests that execute the payload are skipped while any pending address is unset;
- * `test_deploymentAddressesSet` fails until all are.
+ * Pure fork: test_permissionedSwap fails until FORK_BLOCK is past aave-proposals-v3 PR 1236, which
+ * creates waCoreUSAT.
  */
 contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
   ProtocolV3TestBase,
-  AvalancheCcipDelivery
+  AvalancheCcipDelivery,
+  SupportedChainsCheck
 {
   uint256 internal constant FORK_BLOCK = 99954000;
-  uint256 internal constant SWAP_AMOUNT = 1_000e6;
   // Governance v3 Executor revert reason for a failed delegatecall
   string internal constant EXECUTOR_FAILED_ACTION = '29';
+  // Aave V4 TokenizationSpoke for USAT, not deployed at the fork block
+  // https://snowscan.xyz/address/0x653F2541E7d51a846e92fA6F7866bA92e465a379
+  address internal constant WA_CORE_USAT = 0x653F2541E7d51a846e92fA6F7866bA92e465a379;
+  // FixedPriceStrategy4626, ratio 1e18
+  // https://snowscan.xyz/address/0x863F2106C5543266b43991Fe842551B0E30FBF0d
+  address internal constant PRICE_STRATEGY = 0x863F2106C5543266b43991Fe842551B0E30FBF0d;
+  // https://snowscan.xyz/address/0x9A5926fd88F747c357738b1e82aFB46AB80f0A6b
+  address internal constant USAT = 0x9A5926fd88F747c357738b1e82aFB46AB80f0A6b;
+  // Largest USAT holder on Avalanche (EOA, 3 USAT on 2026-11-13), the source of the swap funds
+  // https://snowscan.xyz/address/0x3e4C6460aa00c11C81e3C5b95b15d612F5F2d9C7
+  address internal constant USAT_HOLDER = 0x3e4C6460aa00c11C81e3C5b95b15d612F5F2d9C7;
+  // USAT 6 decimals -> GHO 18 decimals, FixedPriceStrategy4626 price ratio 1e18
+  uint256 internal constant USAT_TO_GHO_SCALE = 1e12;
 
   AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part1 internal part1;
   AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2 internal proposal;
@@ -46,13 +62,6 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
     IUpgradeableBurnMintTokenPool(GhoAvalanche.GHO_CCIP_TOKEN_POOL);
   IPermissionedGsm internal gsm;
   uint256 internal preDeliveryState;
-
-  modifier deployed() {
-    if (_missingAddresses().length != 0) {
-      vm.skip(true, 'GSM suite pending deployment');
-    }
-    _;
-  }
 
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('avalanche'), FORK_BLOCK);
@@ -66,19 +75,11 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
     _deliverToAvalancheCollector(Setup.GHO_BRIDGE_AMOUNT);
   }
 
-  function test_deploymentAddressesSet() public view {
-    string[] memory missing = _missingAddresses();
-    for (uint256 i = 0; i < missing.length; i++) {
-      console.log('pending deployment:', missing[i]);
-    }
-    assertEq(missing.length, 0, 'deployment addresses not set');
-  }
-
   /**
    * @dev executes the generic test suite including e2e and config snapshots
    */
   /// forge-config: default.isolate = true
-  function test_defaultProposalExecution() public deployed {
+  function test_defaultProposalExecution() public {
     defaultTest(
       'AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2',
       AaveV3Avalanche.POOL,
@@ -87,7 +88,7 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
   }
 
   /// @dev Part 2 reverts while the bridged GHO has not reached the Collector
-  function test_executionFailsNoFunds() public deployed {
+  function test_executionFailsNoFunds() public {
     vm.revertToState(preDeliveryState);
     assertLt(
       IERC20(GhoAvalanche.GHO_TOKEN).balanceOf(address(AaveV3Avalanche.COLLECTOR)),
@@ -118,7 +119,7 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
     );
   }
 
-  function test_reserveFunded() public deployed {
+  function test_reserveFunded() public {
     address reserve = address(proposal.GHO_RESERVE());
     uint256 collectorBefore = IERC20(GhoAvalanche.GHO_TOKEN).balanceOf(
       address(AaveV3Avalanche.COLLECTOR)
@@ -137,12 +138,15 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
     );
   }
 
-  function test_gsmConfig() public deployed {
+  function test_gsmConfig() public {
+    assertFalse(proposal.GHO_RESERVE().isEntity(address(gsm)), 'pre: GSM is no reserve entity');
+    assertEq(proposal.GHO_RESERVE().getLimit(address(gsm)), 0, 'pre: GSM has no reserve limit');
+
     executePayload(vm, address(proposal));
 
     assertEq(gsm.getGhoReserve(), address(proposal.GHO_RESERVE()));
     assertTrue(proposal.GHO_RESERVE().isEntity(address(gsm)));
-    assertEq(proposal.GHO_RESERVE().getLimit(address(gsm)), Setup.GSM_RESERVE_LIMIT);
+    assertEq(proposal.GHO_RESERVE().getLimit(address(gsm)), 25_000_000e18);
     assertEq(gsm.getExposureCap(), Setup.GSM_EXPOSURE_CAP);
     assertEq(gsm.getFeeStrategy(), address(0), 'fees are 0/0, no strategy');
     assertEq(gsm.GHO_TOKEN(), GhoAvalanche.GHO_TOKEN);
@@ -152,10 +156,19 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
     assertFalse(gsm.getIsSellAccessOpen());
   }
 
-  function test_roles() public deployed {
+  function test_roles() public {
+    IAccessControl reserve = IAccessControl(address(proposal.GHO_RESERVE()));
+    bytes32 limitManager = proposal.GHO_RESERVE().LIMIT_MANAGER_ROLE();
+    assertFalse(reserve.hasRole(limitManager, GhoAvalanche.RISK_COUNCIL));
+    assertFalse(gsm.hasRole(gsm.CONFIGURATOR_ROLE(), proposal.GHO_GSM_STEWARD()));
+    assertFalse(gsm.hasRole(gsm.SWAP_FREEZER_ROLE(), GovernanceV3Avalanche.EXECUTOR_LVL_1));
+    assertFalse(gsm.hasRole(gsm.SWAP_ACCESS_MANAGER_ROLE(), GovernanceV3Avalanche.EXECUTOR_LVL_1));
+    assertFalse(gsm.hasRole(gsm.SWAP_ACCESS_MANAGER_ROLE(), GhoAvalanche.RISK_COUNCIL));
+    assertFalse(gsm.hasRole(gsm.BUY_ASSET_ROLE(), MiscAvalanche.AFC_SAFE));
+    assertFalse(gsm.hasRole(gsm.SELL_ASSET_ROLE(), MiscAvalanche.AFC_SAFE));
+
     executePayload(vm, address(proposal));
 
-    IAccessControl reserve = IAccessControl(address(proposal.GHO_RESERVE()));
     assertTrue(
       reserve.hasRole(proposal.GHO_RESERVE().LIMIT_MANAGER_ROLE(), GhoAvalanche.RISK_COUNCIL)
     );
@@ -165,15 +178,36 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
     assertTrue(gsm.hasRole(gsm.SWAP_ACCESS_MANAGER_ROLE(), GovernanceV3Avalanche.EXECUTOR_LVL_1));
     assertTrue(gsm.hasRole(gsm.SWAP_ACCESS_MANAGER_ROLE(), GhoAvalanche.RISK_COUNCIL));
 
-    address[2] memory swappers = [proposal.APPROVED_DAO_SAFE(), proposal.APPROVED_COUNTERPARTY()];
-    for (uint256 i = 0; i < swappers.length; i++) {
-      assertTrue(gsm.hasRole(gsm.BUY_ASSET_ROLE(), swappers[i]));
-      assertTrue(gsm.hasRole(gsm.SELL_ASSET_ROLE(), swappers[i]));
-    }
+    assertTrue(gsm.hasRole(gsm.BUY_ASSET_ROLE(), MiscAvalanche.AFC_SAFE));
+    assertTrue(gsm.hasRole(gsm.SELL_ASSET_ROLE(), MiscAvalanche.AFC_SAFE));
+  }
+
+  /// @dev Seizure and token rescue need a later AIP that grants these roles first
+  function test_executorHasNoLiquidatorOrRescuerRole() public {
+    executePayload(vm, address(proposal));
+
+    assertFalse(gsm.hasRole(gsm.LIQUIDATOR_ROLE(), GovernanceV3Avalanche.EXECUTOR_LVL_1));
+    assertFalse(gsm.hasRole(gsm.TOKEN_RESCUER_ROLE(), GovernanceV3Avalanche.EXECUTOR_LVL_1));
+  }
+
+  /// @dev Price strategy output against waCoreUSAT's own ERC4626 previews (fails until PR 1236 creates it)
+  function test_priceStrategyMatchesWaCoreUsat() public view {
+    IFixedPriceStrategy4626 priceStrategy = IFixedPriceStrategy4626(gsm.PRICE_STRATEGY());
+    IERC4626 waCoreUsat = IERC4626(WA_CORE_USAT);
+    assertEq(
+      priceStrategy.getAssetPriceInGho(1e6, true),
+      waCoreUsat.previewMint(1e6) * USAT_TO_GHO_SCALE
+    );
+    assertEq(
+      priceStrategy.getGhoPriceInAsset(1 ether, false),
+      waCoreUsat.previewWithdraw(1 ether) / USAT_TO_GHO_SCALE
+    );
   }
 
   /// @dev The GSM is deployed already pointing at the reserve with the 20M cap; the payload does not set them
-  function test_deploymentState() public deployed {
+  function test_deploymentState() public view {
+    assertEq(gsm.UNDERLYING_ASSET(), WA_CORE_USAT);
+    assertEq(gsm.PRICE_STRATEGY(), PRICE_STRATEGY);
     assertEq(gsm.getGhoReserve(), address(proposal.GHO_RESERVE()));
     assertEq(gsm.getExposureCap(), Setup.GSM_EXPOSURE_CAP);
     assertEq(gsm.getFeeStrategy(), address(0));
@@ -196,7 +230,7 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
     assertEq(Ownable(proposal.GSM_REGISTRY()).owner(), GovernanceV3Avalanche.EXECUTOR_LVL_1);
   }
 
-  function test_gsmIsRegisteredUnderGsmRegistry() public deployed {
+  function test_gsmIsRegisteredUnderGsmRegistry() public {
     IGsmRegistry registry = IGsmRegistry(proposal.GSM_REGISTRY());
 
     assertEq(registry.getGsmListLength(), 0);
@@ -211,7 +245,7 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
   }
 
   /// @dev With no fee strategy, the steward cannot set fees; governance must call updateFeeStrategy first
-  function test_stewardCannotSetFeesWithoutStrategy() public deployed {
+  function test_stewardCannotSetFeesWithoutStrategy() public {
     executePayload(vm, address(proposal));
 
     IGsmSteward steward = IGsmSteward(proposal.GHO_GSM_STEWARD());
@@ -220,50 +254,49 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
     steward.updateGsmBuySellFees(address(gsm), 10, 0);
   }
 
-  function test_permissionedSwap() public deployed {
+  /// @dev Funded from real state: a USAT holder's balance, deposited into waCoreUSAT by the safe
+  function test_permissionedSwap() public {
     executePayload(vm, address(proposal));
 
-    address safe = proposal.APPROVED_DAO_SAFE();
-    IERC20 underlying = IERC20(gsm.UNDERLYING_ASSET());
-    deal(address(underlying), safe, SWAP_AMOUNT);
+    address safe = MiscAvalanche.AFC_SAFE;
+    IERC20 usat = IERC20(USAT);
+    IERC4626 waCoreUsat = IERC4626(WA_CORE_USAT);
+    IERC20 gho = IERC20(GhoAvalanche.GHO_TOKEN);
+
+    uint256 usatAmount = usat.balanceOf(USAT_HOLDER);
+    assertGt(usatAmount, 0, 'USAT_HOLDER has no USAT at FORK_BLOCK');
+    vm.prank(USAT_HOLDER);
+    usat.transfer(safe, usatAmount);
 
     vm.startPrank(safe);
-    underlying.approve(address(gsm), SWAP_AMOUNT);
-    (, uint256 ghoBought) = gsm.sellAsset(SWAP_AMOUNT, safe);
-    assertEq(IERC20(GhoAvalanche.GHO_TOKEN).balanceOf(safe), ghoBought);
-    assertEq(proposal.GHO_RESERVE().getUsed(address(gsm)), ghoBought);
+    usat.approve(WA_CORE_USAT, usatAmount);
+    uint256 shares = waCoreUsat.deposit(usatAmount, safe);
+    uint256 expectedGho = waCoreUsat.convertToAssets(shares) * USAT_TO_GHO_SCALE;
 
-    IERC20(GhoAvalanche.GHO_TOKEN).approve(address(gsm), ghoBought);
-    (uint256 assetBought, ) = gsm.buyAsset(SWAP_AMOUNT, safe);
+    waCoreUsat.approve(address(gsm), shares);
+    (, uint256 ghoBought) = gsm.sellAsset(shares, safe);
+    assertEq(ghoBought, expectedGho);
+    assertEq(gho.balanceOf(safe), expectedGho);
+    assertEq(proposal.GHO_RESERVE().getUsed(address(gsm)), expectedGho);
+
+    gho.approve(address(gsm), expectedGho);
+    (uint256 assetBought, ) = gsm.buyAsset(shares, safe);
     vm.stopPrank();
 
-    assertEq(assetBought, SWAP_AMOUNT, 'fees are 0/0, round trip is lossless');
-    assertEq(underlying.balanceOf(safe), SWAP_AMOUNT);
+    assertEq(assetBought, shares, 'fees are 0/0, round trip is lossless');
+    assertEq(IERC20(WA_CORE_USAT).balanceOf(safe), shares);
     assertEq(proposal.GHO_RESERVE().getUsed(address(gsm)), 0);
   }
 
-  function test_unapprovedCallerCannotSwap() public deployed {
+  /// @dev The role check runs before any token transfer, so the stranger needs no funds
+  function test_unapprovedCallerCannotSwap() public {
     executePayload(vm, address(proposal));
 
-    // Fund the GSM so buyAsset has liquidity, and the stranger with both tokens, so only the role check can revert
-    address safe = proposal.APPROVED_DAO_SAFE();
-    deal(gsm.UNDERLYING_ASSET(), safe, SWAP_AMOUNT);
-    vm.startPrank(safe);
-    IERC20(gsm.UNDERLYING_ASSET()).approve(address(gsm), SWAP_AMOUNT);
-    (, uint256 ghoAmount) = gsm.sellAsset(SWAP_AMOUNT, safe);
-    vm.stopPrank();
-
     address stranger = makeAddr('stranger');
-    deal(gsm.UNDERLYING_ASSET(), stranger, SWAP_AMOUNT);
-    deal(GhoAvalanche.GHO_TOKEN, stranger, ghoAmount);
-
-    IERC20 underlying = IERC20(gsm.UNDERLYING_ASSET());
     bytes32 sellRole = gsm.SELL_ASSET_ROLE();
     bytes32 buyRole = gsm.BUY_ASSET_ROLE();
 
     vm.startPrank(stranger);
-    underlying.approve(address(gsm), SWAP_AMOUNT);
-    IERC20(GhoAvalanche.GHO_TOKEN).approve(address(gsm), ghoAmount);
     vm.expectRevert(
       abi.encodeWithSelector(
         IAccessControl.AccessControlUnauthorizedAccount.selector,
@@ -271,7 +304,7 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
         sellRole
       )
     );
-    gsm.sellAsset(SWAP_AMOUNT, stranger);
+    gsm.sellAsset(1, stranger);
     vm.expectRevert(
       abi.encodeWithSelector(
         IAccessControl.AccessControlUnauthorizedAccount.selector,
@@ -279,28 +312,28 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
         buyRole
       )
     );
-    gsm.buyAsset(SWAP_AMOUNT, stranger);
+    gsm.buyAsset(1, stranger);
     vm.stopPrank();
   }
 
-  function test_riskCouncilManagesAccess() public deployed {
+  function test_riskCouncilManagesAccess() public {
     executePayload(vm, address(proposal));
 
     address newCounterparty = makeAddr('newCounterparty');
     vm.startPrank(GhoAvalanche.RISK_COUNCIL);
     gsm.grantRole(gsm.SELL_ASSET_ROLE(), newCounterparty);
-    gsm.revokeRole(gsm.BUY_ASSET_ROLE(), proposal.APPROVED_COUNTERPARTY());
+    gsm.revokeRole(gsm.BUY_ASSET_ROLE(), MiscAvalanche.AFC_SAFE);
     gsm.setBuyAccessOpen(true);
     gsm.setSellAccessOpen(true);
     vm.stopPrank();
 
     assertTrue(gsm.hasRole(gsm.SELL_ASSET_ROLE(), newCounterparty));
-    assertFalse(gsm.hasRole(gsm.BUY_ASSET_ROLE(), proposal.APPROVED_COUNTERPARTY()));
+    assertFalse(gsm.hasRole(gsm.BUY_ASSET_ROLE(), MiscAvalanche.AFC_SAFE));
     assertTrue(gsm.getIsBuyAccessOpen());
     assertTrue(gsm.getIsSellAccessOpen());
   }
 
-  function test_stewardUpdatesExposureCap() public deployed {
+  function test_stewardUpdatesExposureCap() public {
     executePayload(vm, address(proposal));
 
     uint128 newCap = Setup.GSM_EXPOSURE_CAP * 2;
@@ -310,7 +343,7 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
     assertEq(gsm.getExposureCap(), newCap);
   }
 
-  function test_bridgeLaneRestored() public deployed {
+  function test_bridgeLaneRestored() public {
     assertEq(
       pool.getCurrentInboundRateLimiterState(CCIPChainSelectors.ETHEREUM).capacity,
       Setup.TEMP_BRIDGE_CAPACITY,
@@ -323,75 +356,36 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part2_Test is
     _assertDefault(pool.getCurrentOutboundRateLimiterState(CCIPChainSelectors.ETHEREUM));
   }
 
-  function test_otherLanesUntouched() public deployed {
+  /// @dev Every lane other than the widened one already runs the ongoing config; afterwards all of them do
+  function test_allLanesAtOngoingConfig() public {
     GhoCCIPChains.ChainInfo[] memory chains = GhoCCIPChains.getAllChainsExcept(
-      CCIPChainSelectors.ETHEREUM,
+      CCIPChainSelectors.AVALANCHE,
       false
     );
-    IRateLimiter.TokenBucket[] memory inboundBefore = new IRateLimiter.TokenBucket[](chains.length);
-    IRateLimiter.TokenBucket[] memory outboundBefore = new IRateLimiter.TokenBucket[](
-      chains.length
-    );
     for (uint256 i = 0; i < chains.length; i++) {
-      if (chains[i].chainSelector == CCIPChainSelectors.AVALANCHE) continue;
-      inboundBefore[i] = pool.getCurrentInboundRateLimiterState(chains[i].chainSelector);
-      outboundBefore[i] = pool.getCurrentOutboundRateLimiterState(chains[i].chainSelector);
+      if (chains[i].chainSelector == CCIPChainSelectors.ETHEREUM) continue;
+      _assertDefault(pool.getCurrentInboundRateLimiterState(chains[i].chainSelector));
+      _assertDefault(pool.getCurrentOutboundRateLimiterState(chains[i].chainSelector));
     }
 
     executePayload(vm, address(proposal));
 
     for (uint256 i = 0; i < chains.length; i++) {
-      if (chains[i].chainSelector == CCIPChainSelectors.AVALANCHE) continue;
-      _assertSameConfig(
-        pool.getCurrentInboundRateLimiterState(chains[i].chainSelector),
-        inboundBefore[i]
-      );
-      _assertSameConfig(
-        pool.getCurrentOutboundRateLimiterState(chains[i].chainSelector),
-        outboundBefore[i]
-      );
+      _assertDefault(pool.getCurrentInboundRateLimiterState(chains[i].chainSelector));
+      _assertDefault(pool.getCurrentOutboundRateLimiterState(chains[i].chainSelector));
     }
   }
 
-  function _missingAddresses() internal view returns (string[] memory) {
-    string[5] memory names = [
-      'GHO_RESERVE',
-      'GHO_GSM_STEWARD',
-      'GSM_REGISTRY',
-      'GSM_USAT',
-      'APPROVED_COUNTERPARTY'
-    ];
-    address[5] memory values = [
-      address(proposal.GHO_RESERVE()),
-      proposal.GHO_GSM_STEWARD(),
-      proposal.GSM_REGISTRY(),
-      address(proposal.GSM_USAT()),
-      proposal.APPROVED_COUNTERPARTY()
-    ];
-    uint256 count;
-    for (uint256 i = 0; i < values.length; i++) {
-      if (values[i] == address(0)) count++;
-    }
-    string[] memory missing = new string[](count);
-    count = 0;
-    for (uint256 i = 0; i < values.length; i++) {
-      if (values[i] == address(0)) missing[count++] = names[i];
-    }
-    return missing;
+  function test_supportedChainsMatchLibrary() public view {
+    _assertSupportedChainsMatchLibrary(
+      GhoAvalanche.GHO_CCIP_TOKEN_POOL,
+      CCIPChainSelectors.AVALANCHE
+    );
   }
 
   function _assertDefault(IRateLimiter.TokenBucket memory bucket) internal pure {
     assertTrue(bucket.isEnabled);
     assertEq(bucket.capacity, Setup.DEFAULT_RATE_LIMITER_CAPACITY);
     assertEq(bucket.rate, Setup.DEFAULT_LIMITER_RATE);
-  }
-
-  function _assertSameConfig(
-    IRateLimiter.TokenBucket memory a,
-    IRateLimiter.TokenBucket memory b
-  ) internal pure {
-    assertEq(a.capacity, b.capacity, 'capacity changed');
-    assertEq(a.rate, b.rate, 'rate changed');
-    assertEq(a.isEnabled, b.isEnabled, 'isEnabled changed');
   }
 }

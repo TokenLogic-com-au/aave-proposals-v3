@@ -24,14 +24,14 @@ contract AaveV3Ethereum_PermissionedGSMUSATAvalanche_20261109_Part1 is IProposal
     // Permanent: the bridged GHO stays locked in the pool
     pool.setBridgeLimit(pool.getBridgeLimit() + Setup.GHO_BRIDGE_AMOUNT);
 
-    // Temporary outbound widening for the one-off transfer; Part 2 restores the lane.
+    // Temporary outbound widening for the one-off transfer; Part 2 resets every lane.
     // Inbound is rewritten to its current (ongoing) value.
     pool.setChainRateLimiterConfig(
       CCIPChainSelectors.AVALANCHE,
       IRateLimiter.Config({
         isEnabled: true,
         capacity: Setup.TEMP_BRIDGE_CAPACITY,
-        rate: Setup.TEMP_BRIDGE_CAPACITY - 1 // rate must stay below capacity
+        rate: Setup.TEMP_BRIDGE_RATE
       }),
       IRateLimiter.Config({
         isEnabled: true,

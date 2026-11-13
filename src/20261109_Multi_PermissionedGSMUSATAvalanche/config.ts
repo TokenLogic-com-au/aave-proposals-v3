@@ -1,7 +1,18 @@
 import {ConfigFile} from '../../generator/types';
 export const config: ConfigFile = {
   rootOptions: {
-    pools: ['AaveV3Ethereum', 'AaveV3Avalanche'],
+    pools: [
+      'AaveV3Ethereum',
+      'AaveV3Avalanche',
+      'AaveV3Arbitrum',
+      'AaveV3Base',
+      'AaveV3Gnosis',
+      'AaveV3Mantle',
+      'AaveV3Plasma',
+      'AaveV3XLayer',
+      'AaveV3Ink',
+      'AaveV3Monad',
+    ],
     title: 'Permissioned GSM: USAT on Aave V4 Avalanche',
     shortName: 'PermissionedGSMUSATAvalanche',
     date: '20261109',
@@ -11,7 +22,15 @@ export const config: ConfigFile = {
     votingNetwork: 'AVALANCHE',
   },
   poolOptions: {
-    AaveV3Ethereum: {configs: {}, cache: {blockNumber: 26378000}},
+    AaveV3Ethereum: {configs: {}, cache: {blockNumber: 26405330}},
     AaveV3Avalanche: {configs: {}, cache: {blockNumber: 99954000}},
+    AaveV3Arbitrum: {configs: {}, cache: {blockNumber: 523822200}},
+    AaveV3Base: {configs: {}, cache: {blockNumber: 56854300}},
+    AaveV3Gnosis: {configs: {}, cache: {blockNumber: 49255900}},
+    AaveV3Mantle: {configs: {}, cache: {blockNumber: 103215400}},
+    AaveV3Plasma: {configs: {}, cache: {blockNumber: 37617800}},
+    AaveV3XLayer: {configs: {}, cache: {blockNumber: 75792200}},
+    AaveV3Ink: {configs: {}, cache: {blockNumber: 61062800}},
+    AaveV3Monad: {configs: {}, cache: {blockNumber: 121848000}},
   },
 };

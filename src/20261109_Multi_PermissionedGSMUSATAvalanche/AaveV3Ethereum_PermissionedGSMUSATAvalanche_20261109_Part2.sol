@@ -23,8 +23,8 @@ import {PermissionedGSMUSATAvalancheSetup as Setup} from './setup/PermissionedGS
 contract AaveV3Ethereum_PermissionedGSMUSATAvalanche_20261109_Part2 is IProposalGenericExecutor {
   using SafeERC20 for IERC20;
 
-  // GhoDirectFacilitator, pending deployment (gho-deploy)
-  address public constant DIRECT_FACILITATOR = address(0);
+  // https://etherscan.io/address/0x207b377b904D5e227337F7E708e27Dfa34F6381A
+  address public constant DIRECT_FACILITATOR = 0x207b377b904D5e227337F7E708e27Dfa34F6381A;
   string public constant DIRECT_FACILITATOR_NAME = 'GhoDirectFacilitator GSM USAT Avalanche';
 
   // Same gas limit the Avalanche bridge uses for its Ethereum destination
@@ -59,6 +59,6 @@ contract AaveV3Ethereum_PermissionedGSMUSATAvalanche_20261109_Part2 is IProposal
       AaveV3EthereumAssets.LINK_UNDERLYING
     );
 
-    Setup.restoreLaneRateLimitConfig(GhoEthereum.GHO_CCIP_TOKEN_POOL, CCIPChainSelectors.AVALANCHE);
+    Setup.normalizeIORateLimitsForAllNetworks(GhoEthereum.GHO_CCIP_TOKEN_POOL);
   }
 }

@@ -19,6 +19,7 @@ import {CCIPChainRouters} from 'src/helpers/gho-launch/constants/CCIPChainRouter
  */
 abstract contract AvalancheCcipDelivery is Test {
   // Ethereum -> Avalanche OffRamp registered on the Avalanche router at the fork block
+  // https://snowscan.xyz/address/0x65D04D8dA1405b50d3508aaF94e1B6F5f1A3895C
   address internal constant CCIP_ETH_OFFRAMP = 0x65D04D8dA1405b50d3508aaF94e1B6F5f1A3895C;
 
   function _assertOffRampRegistered() internal view {

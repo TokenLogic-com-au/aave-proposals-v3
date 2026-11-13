@@ -29,7 +29,7 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part1 is IProposa
       (currentCapacity + Setup.GHO_BRIDGE_AMOUNT).toUint128()
     );
 
-    // Temporary inbound widening (counterpart of the Ethereum Part 1 outbound step); Part 2 restores the lane.
+    // Temporary inbound widening (counterpart of the Ethereum Part 1 outbound step); Part 2 resets every lane.
     // Outbound is rewritten to its current (ongoing) value.
     IUpgradeableBurnMintTokenPool(GhoAvalanche.GHO_CCIP_TOKEN_POOL).setChainRateLimiterConfig(
       CCIPChainSelectors.ETHEREUM,
@@ -41,7 +41,7 @@ contract AaveV3Avalanche_PermissionedGSMUSATAvalanche_20261109_Part1 is IProposa
       IRateLimiter.Config({
         isEnabled: true,
         capacity: Setup.TEMP_BRIDGE_CAPACITY,
-        rate: Setup.TEMP_BRIDGE_CAPACITY - 1 // rate must stay below capacity
+        rate: Setup.TEMP_BRIDGE_RATE
       })
     );
   }
