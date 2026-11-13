@@ -38,7 +38,7 @@ contract AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022 is AaveV
     AaveV3Plasma.POOL.supply({
       asset: PT_sUSDE_28JAN2027,
       amount: PT_sUSDE_28JAN2027_SEED_AMOUNT,
-      onBehalfOf: address(AaveV3Plasma.DUST_BIN),
+      onBehalfOf: AaveV3Plasma.DUST_BIN,
       referralCode: 0
     });
   }
