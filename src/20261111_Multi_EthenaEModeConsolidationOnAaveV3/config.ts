@@ -16,7 +16,8 @@ export const config: ConfigFile = {
     shortName: 'EthenaEModeConsolidationOnAaveV3',
     date: '20261111',
     author: '@TokenLogic',
-    discussion: 'pending forum post link',
+    discussion:
+      'https://governance.aave.com/t/direct-to-aip-ethena-e-mode-consolidation-on-aave-v3/26304',
     snapshot: 'Direct-to-AIP',
     votingNetwork: 'AVALANCHE',
   },

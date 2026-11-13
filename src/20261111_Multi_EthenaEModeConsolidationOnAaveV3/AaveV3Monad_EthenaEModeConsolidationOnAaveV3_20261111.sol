@@ -10,7 +10,7 @@ import {IAaveV3ConfigEngine} from 'aave-v3-origin/contracts/extensions/v3-config
  * @title Ethena E-Mode Consolidation on Aave V3
  * @author @TokenLogic
  * - Snapshot: Direct-to-AIP
- * - Discussion: pending forum post link
+ * - Discussion: https://governance.aave.com/t/direct-to-aip-ethena-e-mode-consolidation-on-aave-v3/26304
  */
 contract AaveV3Monad_EthenaEModeConsolidationOnAaveV3_20261111 is AaveV3PayloadMonad {
   function eModeCategoryCreations()

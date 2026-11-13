@@ -1,7 +1,7 @@
 ---
 title: "Ethena E-Mode Consolidation on Aave V3"
 author: "@TokenLogic"
-discussions: "pending forum post link"
+discussions: "https://governance.aave.com/t/direct-to-aip-ethena-e-mode-consolidation-on-aave-v3/26304"
 ---
 
 ## Simple Summary
@@ -77,7 +77,7 @@ X Layer #9 is left unchanged so October PT positions can roll into the February 
 - Implementation: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20261111_Multi_EthenaEModeConsolidationOnAaveV3/AaveV3Ethereum_EthenaEModeConsolidationOnAaveV3_20261111.sol), [AaveV3Plasma](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20261111_Multi_EthenaEModeConsolidationOnAaveV3/AaveV3Plasma_EthenaEModeConsolidationOnAaveV3_20261111.sol), [AaveV3Mantle](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20261111_Multi_EthenaEModeConsolidationOnAaveV3/AaveV3Mantle_EthenaEModeConsolidationOnAaveV3_20261111.sol), [AaveV3Monad](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20261111_Multi_EthenaEModeConsolidationOnAaveV3/AaveV3Monad_EthenaEModeConsolidationOnAaveV3_20261111.sol), [AaveV3Avalanche](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20261111_Multi_EthenaEModeConsolidationOnAaveV3/AaveV3Avalanche_EthenaEModeConsolidationOnAaveV3_20261111.sol), [AaveV3XLayer](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20261111_Multi_EthenaEModeConsolidationOnAaveV3/AaveV3XLayer_EthenaEModeConsolidationOnAaveV3_20261111.sol)
 - Tests: [AaveV3Ethereum](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20261111_Multi_EthenaEModeConsolidationOnAaveV3/AaveV3Ethereum_EthenaEModeConsolidationOnAaveV3_20261111.t.sol), [AaveV3Plasma](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20261111_Multi_EthenaEModeConsolidationOnAaveV3/AaveV3Plasma_EthenaEModeConsolidationOnAaveV3_20261111.t.sol), [AaveV3Mantle](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20261111_Multi_EthenaEModeConsolidationOnAaveV3/AaveV3Mantle_EthenaEModeConsolidationOnAaveV3_20261111.t.sol), [AaveV3Monad](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20261111_Multi_EthenaEModeConsolidationOnAaveV3/AaveV3Monad_EthenaEModeConsolidationOnAaveV3_20261111.t.sol), [AaveV3Avalanche](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20261111_Multi_EthenaEModeConsolidationOnAaveV3/AaveV3Avalanche_EthenaEModeConsolidationOnAaveV3_20261111.t.sol), [AaveV3XLayer](https://github.com/aave-dao/aave-proposals-v3/blob/main/src/20261111_Multi_EthenaEModeConsolidationOnAaveV3/AaveV3XLayer_EthenaEModeConsolidationOnAaveV3_20261111.t.sol)
 - Snapshot: Direct-to-AIP
-- Discussion: pending forum post link
+- [Discussion](https://governance.aave.com/t/direct-to-aip-ethena-e-mode-consolidation-on-aave-v3/26304)
 
 ## Copyright
 
