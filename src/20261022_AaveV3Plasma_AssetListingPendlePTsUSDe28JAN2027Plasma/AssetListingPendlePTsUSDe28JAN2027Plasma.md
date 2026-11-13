@@ -6,71 +6,85 @@ discussions: "https://governance.aave.com/t/direct-to-aip-onboard-pt-susde-28jan
 
 ## Simple Summary
 
-This AIP lists PT-sUSDe-28JAN2027, the Pendle Principal Token for sUSDe maturing on 28 January 2027, on the Aave V3 Plasma instance as a non-borrowable asset, and creates two new isolated eModes with sUSDe and PT-sUSDe-28JAN2027 as collateral.
+This proposal lists PT-sUSDe-28JAN2027 on Aave V3 Plasma through the Direct-to-AIP process. It provides a rollover destination for users of PT-sUSDe-22OCT2026, which matured on 22 October 2026. The January PT launches with the parameters recommended by LlamaRisk, with borrowing disabled and collateral use limited to a dedicated stablecoin eMode.
 
 ## Motivation
 
-PT-sUSDe-22OCT2026 matured on 22 October 2026. Pendle has launched PT-sUSDe-28JAN2027 as the follow-up maturity, which lets users continue using fixed-yield sUSDe positions as collateral on Aave against stablecoin debt.
+PT-sUSDe-22OCT2026 matured on 22 October 2026. Its supply cap is now 1, and 69,406 PT remain supplied to Aave V3 Plasma, down from a peak of about 153.6M on 4 August 2026. This listing allows holders to roll into the next maturity and continue using PT-sUSDe as collateral on the instance.
 
-PT-sUSDe-22OCT2026 remains listed with its existing parameters and eModes; this AIP does not change it.
+The rollover follows the established sequence of sUSDe PT listings on Plasma, covering the January, April, June and October 2026 maturities.
 
-The PT is priced via a new linear discount oracle for the 28 January 2027 maturity (`PT Capped sUSDe USDT/USD linear discount 28JAN2027`), which applies a discount that decreases to zero at maturity on top of the Capped USDT0/USD feed.
-
-The listing parameters and eModes follow the PT-sUSDe-22OCT2026 listing.
+As of 13 November 2026, the January PT has 76 days remaining until maturity. The shorter remaining term reduces the PT's price sensitivity to changes in implied yield.
 
 ## Specification
 
-| Field         | Value                                                                                                                  |
-| ------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| Asset         | [PT-sUSDe-28JAN2027](https://plasmascan.to/address/0x257561233419039BeC3a28be717d14B4f490883D)                         |
-| PT token      | [0x257561233419039BeC3a28be717d14B4f490883D](https://plasmascan.to/address/0x257561233419039BeC3a28be717d14B4f490883D) |
-| Pendle market | [0xDb96B529D19FF4a7d711E6E082172c77cfe88ed8](https://plasmascan.to/address/0xDb96B529D19FF4a7d711E6E082172c77cfe88ed8) |
-| SY token      | [0x9838B0450e311962Aed969BA7d0fe0BB9D8620eB](https://plasmascan.to/address/0x9838B0450e311962Aed969BA7d0fe0BB9D8620eB) |
-| YT token      | [0x40Eb4A62ACf1Fa0676732B62C4E55548Ee7B819F](https://plasmascan.to/address/0x40Eb4A62ACf1Fa0676732B62C4E55548Ee7B819F) |
-| Underlying    | [sUSDe](https://plasmascan.to/address/0x211Cc4DD073734dA055fbF44a2b4667d5E5fE5d2)                                      |
-| Maturity      | 28 January 2027                                                                                                        |
+List PT-sUSDe-28JAN2027 on Aave V3 Plasma with the following asset details:
 
-**New eModes.** The existing PT-sUSDe-22OCT2026 eModes are not modified.
+| Field              | Value                                                                                                                  |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| Asset              | PT-sUSDe-28JAN2027                                                                                                     |
+| Network            | Plasma                                                                                                                 |
+| PT token           | [0x257561233419039BeC3a28be717d14B4f490883D](https://plasmascan.to/address/0x257561233419039BeC3a28be717d14B4f490883D) |
+| Pendle market      | [0xdb96b529d19ff4a7d711e6e082172c77cfe88ed8](https://plasmascan.to/address/0xdb96b529d19ff4a7d711e6e082172c77cfe88ed8) |
+| SY token           | [0x9838B0450e311962Aed969BA7d0fe0BB9D8620eB](https://plasmascan.to/address/0x9838B0450e311962Aed969BA7d0fe0BB9D8620eB) |
+| YT token           | [0x40Eb4A62ACf1Fa0676732B62C4E55548Ee7B819F](https://plasmascan.to/address/0x40Eb4A62ACf1Fa0676732B62C4E55548Ee7B819F) |
+| Underlying (sUSDe) | [0x211Cc4DD073734dA055fbF44a2b4667d5E5fE5d2](https://plasmascan.to/address/0x211Cc4DD073734dA055fbF44a2b4667d5E5fE5d2) |
+| Decimals           | 18                                                                                                                     |
+| Maturity           | 28 January 2027                                                                                                        |
 
-| eMode                                   | Collateral                | Borrowable       | LTV    | LT     | Liq. Bonus | Isolated |
-| --------------------------------------- | ------------------------- | ---------------- | ------ | ------ | ---------- | -------- |
-| sUSDe_PT_sUSDe_28JAN2027\_\_Stablecoins | sUSDe, PT-sUSDe-28JAN2027 | USDT0, USDe, GHO | 87.71% | 89.71% | 4.87%      | Yes      |
-| sUSDe_PT_sUSDe_28JAN2027\_\_USDe        | sUSDe, PT-sUSDe-28JAN2027 | USDe             | 90.35% | 92.35% | 1.87%      | Yes      |
+### eMode
 
-The table below illustrates the configured risk parameters for **PT-sUSDe-28JAN2027**
+A dedicated eMode allows users to supply PT-sUSDe-28JAN2027 or sUSDe as collateral and borrow USDT0, USDe or GHO. PT-sUSDe-22OCT2026 is added with an LTV of 0, so existing positions can move into the new category but cannot open new debt against the matured PT.
 
-| Parameter                 | PT-sUSDe-28JAN2027 |
-| ------------------------- | -----------------: |
-| Isolation Mode            |                 No |
-| Borrowable                |                 No |
-| Collateral Enabled        |   No (E-Mode only) |
-| Supply Cap                |        150,000,000 |
-| Borrow Cap                |                  1 |
-| Debt Ceiling              |                N/A |
-| LTV                       |                 0% |
-| Liquidation Threshold     |                 0% |
-| Liquidation Bonus         |                 0% |
-| Liquidation Protocol Fee  |                10% |
-| Reserve Factor            |                45% |
-| Base Variable Borrow Rate |                 0% |
-| Variable Rate Slope 1     |                10% |
-| Variable Rate Slope 2     |               300% |
-| Optimal Utilization       |                45% |
-| Flashloanable             |                 No |
-| Oracle                    | Pending deployment |
+| eMode ID | eMode                                   | Collateral                                            | Borrowable       | LTV | LT  | Liq. Bonus | Isolated |
+| -------- | --------------------------------------- | ----------------------------------------------------- | ---------------- | --- | --- | ---------- | -------- |
+| 27       | sUSDe_PT_sUSDe_28JAN2027\_\_Stablecoins | PT-sUSDe-28JAN2027, sUSDe, PT-sUSDe-22OCT2026 (LTV 0) | USDT0, USDe, GHO | 90% | 92% | 4.95%      | No       |
 
-**Linear Discount Rate Oracle**
+### Reserve Parameters
 
-The price feed applies a linear discount, decreasing to zero at maturity, on top of the Capped USDT0/USD feed.
+| Parameter                 | PT-sUSDe-28JAN2027                                                                                                             |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Isolation Mode            | No                                                                                                                             |
+| Borrowable                | No                                                                                                                             |
+| Collateral Enabled        | No (eMode only)                                                                                                                |
+| Supply Cap                | 25,000,000                                                                                                                     |
+| Borrow Cap                | 1                                                                                                                              |
+| Debt Ceiling              | N/A                                                                                                                            |
+| LTV                       | 0%                                                                                                                             |
+| Liquidation Threshold     | 0%                                                                                                                             |
+| Liquidation Bonus         | 0%                                                                                                                             |
+| Liquidation Protocol Fee  | 10%                                                                                                                            |
+| Reserve Factor            | 45%                                                                                                                            |
+| Base Variable Borrow Rate | 0%                                                                                                                             |
+| Variable Rate Slope 1     | 10%                                                                                                                            |
+| Variable Rate Slope 2     | 300%                                                                                                                           |
+| Optimal Utilization       | 45%                                                                                                                            |
+| Flashloanable             | No                                                                                                                             |
+| Oracle                    | [PT Capped sUSDe USDT/USD linear discount 28JAN2027](https://plasmascan.to/address/0x94b31Cd097c4Ec98F9CaD1c82be2cdA3215b527f) |
 
-| Parameter                  | Value                                                                                        |
-| -------------------------- | -------------------------------------------------------------------------------------------- |
-| initialDiscountRatePerYear | 4.37%                                                                                        |
-| maxDiscountRatePerYear     | 12.27%                                                                                       |
-| Underlying feed            | [Capped USDT0/USD](https://plasmascan.to/address/0xdBbB0b5DD13E7AC9C56624834ef193df87b022c3) |
-| Oracle                     | Pending deployment                                                                           |
+### Oracle
 
-**Seed deposit.** The Aave Short Executor is funded with 100 PT-sUSDe-28JAN2027 before execution. The payload supplies them to the Aave DustBin.
+A new linear discount oracle is deployed for the 28 January 2027 maturity. It prices the PT from the Capped USDT/USD feed, the same base feed as the October PT.
+
+| Parameter                  | Value                                                                                                                  |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| initialDiscountRatePerYear | 4.399%                                                                                                                 |
+| maxDiscountRatePerYear     | 9.047%                                                                                                                 |
+| Oracle                     | [0x94b31Cd097c4Ec98F9CaD1c82be2cdA3215b527f](https://plasmascan.to/address/0x94b31Cd097c4Ec98F9CaD1c82be2cdA3215b527f) |
+
+### Seed
+
+100 `PT-sUSDe-28JAN2027` are held by the Plasma executor and supplied to the `DustBin` on execution.
+
+### Useful links:
+
+- [Pendle market](https://app.pendle.finance/trade/markets/0xdb96b529d19ff4a7d711e6e082172c77cfe88ed8/swap?view=pt&chain=plasma)
+- [LlamaRisk recommendation](https://governance.aave.com/t/direct-to-aip-onboard-pt-susde-28jan2027-to-aave-v3-plasma-instance/25902/2)
+
+## Next Steps
+
+1. Submit the AIP for a governance vote.
+2. If approved, execute the payload to list `PT-sUSDe-28JAN2027` on Aave V3 Plasma.
 
 ## References
 

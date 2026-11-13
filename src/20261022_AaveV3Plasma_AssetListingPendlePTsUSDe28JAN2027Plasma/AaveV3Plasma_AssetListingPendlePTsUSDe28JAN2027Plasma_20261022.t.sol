@@ -33,7 +33,7 @@ contract AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022_Test is 
   AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('plasma'), 35734145);
+    vm.createSelectFork(vm.rpcUrl('plasma'), 37634563);
     proposal = new AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022();
   }
 
@@ -76,11 +76,7 @@ contract AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022_Test is 
     );
   }
 
-  /**
-   * @dev PENDING ORACLE: the price feed, the discount rates and the price band below are
-   * placeholders until the adapter is deployed and LlamaRisk sets the final rates
-   */
-  function test_pendingOracle_priceFeedWiring() public {
+  function test_priceFeedWiring() public {
     GovV3Helpers.executePayload(vm, address(proposal));
     assertEq(
       AaveV3Plasma.ORACLE.getSourceOfAsset(proposal.PT_sUSDE_28JAN2027()),
@@ -94,8 +90,8 @@ contract AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022_Test is 
     IPendlePriceCapAdapter adapter = IPendlePriceCapAdapter(
       proposal.PT_sUSDE_28JAN2027_PRICE_FEED()
     );
-    assertEq(adapter.discountRatePerYear(), 0.0437e18, 'initial discount rate placeholder');
-    assertEq(adapter.MAX_DISCOUNT_RATE_PER_YEAR(), 0.1227e18, 'max discount rate placeholder');
+    assertEq(adapter.discountRatePerYear(), 0.04399e18, 'initial discount rate');
+    assertEq(adapter.MAX_DISCOUNT_RATE_PER_YEAR(), 0.09047e18, 'max discount rate');
     assertEq(adapter.MATURITY(), 1801094400, 'maturity should be 28 January 2027 UTC');
     assertEq(
       adapter.PENDLE_PRINCIPAL_TOKEN(),
@@ -116,14 +112,14 @@ contract AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022_Test is 
       listing: IAaveV3ConfigEngine.Listing({
         asset: 0x257561233419039BeC3a28be717d14B4f490883D,
         assetSymbol: 'PT-sUSDE-28JAN2027',
-        priceFeed: 0x0000000000000000000000000000000000000000,
+        priceFeed: 0x94b31Cd097c4Ec98F9CaD1c82be2cdA3215b527f,
         enabledToBorrow: EngineFlags.DISABLED,
         flashloanable: EngineFlags.DISABLED,
         ltv: 0,
         liqThreshold: 0,
         liqBonus: 0,
         reserveFactor: 45_00,
-        supplyCap: 150_000_000,
+        supplyCap: 25_000_000,
         borrowCap: 1,
         liqProtocolFee: 10_00,
         rateStrategyParams: IAaveV3ConfigEngine.InterestRateInputData({
@@ -141,73 +137,35 @@ contract AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022_Test is 
     EModeSnapshot[] memory before_ = _snapshotEModes();
 
     GovV3Helpers.executePayload(vm, address(proposal));
-    uint8 eMode_SUSDe_PT_sUSDe_28JAN2027__Stablecoins = _findEModeCategoryId(
-      'sUSDe_PT_sUSDe_28JAN2027__Stablecoins'
-    );
+    uint8 id = _findEModeCategoryId('sUSDe_PT_sUSDe_28JAN2027__Stablecoins');
+    assertEq(id, proposal.EMODE_ID(), 'new eMode id');
+    assertEq(id, before_.length + 1, 'new eMode id is the next free id');
     _assertEModeCollateralConfig({
-      id: eMode_SUSDe_PT_sUSDe_28JAN2027__Stablecoins,
-      ltv: 87_71,
-      liquidationThreshold: 89_71,
-      liquidationBonus: 100_00 + 4_87,
-      isolated: true
+      id: id,
+      ltv: 90_00,
+      liquidationThreshold: 92_00,
+      liquidationBonus: 100_00 + 4_95,
+      isolated: false
     });
 
-    address[] memory collaterals_SUSDe_PT_sUSDe_28JAN2027__Stablecoins = new address[](2);
-    collaterals_SUSDe_PT_sUSDe_28JAN2027__Stablecoins[0] = AaveV3PlasmaAssets.sUSDe_UNDERLYING;
-    collaterals_SUSDe_PT_sUSDe_28JAN2027__Stablecoins[1] = proposal.PT_sUSDE_28JAN2027();
-    assertEq(
-      AaveV3Plasma.POOL.getEModeCategoryCollateralBitmap(
-        eMode_SUSDe_PT_sUSDe_28JAN2027__Stablecoins
-      ),
-      _toBitmap(collaterals_SUSDe_PT_sUSDe_28JAN2027__Stablecoins)
-    );
+    address[] memory collaterals = new address[](3);
+    collaterals[0] = AaveV3PlasmaAssets.sUSDe_UNDERLYING;
+    collaterals[1] = proposal.PT_sUSDE_28JAN2027();
+    collaterals[2] = AaveV3PlasmaAssets.PT_sUSDE_22OCT2026_UNDERLYING;
+    assertEq(AaveV3Plasma.POOL.getEModeCategoryCollateralBitmap(id), _toBitmap(collaterals));
 
-    address[] memory borrowables_SUSDe_PT_sUSDe_28JAN2027__Stablecoins = new address[](3);
-    borrowables_SUSDe_PT_sUSDe_28JAN2027__Stablecoins[0] = AaveV3PlasmaAssets.USDT0_UNDERLYING;
-    borrowables_SUSDe_PT_sUSDe_28JAN2027__Stablecoins[1] = AaveV3PlasmaAssets.USDe_UNDERLYING;
-    borrowables_SUSDe_PT_sUSDe_28JAN2027__Stablecoins[2] = AaveV3PlasmaAssets.GHO_UNDERLYING;
-    assertEq(
-      AaveV3Plasma.POOL.getEModeCategoryBorrowableBitmap(
-        eMode_SUSDe_PT_sUSDe_28JAN2027__Stablecoins
-      ),
-      _toBitmap(borrowables_SUSDe_PT_sUSDe_28JAN2027__Stablecoins)
-    );
+    address[] memory borrowables = new address[](3);
+    borrowables[0] = AaveV3PlasmaAssets.USDT0_UNDERLYING;
+    borrowables[1] = AaveV3PlasmaAssets.USDe_UNDERLYING;
+    borrowables[2] = AaveV3PlasmaAssets.GHO_UNDERLYING;
+    assertEq(AaveV3Plasma.POOL.getEModeCategoryBorrowableBitmap(id), _toBitmap(borrowables));
 
-    uint8 eMode_SUSDe_PT_sUSDe_28JAN2027__USDe = _findEModeCategoryId(
-      'sUSDe_PT_sUSDe_28JAN2027__USDe'
-    );
-    _assertEModeCollateralConfig({
-      id: eMode_SUSDe_PT_sUSDe_28JAN2027__USDe,
-      ltv: 90_35,
-      liquidationThreshold: 92_35,
-      liquidationBonus: 100_00 + 1_87,
-      isolated: true
-    });
-
-    address[] memory collaterals_SUSDe_PT_sUSDe_28JAN2027__USDe = new address[](2);
-    collaterals_SUSDe_PT_sUSDe_28JAN2027__USDe[0] = AaveV3PlasmaAssets.sUSDe_UNDERLYING;
-    collaterals_SUSDe_PT_sUSDe_28JAN2027__USDe[1] = proposal.PT_sUSDE_28JAN2027();
+    address[] memory ltvzero = new address[](1);
+    ltvzero[0] = AaveV3PlasmaAssets.PT_sUSDE_22OCT2026_UNDERLYING;
     assertEq(
-      AaveV3Plasma.POOL.getEModeCategoryCollateralBitmap(eMode_SUSDe_PT_sUSDe_28JAN2027__USDe),
-      _toBitmap(collaterals_SUSDe_PT_sUSDe_28JAN2027__USDe)
-    );
-
-    address[] memory borrowables_SUSDe_PT_sUSDe_28JAN2027__USDe = new address[](1);
-    borrowables_SUSDe_PT_sUSDe_28JAN2027__USDe[0] = AaveV3PlasmaAssets.USDe_UNDERLYING;
-    assertEq(
-      AaveV3Plasma.POOL.getEModeCategoryBorrowableBitmap(eMode_SUSDe_PT_sUSDe_28JAN2027__USDe),
-      _toBitmap(borrowables_SUSDe_PT_sUSDe_28JAN2027__USDe)
-    );
-
-    assertEq(
-      AaveV3Plasma.POOL.getEModeCategoryLtvzeroBitmap(eMode_SUSDe_PT_sUSDe_28JAN2027__Stablecoins),
-      0,
-      'new Stablecoins eMode ltvzero bitmap'
-    );
-    assertEq(
-      AaveV3Plasma.POOL.getEModeCategoryLtvzeroBitmap(eMode_SUSDe_PT_sUSDe_28JAN2027__USDe),
-      0,
-      'new USDe eMode ltvzero bitmap'
+      AaveV3Plasma.POOL.getEModeCategoryLtvzeroBitmap(id),
+      _toBitmap(ltvzero),
+      'only the matured PT-sUSDe-22OCT2026 has ltvzero in the new eMode'
     );
 
     for (uint8 i = 0; i < before_.length; i++) {
@@ -215,7 +173,7 @@ contract AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022_Test is 
     }
   }
 
-  function test_eMode_SUSDe_PT_sUSDe_28JAN2027__Stablecoins_supplyAndBorrow() public {
+  function test_eMode_sUSDe_supplyAndBorrow() public {
     GovV3Helpers.executePayload(vm, address(proposal));
     _supplyAndBorrowInEMode(
       'sUSDe_PT_sUSDe_28JAN2027__Stablecoins',
@@ -224,30 +182,12 @@ contract AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022_Test is 
     );
   }
 
-  function test_eMode_SUSDe_PT_sUSDe_28JAN2027__USDe_supplyAndBorrow() public {
-    GovV3Helpers.executePayload(vm, address(proposal));
-    _supplyAndBorrowInEMode(
-      'sUSDe_PT_sUSDe_28JAN2027__USDe',
-      AaveV3PlasmaAssets.sUSDe_UNDERLYING,
-      AaveV3PlasmaAssets.USDe_UNDERLYING
-    );
-  }
-
-  function test_eMode_PT_sUSDe_28JAN2027__Stablecoins_supplyAndBorrow() public {
+  function test_eMode_PT_sUSDe_28JAN2027_supplyAndBorrow() public {
     GovV3Helpers.executePayload(vm, address(proposal));
     _supplyAndBorrowInEMode(
       'sUSDe_PT_sUSDe_28JAN2027__Stablecoins',
       proposal.PT_sUSDE_28JAN2027(),
       AaveV3PlasmaAssets.USDT0_UNDERLYING
-    );
-  }
-
-  function test_eMode_PT_sUSDe_28JAN2027__USDe_supplyAndBorrow() public {
-    GovV3Helpers.executePayload(vm, address(proposal));
-    _supplyAndBorrowInEMode(
-      'sUSDe_PT_sUSDe_28JAN2027__USDe',
-      proposal.PT_sUSDE_28JAN2027(),
-      AaveV3PlasmaAssets.USDe_UNDERLYING
     );
   }
 
