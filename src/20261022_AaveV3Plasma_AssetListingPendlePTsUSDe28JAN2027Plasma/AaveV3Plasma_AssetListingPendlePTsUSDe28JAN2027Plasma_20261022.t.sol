@@ -17,6 +17,12 @@ import {ProtocolV3TestBase, ReserveConfig, ExpectedListing} from 'aave-helpers/s
 import {AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022} from './AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022.sol';
 import {IPendlePriceCapAdapter} from '../interfaces/IPendlePriceCapAdapter.sol';
 
+contract EModeLookupHarness is AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022 {
+  function findEModeCategoryId(string memory label) external view returns (uint8) {
+    return _findEModeCategoryId(label);
+  }
+}
+
 /**
  * @dev Test for AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022
  * command: FOUNDRY_PROFILE=test forge test --match-path=src/20261022_AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma/AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022.t.sol -vv
@@ -366,5 +372,11 @@ contract AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022_Test is 
     AaveV3Plasma.POOL.withdraw(collateral, supplyAmount / 2, user);
 
     vm.stopPrank();
+  }
+
+  function test_findEModeCategoryId_revertsWhenLabelMissing() public {
+    EModeLookupHarness harness = new EModeLookupHarness();
+    vm.expectRevert(bytes('eMode category not found'));
+    harness.findEModeCategoryId('no_such_emode_label');
   }
 }
