@@ -6,6 +6,7 @@ import {GovV3Helpers} from 'aave-helpers/src/GovV3Helpers.sol';
 import {AaveV3Plasma, AaveV3PlasmaAssets} from 'aave-address-book/AaveV3Plasma.sol';
 import {EngineFlags} from 'aave-v3-origin/contracts/extensions/v3-config-engine/EngineFlags.sol';
 import {IAaveV3ConfigEngine} from 'aave-v3-origin/contracts/extensions/v3-config-engine/IAaveV3ConfigEngine.sol';
+import {IDefaultInterestRateStrategyV2} from 'aave-v3-origin/contracts/interfaces/IDefaultInterestRateStrategyV2.sol';
 import {IERC20} from 'openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 import {IERC20Metadata} from 'openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol';
 import {DataTypes} from 'aave-v3-origin/contracts/protocol/libraries/types/DataTypes.sol';
@@ -66,12 +67,38 @@ contract AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022_Test is 
     reserveConfigChangesTest(AaveV3Plasma.POOL, address(proposal), updatedAssets);
   }
 
+  function test_liquidationProtocolFee() public {
+    GovV3Helpers.executePayload(vm, address(proposal));
+    assertEq(
+      AaveV3Plasma.AAVE_PROTOCOL_DATA_PROVIDER.getLiquidationProtocolFee(
+        proposal.PT_sUSDE_28JAN2027()
+      ),
+      10_00
+    );
+  }
+
+  function test_rates() public {
+    GovV3Helpers.executePayload(vm, address(proposal));
+    address asset = proposal.PT_sUSDE_28JAN2027();
+    _validateInterestRateStrategy(
+      asset,
+      AaveV3Plasma.POOL.getReserveData(asset).interestRateStrategyAddress,
+      AaveV3Plasma.POOL.RESERVE_INTEREST_RATE_STRATEGY(),
+      IDefaultInterestRateStrategyV2.InterestRateDataRay({
+        optimalUsageRatio: 0.45e27,
+        baseVariableBorrowRate: 0,
+        variableRateSlope1: 0.1e27,
+        variableRateSlope2: 3e27
+      })
+    );
+  }
+
   function test_dustBinHasPT_sUSDE_28JAN2027Funds() public {
     GovV3Helpers.executePayload(vm, address(proposal));
     address aTokenAddress = AaveV3Plasma.POOL.getReserveAToken(proposal.PT_sUSDE_28JAN2027());
     assertEq(
       IERC20(aTokenAddress).balanceOf(address(AaveV3Plasma.DUST_BIN)),
-      proposal.PT_sUSDE_28JAN2027_SEED_AMOUNT(),
+      100e18,
       'DustBin should hold exactly the seed amount'
     );
   }
@@ -138,7 +165,6 @@ contract AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022_Test is 
 
     GovV3Helpers.executePayload(vm, address(proposal));
     uint8 id = _findEModeCategoryId('sUSDe_PT_sUSDe_28JAN2027__Stablecoins');
-    assertEq(id, proposal.EMODE_ID(), 'new eMode id');
     assertEq(id, before_.length + 1, 'new eMode id is the next free id');
     _assertEModeCollateralConfig({
       id: id,
