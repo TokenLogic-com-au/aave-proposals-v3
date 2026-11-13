@@ -236,6 +236,29 @@ contract AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022_Test is 
     vm.stopPrank();
   }
 
+  function test_eMode_PT_sUSDe_22OCT2026_cannotBorrow() public {
+    GovV3Helpers.executePayload(vm, address(proposal));
+
+    address asset = AaveV3PlasmaAssets.PT_sUSDE_22OCT2026_UNDERLYING;
+    vm.prank(AaveV3Plasma.ACL_ADMIN);
+    AaveV3Plasma.POOL_CONFIGURATOR.setSupplyCap(asset, 0);
+
+    address user = makeAddr('maturedPtEModeUser');
+    uint256 supplyAmount = 1_000 * 10 ** IERC20Metadata(asset).decimals();
+    deal(asset, user, supplyAmount);
+
+    vm.startPrank(user);
+
+    AaveV3Plasma.POOL.setUserEMode(_findEModeCategoryId('sUSDe_PT_sUSDe_28JAN2027__Stablecoins'));
+    IERC20(asset).approve(address(AaveV3Plasma.POOL), supplyAmount);
+    AaveV3Plasma.POOL.supply(asset, supplyAmount, user, 0);
+
+    vm.expectRevert(abi.encodeWithSelector(Errors.LtvValidationFailed.selector));
+    AaveV3Plasma.POOL.borrow(AaveV3PlasmaAssets.USDT0_UNDERLYING, 1, 2, 0, user);
+
+    vm.stopPrank();
+  }
+
   function _snapshotEModes() internal view returns (EModeSnapshot[] memory snaps) {
     uint8 count;
     while (bytes(AaveV3Plasma.POOL.getEModeCategoryLabel(count + 1)).length != 0) count++;

@@ -28,7 +28,7 @@ contract AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022 is AaveV
   function _postExecute() internal override {
     AaveV3Plasma.POOL_CONFIGURATOR.setAssetLtvzeroInEMode(
       AaveV3PlasmaAssets.PT_sUSDE_22OCT2026_UNDERLYING,
-      _eModeIdByLabel(EMODE_LABEL),
+      _findEModeCategoryId(EMODE_LABEL),
       true
     );
     IERC20(PT_sUSDE_28JAN2027).forceApprove(
@@ -43,8 +43,8 @@ contract AaveV3Plasma_AssetListingPendlePTsUSDe28JAN2027Plasma_20261022 is AaveV
     });
   }
 
-  function _eModeIdByLabel(string memory label) internal view returns (uint8) {
-    for (uint8 i = 1; i < type(uint8).max; i++) {
+  function _findEModeCategoryId(string memory label) internal view returns (uint8) {
+    for (uint8 i = 1; i < 255; i++) {
       if (keccak256(bytes(AaveV3Plasma.POOL.getEModeCategoryLabel(i))) == keccak256(bytes(label))) {
         return i;
       }
