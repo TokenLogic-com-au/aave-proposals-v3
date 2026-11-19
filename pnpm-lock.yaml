@@ -12,11 +12,11 @@ importers:
         specifier: ^4.71.0
         version: 4.71.0(viem@2.50.4(zod@4.5.4))
       '@aave-dao/aave-helpers-js':
-        specifier: ^1.6.6
-        version: 1.6.6(prettier-plugin-solidity@1.3.1(prettier@3.8.3))(prettier@3.8.3)
+        specifier: ^1.6.9
+        version: 1.6.9(prettier-plugin-solidity@1.3.1(prettier@3.8.3))(prettier@3.8.3)
       '@aave-dao/toolbox':
-        specifier: ^0.6.1
-        version: 0.6.1(prettier-plugin-solidity@1.3.1(prettier@3.8.3))(prettier@3.8.3)(viem@2.50.4(zod@4.5.4))
+        specifier: ^0.8.4
+        version: 0.8.4(prettier-plugin-solidity@1.3.1(prettier@3.8.3))(prettier@3.8.3)(viem@2.50.4(zod@4.5.4))
       '@inquirer/core':
         specifier: ^11.0.0
         version: 11.1.10(@types/node@25.9.1)
@@ -80,23 +80,15 @@ packages:
     peerDependencies:
       viem: ^2.23.5
 
-  '@aave-dao/aave-address-book@4.73.0':
-    resolution: {integrity: sha512-gam7rxa6HcV6/LsHausIHCkfV8YK3/HQA04kbmNF01wIS3dN/o/6XJlB0K+FCDobiRNOyc8bKh/09Gm2QLLqvA==}
+  '@aave-dao/aave-address-book@4.77.8':
+    resolution: {integrity: sha512-49Tz2s2zZ+rdqqbVlV+2WqORlgm3iW3JGqJ0SfqusTHss7buMtrwYVU1TfH0xHKLtNrrIRiVxP/hfEXURMUz2g==}
     peerDependencies:
       viem: ^2.23.5
 
-  '@aave-dao/aave-helpers-js@1.6.6':
-    resolution: {integrity: sha512-66ebRLzqz5fForhi/se9VuK7R3PTGCCgXxhp/FcMuDbTlFCYg5NIfHEIsPwPBggrj8mgJf1wQKouButeu5LreQ==}
+  '@aave-dao/aave-helpers-js@1.6.9':
+    resolution: {integrity: sha512-bp2WbJY2d62Ld8sSEoXeayS6It1Th2DgtVS5yA80ZEHmXqNeuIomMN4AAxqteoYaA01KvUGAYhwSEaf+L38h2A==}
     engines: {node: '>=22'}
     hasBin: true
-
-  '@aave-dao/toolbox@0.6.1':
-    resolution: {integrity: sha512-8xOf1XDa6VGwp2DvILlhBzLZej+DfwAPCZT6NVK/mZN9uUAdF1DyMBcqYY0X6QsWe7DrzGzQGJrzGYo6e4gSvg==}
-    engines: {node: '>=22'}
-    peerDependencies:
-      prettier: ^3.5.2
-      prettier-plugin-solidity: ^1.0.0
-      viem: ^2.45.0
 
   '@aave-dao/toolbox@0.7.0':
     resolution: {integrity: sha512-61+EdhZAVDtmFleKFJFewM4Fy0+pgVdi2IlZoGFRyJPErnC6rhxzM3P1yhQdNmoQrVrhhmy80WQh+I0Hg47rlA==}
@@ -105,6 +97,14 @@ packages:
       prettier: ^3.5.2
       prettier-plugin-solidity: ^1.0.0
       viem: ^2.45.0
+
+  '@aave-dao/toolbox@0.8.4':
+    resolution: {integrity: sha512-uwXM0JLsX3Ojysp2f0jXfB2Bw02Nou/noZSrMa+2tCD2FQqZ3kGtkRzx0bo77ieQpgXpSbafsPjQD5/2JjO+Xw==}
+    engines: {node: '>=22'}
+    peerDependencies:
+      prettier: ^3.5.2
+      prettier-plugin-solidity: ^1.0.0
+      viem: ^2.56.6
 
   '@adraffy/ens-normalize@1.11.1':
     resolution: {integrity: sha512-nhCBV3quEgesuf7c7KYfperqSS14T8bYuvJ8PcLJp6znkZpFc0AuW4qBtr8eKVyPPe/8RSr7sglCWPU5eaxwKQ==}
@@ -1252,13 +1252,13 @@ snapshots:
     dependencies:
       viem: 2.50.4(zod@4.5.4)
 
-  '@aave-dao/aave-address-book@4.73.0(viem@2.50.4(zod@4.5.4))':
+  '@aave-dao/aave-address-book@4.77.8(viem@2.50.4(zod@4.5.4))':
     dependencies:
       viem: 2.50.4(zod@4.5.4)
 
-  '@aave-dao/aave-helpers-js@1.6.6(prettier-plugin-solidity@1.3.1(prettier@3.8.3))(prettier@3.8.3)':
+  '@aave-dao/aave-helpers-js@1.6.9(prettier-plugin-solidity@1.3.1(prettier@3.8.3))(prettier@3.8.3)':
     dependencies:
-      '@aave-dao/aave-address-book': 4.73.0(viem@2.50.4(zod@4.5.4))
+      '@aave-dao/aave-address-book': 4.77.8(viem@2.50.4(zod@4.5.4))
       '@aave-dao/toolbox': 0.7.0(prettier-plugin-solidity@1.3.1(prettier@3.8.3))(prettier@3.8.3)(viem@2.50.4(zod@4.5.4))
       commander: 14.0.3
       find-object-paths: 1.1.0
@@ -1271,7 +1271,7 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@aave-dao/toolbox@0.6.1(prettier-plugin-solidity@1.3.1(prettier@3.8.3))(prettier@3.8.3)(viem@2.50.4(zod@4.5.4))':
+  '@aave-dao/toolbox@0.7.0(prettier-plugin-solidity@1.3.1(prettier@3.8.3))(prettier@3.8.3)(viem@2.50.4(zod@4.5.4))':
     dependencies:
       bs58: 6.0.0
       diff: 8.0.4
@@ -1281,7 +1281,7 @@ snapshots:
       prettier-plugin-solidity: 1.3.1(prettier@3.8.3)
       viem: 2.50.4(zod@4.5.4)
 
-  '@aave-dao/toolbox@0.7.0(prettier-plugin-solidity@1.3.1(prettier@3.8.3))(prettier@3.8.3)(viem@2.50.4(zod@4.5.4))':
+  '@aave-dao/toolbox@0.8.4(prettier-plugin-solidity@1.3.1(prettier@3.8.3))(prettier@3.8.3)(viem@2.50.4(zod@4.5.4))':
     dependencies:
       bs58: 6.0.0
       diff: 8.0.4
