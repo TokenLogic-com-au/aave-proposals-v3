@@ -12,7 +12,7 @@ export const config: ConfigFile = {
     votingNetwork: 'AVALANCHE',
   },
   marketOptions: {
-    AaveV3BNB: {configs: {OTHERS: {}}, cache: {blockNumber: 127465400}},
+    AaveV3BNB: {configs: {OTHERS: {}}, cache: {blockNumber: 134520600}},
     AaveV3Arbitrum: {configs: {OTHERS: {}}, cache: {blockNumber: 515457000}},
     AaveV3Base: {configs: {OTHERS: {}}, cache: {blockNumber: 52693200}},
   },

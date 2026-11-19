@@ -15,7 +15,7 @@ contract AaveV3BNB_SVRExpansionBNB_20261012_Test is ProtocolV3TestBase {
   AaveV3BNB_SVRExpansionBNB_20261012 internal proposal;
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('bnb'), 127465400);
+    vm.createSelectFork(vm.rpcUrl('bnb'), 134520600);
     proposal = new AaveV3BNB_SVRExpansionBNB_20261012();
   }
 
