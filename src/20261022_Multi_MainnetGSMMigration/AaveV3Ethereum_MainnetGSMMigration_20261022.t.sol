@@ -6,11 +6,10 @@ import {IERC4626} from 'openzeppelin-contracts/contracts/interfaces/IERC4626.sol
 import {SafeERC20} from 'openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol';
 import {IPriceOracleGetter} from 'aave-v3-origin/contracts/interfaces/IPriceOracleGetter.sol';
 import {AaveV3Ethereum, AaveV3EthereumAssets} from 'aave-address-book/AaveV3Ethereum.sol';
-import {AaveV4EthereumHubs, AaveV4EthereumTokenizationSpokes} from 'aave-address-book/AaveV4Ethereum.sol';
+import {AaveV4EthereumTokenizationSpokes} from 'aave-address-book/AaveV4Ethereum.sol';
 import {GovernanceV3Ethereum} from 'aave-address-book/GovernanceV3Ethereum.sol';
 import {GhoEthereum} from 'aave-address-book/GhoEthereum.sol';
 import {MiscEthereum} from 'aave-address-book/MiscEthereum.sol';
-import {IHub} from 'aave-v4/hub/interfaces/IHub.sol';
 import {ProtocolV3TestBase} from 'aave-helpers/src/ProtocolV3TestBase.sol';
 import {IAaveCLRobotOperator} from 'src/interfaces/IAaveCLRobotOperator.sol';
 import {IFixedPriceStrategy4626} from 'src/interfaces/IFixedPriceStrategy4626.sol';
@@ -51,12 +50,8 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
   // LINK left in the two cancelled keepers (80 LINK each, funded at registration and never spent)
   uint256 internal constant KEEPERS_REMAINING_LINK = 160 ether;
 
-  // Max GHO lost to rounding in the stataUSDT -> USDT -> waCoreUSDT -> GHO conversion path
-  uint256 internal constant MIGRATION_ROUNDING_TOLERANCE = 10e12; // 10 units of 6-decimal USDT
-
   AaveV4Ethereum_MainnetGSMMigration_20261022 internal v4Proposal;
   AaveV3Ethereum_MainnetGSMMigration_20261022 internal proposal;
-  uint256 internal beforeV4PayloadSnapshot;
 
   IGhoReserve internal constant GHO_RESERVE = IGhoReserve(GhoEthereum.GHO_RESERVE);
   IERC20 internal constant GHO = IERC20(GhoEthereum.GHO_TOKEN);
@@ -68,7 +63,7 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
     address(AaveV4EthereumTokenizationSpokes.CORE_USDT_TOKENIZATION_SPOKE);
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('mainnet'), 26248572);
+    vm.createSelectFork(vm.rpcUrl('mainnet'), 26485342);
     v4Proposal = new AaveV4Ethereum_MainnetGSMMigration_20261022();
     proposal = new AaveV3Ethereum_MainnetGSMMigration_20261022();
 
@@ -90,8 +85,6 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
       newPriceStrategy: makeAddr('NEW_USDT_PRICE_STRATEGY')
     });
 
-    // The V4 payload executes first in the same proposal, raising the TokenizationSpoke add caps
-    beforeV4PayloadSnapshot = vm.snapshotState();
     executePayload(vm, address(v4Proposal));
   }
 
@@ -116,89 +109,36 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
     reserveConfigChangesTest(AaveV3Ethereum.POOL, address(proposal), updatedAssets);
   }
 
-  /**
-   * @dev the USDT backing migration only fits in the Core USDT TokenizationSpoke after the V4 payload
-   */
-  function test_v4AddCapRaiseCoversUsdtMigration() public {
-    uint256 usdtBacking = IERC4626(AaveV3EthereumAssets.USDT_STATA_TOKEN).previewRedeem(
-      IERC20(AaveV3EthereumAssets.USDT_STATA_TOKEN).balanceOf(GhoEthereum.GSM_USDT)
-    );
-    assertGe(
-      IERC4626(WA_CORE_USDT).maxDeposit(EXECUTOR),
-      usdtBacking,
-      'add cap too low for the migration'
-    );
+  /// --- Seize old USDC GSM ---
 
-    vm.revertToState(beforeV4PayloadSnapshot);
-    assertLt(
-      IERC4626(WA_CORE_USDT).maxDeposit(EXECUTOR),
-      usdtBacking,
-      'migration fits without the V4 payload'
-    );
-  }
-
-  /// --- Seize old GSMs ---
-
-  function test_oldGsmFeesDistributedToTreasury() public {
-    uint256 feesUsdc = IGsm(GhoEthereum.GSM_USDC).getAccruedFees();
-    uint256 feesUsdt = IGsm(GhoEthereum.GSM_USDT).getAccruedFees();
-    (uint256 excessUsdt, ) = IGsm4626(GhoEthereum.GSM_USDT).getCurrentBacking();
-    assertGt(feesUsdc, 0, 'no USDC GSM fees to distribute');
-    assertGt(feesUsdt, 0, 'no USDT GSM fees to distribute');
-    assertEq(GHO.balanceOf(GhoEthereum.GSM_USDC), feesUsdc, 'USDC GSM GHO balance != fees');
-    assertEq(GHO.balanceOf(GhoEthereum.GSM_USDT), feesUsdt, 'USDT GSM GHO balance != fees');
+  function test_oldUsdcGsmFeesDistributedToTreasury() public {
+    uint256 fees = IGsm(GhoEthereum.GSM_USDC).getAccruedFees();
+    assertGt(fees, 0, 'no USDC GSM fees to distribute');
+    assertEq(GHO.balanceOf(GhoEthereum.GSM_USDC), fees, 'USDC GSM GHO balance != fees');
 
     uint256 collectorGhoBefore = GHO.balanceOf(COLLECTOR);
-    uint256 usedUsdcBefore = GHO_RESERVE.getUsed(GhoEthereum.GSM_USDC);
+    uint256 usedBefore = GHO_RESERVE.getUsed(GhoEthereum.GSM_USDC);
 
     executePayload(vm, address(proposal));
 
     assertEq(IGsm(GhoEthereum.GSM_USDC).getAccruedFees(), 0, 'USDC GSM fees not distributed');
-    assertEq(IGsm(GhoEthereum.GSM_USDT).getAccruedFees(), 0, 'USDT GSM fees not distributed');
     assertEq(GHO.balanceOf(GhoEthereum.GSM_USDC), 0, 'USDC GSM still holds GHO');
-    assertEq(GHO.balanceOf(GhoEthereum.GSM_USDT), 0, 'USDT GSM still holds GHO');
 
-    // Collector receives both GSMs' fees (+ USDT unbooked yield) and pays the USDC GSM used GHO
-    // and the rounding shortfall of the USDT backing migration
-    assertApproxEqAbs(
+    // Collector receives the fees and pays the USDC GSM used GHO. Any unbooked yield is drawn from
+    // the reserve as fees and restored again by burnAfterSeize, so it nets out.
+    assertEq(
       GHO.balanceOf(COLLECTOR),
-      collectorGhoBefore + feesUsdc + feesUsdt + excessUsdt - usedUsdcBefore,
-      MIGRATION_ROUNDING_TOLERANCE,
+      collectorGhoBefore + fees - usedBefore,
       'unexpected collector GHO balance'
     );
   }
 
-  function test_oldGsmsSeized() public {
+  function test_oldUsdcGsmSeized() public {
     assertFalse(IGsm(GhoEthereum.GSM_USDC).getIsSeized(), 'USDC GSM seized before');
-    assertFalse(IGsm(GhoEthereum.GSM_USDT).getIsSeized(), 'USDT GSM seized before');
 
     executePayload(vm, address(proposal));
 
     _assertSeized(GhoEthereum.GSM_USDC);
-    _assertSeized(GhoEthereum.GSM_USDT);
-  }
-
-  function test_oldUsdcGsmUnderlyingSentToTreasury() public {
-    uint256 gsmStata = IERC20(AaveV3EthereumAssets.USDC_STATA_TOKEN).balanceOf(
-      GhoEthereum.GSM_USDC
-    );
-    assertGt(gsmStata, 0, 'USDC GSM holds no stataUSDC');
-    uint256 collectorStataBefore = IERC20(AaveV3EthereumAssets.USDC_STATA_TOKEN).balanceOf(
-      COLLECTOR
-    );
-
-    executePayload(vm, address(proposal));
-
-    assertEq(
-      IERC20(AaveV3EthereumAssets.USDC_STATA_TOKEN).balanceOf(GhoEthereum.GSM_USDC),
-      0,
-      'USDC GSM still holds stataUSDC'
-    );
-    assertEq(
-      IERC20(AaveV3EthereumAssets.USDC_STATA_TOKEN).balanceOf(COLLECTOR),
-      collectorStataBefore + gsmStata,
-      'collector did not receive stataUSDC'
-    );
   }
 
   /// --- Grant access to new GSMs ---
@@ -270,7 +210,7 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
       WA_CORE_USDT,
       IOracleSwapFreezer(proposal.NEW_USDT_ORACLE_SWAP_FREEZER()),
       GsmConfig({
-        sellFee: 0, // 0.00%
+        sellFee: 0.0010e4, // 0.10%
         buyFee: 0.0010e4, // 0.10%
         exposureCap: proposal.EXPOSURE_CAP_GSM_USDT(),
         reserveLimit: proposal.RESERVE_LIMIT_GSM_USDT(),
@@ -305,124 +245,28 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
     );
   }
 
-  /// --- Migrate USDT backing ---
+  /// --- Burn after seize ---
 
-  function test_usdtBackingMigratedToNewGsm() public {
-    uint256 seizedStata = IERC20(AaveV3EthereumAssets.USDT_STATA_TOKEN).balanceOf(
-      GhoEthereum.GSM_USDT
-    );
-    uint256 usdtBacking = IERC4626(AaveV3EthereumAssets.USDT_STATA_TOKEN).previewRedeem(
-      seizedStata
-    );
-    uint256 expectedShares = IERC4626(WA_CORE_USDT).previewDeposit(usdtBacking);
-    uint256 collectorStataBefore = IERC20(AaveV3EthereumAssets.USDT_STATA_TOKEN).balanceOf(
-      COLLECTOR
-    );
-    uint256 collectorSharesBefore = IERC20(WA_CORE_USDT).balanceOf(COLLECTOR);
-    assertEq(IGsm(proposal.NEW_GSM_USDT()).getAvailableLiquidity(), 0, 'USDT GSM not empty');
+  function test_oldUsdcGsmUsedGhoRestored() public {
+    assertGt(GHO_RESERVE.getUsed(GhoEthereum.GSM_USDC), 0, 'USDC GSM used is zero before');
 
     executePayload(vm, address(proposal));
 
-    // The seized stataUSDT is fully redeemed, so the Collector balance is unchanged
-    assertEq(
-      IERC20(AaveV3EthereumAssets.USDT_STATA_TOKEN).balanceOf(GhoEthereum.GSM_USDT),
-      0,
-      'old USDT GSM still holds stataUSDT'
-    );
-    assertEq(
-      IERC20(AaveV3EthereumAssets.USDT_STATA_TOKEN).balanceOf(COLLECTOR),
-      collectorStataBefore,
-      'stataUSDT left in the collector'
-    );
-
-    // All shares minted for the redeemed USDT end up in the new GSM
-    assertEq(
-      IGsm(proposal.NEW_GSM_USDT()).getAvailableLiquidity(),
-      expectedShares,
-      'wrong new USDT GSM exposure'
-    );
-    assertEq(
-      IERC20(WA_CORE_USDT).balanceOf(proposal.NEW_GSM_USDT()),
-      expectedShares,
-      'wrong new USDT GSM share balance'
-    );
-    // No share dust left over by the sale goes to the Collector
-    assertEq(
-      IERC20(WA_CORE_USDT).balanceOf(COLLECTOR),
-      collectorSharesBefore,
-      'share dust sent to the collector'
-    );
-  }
-
-  function test_usdtBackingMovedFromV3ToV4() public {
-    uint256 usdtBacking = IERC4626(AaveV3EthereumAssets.USDT_STATA_TOKEN).previewRedeem(
-      IERC20(AaveV3EthereumAssets.USDT_STATA_TOKEN).balanceOf(GhoEthereum.GSM_USDT)
-    );
-    IHub hub = IHub(address(AaveV4EthereumHubs.CORE_HUB));
-    uint256 assetId = IWaToken(WA_CORE_USDT).assetId();
-    uint256 hubAddedBefore = hub.getAddedAssets(assetId);
-    uint256 spokeAddedBefore = hub.getSpokeAddedAssets(assetId, WA_CORE_USDT);
-    uint256 v3UsdtCashBefore = IERC20(AaveV3EthereumAssets.USDT_UNDERLYING).balanceOf(
-      AaveV3EthereumAssets.USDT_A_TOKEN
-    );
-
-    executePayload(vm, address(proposal));
-
-    assertEq(
-      IERC20(AaveV3EthereumAssets.USDT_UNDERLYING).balanceOf(AaveV3EthereumAssets.USDT_A_TOKEN),
-      v3UsdtCashBefore - usdtBacking,
-      'USDT not withdrawn from V3'
-    );
-    // Hub accounting rounds down on deposit
-    assertApproxEqAbs(
-      hub.getAddedAssets(assetId),
-      hubAddedBefore + usdtBacking,
-      1,
-      'USDT not added to the V4 Core Hub'
-    );
-    assertApproxEqAbs(
-      hub.getSpokeAddedAssets(assetId, WA_CORE_USDT),
-      spokeAddedBefore + usdtBacking,
-      1,
-      'USDT not added through the Core USDT TokenizationSpoke'
-    );
-  }
-
-  function test_usdtGhoUsageMovedToNewGsm() public {
-    uint256 oldUsed = GHO_RESERVE.getUsed(GhoEthereum.GSM_USDT);
-    (uint256 excess, ) = IGsm4626(GhoEthereum.GSM_USDT).getCurrentBacking();
-    assertEq(GHO_RESERVE.getUsed(proposal.NEW_GSM_USDT()), 0, 'new USDT GSM used before');
-
-    executePayload(vm, address(proposal));
-
-    // The new GSM draws the GHO backed by the migrated USDT, which includes the yield booked as fees
-    assertApproxEqAbs(
-      GHO_RESERVE.getUsed(proposal.NEW_GSM_USDT()),
-      oldUsed + excess,
-      MIGRATION_ROUNDING_TOLERANCE,
-      'wrong new USDT GSM used'
-    );
-    (uint256 newExcess, uint256 newDeficit) = IGsm4626(proposal.NEW_GSM_USDT()).getCurrentBacking();
-    assertEq(newExcess, 0, 'new USDT GSM has excess backing');
-    assertEq(newDeficit, 0, 'new USDT GSM has deficit backing');
+    assertEq(GHO_RESERVE.getUsed(GhoEthereum.GSM_USDC), 0, 'USDC GSM used not restored');
   }
 
   function test_ghoSupplyUnchangedAndReserveRestored() public {
     uint256 ghoSupplyBefore = GHO.totalSupply();
     uint256 reserveBalanceBefore = GHO.balanceOf(address(GHO_RESERVE));
     uint256 usedUsdc = GHO_RESERVE.getUsed(GhoEthereum.GSM_USDC);
-    (uint256 excessUsdt, ) = IGsm4626(GhoEthereum.GSM_USDT).getCurrentBacking();
-    assertGt(excessUsdt, 0, 'no unbooked USDT GSM yield');
 
     executePayload(vm, address(proposal));
 
     assertEq(GHO.totalSupply(), ghoSupplyBefore, 'GHO supply changed');
-    // The USDT backing moves between GSMs (use + restore) and the USDC GSM used GHO is restored.
-    // The unbooked USDT GSM yield is drawn from the reserve and distributed as fees.
-    assertApproxEqAbs(
+    // Only the USDC GSM used GHO returns to the reserve; the USDT GSM usage is untouched
+    assertEq(
       GHO.balanceOf(address(GHO_RESERVE)),
-      reserveBalanceBefore + usedUsdc - excessUsdt,
-      MIGRATION_ROUNDING_TOLERANCE,
+      reserveBalanceBefore + usedUsdc,
       'unexpected GhoReserve GHO balance'
     );
   }
@@ -432,33 +276,55 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
 
     assertEq(GHO.balanceOf(EXECUTOR), 0, 'executor holds GHO');
     assertEq(
-      IERC20(AaveV3EthereumAssets.USDT_STATA_TOKEN).balanceOf(EXECUTOR),
-      0,
-      'executor holds stataUSDT'
-    );
-    assertEq(
-      IERC20(AaveV3EthereumAssets.USDT_UNDERLYING).balanceOf(EXECUTOR),
-      0,
-      'executor holds USDT'
-    );
-    assertEq(IERC20(WA_CORE_USDT).balanceOf(EXECUTOR), 0, 'executor holds waCoreUSDT');
-    assertEq(
       IERC20(AaveV3EthereumAssets.LINK_UNDERLYING).balanceOf(EXECUTOR),
       0,
       'executor holds LINK'
     );
   }
 
-  /// --- Burn after seize ---
+  /// --- Disable old USDT GSM Sales ---
 
-  function test_oldGsmsUsedGhoRestored() public {
-    assertGt(GHO_RESERVE.getUsed(GhoEthereum.GSM_USDC), 0, 'USDC GSM used is zero before');
-    assertGt(GHO_RESERVE.getUsed(GhoEthereum.GSM_USDT), 0, 'USDT GSM used is zero before');
+  function test_oldUsdtGsmExposureCapZeroed() public {
+    assertGt(IGsm(GhoEthereum.GSM_USDT).getExposureCap(), 0, 'USDT GSM cap zero before');
 
     executePayload(vm, address(proposal));
 
-    assertEq(GHO_RESERVE.getUsed(GhoEthereum.GSM_USDC), 0, 'USDC GSM used not restored');
-    assertEq(GHO_RESERVE.getUsed(GhoEthereum.GSM_USDT), 0, 'USDT GSM used not restored');
+    assertEq(IGsm(GhoEthereum.GSM_USDT).getExposureCap(), 0, 'USDT GSM cap not zero');
+    assertEq(
+      IGsm(GhoEthereum.GSM_USDT).getAvailableUnderlyingExposure(),
+      0,
+      'USDT GSM still has exposure room'
+    );
+  }
+
+  function test_oldUsdtGsmBackingNotMigrated() public {
+    IERC20 stataUsdt = IERC20(AaveV3EthereumAssets.USDT_STATA_TOKEN);
+    uint256 stataBefore = stataUsdt.balanceOf(GhoEthereum.GSM_USDT);
+    uint256 exposureBefore = IGsm(GhoEthereum.GSM_USDT).getAvailableLiquidity();
+    uint256 usedBefore = GHO_RESERVE.getUsed(GhoEthereum.GSM_USDT);
+    uint256 feesBefore = IGsm(GhoEthereum.GSM_USDT).getAccruedFees();
+    uint256 waCoreUsdtAssetsBefore = IERC4626(WA_CORE_USDT).totalAssets();
+    assertGt(exposureBefore, 0, 'USDT GSM empty before');
+
+    executePayload(vm, address(proposal));
+
+    assertFalse(IGsm(GhoEthereum.GSM_USDT).getIsSeized(), 'USDT GSM seized');
+    assertEq(stataUsdt.balanceOf(GhoEthereum.GSM_USDT), stataBefore, 'stataUSDT moved');
+    assertEq(
+      IGsm(GhoEthereum.GSM_USDT).getAvailableLiquidity(),
+      exposureBefore,
+      'USDT GSM exposure changed'
+    );
+    assertEq(GHO_RESERVE.getUsed(GhoEthereum.GSM_USDT), usedBefore, 'USDT GSM used changed');
+    assertEq(IGsm(GhoEthereum.GSM_USDT).getAccruedFees(), feesBefore, 'USDT GSM fees changed');
+
+    assertEq(IGsm(proposal.NEW_GSM_USDT()).getAvailableLiquidity(), 0, 'new USDT GSM not empty');
+    assertEq(GHO_RESERVE.getUsed(proposal.NEW_GSM_USDT()), 0, 'new USDT GSM used not zero');
+    assertEq(
+      IERC4626(WA_CORE_USDT).totalAssets(),
+      waCoreUsdtAssetsBefore,
+      'USDT moved into Aave V4'
+    );
   }
 
   /// --- New OracleSwapFreezers ---
@@ -481,49 +347,66 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
 
   /// --- Revoke access of old GSMs ---
 
-  function test_oldGsmsRemovedFromGhoReserve() public {
+  function test_oldUsdcGsmRemovedFromGhoReserve() public {
     assertTrue(GHO_RESERVE.isEntity(GhoEthereum.GSM_USDC), 'USDC GSM not an entity before');
-    assertTrue(GHO_RESERVE.isEntity(GhoEthereum.GSM_USDT), 'USDT GSM not an entity before');
     uint256 totalEntitiesBefore = GHO_RESERVE.totalEntities();
 
     executePayload(vm, address(proposal));
 
     assertFalse(GHO_RESERVE.isEntity(GhoEthereum.GSM_USDC), 'USDC GSM still an entity');
-    assertFalse(GHO_RESERVE.isEntity(GhoEthereum.GSM_USDT), 'USDT GSM still an entity');
     assertEq(GHO_RESERVE.getLimit(GhoEthereum.GSM_USDC), 0, 'USDC GSM limit not zero');
-    assertEq(GHO_RESERVE.getLimit(GhoEthereum.GSM_USDT), 0, 'USDT GSM limit not zero');
-    // 2 old GSMs replaced by 2 new GSMs
-    assertEq(GHO_RESERVE.totalEntities(), totalEntitiesBefore, 'wrong total entities');
+    // old USDC GSM removed, 2 new GSMs added
+    assertEq(GHO_RESERVE.totalEntities(), totalEntitiesBefore + 1, 'wrong total entities');
   }
 
-  function test_oldGsmsRemovedFromRegistry() public {
+  function test_oldUsdcGsmRemovedFromRegistry() public {
     assertTrue(_isInRegistry(GhoEthereum.GSM_USDC), 'USDC GSM not in registry before');
-    assertTrue(_isInRegistry(GhoEthereum.GSM_USDT), 'USDT GSM not in registry before');
     uint256 lengthBefore = IGsmRegistry(GhoEthereum.GSM_REGISTRY).getGsmListLength();
 
     executePayload(vm, address(proposal));
 
     assertFalse(_isInRegistry(GhoEthereum.GSM_USDC), 'USDC GSM still in registry');
-    assertFalse(_isInRegistry(GhoEthereum.GSM_USDT), 'USDT GSM still in registry');
+    // old USDC GSM removed, 2 new GSMs added
     assertEq(
       IGsmRegistry(GhoEthereum.GSM_REGISTRY).getGsmListLength(),
-      lengthBefore,
+      lengthBefore + 1,
       'wrong registry length'
     );
   }
 
-  function test_oldGsmRolesRevoked_USDC() public {
+  function test_oldUsdcGsmRolesRevoked() public {
     _assertOldGsmRolesRevoked(GhoEthereum.GSM_USDC, GhoEthereum.GSM_USDC_ORACLE_SWAP_FREEZER);
   }
 
-  function test_oldGsmRolesRevoked_USDT() public {
-    _assertOldGsmRolesRevoked(GhoEthereum.GSM_USDT, GhoEthereum.GSM_USDT_ORACLE_SWAP_FREEZER);
+  function test_oldUsdtGsmKeptInGhoReserveAndRegistry() public {
+    uint256 limitBefore = GHO_RESERVE.getLimit(GhoEthereum.GSM_USDT);
+    assertTrue(GHO_RESERVE.isEntity(GhoEthereum.GSM_USDT), 'USDT GSM not an entity before');
+    assertTrue(_isInRegistry(GhoEthereum.GSM_USDT), 'USDT GSM not in registry before');
+
+    executePayload(vm, address(proposal));
+
+    assertTrue(GHO_RESERVE.isEntity(GhoEthereum.GSM_USDT), 'USDT GSM removed from reserve');
+    assertEq(GHO_RESERVE.getLimit(GhoEthereum.GSM_USDT), limitBefore, 'USDT GSM limit changed');
+    assertTrue(_isInRegistry(GhoEthereum.GSM_USDT), 'USDT GSM removed from registry');
   }
 
-  /**
-   * @dev the existing keepers were cancelled by the Chainlink Automation registry owner and still hold
-   * the LINK funded at registration
-   */
+  function test_oldUsdtGsmRolesKept() public {
+    IGsm gsm = IGsm(GhoEthereum.GSM_USDT);
+    bytes32 swapFreezerRole = proposal.SWAP_FREEZER_ROLE();
+    bytes32 configuratorRole = proposal.CONFIGURATOR_ROLE();
+
+    executePayload(vm, address(proposal));
+
+    assertTrue(
+      gsm.hasRole(swapFreezerRole, GhoEthereum.GSM_USDT_ORACLE_SWAP_FREEZER),
+      'freezer role revoked'
+    );
+    assertTrue(gsm.hasRole(swapFreezerRole, EXECUTOR), 'executor freezer role revoked');
+    assertTrue(gsm.hasRole(configuratorRole, GhoEthereum.GHO_GSM_STEWARD), 'steward role revoked');
+    assertTrue(gsm.hasRole(configuratorRole, EXECUTOR), 'executor configurator role revoked');
+    assertFalse(gsm.hasRole(proposal.LIQUIDATOR_ROLE(), EXECUTOR), 'executor is liquidator');
+  }
+
   function test_oldOracleSwapFreezerKeepersLinkWithdrawn() public {
     IAaveCLRobotOperator operator = IAaveCLRobotOperator(MiscEthereum.AAVE_CL_ROBOT_OPERATOR);
     IERC20 link = IERC20(AaveV3EthereumAssets.LINK_UNDERLYING);
@@ -547,7 +430,6 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
       'keepers LINK not withdrawn to the collector'
     );
 
-    // Keepers are drained: withdrawing again sends nothing
     operator.withdrawLink(proposal.EXISTING_ORACLE_SWAP_FREEZER_USDC());
     operator.withdrawLink(proposal.EXISTING_ORACLE_SWAP_FREEZER_USDT());
     assertEq(
@@ -559,17 +441,68 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
 
   /// --- Post-execution behaviour ---
 
-  function test_oldGsmsUnusable() public {
+  function test_oldUsdcGsmUnusable() public {
     executePayload(vm, address(proposal));
 
     vm.expectRevert(bytes('GSM_SEIZED'));
     IGsm(GhoEthereum.GSM_USDC).buyAsset(1e6, address(this));
     vm.expectRevert(bytes('GSM_SEIZED'));
-    IGsm(GhoEthereum.GSM_USDT).buyAsset(1e6, address(this));
-    vm.expectRevert(bytes('GSM_SEIZED'));
     IGsm(GhoEthereum.GSM_USDC).sellAsset(1e6, address(this));
-    vm.expectRevert(bytes('GSM_SEIZED'));
-    IGsm(GhoEthereum.GSM_USDT).sellAsset(1e6, address(this));
+  }
+
+  function test_oldUsdtGsmSalesBlocked() public {
+    IGsm gsm = IGsm(GhoEthereum.GSM_USDT);
+    IERC20 stataUsdt = IERC20(AaveV3EthereumAssets.USDT_STATA_TOKEN);
+    uint256 amount = 1_000e6;
+    deal(address(stataUsdt), address(this), 2 * amount);
+    stataUsdt.forceApprove(address(gsm), 2 * amount);
+
+    (uint256 sold, ) = gsm.sellAsset(amount, address(this));
+    assertEq(sold, amount, 'sell failed before');
+
+    executePayload(vm, address(proposal));
+
+    vm.expectRevert(bytes('EXOGENOUS_ASSET_EXPOSURE_TOO_HIGH'));
+    gsm.sellAsset(amount, address(this));
+  }
+
+  function test_oldUsdtGsmBuysOpen() public {
+    executePayload(vm, address(proposal));
+
+    IGsm gsm = IGsm(GhoEthereum.GSM_USDT);
+    IERC20 stataUsdt = IERC20(AaveV3EthereumAssets.USDT_STATA_TOKEN);
+    uint256 exposureBefore = gsm.getAvailableLiquidity();
+    uint256 usedBefore = GHO_RESERVE.getUsed(address(gsm));
+    // The buy first books the unbooked yield as fees, drawing it from the reserve
+    (uint256 excess, ) = IGsm4626(address(gsm)).getCurrentBacking();
+
+    uint256 stataToBuy = 1_000_000e6;
+    (uint256 stataAmount, uint256 ghoNeeded, uint256 grossAmount, ) = gsm.getGhoAmountForBuyAsset(
+      stataToBuy
+    );
+    deal(address(GHO), address(this), ghoNeeded);
+    GHO.approve(address(gsm), ghoNeeded);
+    (uint256 bought, uint256 ghoSold) = gsm.buyAsset(stataToBuy, address(this));
+
+    assertEq(bought, stataAmount, 'wrong stataUSDT bought');
+    assertEq(ghoSold, ghoNeeded, 'wrong GHO sold');
+    assertEq(stataUsdt.balanceOf(address(this)), bought, 'stataUSDT not received');
+    assertEq(gsm.getAvailableLiquidity(), exposureBefore - bought, 'exposure not decreased');
+    assertEq(
+      GHO_RESERVE.getUsed(address(gsm)),
+      usedBefore + excess - grossAmount,
+      'used GHO not restored'
+    );
+  }
+
+  function test_ghoGsmStewardCannotReopenOldUsdtGsmSales() public {
+    executePayload(vm, address(proposal));
+    // Move past any steward timelock left by an earlier update
+    vm.warp(block.timestamp + 30 days);
+
+    vm.prank(GhoEthereum.RISK_COUNCIL);
+    vm.expectRevert(bytes('INVALID_EXPOSURE_CAP_UPDATE'));
+    IGsmSteward(GhoEthereum.GHO_GSM_STEWARD).updateGsmExposureCap(GhoEthereum.GSM_USDT, 1);
   }
 
   function test_newGsmOperational_USDC() public {
@@ -585,30 +518,6 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
       IGsm(proposal.NEW_GSM_USDT()),
       AaveV3EthereumAssets.USDT_UNDERLYING,
       100_000e6
-    );
-  }
-
-  /**
-   * @dev a buyer of the migrated backing can redeem the V4 shares for USDT while the Hub has liquidity
-   */
-  function test_migratedUsdtBackingRedeemable() public {
-    executePayload(vm, address(proposal));
-
-    IGsm gsm = IGsm(proposal.NEW_GSM_USDT());
-    uint256 sharesToBuy = 1_000_000e6;
-    (, uint256 ghoNeeded, , ) = gsm.getGhoAmountForBuyAsset(sharesToBuy);
-    deal(address(GHO), address(this), ghoNeeded);
-    GHO.approve(address(gsm), ghoNeeded);
-    (uint256 sharesBought, ) = gsm.buyAsset(sharesToBuy, address(this));
-
-    uint256 expectedUsdt = IERC4626(WA_CORE_USDT).previewRedeem(sharesBought);
-    uint256 usdtBefore = IERC20(AaveV3EthereumAssets.USDT_UNDERLYING).balanceOf(address(this));
-    IERC4626(WA_CORE_USDT).redeem(sharesBought, address(this), address(this));
-
-    assertEq(
-      IERC20(AaveV3EthereumAssets.USDT_UNDERLYING).balanceOf(address(this)),
-      usdtBefore + expectedUsdt,
-      'USDT not redeemed from the V4 Core Hub'
     );
   }
 
@@ -659,7 +568,6 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
       gsm.hasRole(gsm.CONFIGURATOR_ROLE(), GhoEthereum.GHO_GSM_STEWARD),
       'steward is not configurator'
     );
-    // No need to be liquidator or token rescuer at the beginning
     assertFalse(gsm.hasRole(gsm.LIQUIDATOR_ROLE(), EXECUTOR), 'executor is liquidator');
     assertFalse(gsm.hasRole(gsm.TOKEN_RESCUER_ROLE(), EXECUTOR), 'executor is token rescuer');
   }
@@ -679,7 +587,6 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
     assertFalse(gsm.getIsFrozen(), 'GSM frozen');
     assertFalse(gsm.getIsSeized(), 'GSM seized');
 
-    // Fee Strategy
     IGsmFeeStrategy feeStrategy = IGsmFeeStrategy(gsm.getFeeStrategy());
     assertEq(feeStrategy.getSellFee(1e4), config.sellFee, 'wrong sell fee');
     assertEq(feeStrategy.getBuyFee(1e4), config.buyFee, 'wrong buy fee');
@@ -707,7 +614,6 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
       'wrong GHO price in asset (round down)'
     );
 
-    // Oracle freezer
     assertEq(freezer.GSM(), address(gsm), 'wrong freezer GSM');
     assertEq(
       freezer.ADDRESS_PROVIDER(),
@@ -732,19 +638,16 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
     (uint128 unfreezeLowerBound, ) = freezer.getUnfreezeBound();
     _mockAssetPrice(oracleAsset, freezeLowerBound - 1);
 
-    // Freezer cannot freeze without authorization
     (bool canPerformUpkeep, ) = freezer.checkUpkeep('');
     assertFalse(canPerformUpkeep, 'freezer can act before execution');
 
     executePayload(vm, address(proposal));
 
-    // Depeg freezes the GSM
     (canPerformUpkeep, ) = freezer.checkUpkeep('');
     assertTrue(canPerformUpkeep, 'freezer cannot freeze on depeg');
     freezer.performUpkeep('');
     assertTrue(gsm.getIsFrozen(), 'GSM not frozen on depeg');
 
-    // Price back inside the unfreeze bounds unfreezes the GSM
     _mockAssetPrice(oracleAsset, unfreezeLowerBound + 1);
     (canPerformUpkeep, ) = freezer.checkUpkeep('');
     assertTrue(canPerformUpkeep, 'freezer cannot unfreeze on repeg');
@@ -787,16 +690,17 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
     uint256 gsmSharesBefore = IERC20(share).balanceOf(address(gsm));
     uint256 usedBefore = GHO_RESERVE.getUsed(address(gsm));
 
-    // Sell: shares in, GHO out at the share value (no sell fee)
+    // Sell: shares in, GHO out at the share value minus the sell fee
+    uint256 grossGho = IERC4626(share).previewRedeem(shares) * 1e12;
+    uint256 sellFee = IGsmFeeStrategy(gsm.getFeeStrategy()).getSellFee(grossGho);
     IERC20(share).forceApprove(address(gsm), shares);
     (uint256 sharesSold, uint256 ghoBought) = gsm.sellAsset(shares, address(this));
     assertEq(sharesSold, shares, 'not all shares sold');
-    assertEq(ghoBought, IERC4626(share).previewRedeem(shares) * 1e12, 'wrong GHO bought');
+    assertEq(ghoBought, grossGho - sellFee, 'wrong GHO bought');
     assertEq(GHO.balanceOf(address(this)), ghoBought, 'GHO not received');
     assertEq(IERC20(share).balanceOf(address(gsm)), gsmSharesBefore + shares, 'shares not in GSM');
-    assertEq(GHO_RESERVE.getUsed(address(gsm)), usedBefore + ghoBought, 'GSM used not increased');
+    assertEq(GHO_RESERVE.getUsed(address(gsm)), usedBefore + grossGho, 'GSM used not increased');
 
-    // Buy: GHO in (with buy fee), shares out
     uint256 sharesToBuy = shares / 2;
     (, uint256 ghoNeeded, , uint256 fee) = gsm.getGhoAmountForBuyAsset(sharesToBuy);
     assertGt(fee, 0, 'no buy fee charged');
@@ -932,8 +836,4 @@ interface IGsmInitializable {
     uint128 exposureCap,
     address ghoReserve
   ) external;
-}
-
-interface IWaToken {
-  function assetId() external view returns (uint256);
 }

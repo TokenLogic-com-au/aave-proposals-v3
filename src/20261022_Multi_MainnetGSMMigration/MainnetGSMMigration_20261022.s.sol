@@ -16,7 +16,6 @@ import {AaveV4Ethereum_MainnetGSMMigration_20261022} from './AaveV4Ethereum_Main
 contract DeployEthereum is EthereumScript {
   function run() external broadcast {
     // deploy payloads
-    // the V4 payload raises the TokenizationSpoke add caps the V3 payload relies on, so it executes first
     address payload0 = GovV3Helpers.deployDeterministic(
       type(AaveV4Ethereum_MainnetGSMMigration_20261022).creationCode
     );

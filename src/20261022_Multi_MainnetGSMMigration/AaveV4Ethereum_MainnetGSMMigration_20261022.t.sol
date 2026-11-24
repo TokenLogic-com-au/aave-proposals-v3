@@ -27,7 +27,7 @@ contract AaveV4Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV4TestBaseE
     address(AaveV4EthereumTokenizationSpokes.CORE_USDT_TOKENIZATION_SPOKE);
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('mainnet'), 26248572);
+    vm.createSelectFork(vm.rpcUrl('mainnet'), 26485342);
     proposal = new AaveV4Ethereum_MainnetGSMMigration_20261022();
   }
 
@@ -79,7 +79,6 @@ contract AaveV4Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV4TestBaseE
 
     IHub.SpokeConfig memory configAfter = CORE_HUB.getSpokeConfig(assetId, spoke);
     assertEq(uint256(configAfter.addCap), newAddCap, 'wrong add cap');
-    // Everything else is kept
     assertEq(configAfter.drawCap, configBefore.drawCap, 'draw cap changed');
     assertEq(
       configAfter.riskPremiumThreshold,

@@ -11,9 +11,6 @@ import {AaveV4PayloadEthereum} from 'aave-helpers/src/v4-config-engine/AaveV4Pay
  * @author TokenLogic
  * - Snapshot: TODO
  * - Discussion: TODO
- * @dev Must execute before AaveV3Ethereum_MainnetGSMMigration_20261022: it raises the add caps of the
- * Core USDC and USDT TokenizationSpokes so the new GSMs can hold their shares and the stataUSDT
- * backing of the current USDT GSM can be migrated into the Core USDT TokenizationSpoke.
  */
 contract AaveV4Ethereum_MainnetGSMMigration_20261022 is AaveV4PayloadEthereum {
   // TODO: re-check the add caps with the risk providers before going live (whole tokens; not in wei)
