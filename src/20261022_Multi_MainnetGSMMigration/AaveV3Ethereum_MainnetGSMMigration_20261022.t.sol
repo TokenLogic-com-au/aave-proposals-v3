@@ -47,8 +47,8 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
   bytes32 internal constant IMPLEMENTATION_SLOT =
     0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;
 
-  // LINK left in the two cancelled keepers (80 LINK each, funded at registration and never spent)
-  uint256 internal constant KEEPERS_REMAINING_LINK = 160 ether;
+  // LINK left in the cancelled USDC keeper (funded at registration and never spent)
+  uint256 internal constant KEEPER_REMAINING_LINK = 80 ether;
 
   AaveV4Ethereum_MainnetGSMMigration_20261022 internal v4Proposal;
   AaveV3Ethereum_MainnetGSMMigration_20261022 internal proposal;
@@ -59,15 +59,13 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
   address internal constant EXECUTOR = GovernanceV3Ethereum.EXECUTOR_LVL_1;
   address internal constant WA_CORE_USDC =
     address(AaveV4EthereumTokenizationSpokes.CORE_USDC_TOKENIZATION_SPOKE);
-  address internal constant WA_CORE_USDT =
-    address(AaveV4EthereumTokenizationSpokes.CORE_USDT_TOKENIZATION_SPOKE);
 
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('mainnet'), 26485342);
     v4Proposal = new AaveV4Ethereum_MainnetGSMMigration_20261022();
     proposal = new AaveV3Ethereum_MainnetGSMMigration_20261022();
 
-    // TODO: remove once the new GSMs and freezers are deployed and the placeholders replaced
+    // TODO: remove once the new GSM and freezer are deployed and the placeholders replaced
     _deployNewGsmIfNeeded({
       oldGsm: GhoEthereum.GSM_USDC,
       oldFreezer: GhoEthereum.GSM_USDC_ORACLE_SWAP_FREEZER,
@@ -75,14 +73,6 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
       newFreezer: proposal.NEW_USDC_ORACLE_SWAP_FREEZER(),
       newUnderlying: WA_CORE_USDC,
       newPriceStrategy: makeAddr('NEW_USDC_PRICE_STRATEGY')
-    });
-    _deployNewGsmIfNeeded({
-      oldGsm: GhoEthereum.GSM_USDT,
-      oldFreezer: GhoEthereum.GSM_USDT_ORACLE_SWAP_FREEZER,
-      newGsm: proposal.NEW_GSM_USDT(),
-      newFreezer: proposal.NEW_USDT_ORACLE_SWAP_FREEZER(),
-      newUnderlying: WA_CORE_USDT,
-      newPriceStrategy: makeAddr('NEW_USDT_PRICE_STRATEGY')
     });
 
     executePayload(vm, address(v4Proposal));
@@ -143,42 +133,29 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
 
   /// --- Grant access to new GSMs ---
 
-  function test_newGsmsRegisteredInGhoReserve() public {
+  function test_newGsmRegisteredInGhoReserve() public {
     assertFalse(GHO_RESERVE.isEntity(proposal.NEW_GSM_USDC()), 'USDC GSM entity before');
-    assertFalse(GHO_RESERVE.isEntity(proposal.NEW_GSM_USDT()), 'USDT GSM entity before');
 
     executePayload(vm, address(proposal));
 
     assertTrue(GHO_RESERVE.isEntity(proposal.NEW_GSM_USDC()), 'USDC GSM not an entity');
-    assertTrue(GHO_RESERVE.isEntity(proposal.NEW_GSM_USDT()), 'USDT GSM not an entity');
     assertEq(
       GHO_RESERVE.getLimit(proposal.NEW_GSM_USDC()),
       proposal.RESERVE_LIMIT_GSM_USDC(),
       'wrong USDC GSM limit'
     );
-    assertEq(
-      GHO_RESERVE.getLimit(proposal.NEW_GSM_USDT()),
-      proposal.RESERVE_LIMIT_GSM_USDT(),
-      'wrong USDT GSM limit'
-    );
   }
 
-  function test_newGsmsInRegistry() public {
+  function test_newGsmInRegistry() public {
     assertFalse(_isInRegistry(proposal.NEW_GSM_USDC()), 'USDC GSM in registry before');
-    assertFalse(_isInRegistry(proposal.NEW_GSM_USDT()), 'USDT GSM in registry before');
 
     executePayload(vm, address(proposal));
 
     assertTrue(_isInRegistry(proposal.NEW_GSM_USDC()), 'USDC GSM not in registry');
-    assertTrue(_isInRegistry(proposal.NEW_GSM_USDT()), 'USDT GSM not in registry');
   }
 
   function test_newGsmRoles_USDC() public {
     _assertNewGsmRoles(IGsm(proposal.NEW_GSM_USDC()), proposal.NEW_USDC_ORACLE_SWAP_FREEZER());
-  }
-
-  function test_newGsmRoles_USDT() public {
-    _assertNewGsmRoles(IGsm(proposal.NEW_GSM_USDT()), proposal.NEW_USDT_ORACLE_SWAP_FREEZER());
   }
 
   function test_newGsmConfig_USDC() public {
@@ -202,34 +179,11 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
     );
   }
 
-  function test_newGsmConfig_USDT() public {
-    executePayload(vm, address(proposal));
-
-    _checkGsmConfig(
-      IGsm(proposal.NEW_GSM_USDT()),
-      WA_CORE_USDT,
-      IOracleSwapFreezer(proposal.NEW_USDT_ORACLE_SWAP_FREEZER()),
-      GsmConfig({
-        sellFee: 0.0010e4, // 0.10%
-        buyFee: 0.0010e4, // 0.10%
-        exposureCap: proposal.EXPOSURE_CAP_GSM_USDT(),
-        reserveLimit: proposal.RESERVE_LIMIT_GSM_USDT(),
-        freezerCanUnfreeze: true,
-        freezeLowerBound: 0.99e8,
-        freezeUpperBound: 1.01e8,
-        unfreezeLowerBound: 0.995e8,
-        unfreezeUpperBound: 1.005e8
-      })
-    );
-  }
-
   /// --- Update fee strategies ---
 
-  function test_newGsmsReuseOldFeeStrategies() public {
+  function test_newGsmReusesOldFeeStrategy() public {
     address usdcFeeStrategy = IGsm(GhoEthereum.GSM_USDC).getFeeStrategy();
-    address usdtFeeStrategy = IGsm(GhoEthereum.GSM_USDT).getFeeStrategy();
     assertEq(IGsm(proposal.NEW_GSM_USDC()).getFeeStrategy(), address(0), 'USDC fee set before');
-    assertEq(IGsm(proposal.NEW_GSM_USDT()).getFeeStrategy(), address(0), 'USDT fee set before');
 
     executePayload(vm, address(proposal));
 
@@ -237,11 +191,6 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
       IGsm(proposal.NEW_GSM_USDC()).getFeeStrategy(),
       usdcFeeStrategy,
       'wrong USDC fee strategy'
-    );
-    assertEq(
-      IGsm(proposal.NEW_GSM_USDT()).getFeeStrategy(),
-      usdtFeeStrategy,
-      'wrong USDT fee strategy'
     );
   }
 
@@ -263,7 +212,7 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
     executePayload(vm, address(proposal));
 
     assertEq(GHO.totalSupply(), ghoSupplyBefore, 'GHO supply changed');
-    // Only the USDC GSM used GHO returns to the reserve; the USDT GSM usage is untouched
+    // Only the USDC GSM used GHO returns to the reserve
     assertEq(
       GHO.balanceOf(address(GHO_RESERVE)),
       reserveBalanceBefore + usedUsdc,
@@ -282,52 +231,7 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
     );
   }
 
-  /// --- Disable old USDT GSM Sales ---
-
-  function test_oldUsdtGsmExposureCapZeroed() public {
-    assertGt(IGsm(GhoEthereum.GSM_USDT).getExposureCap(), 0, 'USDT GSM cap zero before');
-
-    executePayload(vm, address(proposal));
-
-    assertEq(IGsm(GhoEthereum.GSM_USDT).getExposureCap(), 0, 'USDT GSM cap not zero');
-    assertEq(
-      IGsm(GhoEthereum.GSM_USDT).getAvailableUnderlyingExposure(),
-      0,
-      'USDT GSM still has exposure room'
-    );
-  }
-
-  function test_oldUsdtGsmBackingNotMigrated() public {
-    IERC20 stataUsdt = IERC20(AaveV3EthereumAssets.USDT_STATA_TOKEN);
-    uint256 stataBefore = stataUsdt.balanceOf(GhoEthereum.GSM_USDT);
-    uint256 exposureBefore = IGsm(GhoEthereum.GSM_USDT).getAvailableLiquidity();
-    uint256 usedBefore = GHO_RESERVE.getUsed(GhoEthereum.GSM_USDT);
-    uint256 feesBefore = IGsm(GhoEthereum.GSM_USDT).getAccruedFees();
-    uint256 waCoreUsdtAssetsBefore = IERC4626(WA_CORE_USDT).totalAssets();
-    assertGt(exposureBefore, 0, 'USDT GSM empty before');
-
-    executePayload(vm, address(proposal));
-
-    assertFalse(IGsm(GhoEthereum.GSM_USDT).getIsSeized(), 'USDT GSM seized');
-    assertEq(stataUsdt.balanceOf(GhoEthereum.GSM_USDT), stataBefore, 'stataUSDT moved');
-    assertEq(
-      IGsm(GhoEthereum.GSM_USDT).getAvailableLiquidity(),
-      exposureBefore,
-      'USDT GSM exposure changed'
-    );
-    assertEq(GHO_RESERVE.getUsed(GhoEthereum.GSM_USDT), usedBefore, 'USDT GSM used changed');
-    assertEq(IGsm(GhoEthereum.GSM_USDT).getAccruedFees(), feesBefore, 'USDT GSM fees changed');
-
-    assertEq(IGsm(proposal.NEW_GSM_USDT()).getAvailableLiquidity(), 0, 'new USDT GSM not empty');
-    assertEq(GHO_RESERVE.getUsed(proposal.NEW_GSM_USDT()), 0, 'new USDT GSM used not zero');
-    assertEq(
-      IERC4626(WA_CORE_USDT).totalAssets(),
-      waCoreUsdtAssetsBefore,
-      'USDT moved into Aave V4'
-    );
-  }
-
-  /// --- New OracleSwapFreezers ---
+  /// --- New OracleSwapFreezer ---
 
   function test_oracleSwapFreezers_USDC() public {
     _assertOracleSwapFreezer(
@@ -337,15 +241,7 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
     );
   }
 
-  function test_oracleSwapFreezers_USDT() public {
-    _assertOracleSwapFreezer(
-      IGsm(proposal.NEW_GSM_USDT()),
-      IOracleSwapFreezer(proposal.NEW_USDT_ORACLE_SWAP_FREEZER()),
-      AaveV3EthereumAssets.USDT_UNDERLYING
-    );
-  }
-
-  /// --- Revoke access of old GSMs ---
+  /// --- Revoke access of old USDC GSM ---
 
   function test_oldUsdcGsmRemovedFromGhoReserve() public {
     assertTrue(GHO_RESERVE.isEntity(GhoEthereum.GSM_USDC), 'USDC GSM not an entity before');
@@ -355,8 +251,8 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
 
     assertFalse(GHO_RESERVE.isEntity(GhoEthereum.GSM_USDC), 'USDC GSM still an entity');
     assertEq(GHO_RESERVE.getLimit(GhoEthereum.GSM_USDC), 0, 'USDC GSM limit not zero');
-    // old USDC GSM removed, 2 new GSMs added
-    assertEq(GHO_RESERVE.totalEntities(), totalEntitiesBefore + 1, 'wrong total entities');
+    // old USDC GSM removed, new USDC GSM added
+    assertEq(GHO_RESERVE.totalEntities(), totalEntitiesBefore, 'wrong total entities');
   }
 
   function test_oldUsdcGsmRemovedFromRegistry() public {
@@ -366,10 +262,10 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
     executePayload(vm, address(proposal));
 
     assertFalse(_isInRegistry(GhoEthereum.GSM_USDC), 'USDC GSM still in registry');
-    // old USDC GSM removed, 2 new GSMs added
+    // old USDC GSM removed, new USDC GSM added
     assertEq(
       IGsmRegistry(GhoEthereum.GSM_REGISTRY).getGsmListLength(),
-      lengthBefore + 1,
+      lengthBefore,
       'wrong registry length'
     );
   }
@@ -378,16 +274,33 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
     _assertOldGsmRolesRevoked(GhoEthereum.GSM_USDC, GhoEthereum.GSM_USDC_ORACLE_SWAP_FREEZER);
   }
 
-  function test_oldUsdtGsmKeptInGhoReserveAndRegistry() public {
-    uint256 limitBefore = GHO_RESERVE.getLimit(GhoEthereum.GSM_USDT);
-    assertTrue(GHO_RESERVE.isEntity(GhoEthereum.GSM_USDT), 'USDT GSM not an entity before');
-    assertTrue(_isInRegistry(GhoEthereum.GSM_USDT), 'USDT GSM not in registry before');
+  /// --- Old USDT GSM untouched ---
+
+  function test_oldUsdtGsmUntouched() public {
+    IGsm gsm = IGsm(GhoEthereum.GSM_USDT);
+    IERC20 stataUsdt = IERC20(AaveV3EthereumAssets.USDT_STATA_TOKEN);
+    uint256 exposureCapBefore = gsm.getExposureCap();
+    uint256 exposureBefore = gsm.getAvailableLiquidity();
+    uint256 stataBefore = stataUsdt.balanceOf(address(gsm));
+    uint256 usedBefore = GHO_RESERVE.getUsed(address(gsm));
+    uint256 limitBefore = GHO_RESERVE.getLimit(address(gsm));
+    uint256 feesBefore = gsm.getAccruedFees();
+    address feeStrategyBefore = gsm.getFeeStrategy();
+    assertGt(exposureBefore, 0, 'USDT GSM empty before');
 
     executePayload(vm, address(proposal));
 
-    assertTrue(GHO_RESERVE.isEntity(GhoEthereum.GSM_USDT), 'USDT GSM removed from reserve');
-    assertEq(GHO_RESERVE.getLimit(GhoEthereum.GSM_USDT), limitBefore, 'USDT GSM limit changed');
-    assertTrue(_isInRegistry(GhoEthereum.GSM_USDT), 'USDT GSM removed from registry');
+    assertFalse(gsm.getIsSeized(), 'USDT GSM seized');
+    assertFalse(gsm.getIsFrozen(), 'USDT GSM frozen');
+    assertEq(gsm.getExposureCap(), exposureCapBefore, 'USDT GSM exposure cap changed');
+    assertEq(gsm.getAvailableLiquidity(), exposureBefore, 'USDT GSM exposure changed');
+    assertEq(stataUsdt.balanceOf(address(gsm)), stataBefore, 'stataUSDT moved');
+    assertEq(gsm.getAccruedFees(), feesBefore, 'USDT GSM fees changed');
+    assertEq(gsm.getFeeStrategy(), feeStrategyBefore, 'USDT GSM fee strategy changed');
+    assertTrue(GHO_RESERVE.isEntity(address(gsm)), 'USDT GSM removed from reserve');
+    assertEq(GHO_RESERVE.getUsed(address(gsm)), usedBefore, 'USDT GSM used changed');
+    assertEq(GHO_RESERVE.getLimit(address(gsm)), limitBefore, 'USDT GSM limit changed');
+    assertTrue(_isInRegistry(address(gsm)), 'USDT GSM removed from registry');
   }
 
   function test_oldUsdtGsmRolesKept() public {
@@ -407,7 +320,7 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
     assertFalse(gsm.hasRole(proposal.LIQUIDATOR_ROLE(), EXECUTOR), 'executor is liquidator');
   }
 
-  function test_oldOracleSwapFreezerKeepersLinkWithdrawn() public {
+  function test_oldUsdcOracleSwapFreezerKeeperLinkWithdrawn() public {
     IAaveCLRobotOperator operator = IAaveCLRobotOperator(MiscEthereum.AAVE_CL_ROBOT_OPERATOR);
     IERC20 link = IERC20(AaveV3EthereumAssets.LINK_UNDERLYING);
     assertEq(
@@ -415,27 +328,21 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
       proposal.EXISTING_ORACLE_SWAP_FREEZER_USDC(),
       'wrong existing USDC keeper id'
     );
-    assertEq(
-      _keeperIdOf(GhoEthereum.GSM_USDT_ORACLE_SWAP_FREEZER),
-      proposal.EXISTING_ORACLE_SWAP_FREEZER_USDT(),
-      'wrong existing USDT keeper id'
-    );
     uint256 collectorLinkBefore = link.balanceOf(COLLECTOR);
 
     executePayload(vm, address(proposal));
 
     assertEq(
       link.balanceOf(COLLECTOR),
-      collectorLinkBefore + KEEPERS_REMAINING_LINK,
-      'keepers LINK not withdrawn to the collector'
+      collectorLinkBefore + KEEPER_REMAINING_LINK,
+      'keeper LINK not withdrawn to the collector'
     );
 
     operator.withdrawLink(proposal.EXISTING_ORACLE_SWAP_FREEZER_USDC());
-    operator.withdrawLink(proposal.EXISTING_ORACLE_SWAP_FREEZER_USDT());
     assertEq(
       link.balanceOf(COLLECTOR),
-      collectorLinkBefore + KEEPERS_REMAINING_LINK,
-      'keepers still hold LINK'
+      collectorLinkBefore + KEEPER_REMAINING_LINK,
+      'keeper still holds LINK'
     );
   }
 
@@ -450,61 +357,6 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
     IGsm(GhoEthereum.GSM_USDC).sellAsset(1e6, address(this));
   }
 
-  function test_oldUsdtGsmSalesBlocked() public {
-    IGsm gsm = IGsm(GhoEthereum.GSM_USDT);
-    IERC20 stataUsdt = IERC20(AaveV3EthereumAssets.USDT_STATA_TOKEN);
-    uint256 amount = 1_000e6;
-    deal(address(stataUsdt), address(this), 2 * amount);
-    stataUsdt.forceApprove(address(gsm), 2 * amount);
-
-    (uint256 sold, ) = gsm.sellAsset(amount, address(this));
-    assertEq(sold, amount, 'sell failed before');
-
-    executePayload(vm, address(proposal));
-
-    vm.expectRevert(bytes('EXOGENOUS_ASSET_EXPOSURE_TOO_HIGH'));
-    gsm.sellAsset(amount, address(this));
-  }
-
-  function test_oldUsdtGsmBuysOpen() public {
-    executePayload(vm, address(proposal));
-
-    IGsm gsm = IGsm(GhoEthereum.GSM_USDT);
-    IERC20 stataUsdt = IERC20(AaveV3EthereumAssets.USDT_STATA_TOKEN);
-    uint256 exposureBefore = gsm.getAvailableLiquidity();
-    uint256 usedBefore = GHO_RESERVE.getUsed(address(gsm));
-    // The buy first books the unbooked yield as fees, drawing it from the reserve
-    (uint256 excess, ) = IGsm4626(address(gsm)).getCurrentBacking();
-
-    uint256 stataToBuy = 1_000_000e6;
-    (uint256 stataAmount, uint256 ghoNeeded, uint256 grossAmount, ) = gsm.getGhoAmountForBuyAsset(
-      stataToBuy
-    );
-    deal(address(GHO), address(this), ghoNeeded);
-    GHO.approve(address(gsm), ghoNeeded);
-    (uint256 bought, uint256 ghoSold) = gsm.buyAsset(stataToBuy, address(this));
-
-    assertEq(bought, stataAmount, 'wrong stataUSDT bought');
-    assertEq(ghoSold, ghoNeeded, 'wrong GHO sold');
-    assertEq(stataUsdt.balanceOf(address(this)), bought, 'stataUSDT not received');
-    assertEq(gsm.getAvailableLiquidity(), exposureBefore - bought, 'exposure not decreased');
-    assertEq(
-      GHO_RESERVE.getUsed(address(gsm)),
-      usedBefore + excess - grossAmount,
-      'used GHO not restored'
-    );
-  }
-
-  function test_ghoGsmStewardCannotReopenOldUsdtGsmSales() public {
-    executePayload(vm, address(proposal));
-    // Move past any steward timelock left by an earlier update
-    vm.warp(block.timestamp + 30 days);
-
-    vm.prank(GhoEthereum.RISK_COUNCIL);
-    vm.expectRevert(bytes('INVALID_EXPOSURE_CAP_UPDATE'));
-    IGsmSteward(GhoEthereum.GHO_GSM_STEWARD).updateGsmExposureCap(GhoEthereum.GSM_USDT, 1);
-  }
-
   function test_newGsmOperational_USDC() public {
     _assertNewGsmOperational(
       IGsm(proposal.NEW_GSM_USDC()),
@@ -513,28 +365,12 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
     );
   }
 
-  function test_newGsmOperational_USDT() public {
-    _assertNewGsmOperational(
-      IGsm(proposal.NEW_GSM_USDT()),
-      AaveV3EthereumAssets.USDT_UNDERLYING,
-      100_000e6
-    );
-  }
-
   function test_ghoGsmStewardCanUpdateExposureCap_USDC() public {
     _assertStewardCanUpdateExposureCap(IGsm(proposal.NEW_GSM_USDC()));
   }
 
-  function test_ghoGsmStewardCanUpdateExposureCap_USDT() public {
-    _assertStewardCanUpdateExposureCap(IGsm(proposal.NEW_GSM_USDT()));
-  }
-
   function test_ghoGsmStewardCanUpdateFees_USDC() public {
     _assertStewardCanUpdateFees(IGsm(proposal.NEW_GSM_USDC()));
-  }
-
-  function test_ghoGsmStewardCanUpdateFees_USDT() public {
-    _assertStewardCanUpdateFees(IGsm(proposal.NEW_GSM_USDT()));
   }
 
   /// --- Helpers ---
@@ -794,12 +630,13 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
 
     bytes memory gsmCode = _replaceWord(oldImplementation.code, oldUnderlying, newUnderlying);
     vm.etch(newGsm, _replaceWord(gsmCode, oldPriceStrategy, newPriceStrategy));
-    IGsmInitializable(newGsm).initialize(EXECUTOR, COLLECTOR, 0, address(GHO_RESERVE));
+    IGsm(newGsm).initialize(EXECUTOR, COLLECTOR, 0, address(GHO_RESERVE));
 
     vm.etch(newFreezer, _replaceWord(oldFreezer.code, oldGsm, newGsm));
   }
 
   /// @dev replaces every 32-byte occurrence of `from` with `to` in `code`; reverts if there is none
+  /// TODO: remove once the placeholders are replaced with deployed addresses
   function _replaceWord(
     bytes memory code,
     address from,
@@ -823,17 +660,4 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
     require(replaced > 0, 'immutable not found in bytecode');
     return code;
   }
-}
-
-interface IGsm4626 {
-  function getCurrentBacking() external view returns (uint256, uint256);
-}
-
-interface IGsmInitializable {
-  function initialize(
-    address admin,
-    address ghoTreasury,
-    uint128 exposureCap,
-    address ghoReserve
-  ) external;
 }

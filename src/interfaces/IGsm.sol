@@ -3,6 +3,20 @@ pragma solidity ^0.8.0;
 
 interface IGsm {
   /**
+   * @notice GSM initializer
+   * @param admin The address of the default admin role
+   * @param ghoTreasury The address of the GHO treasury
+   * @param exposureCap Maximum amount of user-supplied underlying asset in GSM
+   * @param ghoReserve The address of the GHO reserve to use tokens from
+   */
+  function initialize(
+    address admin,
+    address ghoTreasury,
+    uint128 exposureCap,
+    address ghoReserve
+  ) external;
+
+  /**
    * @notice Buys the GSM underlying asset in exchange for selling GHO
    * @dev Use `getAssetAmountForBuyAsset` function to calculate the amount based on the GHO amount to sell
    * @param minAmount The minimum amount of the underlying asset to buy

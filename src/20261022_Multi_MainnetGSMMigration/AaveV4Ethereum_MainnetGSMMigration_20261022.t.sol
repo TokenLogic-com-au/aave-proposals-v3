@@ -23,8 +23,6 @@ contract AaveV4Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV4TestBaseE
   IHub internal constant CORE_HUB = IHub(address(AaveV4EthereumHubs.CORE_HUB));
   address internal constant WA_CORE_USDC =
     address(AaveV4EthereumTokenizationSpokes.CORE_USDC_TOKENIZATION_SPOKE);
-  address internal constant WA_CORE_USDT =
-    address(AaveV4EthereumTokenizationSpokes.CORE_USDT_TOKENIZATION_SPOKE);
 
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('mainnet'), 26485342);
@@ -49,22 +47,10 @@ contract AaveV4Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV4TestBaseE
     );
   }
 
-  function test_coreUsdtTokenizationSpokeAddCap() public {
-    _assertAddCapRaised(
-      AaveV4EthereumAssets.USDT_UNDERLYING,
-      WA_CORE_USDT,
-      proposal.CORE_USDT_TOKENIZATION_SPOKE_ADD_CAP()
-    );
-  }
-
   /// --- Post-execution behaviour ---
 
   function test_depositAboveOldAddCap_USDC() public {
     _assertDepositAboveOldAddCap(AaveV4EthereumAssets.USDC_UNDERLYING, WA_CORE_USDC);
-  }
-
-  function test_depositAboveOldAddCap_USDT() public {
-    _assertDepositAboveOldAddCap(AaveV4EthereumAssets.USDT_UNDERLYING, WA_CORE_USDT);
   }
 
   /// --- Helpers ---

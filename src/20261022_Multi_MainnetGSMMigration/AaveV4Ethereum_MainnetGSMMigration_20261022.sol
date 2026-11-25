@@ -13,9 +13,8 @@ import {AaveV4PayloadEthereum} from 'aave-helpers/src/v4-config-engine/AaveV4Pay
  * - Discussion: TODO
  */
 contract AaveV4Ethereum_MainnetGSMMigration_20261022 is AaveV4PayloadEthereum {
-  // TODO: re-check the add caps with the risk providers before going live (whole tokens; not in wei)
+  // TODO: re-check the add cap with the risk providers before going live (whole tokens; not in wei)
   uint256 public constant CORE_USDC_TOKENIZATION_SPOKE_ADD_CAP = 100_000_000;
-  uint256 public constant CORE_USDT_TOKENIZATION_SPOKE_ADD_CAP = 100_000_000;
 
   function hubSpokeConfigUpdates()
     public
@@ -23,24 +22,13 @@ contract AaveV4Ethereum_MainnetGSMMigration_20261022 is AaveV4PayloadEthereum {
     override
     returns (IConfigEngine.SpokeConfigUpdate[] memory)
   {
-    IConfigEngine.SpokeConfigUpdate[] memory items = new IConfigEngine.SpokeConfigUpdate[](2);
+    IConfigEngine.SpokeConfigUpdate[] memory items = new IConfigEngine.SpokeConfigUpdate[](1);
     items[0] = IConfigEngine.SpokeConfigUpdate({
       hubConfigurator: AaveV4Ethereum.HUB_CONFIGURATOR,
       hub: address(AaveV4EthereumHubs.CORE_HUB),
       underlying: AaveV4EthereumAssets.USDC_UNDERLYING,
       spoke: address(AaveV4EthereumTokenizationSpokes.CORE_USDC_TOKENIZATION_SPOKE),
       addCap: CORE_USDC_TOKENIZATION_SPOKE_ADD_CAP,
-      drawCap: EngineFlags.KEEP_CURRENT,
-      riskPremiumThreshold: EngineFlags.KEEP_CURRENT,
-      active: EngineFlags.KEEP_CURRENT,
-      halted: EngineFlags.KEEP_CURRENT
-    });
-    items[1] = IConfigEngine.SpokeConfigUpdate({
-      hubConfigurator: AaveV4Ethereum.HUB_CONFIGURATOR,
-      hub: address(AaveV4EthereumHubs.CORE_HUB),
-      underlying: AaveV4EthereumAssets.USDT_UNDERLYING,
-      spoke: address(AaveV4EthereumTokenizationSpokes.CORE_USDT_TOKENIZATION_SPOKE),
-      addCap: CORE_USDT_TOKENIZATION_SPOKE_ADD_CAP,
       drawCap: EngineFlags.KEEP_CURRENT,
       riskPremiumThreshold: EngineFlags.KEEP_CURRENT,
       active: EngineFlags.KEEP_CURRENT,
