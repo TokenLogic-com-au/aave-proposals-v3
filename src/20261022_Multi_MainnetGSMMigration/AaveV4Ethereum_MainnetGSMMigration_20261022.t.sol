@@ -25,7 +25,7 @@ contract AaveV4Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV4TestBaseE
     address(AaveV4EthereumTokenizationSpokes.CORE_USDC_TOKENIZATION_SPOKE);
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('mainnet'), 26485342);
+    vm.createSelectFork(vm.rpcUrl('mainnet'), 26494707);
     proposal = new AaveV4Ethereum_MainnetGSMMigration_20261022();
   }
 

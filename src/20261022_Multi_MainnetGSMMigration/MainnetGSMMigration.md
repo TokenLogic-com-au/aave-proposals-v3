@@ -50,23 +50,24 @@ TODO: re-check the add cap with the risk providers before going live.
 
 The new GSM and OracleSwapFreezer are deployed with the Executor as `DEFAULT_ADMIN` and ProxyAdmin owner, so there is no deployer role to revoke.
 
-| Parameter            |           waCoreUSDC GSM            |
-| -------------------- | :---------------------------------: |
-| Address              |                TODO                 |
-| Underlying           | Aave V4 Core USDC TokenizationSpoke |
-| Draw Limit (GHO)     |               100.00M               |
-| Exposure Capacity    |               90.00M                |
-| Price Strategy       |           1:1 (ERC-4626)            |
-| Freeze Lower Bound   |               $0.990                |
-| Freeze Upper Bound   |               $1.010                |
-| Unfreeze Lower Bound |               $0.995                |
-| Unfreeze Upper Bound |               $1.005                |
-| Mint GHO Fee         |                0.00%                |
-| Burn GHO Fee         |                0.15%                |
+| Parameter            |                                                     waCoreUSDC GSM                                                      |
+| -------------------- | :---------------------------------------------------------------------------------------------------------------------: |
+| Address              | [`0x382b8431B4b141A7420F0E01229B005309246fEe`](https://etherscan.io/address/0x382b8431B4b141A7420F0E01229B005309246fEe) |
+| OracleSwapFreezer    | [`0x20621b503918Fc293ddaeb1A7CcDB93881939289`](https://etherscan.io/address/0x20621b503918Fc293ddaeb1A7CcDB93881939289) |
+| Underlying           |                                           Aave V4 Core USDC TokenizationSpoke                                           |
+| Draw Limit (GHO)     |                                                         100.00M                                                         |
+| Exposure Capacity    |                                                         90.00M                                                          |
+| Price Strategy       |                                                     1:1 (ERC-4626)                                                      |
+| Freeze Lower Bound   |                                                         $0.990                                                          |
+| Freeze Upper Bound   |                                                         $1.010                                                          |
+| Unfreeze Lower Bound |                                                         $0.995                                                          |
+| Unfreeze Upper Bound |                                                         $1.005                                                          |
+| Mint GHO Fee         |                                                          0.00%                                                          |
+| Burn GHO Fee         |                                                          0.15%                                                          |
 
-The fee strategy is copied from the current USDC GSM at execution. The fees above are those of the current USDC GSM at block 26485342.
+The fee strategy is copied from the current USDC GSM at execution. The fees above are those of the current USDC GSM at block 26494707.
 
-The exposure capacity counts waCoreUSDC shares, not USDC. A share is worth more than one USDC and gains value over time: at block 26485342, 90M waCoreUSDC is about 92.4M USDC.
+The exposure capacity counts waCoreUSDC shares, not USDC. A share is worth more than one USDC and gains value over time: at block 26494707, 90M waCoreUSDC is about 92.4M USDC.
 
 TODO: re-check the exposure cap and draw limit with the risk providers before going live.
 

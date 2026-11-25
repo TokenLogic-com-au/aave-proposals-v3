@@ -43,10 +43,6 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
     uint256 unfreezeUpperBound;
   }
 
-  // ERC1967 implementation slot, used to read the live Gsm4626 implementation bytecode
-  bytes32 internal constant IMPLEMENTATION_SLOT =
-    0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;
-
   // LINK left in the cancelled USDC keeper (funded at registration and never spent)
   uint256 internal constant KEEPER_REMAINING_LINK = 80 ether;
 
@@ -61,19 +57,9 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
     address(AaveV4EthereumTokenizationSpokes.CORE_USDC_TOKENIZATION_SPOKE);
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('mainnet'), 26485342);
+    vm.createSelectFork(vm.rpcUrl('mainnet'), 26494707);
     v4Proposal = new AaveV4Ethereum_MainnetGSMMigration_20261022();
     proposal = new AaveV3Ethereum_MainnetGSMMigration_20261022();
-
-    // TODO: remove once the new GSM and freezer are deployed and the placeholders replaced
-    _deployNewGsmIfNeeded({
-      oldGsm: GhoEthereum.GSM_USDC,
-      oldFreezer: GhoEthereum.GSM_USDC_ORACLE_SWAP_FREEZER,
-      newGsm: proposal.NEW_GSM_USDC(),
-      newFreezer: proposal.NEW_USDC_ORACLE_SWAP_FREEZER(),
-      newUnderlying: WA_CORE_USDC,
-      newPriceStrategy: makeAddr('NEW_USDC_PRICE_STRATEGY')
-    });
 
     executePayload(vm, address(v4Proposal));
   }
@@ -602,62 +588,5 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
       abi.encodeWithSelector(IPriceOracleGetter.getAssetPrice.selector, asset),
       abi.encode(price)
     );
-  }
-
-  /**
-   * @dev Stand-in for the not-yet-deployed contracts: places the live mainnet bytecode of the current
-   * Gsm4626 implementation, its FixedPriceStrategy4626 and its ChainlinkOracleSwapFreezer at the
-   * payload placeholders, with the immutables pointing at the new underlying, price strategy and GSM.
-   * The GSM is initialized as the deployment script does (Executor admin, Collector treasury,
-   * zero exposure cap, current GhoReserve). Skipped once real code exists at the placeholder.
-   * TODO: remove once the placeholders are replaced with deployed addresses
-   */
-  function _deployNewGsmIfNeeded(
-    address oldGsm,
-    address oldFreezer,
-    address newGsm,
-    address newFreezer,
-    address newUnderlying,
-    address newPriceStrategy
-  ) internal {
-    if (newGsm.code.length != 0) return;
-
-    address oldUnderlying = IGsm(oldGsm).UNDERLYING_ASSET();
-    address oldPriceStrategy = IGsm(oldGsm).PRICE_STRATEGY();
-    address oldImplementation = address(uint160(uint256(vm.load(oldGsm, IMPLEMENTATION_SLOT))));
-
-    vm.etch(newPriceStrategy, _replaceWord(oldPriceStrategy.code, oldUnderlying, newUnderlying));
-
-    bytes memory gsmCode = _replaceWord(oldImplementation.code, oldUnderlying, newUnderlying);
-    vm.etch(newGsm, _replaceWord(gsmCode, oldPriceStrategy, newPriceStrategy));
-    IGsm(newGsm).initialize(EXECUTOR, COLLECTOR, 0, address(GHO_RESERVE));
-
-    vm.etch(newFreezer, _replaceWord(oldFreezer.code, oldGsm, newGsm));
-  }
-
-  /// @dev replaces every 32-byte occurrence of `from` with `to` in `code`; reverts if there is none
-  /// TODO: remove once the placeholders are replaced with deployed addresses
-  function _replaceWord(
-    bytes memory code,
-    address from,
-    address to
-  ) internal pure returns (bytes memory) {
-    bytes32 fromWord = bytes32(uint256(uint160(from)));
-    bytes32 toWord = bytes32(uint256(uint160(to)));
-    uint256 replaced;
-    for (uint256 i = 32; i <= code.length; ++i) {
-      bytes32 word;
-      assembly {
-        word := mload(add(code, i))
-      }
-      if (word == fromWord) {
-        assembly {
-          mstore(add(code, i), toWord)
-        }
-        ++replaced;
-      }
-    }
-    require(replaced > 0, 'immutable not found in bytecode');
-    return code;
   }
 }
