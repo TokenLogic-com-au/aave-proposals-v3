@@ -6,7 +6,7 @@ import {IERC4626} from 'openzeppelin-contracts/contracts/interfaces/IERC4626.sol
 import {SafeERC20} from 'openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol';
 import {IPriceOracleGetter} from 'aave-v3-origin/contracts/interfaces/IPriceOracleGetter.sol';
 import {AaveV3Ethereum, AaveV3EthereumAssets} from 'aave-address-book/AaveV3Ethereum.sol';
-import {AaveV4EthereumTokenizationSpokes} from 'aave-address-book/AaveV4Ethereum.sol';
+import {AaveV4EthereumAssets, AaveV4EthereumHubs, AaveV4EthereumTokenizationSpokes} from 'aave-address-book/AaveV4Ethereum.sol';
 import {GovernanceV3Ethereum} from 'aave-address-book/GovernanceV3Ethereum.sol';
 import {GhoEthereum} from 'aave-address-book/GhoEthereum.sol';
 import {MiscEthereum} from 'aave-address-book/MiscEthereum.sol';
@@ -162,6 +162,37 @@ contract AaveV3Ethereum_MainnetGSMMigration_20261022_Test is ProtocolV3TestBase 
         unfreezeLowerBound: 0.995e8,
         unfreezeUpperBound: 1.005e8
       })
+    );
+  }
+
+  /// --- New GSM underlying ---
+
+  function test_newGsmUnderlyingIsCoreUsdcTokenizationSpoke() public view {
+    assertEq(
+      IGsm(proposal.NEW_GSM_USDC()).UNDERLYING_ASSET(),
+      address(AaveV4EthereumTokenizationSpokes.CORE_USDC_TOKENIZATION_SPOKE),
+      'GSM underlying is not the Core USDC TokenizationSpoke'
+    );
+  }
+
+  function test_coreUsdcTokenizationSpokeAssetIsUsdc() public view {
+    assertEq(
+      AaveV4EthereumTokenizationSpokes.CORE_USDC_TOKENIZATION_SPOKE.asset(),
+      AaveV4EthereumAssets.USDC_UNDERLYING,
+      'spoke asset is not USDC'
+    );
+  }
+
+  function test_coreUsdcTokenizationSpokeHubIsCoreHub() public view {
+    assertEq(
+      AaveV4EthereumTokenizationSpokes.CORE_USDC_TOKENIZATION_SPOKE.hub(),
+      address(AaveV4EthereumHubs.CORE_HUB),
+      'spoke hub is not the Core Hub'
+    );
+    assertEq(
+      AaveV4EthereumTokenizationSpokes.CORE_USDC_TOKENIZATION_SPOKE.assetId(),
+      AaveV4EthereumHubs.CORE_HUB.getAssetId(AaveV4EthereumAssets.USDC_UNDERLYING),
+      'spoke asset id is not USDC on the Core Hub'
     );
   }
 
