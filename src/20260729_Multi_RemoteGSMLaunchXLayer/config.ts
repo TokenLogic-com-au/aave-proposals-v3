@@ -1,0 +1,36 @@
+import {ConfigFile} from '../../generator/types';
+export const config: ConfigFile = {
+  rootOptions: {
+    pools: [
+      'AaveV3Ethereum',
+      'AaveV3Arbitrum',
+      'AaveV3Avalanche',
+      'AaveV3Base',
+      'AaveV3Gnosis',
+      'AaveV3Mantle',
+      'AaveV3Plasma',
+      'AaveV3Monad',
+      'AaveV3XLayer',
+      'AaveV3Ink',
+    ],
+    title: 'Remote GSM Launch: XLayer',
+    shortName: 'RemoteGSMLaunchXLayer',
+    date: '20260729',
+    author: 'TokenLogic',
+    discussion: 'https://governance.aave.com/t/arfc-launch-gho-on-x-layer/23178',
+    snapshot: 'TODO',
+    votingNetwork: 'AVALANCHE',
+  },
+  poolOptions: {
+    AaveV3Ethereum: {configs: {}, cache: {blockNumber: 26449321}},
+    AaveV3Arbitrum: {configs: {OTHERS: {}}, cache: {blockNumber: 525623606}},
+    AaveV3Avalanche: {configs: {OTHERS: {}}, cache: {blockNumber: 100771201}},
+    AaveV3Base: {configs: {OTHERS: {}}, cache: {blockNumber: 59516296}},
+    AaveV3Gnosis: {configs: {OTHERS: {}}, cache: {blockNumber: 49360282}},
+    AaveV3Mantle: {configs: {OTHERS: {}}, cache: {blockNumber: 103481661}},
+    AaveV3Plasma: {configs: {OTHERS: {}}, cache: {blockNumber: 38148596}},
+    AaveV3Monad: {configs: {OTHERS: {}}, cache: {blockNumber: 123590136}},
+    AaveV3XLayer: {configs: {OTHERS: {}}, cache: {blockNumber: 76324598}},
+    AaveV3Ink: {configs: {OTHERS: {}}, cache: {blockNumber: 61595223}},
+  },
+};
