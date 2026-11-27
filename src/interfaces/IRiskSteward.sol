@@ -7,6 +7,7 @@ pragma solidity ^0.8.0;
  * @notice Mirror of the post-v3.7 RiskSteward.Config layout, where `CollateralConfig`
  *         no longer carries `debtCeiling`. Used to ABI-decode `getRiskConfig()`
  *         from the new stewards being granted RISK_ADMIN by this proposal.
+ * @dev Adapted from https://github.com/aave-dao/aave-v3-risk-stewards/blob/8989c5b8e48542a9f895290ff89678367dbfe0be/src/interfaces/IRiskSteward.sol
  */
 interface IRiskSteward {
   struct RiskParamConfig {

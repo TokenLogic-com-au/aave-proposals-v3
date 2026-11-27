@@ -4,6 +4,12 @@ pragma solidity ^0.8.0;
 import {IRateLimiter} from '../IRateLimiter.sol';
 import {IPool} from './IPool.sol';
 
+/**
+ * @title IUpgradeableBurnMintTokenPool_1_4
+ * @author Aave Labs
+ * @notice Interface of the UpgradeableBurnMintTokenPool contract
+ * @dev Adapted from https://github.com/aave/ccip/blob/c66ad1e72e736e176ad290cb59e0f75f8391e317/contracts/src/v0.8/ccip/pools/GHO/UpgradeableBurnMintTokenPool.sol
+ */
 interface IUpgradeableBurnMintTokenPool_1_4 {
   struct ChainUpdate {
     uint64 remoteChainSelector;
@@ -102,6 +108,12 @@ interface IUpgradeableBurnMintTokenPool_1_4 {
   function typeAndVersion() external view returns (string memory);
 }
 
+/**
+ * @title IUpgradeableBurnMintTokenPool_1_5_1
+ * @author Aave Labs
+ * @notice Interface of the UpgradeableBurnMintTokenPool contract
+ * @dev Adapted from https://github.com/aave/ccip/blob/49caffa0f7b8cd205716573c38c869365f048066/contracts/src/v0.8/ccip/pools/GHO/UpgradeableBurnMintTokenPool.sol
+ */
 interface IUpgradeableBurnMintTokenPool_1_5_1 {
   struct ChainUpdate {
     uint64 remoteChainSelector;

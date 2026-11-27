@@ -2,6 +2,11 @@
 
 pragma solidity ^0.8.0;
 
+/**
+ * @title IRateLimiter
+ * @notice Interface of the RateLimiter library
+ * @dev Adapted from https://github.com/smartcontractkit/ccip/blob/390ee2334126e313c0e214c2cd9a7a379b5bfe13/contracts/src/v0.8/ccip/libraries/RateLimiter.sol
+ */
 interface IRateLimiter {
   struct TokenBucket {
     uint128 tokens; // ──────╮ Current number of tokens that are in the bucket.

@@ -7,6 +7,7 @@ import {IAccessControlEnumerable} from 'openzeppelin-contracts/contracts/access/
  * @title IGranularGuardianAccessControl
  * @author BGD Labs
  * @notice interface containing the objects, events and methods definitions of the GranularGuardianAccessControl contract
+ * @dev Adapted from https://github.com/aave-dao/aave-delivery-infrastructure/blob/bc1dd72d85ff38e20841786cab9443a851056325/src/contracts/access_control/IGranularGuardianAccessControl.sol
  */
 interface IGranularGuardianAccessControl is IAccessControlEnumerable {
   /**

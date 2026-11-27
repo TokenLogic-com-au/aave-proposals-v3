@@ -1,6 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+/**
+ * @title IAaveCLRobotOperator
+ * @author BGD Labs
+ * @notice Interface of the AaveCLRobotOperator contract
+ * @dev Adapted from https://github.com/aave-dao/aave-governance-v3-robot/blob/92919405ec7a1ee48bcc5b65fec85aa5c89cd745/src/interfaces/IAaveCLRobotOperator.sol
+ */
 interface IAaveCLRobotOperator {
   event KeeperCancelled(uint256 indexed id, address indexed upkeep);
 

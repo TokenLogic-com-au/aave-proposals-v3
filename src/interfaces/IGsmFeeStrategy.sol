@@ -8,6 +8,7 @@ pragma solidity ^0.8.0;
  * @dev Functions' logic must be invertible, being possible to calculate the fee amount based on the gross amount, and
  * the other way round.
  * @dev All math operations must round up, favoring the protocol.
+ * @dev Copied from https://github.com/aave/gho-core/blob/f368befef0fdabfab6a7934917184dcf90b11812/src/contracts/facilitators/gsm/feeStrategy/interfaces/IGsmFeeStrategy.sol
  */
 interface IGsmFeeStrategy {
   /**

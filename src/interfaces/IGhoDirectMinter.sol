@@ -4,6 +4,11 @@ pragma solidity ^0.8.0;
 import {IPool} from 'aave-v3-origin/contracts/interfaces/IPool.sol';
 import {IPoolConfigurator} from 'aave-v3-origin/contracts/interfaces/IPoolConfigurator.sol';
 
+/**
+ * @title IGhoDirectMinter
+ * @notice Interface of the GhoDirectMinter contract
+ * @dev Copied from https://github.com/aave-dao/GhoDirectMinter/blob/c7b299f8d8d6b8053ce73d8acef336459e38f17d/src/interfaces/IGhoDirectMinter.sol
+ */
 interface IGhoDirectMinter {
   error InvalidAToken();
 

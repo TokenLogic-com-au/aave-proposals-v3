@@ -5,6 +5,7 @@ pragma solidity ^0.8.0;
  * @title IRangeValidationModule
  * @author BGD labs
  * @notice Defines the interface for the RangeValidationModule, used to validate ranges across agents
+ * @dev Copied from https://github.com/ChaosLabsInc/chaos-agents/blob/3092c053741d6f607a1fdec8cc15edb1eea28b66/src/interfaces/IRangeValidationModule.sol
  */
 interface IRangeValidationModule {
   /**

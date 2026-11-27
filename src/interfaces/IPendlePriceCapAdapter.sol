@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+/**
+ * @title IPendlePriceCapAdapter
+ * @notice Interface of the PendlePriceCapAdapter contract
+ * @dev Adapted from https://github.com/aave-dao/aave-price-feeds/blob/ea6ce3ff33633dba90a23f1731443f0b30ad934f/src/interfaces/IPendlePriceCapAdapter.sol
+ */
 interface IPendlePriceCapAdapter {
   /**
    * @notice Returns the current discount rate set for a given asset (should be greater than zero and less than `MAX_DISCOUNT_RATE_PER_YEAR`)

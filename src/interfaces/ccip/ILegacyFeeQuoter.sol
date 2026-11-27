@@ -4,8 +4,13 @@ pragma solidity ^0.8.0;
 import {IClient} from './IClient.sol';
 import {IInternal} from './IInternal.sol';
 
-/// @dev Minimal FeeQuoter interface (CCIP 1.6 / 2.0) exposing the views the OnRamp uses
-/// when emitting `CCIPMessageSent`, so tests can reconstruct the exact emitted message.
+/**
+ * @title ILegacyFeeQuoter
+ * @notice Interface of the LegacyFeeQuoter contract
+ * @dev Minimal FeeQuoter interface (CCIP 1.6 / 2.0) exposing the views the OnRamp uses
+ * when emitting `CCIPMessageSent`, so tests can reconstruct the exact emitted message.
+ * @dev Adapted from https://github.com/smartcontractkit/chainlink-ccip/blob/0b618525aa032dcb8aa88d20cf96d3e4ae7a3166/chains/evm/contracts/interfaces/ILegacyFeeQuoter.sol
+ */
 interface ILegacyFeeQuoter {
   /// @notice Validates & converts the user supplied extraArgs and reports the resolved
   /// out-of-order execution flag (the OnRamp emits `convertedExtraArgs`, not the raw args).

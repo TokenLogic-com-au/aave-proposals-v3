@@ -1,6 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+/**
+ * @title IGsm
+ * @author Aave
+ * @notice Interface of the Gsm contract
+ * @dev Adapted from https://github.com/aave-dao/gho-origin/blob/859b070bf02ed8fd7332b6b2d2278f4e390686ee/src/contracts/facilitators/gsm/interfaces/IGsm.sol
+ * @dev Adapted from https://github.com/aave/gho-core/blob/e5f196e0bd2c9badd9f2b1948661ec80150451d9/src/contracts/facilitators/gsm/interfaces/IGsm.sol
+ */
 interface IGsm {
   /**
    * @notice Buys the GSM underlying asset in exchange for selling GHO

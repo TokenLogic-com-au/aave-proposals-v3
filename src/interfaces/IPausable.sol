@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 /**
  * @title IPausable
  * @notice Interface for the Pausable contract
+ * @dev Adapted from https://github.com/OpenZeppelin/openzeppelin-contracts/blob/5fd1781b1454fd1ef8e722282f86f9293cacf256/contracts/utils/Pausable.sol
  */
 interface IPausable {
   /**

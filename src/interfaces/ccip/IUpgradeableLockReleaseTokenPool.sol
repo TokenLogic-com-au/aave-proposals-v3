@@ -3,6 +3,12 @@ pragma solidity ^0.8.0;
 
 import {IRateLimiter} from './IRateLimiter.sol';
 
+/**
+ * @title IUpgradeableLockReleaseTokenPool
+ * @author Aave Labs
+ * @notice Interface of the UpgradeableLockReleaseTokenPool contract
+ * @dev Adapted from https://github.com/aave/ccip/blob/d27d468867bb798292b2dc0e73031a303a20cb41/contracts/src/v0.8/ccip/pools/GHO/UpgradeableLockReleaseTokenPool.sol
+ */
 interface IUpgradeableLockReleaseTokenPool {
   error AggregateValueMaxCapacityExceeded(uint256 capacity, uint256 requested);
   error AggregateValueRateLimitReached(uint256 minWaitInSeconds, uint256 available);

@@ -5,6 +5,11 @@ pragma solidity ^0.8.0;
 import {IInternal} from './IInternal.sol';
 import {ITypeAndVersion} from './ITypeAndVersion.sol';
 
+/**
+ * @title IOnRamp_1_6
+ * @notice Interface of the OnRamp contract
+ * @dev Adapted from https://github.com/smartcontractkit/chainlink-ccip/blob/e9476e9948c5f84fd4e980484a520085bcc1b9d5/chains/evm/contracts/onRamp/OnRamp.sol
+ */
 interface IOnRamp_1_6 is ITypeAndVersion {
   /// @dev Struct that contains the static configuration.
   /// RMN depends on this struct, if changing, please notify the RMN maintainers.
@@ -50,6 +55,11 @@ interface IOnRamp_1_6 is ITypeAndVersion {
   ) external view returns (address);
 }
 
+/**
+ * @title IOnRamp_2_0
+ * @notice Interface of the OnRamp contract
+ * @dev Adapted from https://github.com/smartcontractkit/chainlink-ccip/blob/0789f6ff5c90f489a3aa108396826e77142ef537/chains/evm/contracts/onRamp/OnRamp.sol
+ */
 interface IOnRamp_2_0 is ITypeAndVersion {
   /// @dev OnRamp 2.0.0 static config. Differs from 1.6 only in the third field
   /// (`maxUSDCentsPerMessage` instead of `nonceManager`); `chainSelector` is still first.
@@ -65,6 +75,12 @@ interface IOnRamp_2_0 is ITypeAndVersion {
   function getStaticConfig() external view returns (StaticConfig memory);
 }
 
+/**
+ * @title IEVM2EVMOnRamp
+ * @notice Interface of the EVM2EVMOnRamp contract
+ * @dev Adapted from https://github.com/smartcontractkit/ccip/blob/b5529a39311a2fd39cafceb62e4bb8f40eeb2e9e/contracts/src/v0.8/ccip/onRamp/EVM2EVMOnRamp.sol
+ * @dev applyPoolUpdates is from https://github.com/smartcontractkit/ccip/blob/b06a3c2eecb9892ec6f76a015624413fffa1a122/contracts/src/v0.8/ccip/onRamp/EVM2EVMOnRamp.sol
+ */
 interface IEVM2EVMOnRamp is ITypeAndVersion {
   struct TokenTransferFeeConfig {
     uint32 minFeeUSDCents; // ──────────╮ Minimum fee to charge per token transfer, multiples of 0.01 USD

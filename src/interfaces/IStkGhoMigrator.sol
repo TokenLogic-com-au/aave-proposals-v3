@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.27;
 
+/**
+ * @title IStkGhoMigrator
+ * @notice Interface of the StkGhoMigrator contract
+ * @dev Adapted from https://github.com/aave-dao/gho-origin/blob/2af44932a8a632fd74b44adb4c92a4b51700e25a/src/contracts/misc/interfaces/IStkGhoMigrator.sol
+ */
 interface IStkGhoMigrator {
   event StkGhoMigrated(address indexed user, uint256 amount);
 

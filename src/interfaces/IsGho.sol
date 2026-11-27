@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 /**
  * @title IsGho
  * @notice Interface for sGHO
+ * @dev Copied from https://github.com/aave-dao/gho-origin/blob/646ab32b290b0dd34934c867a69b26579a9b3ef4/src/contracts/sgho/interfaces/IsGho.sol
  */
 interface IsGho {
   /**

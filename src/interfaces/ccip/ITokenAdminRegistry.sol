@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+/**
+ * @title ITokenAdminRegistry
+ * @notice Interface of the TokenAdminRegistry contract
+ * @dev Adapted from https://github.com/smartcontractkit/ccip/blob/83f6d30c7ccc741ebba3a29bc6b36a3451a70efd/contracts/src/v0.8/ccip/tokenAdminRegistry/TokenAdminRegistry.sol
+ */
 interface ITokenAdminRegistry {
   struct TokenConfig {
     address administrator;

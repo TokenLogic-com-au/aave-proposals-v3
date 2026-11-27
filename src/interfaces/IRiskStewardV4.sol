@@ -8,7 +8,8 @@ import {IPriceCapAdapter} from 'src/interfaces/IPriceCapAdapter.sol';
  * @title IRiskStewardV4
  * @author Aave Labs
  * @notice Trimmed mirror of the Aave V4 RiskSteward, exposing the owner-set `Config` layout
- *         and the council entrypoints. Full source at aave-dao/aave-v4-risk-stewards.
+ *         and the council entrypoints.
+ * @dev Adapted from https://github.com/aave-dao/aave-v4-risk-stewards/blob/dba567d83fccd1cdce95daecf849104072e51a8c/src/interfaces/IRiskSteward.sol
  */
 interface IRiskStewardV4 {
   error DebounceNotRespected();

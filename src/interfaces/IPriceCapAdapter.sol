@@ -4,6 +4,11 @@ pragma solidity ^0.8.0;
 import {AggregatorInterface} from 'aave-v3-origin/contracts/dependencies/chainlink/AggregatorInterface.sol';
 import {BasicIACLManager} from 'aave-address-book/AaveV3.sol';
 
+/**
+ * @title IPriceCapAdapter
+ * @notice Interface of the PriceCapAdapter contract
+ * @dev Adapted from https://github.com/aave-dao/aave-price-feeds/blob/7b1a885d9152fe88e264deef0d3efdd93a04a5ca/src/interfaces/IPriceCapAdapter.sol
+ */
 interface IPriceCapAdapter {
   /**
    * @notice Parameters to update price cap

@@ -5,6 +5,7 @@ pragma solidity ^0.8.10;
  * @title IGhoBucketSteward
  * @author Aave Labs
  * @notice Defines the basic interface of the GhoBucketSteward
+ * @dev Copied from https://github.com/aave/gho-core/blob/0a6fbd4d4167f6e0e777aec0ae12bf4f18b4b0a8/src/contracts/misc/interfaces/IGhoBucketSteward.sol
  */
 interface IGhoBucketSteward {
   /**
