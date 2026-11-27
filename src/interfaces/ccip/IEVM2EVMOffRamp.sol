@@ -5,6 +5,11 @@ pragma solidity ^0.8.0;
 import {IInternal} from './IInternal.sol';
 import {ITypeAndVersion} from './ITypeAndVersion.sol';
 
+/**
+ * @title IEVM2EVMOffRamp_1_2
+ * @notice Interface of the EVM2EVMOffRamp contract
+ * @dev Adapted from https://github.com/smartcontractkit/ccip/blob/42047e5303ac910a40ccc0076643d689479e94a6/contracts/src/v0.8/ccip/offRamp/EVM2EVMOffRamp.sol
+ */
 interface IEVM2EVMOffRamp_1_2 is ITypeAndVersion {
   /// @notice Execute a single message.
   /// @param message The message that will be executed.
@@ -19,6 +24,11 @@ interface IEVM2EVMOffRamp_1_2 is ITypeAndVersion {
   ) external;
 }
 
+/**
+ * @title IOffRamp_1_6
+ * @notice Interface of the OffRamp contract
+ * @dev Adapted from https://github.com/smartcontractkit/chainlink-ccip/blob/e9476e9948c5f84fd4e980484a520085bcc1b9d5/chains/evm/contracts/offRamp/OffRamp.sol
+ */
 interface IOffRamp_1_6 is ITypeAndVersion {
   /// @dev Struct that contains the static configuration. The individual components are stored as immutable variables.
   // solhint-disable-next-line gas-struct-packing
@@ -48,6 +58,11 @@ interface IOffRamp_1_6 is ITypeAndVersion {
   function getDynamicConfig() external view returns (DynamicConfig memory);
 }
 
+/**
+ * @title IEVM2EVMOffRamp_1_5
+ * @notice Interface of the EVM2EVMOffRamp contract
+ * @dev Adapted from https://github.com/smartcontractkit/ccip/blob/b5529a39311a2fd39cafceb62e4bb8f40eeb2e9e/contracts/src/v0.8/ccip/offRamp/EVM2EVMOffRamp.sol
+ */
 interface IEVM2EVMOffRamp_1_5 is ITypeAndVersion {
   /// @notice Static offRamp config
   /// @dev RMN depends on this struct, if changing, please notify the RMN maintainers.

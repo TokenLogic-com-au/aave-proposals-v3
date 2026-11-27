@@ -5,6 +5,7 @@ pragma solidity ^0.8.10;
  * @title IGhoAaveSteward
  * @author Aave Labs
  * @notice Defines the basic interface of the GhoAaveSteward
+ * @dev Copied from https://github.com/aave/gho-core/blob/3684128be4a1af9d7100b095cd3c6ef6fc0ff62a/src/contracts/misc/interfaces/IGhoAaveSteward.sol
  */
 interface IGhoAaveSteward {
   /**

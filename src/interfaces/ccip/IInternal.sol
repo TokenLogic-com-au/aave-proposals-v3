@@ -4,6 +4,12 @@ pragma solidity ^0.8.0;
 
 import {IClient} from 'src/interfaces/ccip/IClient.sol';
 
+/**
+ * @title IInternal
+ * @notice Interface of the Internal library
+ * @dev Adapted from https://github.com/smartcontractkit/ccip/blob/f77e6f096deb805c7142bcd7f8e6116b5c17a725/contracts/src/v0.8/ccip/libraries/Internal.sol
+ * @dev Adapted from https://github.com/smartcontractkit/chainlink-ccip/blob/e9476e9948c5f84fd4e980484a520085bcc1b9d5/chains/evm/contracts/libraries/Internal.sol
+ */
 interface IInternal {
   /// @notice A collection of token price and gas price updates.
   /// @dev RMN depends on this struct, if changing, please notify the RMN maintainers.

@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+/**
+ * @title IGuardianEnabledFlag
+ * @notice Guardian-controlled enabled flag of an AIP
+ * @dev Written for this repository; no upstream interface.
+ */
 interface IGuardianEnabledFlag {
   /// @notice Emitted when `setEnabled()` is called.
   event SetEnabled(address indexed by, bool enable);

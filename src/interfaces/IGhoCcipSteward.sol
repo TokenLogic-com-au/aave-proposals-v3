@@ -5,6 +5,7 @@ pragma solidity ^0.8.10;
  * @title IGhoCcipSteward
  * @author Aave Labs
  * @notice Defines the basic interface of the GhoCcipSteward
+ * @dev Copied from https://github.com/aave/gho-core/blob/cf6ee42adc8b2e9ac8ffd1d70bd5b52f06e536b6/src/contracts/misc/interfaces/IGhoCcipSteward.sol
  */
 interface IGhoCcipSteward {
   struct CcipDebounce {

@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity ^0.8.0;
 
+/**
+ * @title IInitializableAdminUpgradeabilityProxy
+ * @notice Interface of the InitializableAdminUpgradeabilityProxy contract
+ * @dev Copied from https://github.com/aave-dao/lend-migrator-rescue/blob/cb6935113e3e2e72daacfe7743c9c77ac920407f/src/interfaces/IInitializableAdminUpgradeabilityProxy.sol
+ */
 interface IInitializableAdminUpgradeabilityProxy {
   function upgradeToAndCall(address newImplementation, bytes calldata data) external payable;
   function admin() external returns (address);

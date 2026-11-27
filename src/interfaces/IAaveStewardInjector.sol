@@ -1,6 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+/**
+ * @title IAaveStewardInjector
+ * @author BGD Labs
+ * @notice Interface of the AaveStewardInjectorBase contract
+ * @dev Adapted from https://github.com/aave-dao/aave-v3-risk-stewards/blob/e9f89fd7678553f8084f4ba6f311a6089ce107bd/src/contracts/AaveStewardInjectorBase.sol
+ * @dev Adapted from https://github.com/aave-dao/aave-v3-risk-stewards/blob/e9f89fd7678553f8084f4ba6f311a6089ce107bd/src/contracts/AaveStewardInjectorEMode.sol
+ */
 interface IAaveStewardInjector {
   struct EModeCategoryUpdate {
     uint256 ltv;

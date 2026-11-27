@@ -6,6 +6,8 @@ import {IAgentHub} from './IAgentHub.sol';
 /**
  * @title IGelatoAutomationHub
  * @author BGD Labs
+ * @notice Interface of the GelatoAutomationHub contract
+ * @dev Copied from https://github.com/ChaosLabsInc/chaos-agents/blob/3092c053741d6f607a1fdec8cc15edb1eea28b66/src/interfaces/IGelatoAutomationHub.sol
  */
 interface IGelatoAutomationHub {
   /**

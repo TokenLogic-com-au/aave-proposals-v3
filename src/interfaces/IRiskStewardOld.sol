@@ -12,6 +12,7 @@ import {IAaveV3ConfigEngine as IEngine} from 'aave-v3-origin/contracts/extension
  * @notice Mirror of the pre-v3.7 RiskSteward layout, where `CollateralConfig` still
  *         carries `debtCeiling`. Used to ABI-decode `getRiskConfig()` from the
  *         currently deployed (old) stewards on-chain.
+ * @dev Adapted from https://github.com/aave-dao/aave-v3-risk-stewards/blob/e9f89fd7678553f8084f4ba6f311a6089ce107bd/src/interfaces/IRiskSteward.sol
  */
 interface IRiskStewardOld {
   /**

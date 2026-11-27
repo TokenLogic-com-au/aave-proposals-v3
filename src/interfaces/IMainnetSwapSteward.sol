@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+/**
+ * @title IMainnetSwapSteward
+ * @notice Interface of the MainnetSwapSteward contract
+ * @dev Adapted from https://github.com/aave-dao/aave-stewards/blob/72918c65c3b450919006f2e8dd1488295e6a1b51/src/finance/interfaces/IMainnetSwapSteward.sol
+ */
 interface IMainnetSwapSteward {
   /// @notice Returns address of the Oracle to use for token swaps
   /// @param token Address of the token to swap

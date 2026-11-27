@@ -3,6 +3,12 @@ pragma solidity ^0.8.0;
 
 import {IERC20} from 'forge-std/interfaces/IERC20.sol';
 
+/**
+ * @title IGhoToken
+ * @author Aave
+ * @notice Interface of the GhoToken contract
+ * @dev Adapted from https://github.com/aave/gho-core/blob/790e6d22d340665c906d41c6be32fc5b09a5bad6/src/contracts/gho/interfaces/IGhoToken.sol
+ */
 interface IGhoToken is IERC20 {
   struct Facilitator {
     uint128 bucketCapacity;

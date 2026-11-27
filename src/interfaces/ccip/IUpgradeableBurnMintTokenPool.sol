@@ -3,6 +3,12 @@ pragma solidity ^0.8.0;
 
 import {IRateLimiter} from './IRateLimiter.sol';
 
+/**
+ * @title IUpgradeableBurnMintTokenPool
+ * @author Aave Labs
+ * @notice Interface of the UpgradeableBurnMintTokenPool contract
+ * @dev Adapted from https://github.com/aave/ccip/blob/46a4bdcf41a4bfa71b392a50667560942e3e5eb0/contracts/src/v0.8/ccip/pools/GHO/UpgradeableBurnMintTokenPool.sol
+ */
 interface IUpgradeableBurnMintTokenPool {
   error AggregateValueMaxCapacityExceeded(uint256 capacity, uint256 requested);
   error AggregateValueRateLimitReached(uint256 minWaitInSeconds, uint256 available);

@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 /**
  * @title IsGhoSteward Interface
  * @notice Interface for the sGHO steward contract, which manages the `targetRate` and `supplyCap` of the sGHO contract.
+ * @dev Adapted from https://github.com/aave-dao/gho-origin/blob/646ab32b290b0dd34934c867a69b26579a9b3ef4/src/contracts/misc/interfaces/IsGhoSteward.sol
  */
 interface IsGhoSteward {
   /**

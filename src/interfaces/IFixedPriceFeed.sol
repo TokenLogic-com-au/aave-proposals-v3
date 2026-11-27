@@ -3,6 +3,11 @@ pragma solidity ^0.8.0;
 
 import {IACLManager} from 'aave-address-book/AaveV3.sol';
 
+/**
+ * @title IFixedPriceAdapter
+ * @notice Interface of the FixedPriceAdapter contract
+ * @dev Copied from https://github.com/aave-dao/aave-price-feeds/blob/9aeea4ff66eebec234bdfeb624b5603735f80a76/src/interfaces/IFixedPriceAdapter.sol
+ */
 interface IFixedPriceAdapter {
   /**
    * @dev Emitted when the fix price cap is updated by the POOL_ADMIN

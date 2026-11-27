@@ -7,6 +7,7 @@ import {IAgentConfigurator} from './IAgentConfigurator.sol';
  * @title IAgentHub
  * @author BGD labs
  * @notice Defines the interface for the AgentHub contract
+ * @dev Copied from https://github.com/ChaosLabsInc/chaos-agents/blob/3092c053741d6f607a1fdec8cc15edb1eea28b66/src/interfaces/IAgentHub.sol
  */
 interface IAgentHub is IAgentConfigurator {
   /**

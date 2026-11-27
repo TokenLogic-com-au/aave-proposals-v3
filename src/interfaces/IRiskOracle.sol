@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+/**
+ * @title IRiskOracle
+ * @notice Interface of the RiskOracle contract
+ * @dev Adapted from https://github.com/aave-dao/aave-v3-risk-stewards/blob/650d51e2ec6bb1f4d9ae56da5a341436ef9bb8a1/src/contracts/dependencies/IRiskOracle.sol
+ */
 interface IRiskOracle {
   /**
    * @notice Adds a new type of update to the list of authorized update types.

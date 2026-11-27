@@ -1,6 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+/**
+ * @title IOracleSwapFreezer
+ * @author Aave
+ * @notice Interface of the OracleSwapFreezerBase contract
+ * @dev Adapted from https://github.com/aave-dao/gho-origin/blob/5d839238672172457dd1622cbf668c50c2bfedd2/src/contracts/facilitators/gsm/swapFreezer/OracleSwapFreezerBase.sol
+ * @dev Adapted from https://github.com/aave-dao/gho-origin/blob/5d839238672172457dd1622cbf668c50c2bfedd2/src/contracts/facilitators/gsm/swapFreezer/ChainlinkOracleSwapFreezer.sol
+ */
 interface IOracleSwapFreezer {
   function ADDRESS_PROVIDER() external view returns (address);
   function GSM() external view returns (address);

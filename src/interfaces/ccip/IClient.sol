@@ -1,6 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+/**
+ * @title IClient
+ * @notice Interface of the Client library
+ * @dev Adapted from https://github.com/smartcontractkit/ccip/blob/14c49793b4b99042e61b50edb693fc697a6a93ea/contracts/src/v0.8/ccip/libraries/Client.sol
+ * @dev Adapted from https://github.com/smartcontractkit/chainlink-ccip/blob/e9476e9948c5f84fd4e980484a520085bcc1b9d5/chains/evm/contracts/libraries/Client.sol
+ */
 interface IClient {
   /// @dev RMN depends on this struct, if changing, please notify the RMN maintainers.
   struct EVMTokenAmount {

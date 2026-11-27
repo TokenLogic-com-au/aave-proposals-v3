@@ -5,6 +5,11 @@ pragma solidity ^0.8.0;
 import {IClient} from './IClient.sol';
 import {ITypeAndVersion} from './ITypeAndVersion.sol';
 
+/**
+ * @title IRouter
+ * @notice Interface of the Router contract
+ * @dev Adapted from https://github.com/smartcontractkit/ccip/blob/a4b16c2602aeb0da8b6a8fea125ac1f571225216/contracts/src/v0.8/ccip/Router.sol
+ */
 interface IRouter is ITypeAndVersion {
   error UnsupportedDestinationChain(uint64 destChainSelector);
   error InsufficientFeeTokenAmount();

@@ -4,6 +4,12 @@ pragma solidity ^0.8.0;
 import {ITypeAndVersion} from './ITypeAndVersion.sol';
 import {IRateLimiter} from './IRateLimiter.sol';
 
+/**
+ * @title IProxyPool
+ * @notice Interface of the LegacyPoolWrapper contract
+ * @dev Adapted from https://github.com/smartcontractkit/ccip/blob/390ee2334126e313c0e214c2cd9a7a379b5bfe13/contracts/src/v0.8/ccip/pools/LegacyPoolWrapper.sol
+ * @dev Adapted from https://github.com/smartcontractkit/ccip/blob/390ee2334126e313c0e214c2cd9a7a379b5bfe13/contracts/src/v0.8/ccip/pools/TokenPool.sol
+ */
 interface IProxyPool is ITypeAndVersion {
   struct ChainUpdate {
     uint64 remoteChainSelector;

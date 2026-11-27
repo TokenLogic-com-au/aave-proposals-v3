@@ -4,6 +4,11 @@ pragma solidity ^0.8.0;
 import {ITypeAndVersion} from './ITypeAndVersion.sol';
 import {IInternal} from './IInternal.sol';
 
+/**
+ * @title IPriceRegistry
+ * @notice Interface of the PriceRegistry contract
+ * @dev Adapted from https://github.com/smartcontractkit/ccip/blob/5e7b2096586bc32c6e975fc13f4c411eb687f833/contracts/src/v0.8/ccip/interfaces/IPriceRegistry.sol
+ */
 interface IPriceRegistry is ITypeAndVersion {
   /// @notice Gets the fee token price and the gas price, both denominated in dollars.
   /// @param token The source token to get the price for.

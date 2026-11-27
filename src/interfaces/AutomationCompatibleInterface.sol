@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+/**
+ * @title AutomationCompatibleInterface
+ * @notice Interface of the AutomationCompatibleInterface contract
+ * @dev Copied from https://github.com/smartcontractkit/chainlink/blob/286e6af42357dc08acc23659ac6d486dff458478/contracts/src/v0.8/automation/interfaces/AutomationCompatibleInterface.sol
+ */
 interface AutomationCompatibleInterface {
   /**
    * @notice method that is simulated by the keepers to see if any work actually

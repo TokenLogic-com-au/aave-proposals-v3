@@ -4,6 +4,12 @@ pragma solidity ^0.8.0;
 import {IRateLimiter} from '../IRateLimiter.sol';
 import {IPool} from './IPool.sol';
 
+/**
+ * @title IUpgradeableLockReleaseTokenPool_1_4
+ * @author Aave Labs
+ * @notice Interface of the UpgradeableLockReleaseTokenPool contract
+ * @dev Adapted from https://github.com/aave/ccip/blob/46a4bdcf41a4bfa71b392a50667560942e3e5eb0/contracts/src/v0.8/ccip/pools/GHO/UpgradeableLockReleaseTokenPool.sol
+ */
 interface IUpgradeableLockReleaseTokenPool_1_4 {
   struct ChainUpdate {
     uint64 remoteChainSelector;
@@ -125,6 +131,12 @@ interface IUpgradeableLockReleaseTokenPool_1_4 {
   function withdrawLiquidity(uint256 amount) external;
 }
 
+/**
+ * @title IUpgradeableLockReleaseTokenPool_1_5_1
+ * @author Aave Labs
+ * @notice Interface of the UpgradeableLockReleaseTokenPool contract
+ * @dev Adapted from https://github.com/aave/ccip/blob/49caffa0f7b8cd205716573c38c869365f048066/contracts/src/v0.8/ccip/pools/GHO/UpgradeableLockReleaseTokenPool.sol
+ */
 interface IUpgradeableLockReleaseTokenPool_1_5_1 {
   struct ChainUpdate {
     uint64 remoteChainSelector;

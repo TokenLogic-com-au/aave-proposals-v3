@@ -3,6 +3,11 @@ pragma solidity ^0.8.0;
 
 import {IPoolAddressesProvider} from 'aave-v3-origin/contracts/interfaces/IPoolAddressesProvider.sol';
 
+/**
+ * @title ISvrOracleSteward
+ * @notice Interface of the SvrOracleSteward contract
+ * @dev Copied from https://github.com/bgd-labs/aave-stewards/blob/5dfbc55b7321fa68a75ea4b0fe3c538334b27d4d/src/risk/interfaces/ISvrOracleSteward.sol
+ */
 interface ISvrOracleSteward {
   struct AssetOracle {
     address asset;

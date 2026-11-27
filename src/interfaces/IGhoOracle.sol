@@ -6,6 +6,7 @@ pragma solidity ^0.8.0;
  * @notice Price feed for GHO (USD denominated)
  * @dev Price fixed at 1 USD, Chainlink format with 8 decimals
  * @author Aave
+ * @dev Adapted from https://github.com/aave/gho-core/blob/8e5b2c813964d001a4597cdb96ae5607788cc641/src/contracts/facilitators/aave/oracle/GhoOracle.sol
  */
 interface IGhoOracle {
   /**
