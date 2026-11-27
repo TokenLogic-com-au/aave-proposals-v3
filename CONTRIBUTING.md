@@ -1,10 +1,8 @@
 # Contributing a proposal
 
-This file lists the conventions that reviewers check on proposal PRs. Apply them before you ask for a review. Most rules come from comments that maintainers repeated across earlier PRs.
+This file lists the conventions that reviewers check on proposal PRs. Apply them before you ask for a review.
 
 For tooling, read the [README](./README.md), the [Generator Guide](./generator/README.md), the [Testing Guide](./docs/TESTING_GUIDE.md) and the [Glossary](./docs/GLOSSARY.md). The [PR template](./.github/PULL_REQUEST_TEMPLATE.md) has the short checklist. This file explains each checklist item and adds the rules that the checklist does not cover.
-
-The section "Open decisions" at the end lists the points where maintainers asked for opposite things. Each one shows the rule this file uses until the maintainers decide.
 
 ## 1. Workflow and tooling
 
@@ -74,10 +72,10 @@ Changes to the generator itself go in their own PR, not in a proposal PR. Such a
 
 - Payloads run through `delegatecall`. A payload has constants only and no storage.
 - Deploy and verify the contracts that the AIP needs before the AIP. The payload uses their addresses. A payload never deploys a copy of such a contract.
-- Steps on other chains go in separate payloads of one AIP. For steps on one chain, see "Open decisions". Enforce the order of the payloads and test it.
+- Steps on other chains go in separate payloads of one AIP. Enforce the order of the payloads and test it.
 - Put cancellations and removals before new grants. Put the hooks in the order in which they run.
 - When you replace a steward, a controller or a contract, revoke every role of the old one in the same payload.
-- Keep `execute()` easy to read. Use structs with named fields, not parallel arrays. Do not add empty functions or wrappers that only make one call. For other internal helpers, see "Open decisions".
+- Keep `execute()` easy to read. Use structs with named fields, not parallel arrays. Do not add empty functions or wrappers that only make one call.
 
 ### Token amounts
 
@@ -96,7 +94,7 @@ Changes to the generator itself go in their own PR, not in a proposal PR. Such a
 
 - Take every address and ID from the address book. This includes assets, oracles, Chainlink feeds, executors, stewards, the Collector and eMode IDs. If the address book does not have a value, add it there and bump the address book.
 - Read role IDs from the contract getter or the `Roles` library, for example `COLLECTOR.FUNDS_ADMIN()`. Do not write a `keccak256` literal.
-- Give addresses, and values used more than once or asserted in tests, a name. Put the named constants at the top of the contract. For a value used once, see "Open decisions". Keep one source for each value. Do not copy a value that the address book or a shared library already has.
+- Give addresses, and values used more than once or asserted in tests, a name. Put the named constants at the top of the contract. Keep one source for each value. Do not copy a value that the address book or a shared library already has.
 - If payloads on more than one chain share a constant, put it in one library.
 - Write numbers with underscores, for example `1_000_000`, and basis points as `100_00`. Use the exponent form, for example `0.65e18`, and time units, for example `90 days`.
 - Use the real decimals of the token. Use `ether` only for amounts in ETH.
@@ -164,7 +162,6 @@ Changes to the generator itself go in their own PR, not in a proposal PR. Such a
 - The title says what the AIP changes, for example "Onboard X on Aave V3 Y". Use the same title in the front matter, `config.ts` and `@title`. Write it with spaces, and do not add a prefix such as `[Direct-to-AIP]`.
 - The author is the real requester in the form `Org (@handle)`. If another team wrote the code, add `(implemented by Org)`. Use the same string in the AIP text and in `@author`.
 - The discussion link points to the exact forum post, with the post number. The Snapshot link points to the vote with the executed parameters. Use the same links in the AIP text, the NatSpec and `config.ts`.
-- For a Direct-to-AIP proposal, see "Open decisions".
 - Link every address to the block explorer of its chain. Link only verified contracts.
 - Link files of this repo on `main`. Link a file in another repo at a commit, not at a branch. Use the `aave-dao` organization. Never link a PR. Add the audit and the code of each new contract to References.
 - Refer to an earlier AIP by its number, as `[AIP-NNN](<vote link>)`, not by its payload ID.
@@ -199,20 +196,3 @@ Changes to the generator itself go in their own PR, not in a proposal PR. Such a
 - Complete the checklist of the PR template.
 - Keep a payload PR without its AIP text as a draft. Merge PRs to dependencies, such as the address book or aave-helpers, before you create the AIP.
 - If a later PR replaces your PR, close it and name the replacement.
-
-## 12. Open decisions
-
-Maintainers asked for opposite things on these points. Until they decide, this file uses the rule after each point.
-
-1. Text of the AIP. One view is to copy the forum post word for word. The other view is to write a short new text. Until a decision, copy the forum post and adapt it only to the template sections. Say where the AIP is different.
-2. Shared helpers. One view is to put them in aave-helpers. The other view is to keep them in this repo until a second user exists. Until a decision, put them in `src/helpers` here.
-3. Liquidity mining admin. Earlier listings set an emission admin. Recent listings do not. Until a decision, do not set one unless the forum post asks for it.
-4. Tokenization spoke on Aave V4 for assets that cannot be borrowed. The maintainers still need to decide.
-5. Default owner of a new proxy admin in the generator. Until a decision, the input is required and has no default.
-6. Values used once. One view is to write them inline. The other view is to name every value. Until a decision, make addresses and values used more than once, or asserted in tests, constants.
-7. Internal helpers in short payloads. Until a decision, add a helper only when it removes repeated code.
-8. Assert messages. Until a decision, add a message where a loop or a helper makes the failed case unclear.
-9. A Disclaimer section in the AIP text. Until a decision, leave it out, unless the forum post has a disclosure.
-10. One payload or several payloads for steps on one chain. One view is to use one payload, so the order is certain. The other view is to use several payloads, for example when one transaction is too large for aDI. Until a decision, use one payload when the steps must run in one transaction. Otherwise use several payloads.
-11. The Direct-to-AIP marker. One view is to leave the `snapshot` key out. The other view is to write `Direct-to-AIP` as its value. Until a decision, set `snapshot: 'Direct-to-AIP'` in `config.ts`. The generator then writes `Direct-to-AIP` in the NatSpec and leaves the `snapshot` key out of the front matter.
-12. `constant` or `immutable` for addresses and values. Until a decision, use `constant`.
